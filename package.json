@@ -2,6 +2,7 @@
   "name": "makaremi-core-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=20.10.0"
   },
