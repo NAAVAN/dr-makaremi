@@ -1,0 +1,4 @@
+interface:
+  display_name: "@drawcall/flipbook"
+  short_description: "Use Three.js flipbook billboards"
+  default_prompt: "Use $flipbook to add or debug a KTX2 flipbook billboard in a Three.js scene."

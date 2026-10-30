@@ -1,0 +1,33 @@
+{
+  "zone_settings": {
+    "security_level": "medium",
+    "challenge_ttl": 1800,
+    "browser_check": "on",
+    "http3": "on",
+    "zero_rtt": "on",
+    "tls_1_3": "on",
+    "ech": "on"
+  },
+  "custom_waf_rules": [
+    {
+      "description": "Block Known Malicious User-Agents and Exploit Scanners",
+      "action": "block",
+      "expression": "(http.user_agent contains \"sqlmap\" or http.user_agent contains \"nikto\" or http.user_agent contains \"acunetix\" or http.user_agent contains \"masscan\" or http.user_agent contains \"nmap\")"
+    },
+    {
+      "description": "Whitelist Verified Search & AI Bots",
+      "action": "skip",
+      "expression": "(cf.client.bot or http.user_agent contains \"GPTBot\" or http.user_agent contains \"ClaudeBot\" or http.user_agent contains \"PerplexityBot\" or http.user_agent contains \"Googlebot\" or http.user_agent contains \"Applebot\" or http.user_agent contains \"facebookexternalhit\")"
+    },
+    {
+      "description": "Rate Limit Dynamic Mutation & Integrity Endpoints",
+      "action": "rate_limit",
+      "rate_limit": {
+        "threshold": 15,
+        "period": 60,
+        "action": "managed_challenge"
+      },
+      "expression": "(http.request.uri.path matches \"^/api/(newsletter|integrity|revalidate|censorship-bypass).*\")"
+    }
+  ]
+}

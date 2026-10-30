@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "skills": {
+    "anatomy": {
+      "source": "wheresryan22/anatomy",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "37fe1f16683eddee1b3723a3fe8e4a5b92bb653a6991128a372d3268730cdc90"
+    },
+    "anatomy-reveal": {
+      "source": "annnguyentt/anatomy-reveal-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "fc02b2e01814c03fb3f3fbb989f7dbe393adec9ba49e2366debf192afaebbb1f"
+    },
+    "anti-prose-slop": {
+      "source": "proseify.xyz",
+      "sourceUrl": "https://proseify.xyz",
+      "sourceType": "well-known",
+      "computedHash": "1871562c0ca6cba5e61aace794169b3cdbefefd670f84f42915b73ba02d8b237",
+      "wellKnownDigest": "sha256:bec5094b3d68fcf35afe3ae9233ab6d82e3915cc8ab15d950e49ab3a26db3f40"
+    },
+    "blender-modeling": {
+      "source": "roble3/cc-blender-skill",
+      "sourceType": "github",
+      "skillPath": "plugin/skills/blender-modeling/SKILL.md",
+      "computedHash": "df8a4f73644dfdba792e35807e5138a6c77592fff80dc6c53da182beee60fd78"
+    },
+    "blender-web-pipeline": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/blender-web-pipeline/SKILL.md",
+      "computedHash": "d93cf2756b91e5d2e756f052b844280134bce4095a1b02be4104acf7d6a3cdfd"
+    },
+    "book-study": {
+      "source": "sanyuan0704/sanyuan-skills",
+      "sourceType": "github",
+      "skillPath": "skills/book-study/SKILL.md",
+      "computedHash": "dcf674f1aeefbcfba261424da361dee84b7663661e1cde7716a572e7944f4bb5"
+    },
+    "cad": {
+      "source": "earthtojake/text-to-cad",
+      "sourceType": "github",
+      "skillPath": "skills/cad/SKILL.md",
+      "computedHash": "ed924889ce3f047d07dc55fb5b485eb1229d11537ca52b804dddeee73a101e57"
+    },
+    "convert-documents-to-markdown": {
+      "source": "firecrawl/anydoc",
+      "sourceType": "github",
+      "skillPath": "skills/convert-documents-to-markdown/SKILL.md",
+      "computedHash": "eeede35eafca919482447d72089e3016a0f06901784d1589dd4bb9a584f86d1f"
+    },
+    "docx": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/docx/SKILL.md",
+      "computedHash": "3b8f8cf1ca7a427607c78312655e95e21b5f8f2b06a1aad4dc5554cc90eb095c"
+    },
+    "flipbook": {
+      "source": "drawcall-ai/flipbook",
+      "sourceType": "github",
+      "skillPath": "skills/flipbook/SKILL.md",
+      "computedHash": "bb8b6da5d184acca71dd66ec0609c49a459785e5a698d5c1d2715a0ab051d8e8"
+    },
+    "gsap-react": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-react/SKILL.md",
+      "computedHash": "255206fb6a4a079ad73b4a12e7c63197dc451a8549c7ac4e852b50ff74ef3bd6"
+    },
+    "hyperframes": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "skillPath": "skills/hyperframes/SKILL.md",
+      "computedHash": "126f3b0588ba564c4d5767d12357eebda38c006a375015eb4a563c23337ce6f9"
+    },
+    "ljg-book": {
+      "source": "lijigang/ljg-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ljg-book/SKILL.md",
+      "computedHash": "569f21e4612b2b5ae46f4494d58ddce403327399246facc027a6f341c526bb2e"
+    },
+    "markdown-to-epub-converter": {
+      "source": "smerchek/claude-epub-skill",
+      "sourceType": "github",
+      "skillPath": "markdown-to-epub/SKILL.md",
+      "computedHash": "8a7bf1b9c3ca597fd7531aaa740167d6365436da97dbbcfc5c41dca2e263fa34"
+    },
+    "motion-doctrine": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/motion-doctrine/SKILL.md",
+      "computedHash": "28d51d95e6bd0c808961cd6ced29e11a09f10f7711133ff86e9eb10f45c30ee2"
+    },
+    "pdf": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/pdf/SKILL.md",
+      "computedHash": "37226d4220d844377e6b2a386c51a011df4cd130855ff0b80bcc22f9c28abd57"
+    },
+    "react-three-fiber": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/react-three-fiber/SKILL.md",
+      "computedHash": "b118f1385a1ec24604a70a4798e0fb5534b1f09ac8d96f019706ff3902bcb5fa"
+    },
+    "spline-interactive": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/spline-interactive/SKILL.md",
+      "computedHash": "73c61d312b731d3e491cd635d19427767c80c4a1f4a9cc1cd18a3a530efa8aa6"
+    },
+    "step-parts": {
+      "source": "earthtojake/text-to-cad",
+      "sourceType": "github",
+      "skillPath": "skills/step-parts/SKILL.md",
+      "computedHash": "0f21b38115b9cd6dd493ee0ed2636277ee1a1cc32306d577a740141d98bba9b1"
+    },
+    "text-to-blender": {
+      "source": "roble3/cc-blender-skill",
+      "sourceType": "github",
+      "skillPath": "plugin/skills/text-to-blender/SKILL.md",
+      "computedHash": "7041d48d48fbdefe845df14844cf5b0933af3fc3d80af89d463532a545f4fdb1"
+    },
+    "threejs-3d-generator": {
+      "source": "majidmanzarpour/threejs-game-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-3d-generator/SKILL.md",
+      "computedHash": "fa9db2afea534a530bb9b421c5a3c54161a9e09efc4c35e2fbd8a80a4c804a24"
+    },
+    "threejs-aaa-graphics-builder": {
+      "source": "majidmanzarpour/threejs-game-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-aaa-graphics-builder/SKILL.md",
+      "computedHash": "44277a466a8f5ca2085b71bc503acbf90209b120e8dd6469f451501067793183"
+    },
+    "threejs-animation": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-animation/SKILL.md",
+      "computedHash": "cb27ed7b9ef4eb1f1f45a616b776f1f3390edd9ea17f9ddbde26b4f621f2d2ae"
+    },
+    "threejs-fundamentals": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-fundamentals/SKILL.md",
+      "computedHash": "01b18e381a820a257d2a2ecdaedac3ec36e8f2cac87810e8cc1b42800e3d2bb3"
+    },
+    "threejs-geometry": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-geometry/SKILL.md",
+      "computedHash": "67e6fa98e6c951e164f2e17df73cd5cfc53fc655693b4cef006d67a1f5edffe6"
+    },
+    "threejs-interaction": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-interaction/SKILL.md",
+      "computedHash": "da4cdf4bf4789eced05ec0692ba83436c4391232c7241b3842b9477081aa39b1"
+    },
+    "threejs-lighting": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-lighting/SKILL.md",
+      "computedHash": "566dd1ef94b4881141153f6a7e9ce1a46c643819f2975b520f0a4ad4d8cdf0ba"
+    },
+    "threejs-materials": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-materials/SKILL.md",
+      "computedHash": "7ec26e865fc849bb5e454b80b19296ba34d8e915539fb100971570da31270c96"
+    },
+    "threejs-postprocessing": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-postprocessing/SKILL.md",
+      "computedHash": "80f26b45e551a792e80ebcd03446d74ecabb1ba9519d3a34f4e8d5459bfc4c6b"
+    },
+    "threejs-shaders": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-shaders/SKILL.md",
+      "computedHash": "9f25737c01e28e91192e57aa294c9535e313566225b9eaad9aacee9b4211666b"
+    },
+    "translate-book": {
+      "source": "deusyu/translate-book",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "e19bc01b15e9a5f48d893469b6c534b2430c19d5366e0e4c714d7f8ba2bfcc3d"
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "name": "Dr. Hassan Makaremi Personal AI Agent Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "makaremi-telegram-webhook",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "name": "Telegram Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 300],
+      "id": "node_webhook_tg"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Verify X-Telegram-Bot-Api-Secret-Token\nconst crypto = require('crypto');\nconst headerSecret = items[0].json.headers['x-telegram-bot-api-secret-token'];\nconst expectedSecret = $env.TELEGRAM_WEBHOOK_SECRET || 'makaremi-tg-secret-2026';\n\nif (!headerSecret) {\n  throw new Error('401 Unauthorized: Missing secret token');\n}\n\nconst a = crypto.createHash('sha256').update(String(headerSecret)).digest();\nconst b = crypto.createHash('sha256').update(String(expectedSecret)).digest();\nif (!crypto.timingSafeEqual(a, b)) {\n  throw new Error('403 Forbidden: Invalid secret token');\n}\n\n// Whitelist Dr. Makaremi User ID\nconst fromId = items[0].json.body?.message?.from?.id || items[0].json.body?.callback_query?.from?.id;\nconst professorId = $env.TELEGRAM_PROFESSOR_USER_ID || '19501329';\nif (String(fromId) !== String(professorId)) {\n  throw new Error('403 Forbidden: Unauthorized user');\n}\n\nreturn items;"
+      },
+      "name": "Zero-Trust Crypto & Whitelist Guard",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [320, 300],
+      "id": "node_auth_guard"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"Telegram Webhook Trigger\"].json[\"body\"][\"message\"][\"voice\"][\"file_id\"]}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Check Message Type (Voice vs Text)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [540, 300],
+      "id": "node_type_router"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot{{$env.TELEGRAM_BOT_TOKEN}}/getFile?file_id={{$node[\"Telegram Webhook Trigger\"].json[\"body\"][\"message\"][\"voice\"][\"file_id\"]}}",
+        "options": {}
+      },
+      "name": "Get Telegram Voice File Path (SSRF Guarded)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [760, 200],
+      "id": "node_tg_get_file"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "model": "whisper-1",
+        "language": "fa",
+        "prompt": "روان‌کاوی لکان، نام‌پدر، دگرشنیدن، روان‌پریشی، ابژه a، سوربن"
+      },
+      "name": "Whisper Speech-to-Text",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [980, 200],
+      "id": "node_whisper_asr"
+    },
+    {
+      "parameters": {
+        "model": "claude-3-7-sonnet-20250219",
+        "systemPrompt": "شما دستیار ارشد و ویراستار اختصاصی آثار دکتر حسن مکارمی (روانکاو برجسته، پژوهشگر سوربن و هنرمند) هستید. لحن استاد متین، دقیق، سرشار از استدلال‌های ساختارگرایانه لکانی و با رعایت دقیق نیم‌فاصله‌ها و قواعد ویرایشی زبان فارسی است.",
+        "text": "=متن پیاده‌شده ویس استاد:\n{{$json.text}}\n\nلطفاً این گفتار را در قالب یک مقاله منسجم علمی با تیترهای H2 و H3، چکیده اجرایی، واژگان تخصصی لکانی و ترجمه عنوان فرانسوی و انگلیسی تدوین کنید."
+      },
+      "name": "Style Transfer & Structural Editor",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1200, 200],
+      "id": "node_style_transfer"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "={{$env.DIRECTUS_URL}}/items/articles",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"status\": \"draft\",\n  \"title\": \"{{$json.title}}\",\n  \"body\": \"{{$json.markdown}}\",\n  \"pillar\": \"psychoanalysis\",\n  \"author\": \"Dr. Hassan Makaremi\"\n}"
+      },
+      "name": "Create Draft in Directus CMS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [1420, 200],
+      "id": "node_directus_draft"
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_PROFESSOR_USER_ID}}",
+        "text": "=استاد ارجمند، پیش‌نویس مقاله از روی ویس شما آماده شد:\n\nعنوان: {{$json.title}}\n\nچکیده:\n{{$json.summary}}\n\nبرای اقدام نهایی یکی از گزینه‌های زیر را انتخاب نمایید:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            [
+              {
+                "text": "تأیید و دریافت پین انتشار",
+                "additionalFields": {
+                  "callback_data": "request_publish_pin"
+                }
+              },
+              {
+                "text": "ویرایش صوتی",
+                "additionalFields": {
+                  "callback_data": "voice_revision_mode"
+                }
+              },
+              {
+                "text": "لغو",
+                "additionalFields": {
+                  "callback_data": "cancel_draft"
+                }
+              }
+            ]
+          ]
+        }
+      },
+      "name": "Send Interactive Preview to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1640, 200],
+      "id": "node_tg_interactive_preview"
+    }
+  ],
+  "connections": {
+    "Telegram Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Zero-Trust Crypto & Whitelist Guard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zero-Trust Crypto & Whitelist Guard": {
+      "main": [
+        [
+          {
+            "node": "Check Message Type (Voice vs Text)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Message Type (Voice vs Text)": {
+      "main": [
+        [
+          {
+            "node": "Get Telegram Voice File Path (SSRF Guarded)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Telegram Voice File Path (SSRF Guarded)": {
+      "main": [
+        [
+          {
+            "node": "Whisper Speech-to-Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whisper Speech-to-Text": {
+      "main": [
+        [
+          {
+            "node": "Style Transfer & Structural Editor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Transfer & Structural Editor": {
+      "main": [
+        [
+          {
+            "node": "Create Draft in Directus CMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Draft in Directus CMS": {
+      "main": [
+        [
+          {
+            "node": "Send Interactive Preview to Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

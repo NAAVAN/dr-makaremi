@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js build
+.next/
+out/
+
+# Environment & Secret files (recursive)
+.env
+.env.*
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+
+# Cloudflare Tunnel credentials (keep template only)
+infra/cloudflared/*.json
+infra/cloudflared/cert.pem
+!infra/cloudflared/config.yml.template
+
+# Turbo
+.turbo/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Database / Local volumes
+infra/postgres/pgdata/
+
+# Standalone Skills Studio & Reference Lab (decoupled from deliverable website)
+studio-lab/

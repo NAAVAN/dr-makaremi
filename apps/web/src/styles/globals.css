@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background-color: var(--surface-canvas);
+  color: var(--foreground);
+  min-height: 100vh;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Pillar Badges */
+.pillar-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pillar-badge-psychoanalysis {
+  background-color: var(--pillar-psychoanalysis-light);
+  color: var(--pillar-psychoanalysis);
+  border: 1px solid var(--pillar-psychoanalysis);
+}
+
+.pillar-badge-art {
+  background-color: var(--pillar-art-light);
+  color: var(--pillar-art);
+  border: 1px solid var(--pillar-art);
+}
+
+.pillar-badge-strategy {
+  background-color: var(--pillar-strategy-light);
+  color: var(--pillar-strategy);
+  border: 1px solid var(--pillar-strategy);
+}
+
+.pillar-badge-rights {
+  background-color: var(--pillar-rights-light);
+  color: var(--pillar-rights);
+  border: 1px solid var(--pillar-rights);
+}
+
+/* Executive summary blockquote for AEO / GEO */
+.executive-summary-box {
+  background-color: var(--surface-sunken);
+  border-inline-start: 4px solid var(--pillar-psychoanalysis);
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-md);
+  margin: 1.5rem 0;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ============================================================================
+   3D CULTURAL SANCTUARY BOOK SHOWCASE & PAGE-TURNING ANIMATIONS
+   ============================================================================ */
+
+@keyframes bookSanctuaryFloat {
+  0% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  25% {
+    transform: translateY(-7px) rotateX(3.5deg) rotateY(7deg) rotateZ(-0.6deg);
+  }
+  50% {
+    transform: translateY(-3px) rotateX(-2deg) rotateY(-6deg) rotateZ(0.5deg);
+  }
+  75% {
+    transform: translateY(-8px) rotateX(2.5deg) rotateY(5deg) rotateZ(-0.4deg);
+  }
+  100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+}
+
+@keyframes bookSanctuaryTurntable {
+  0% {
+    transform: translateY(0px) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotateY(180deg);
+  }
+  100% {
+    transform: translateY(0px) rotateY(360deg);
+  }
+}
+
+@keyframes bookPedestalShadow {
+  0%, 100% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 0.32;
+  }
+  50% {
+    transform: scaleX(0.88) scaleY(0.85);
+    opacity: 0.22;
+  }
+}
+
+.book-3d-motion-float {
+  transform-style: preserve-3d;
+  animation: bookSanctuaryFloat 6.5s ease-in-out infinite;
+}
+
+.book-3d-motion-turntable {
+  transform-style: preserve-3d;
+  animation: bookSanctuaryTurntable 14s linear infinite;
+}
+
+.book-3d-motion-paused {
+  transform-style: preserve-3d;
+  animation: none;
+}
+
+/* 3D Page-Flip Leaf Animations (RTL & LTR) */
+@keyframes pageTurnLeftToRight {
+  0% {
+    transform: rotateY(0deg) translateZ(1px);
+  }
+  35% {
+    transform: rotateY(62deg) translateZ(8px) skewY(-1.2deg);
+  }
+  65% {
+    transform: rotateY(122deg) translateZ(8px) skewY(1.2deg);
+  }
+  100% {
+    transform: rotateY(180deg) translateZ(1px);
+  }
+}
+
+@keyframes pageTurnRightToLeft {
+  0% {
+    transform: rotateY(0deg) translateZ(1px);
+  }
+  35% {
+    transform: rotateY(-62deg) translateZ(8px) skewY(1.2deg);
+  }
+  65% {
+    transform: rotateY(-122deg) translateZ(8px) skewY(-1.2deg);
+  }
+  100% {
+    transform: rotateY(-180deg) translateZ(1px);
+  }
+}
+
+@keyframes pageTurnShadowOverlay {
+  0% {
+    opacity: 0;
+  }
+  45% {
+    opacity: 0.28;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.book-leaf-turn-ltr-sweep {
+  transform-style: preserve-3d;
+  transform-origin: right center;
+  animation: pageTurnLeftToRight 0.82s cubic-bezier(0.32, 0.08, 0.24, 1) forwards;
+}
+
+.book-leaf-turn-rtl-sweep {
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  animation: pageTurnRightToLeft 0.82s cubic-bezier(0.32, 0.08, 0.24, 1) forwards;
+}
+
+.book-leaf-shadow-pulse {
+  animation: pageTurnShadowOverlay 0.82s ease-in-out forwards;
+}

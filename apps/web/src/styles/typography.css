@@ -1,0 +1,50 @@
+/* Local + CDN Vazirmatn font declarations with guaranteed Vazirmatn enforcement */
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/vazirmatn/Vazirmatn-Variable.woff2') format('woff2-variations'),
+       url('/fonts/vazirmatn/Vazirmatn[wght].woff2') format('woff2-variations'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn[wght].woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root,
+:root[dir="rtl"],
+:root[dir="ltr"] {
+  --font-primary: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
+  --font-display: 'Vazirmatn', 'Cormorant Garamond', Georgia, serif;
+  --line-height-body: 1.85;
+  --line-height-heading: 1.45;
+  --letter-spacing-heading: normal;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-sans,
+.font-serif,
+.font-mono,
+.font-display {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+body {
+  line-height: var(--line-height-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-heading);
+}

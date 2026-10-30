@@ -1,0 +1,97 @@
+:root {
+  /* Surfaces & Canvas (Warm Paper Theme) */
+  --surface-canvas: #FBFBF9;
+  --surface-card: #FFFFFF;
+  --surface-overlay: #FFFFFF;
+  --surface-sunken: #F3F3EE;
+  --bg-primary: #FBFBF9;
+  --bg-secondary: #F3F3EE;
+  --bg-elevated: #FFFFFF;
+
+  /* Typography & Foreground */
+  --foreground: #1C1D21;
+  --foreground-muted: #64748B;
+  --primary-foreground: #FFFFFF;
+  --text-primary: #1C1D21;
+  --text-secondary: #52545D;
+  --text-muted: #7E828E;
+
+  /* Borders & Dividers */
+  --border-subtle: #E2E8F0;
+  --border-medium: #CBD5E1;
+
+  /* Primary Brand (Lacanian Teal) */
+  --primary: #0F766E;
+  --primary-hover: #115E59;
+  --primary-light: #CCFBF1;
+
+  /* 4 Core Content Pillars */
+  --pillar-psychoanalysis: #0F766E;
+  --pillar-psychoanalysis-light: #CCFBF1;
+  --color-psychoanalysis: #0F766E;
+
+  --pillar-art: #1E3A8A;
+  --pillar-art-light: #DBEAFE;
+  --color-art: #1E3A8A;
+
+  --pillar-strategy: #B45309;
+  --pillar-strategy-light: #FEF3C7;
+  --color-strategy: #B45309;
+
+  --pillar-rights: #991B1B;
+  --pillar-rights-light: #FEE2E2;
+  --color-dadkhahi: #991B1B;
+
+  /* Accent & Focus */
+  --accent-gold: #D97706;
+  --focus-ring: #0F766E;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"],
+.dark {
+  /* Surfaces & Canvas (Deep Charcoal Theme) */
+  --surface-canvas: #121316;
+  --surface-card: #1A1D24;
+  --surface-overlay: #1A1D24;
+  --surface-sunken: #15181E;
+  --bg-primary: #121316;
+  --bg-secondary: #191B20;
+  --bg-elevated: #22252C;
+
+  /* Typography & Foreground */
+  --foreground: #F8FAFC;
+  --foreground-muted: #94A3B8;
+  --primary-foreground: #FFFFFF;
+  --text-primary: #F3F4F6;
+  --text-secondary: #D1D5DB;
+  --text-muted: #9CA3AF;
+
+  /* Borders & Dividers */
+  --border-subtle: #2D313A;
+  --border-medium: #3E4350;
+
+  /* Primary Brand */
+  --primary: #14B8A6;
+  --primary-hover: #2DD4BF;
+  --primary-light: rgba(20, 184, 166, 0.2);
+
+  /* Pillar Accents (Dark Mode Tint) */
+  --pillar-psychoanalysis-light: rgba(15, 118, 110, 0.25);
+  --pillar-art-light: rgba(30, 58, 138, 0.25);
+  --pillar-strategy-light: rgba(180, 83, 9, 0.25);
+  --pillar-rights-light: rgba(153, 27, 27, 0.25);
+
+  --color-psychoanalysis: #14B8A6;
+  --color-art: #3B82F6;
+  --color-strategy: #F59E0B;
+  --color-dadkhahi: #EF4444;
+}

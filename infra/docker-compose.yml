@@ -1,0 +1,163 @@
+version: '3.9'
+
+networks:
+  makaremi_internal_net:
+    driver: bridge
+    internal: false
+
+volumes:
+  pg_data:
+    driver: local
+  directus_uploads:
+    driver: local
+  directus_extensions:
+    driver: local
+  redis_data:
+    driver: local
+  cantaloupe_cache:
+    driver: local
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. PostgreSQL 17 + pgvector Extension
+  # ----------------------------------------------------------------------------
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    container_name: makaremi_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-makaremi_core}
+      POSTGRES_USER: ${DB_USER:-makaremi_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-makaremi_secure_db_pass_2026}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      # In strict Zero-Trust production, remove host port mapping; services communicate via makaremi_internal_net
+      - "127.0.0.1:5432:5432"
+    networks:
+      - makaremi_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-makaremi_admin} -d ${DB_DATABASE:-makaremi_core}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ----------------------------------------------------------------------------
+  # 2. Redis 7 (In-Memory Redirect Cache & Session Storage)
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7.4-alpine
+    container_name: makaremi_redis
+    restart: unless-stopped
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD:-makaremi_secure_redis_pass_2026}", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    ports:
+      # In strict Zero-Trust production, keep internal to docker network
+      - "127.0.0.1:6379:6379"
+    networks:
+      - makaremi_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-makaremi_secure_redis_pass_2026}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # 3. Directus Headless CMS (Decoupled Content API)
+  # ----------------------------------------------------------------------------
+  directus:
+    image: directus/directus:11.3.0
+    container_name: makaremi_directus
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8055:8055"
+    environment:
+      KEY: ${DIRECTUS_KEY:-8f5dbad9-b6bb-49e0-8fa8-692fc3b30d36}
+      SECRET: ${DIRECTUS_SECRET:-b6e8f498c0dc11ea89f30242ac130003b6e8f498c0dc11ea89f30242ac130003}
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL:-admin@makaremi.com}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD:-change_this_to_a_secure_admin_password_in_production}
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-https://admin.makaremi.com}
+      DB_CLIENT: "pg"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: ${DB_DATABASE:-makaremi_core}
+      DB_USER: ${DB_USER:-makaremi_admin}
+      DB_PASSWORD: ${DB_PASSWORD:-makaremi_secure_db_pass_2026}
+      CACHE_ENABLED: "true"
+      CACHE_STORE: "redis"
+      CACHE_REDIS: "redis://:${REDIS_PASSWORD:-makaremi_secure_redis_pass_2026}@redis:6379"
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_STORE: "redis"
+      RATE_LIMITER_REDIS: "redis://:${REDIS_PASSWORD:-makaremi_secure_redis_pass_2026}@redis:6379"
+      STORAGE_LOCATIONS: "local"
+      STORAGE_LOCAL_ROOT: "/directus/uploads"
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "https://makaremi.com,http://localhost:3000"
+    volumes:
+      - directus_uploads:/directus/uploads
+      - directus_extensions:/directus/extensions
+    networks:
+      - makaremi_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:8055/server/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ----------------------------------------------------------------------------
+  # 4. Cantaloupe IIIF Image Server (Museum-Grade Deep Zoom for Calligraphy)
+  # ----------------------------------------------------------------------------
+  cantaloupe:
+    build:
+      context: ./cantaloupe
+      dockerfile: Dockerfile
+    container_name: makaremi_cantaloupe
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8182:8182"
+    environment:
+      JAVA_OPTS: "-Xmx2g -Dcantaloupe.config=/etc/cantaloupe.properties"
+    volumes:
+      - directus_uploads:/var/images:ro
+      - cantaloupe_cache:/var/cache/cantaloupe
+      - ./cantaloupe/cantaloupe.properties:/etc/cantaloupe.properties:ro
+    networks:
+      - makaremi_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2560M
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:8182/health || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3

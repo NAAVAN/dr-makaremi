@@ -1,0 +1,34 @@
+# infra/telegram/instant-view-rules.txt
+# Telegram Instant View 2.1 Template Rules for makaremi.com
+# Enables instant, zero-VPN article and speech reading directly inside the Telegram client.
+
+~version: "2.1"
+
+# 1. Target content URLs across 3 languages (Articles, Speeches, Poems, Books)
+?path: ^/(fa|fr|en)/([a-z0-9_-]+)/articles/[a-z0-9_-]+$
+?path: ^/(fa|fr|en)/human-rights/speeches/[a-z0-9_-]+$
+?path: ^/(fa|fr|en)/poetry/poems/[a-z0-9_-]+$
+?path: ^/(fa|fr|en)/books/[a-z0-9_-]+$
+
+# 2. Main document structure & semantic extraction
+body: //main//article
+title: //h1
+subtitle: //blockquote[contains(@class, "executive-summary")]
+
+# 3. Author, Publication Date & Linguistic Direction
+author: "دکتر حسن مکارمی | Dr. Hassan Makaremi"
+published_date: //time/@datetime
+
+# 4. Remove UIchrome, navigation bars, and buttons from Instant View canvas
+@remove: //header
+@remove: //footer
+@remove: //nav
+@remove: //button
+@remove: //aside
+@remove: //div[contains(@class, "pwa-offline-bar")]
+@remove: //div[contains(@class, "theme-toggle")]
+@remove: //div[contains(@class, "mirror-switcher")]
+
+# 5. Media & Figures
+cover: //figure//img
+@after_el(//article): //hr

@@ -1,0 +1,35 @@
+# infra/cloudflared/config.yml.template
+# Production Cloudflare Zero Trust Tunnel Configuration for MAKAREMI-CORE-2026
+# Establishes outbound-only encrypted tunnels with zero inbound ports exposed.
+
+tunnel: ${CLOUDFLARE_TUNNEL_ID}
+credentials-file: /etc/cloudflared/${CLOUDFLARE_TUNNEL_ID}.json
+
+ingress:
+  # 1. Directus Headless CMS (Protected by Cloudflare Access JWT & Passkey WebAuthn)
+  - hostname: admin.makaremi.com
+    service: http://localhost:8055
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 10s
+      keepAliveTimeout: 60s
+      keepAliveConnections: 100
+
+  # 2. Cantaloupe IIIF Image Server (Tile Server for Calligraphy Deep Zoom)
+  - hostname: iiif.makaremi.com
+    service: http://localhost:8182
+    originRequest:
+      connectTimeout: 15s
+
+  # 3. Next.js 15 Web Application & Edge SSR
+  - hostname: makaremi.com
+    service: http://localhost:3000
+    originRequest:
+      connectTimeout: 10s
+
+  # 4. Canonical Mirror Domain
+  - hostname: www.makaremi.com
+    service: http://localhost:3000
+
+  # 5. Catch-All Default (Drop unidentified Host requests)
+  - service: http_status:404
