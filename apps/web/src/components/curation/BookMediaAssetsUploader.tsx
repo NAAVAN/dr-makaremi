@@ -27,6 +27,7 @@ interface BookMediaAssetsUploaderProps {
   existingPdfs?: { title: string; url: string }[];
   spec: Book3DAssetsSpec;
   onChange: (updated: Book3DAssetsSpec) => void;
+  onTranscriptAppended?: (text: string) => void;
 }
 
 export function BookMediaAssetsUploader({
@@ -36,6 +37,7 @@ export function BookMediaAssetsUploader({
   existingPdfs = [],
   spec,
   onChange,
+  onTranscriptAppended,
 }: BookMediaAssetsUploaderProps) {
   const handleFileRead = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -345,6 +347,7 @@ export function BookMediaAssetsUploader({
         mode="site_intro"
         existingAudio={spec.authorIntroAudio}
         onSaveAudio={(audio) => onChange({ ...spec, authorIntroAudio: audio })}
+        onTranscriptAppended={onTranscriptAppended}
       />
     </div>
   );

@@ -49,6 +49,10 @@ export function Header({ locale }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mirrorOpen, setMirrorOpen] = useState(false);
 
+  if (pathname?.includes('/curation-studio')) {
+    return null;
+  }
+
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 

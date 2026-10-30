@@ -206,6 +206,24 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
     });
   };
 
+  const appendItemCommentTranscript = (
+    key: string,
+    txt: string,
+    defaultStatus: ItemDecisionStatus = 'keep'
+  ) => {
+    setDecisions((prev) => {
+      const current = prev[key] || { status: defaultStatus };
+      const existing = current.comment ? current.comment.trim() : '';
+      return {
+        ...prev,
+        [key]: {
+          ...current,
+          comment: existing ? `${existing} ${txt}` : txt,
+        },
+      };
+    });
+  };
+
   const toggleExpand = (key: string) => {
     setExpandedIds((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -364,12 +382,53 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
     return [...jPosts, ...jPages, ...jGalleries];
   }, [catalog]);
 
-  const fontSizeClass =
-    fontScale === 'xlarge'
-      ? 'text-lg leading-relaxed'
-      : fontScale === 'large'
-      ? 'text-base leading-relaxed'
-      : 'text-sm leading-normal';
+  const basePtSize =
+    fontScale === 'xlarge' ? '16pt' : fontScale === 'large' ? '14.5pt' : '13pt';
+
+  const navTabs = [
+    {
+      id: 'archive_macro' as const,
+      label: '۱. آرشیو شخصی و تصمیمات کلان',
+      icon: <FolderOpen className="w-5 h-5 shrink-0" />,
+      badge: 'شروع',
+    },
+    {
+      id: 'ai_and_auth' as const,
+      label: '۲. دستیار هوشمند (دموی زنده) و مجوز ورود',
+      icon: <Bot className="w-5 h-5 shrink-0" />,
+      badge: 'ویژه',
+    },
+    {
+      id: 'books' as const,
+      label: '۳. کتاب‌ها، جلد ۳بعدی و صدای استاد',
+      icon: <BookOpen className="w-5 h-5 shrink-0" />,
+      badge: `${catalog.stats.booksCount}`,
+    },
+    {
+      id: 'art_exhibitions' as const,
+      label: '۴. گالری‌ها (۱٬۳۹۰ تابلو) و ۲۷ نمایشگاه',
+      icon: <Palette className="w-5 h-5 shrink-0" />,
+      badge: `${catalog.stats.galleriesCount}`,
+    },
+    {
+      id: 'poems_videos' as const,
+      label: '۵. اشعار مصور (۳۰۱) و ویدئوها (۲۶۲)',
+      icon: <Feather className="w-5 h-5 shrink-0" />,
+      badge: `${catalog.stats.poemsCount + catalog.stats.videosCount}`,
+    },
+    {
+      id: 'articles_pdfs' as const,
+      label: '۶. مقالات، کنفرانس‌ها و ۵۱ سند PDF',
+      icon: <FileText className="w-5 h-5 shrink-0" />,
+      badge: `${catalog.stats.postsCount}`,
+    },
+    {
+      id: 'cleanup_submit' as const,
+      label: '۷. پالایش موارد تستی و ارسال نهایی',
+      icon: <Send className="w-5 h-5 shrink-0" />,
+      badge: `${customAddedWorks.length > 0 ? `+${customAddedWorks.length}` : 'نهایی'}`,
+    },
+  ];
 
   const renderDecisionButtons = (
     itemKey: string,
@@ -380,37 +439,37 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
       {
         val: 'keep',
         label: '✅ حفظ و انتشار',
-        icon: <CheckCircle2 className="w-3.5 h-3.5" />,
+        icon: <CheckCircle2 className="w-4 h-4" />,
         activeCls: 'bg-emerald-600 text-white border-emerald-700 shadow-sm',
       },
       {
         val: 'featured',
         label: '⭐ برگزیده (ویترین اول)',
-        icon: <Star className="w-3.5 h-3.5" />,
+        icon: <Star className="w-4 h-4" />,
         activeCls: 'bg-amber-600 text-white border-amber-700 shadow-sm',
       },
       {
         val: 'edit',
         label: '✏️ نیاز به اصلاح / بازبینی',
-        icon: <Edit3 className="w-3.5 h-3.5" />,
+        icon: <Edit3 className="w-4 h-4" />,
         activeCls: 'bg-blue-600 text-white border-blue-700 shadow-sm',
       },
       {
         val: 'delete',
         label: '🗑️ حذف از سایت جدید',
-        icon: <Trash2 className="w-3.5 h-3.5" />,
+        icon: <Trash2 className="w-4 h-4" />,
         activeCls: 'bg-red-600 text-white border-red-700 shadow-sm',
       },
     ];
 
     return (
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-2">
         {buttons.map((b) => (
           <button
             key={b.val}
             type="button"
             onClick={() => updateDecision(itemKey, { status: b.val }, defaultStatus)}
-            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold border transition ${
               dec.status === b.val
                 ? b.activeCls
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
@@ -424,40 +483,96 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
   };
 
   return (
-    <div dir="rtl" className={`min-h-screen bg-[#FAF7F2] text-slate-900 pb-24 ${fontSizeClass}`}>
+    <div
+      id="makaremi-curation-studio"
+      dir="rtl"
+      className="min-h-screen bg-[#FAF7F2] text-slate-900 pb-24"
+    >
+      <style>{`
+        /* 1. Hide global site header and footer and make main container full-width */
+        header:not(#curation-studio-header),
+        footer {
+          display: none !important;
+        }
+        main {
+          max-width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        /* 2. Enforce Vazirmatn font at 13pt (17.33px) minimum across the entire Curation Studio */
+        #makaremi-curation-studio,
+        #makaremi-curation-studio *:not(svg):not(path) {
+          font-family: var(--font-vazirmatn), 'Vazirmatn', Tahoma, sans-serif !important;
+        }
+        #makaremi-curation-studio {
+          font-size: ${basePtSize} !important;
+          line-height: 1.85 !important;
+        }
+        #makaremi-curation-studio .text-xs,
+        #makaremi-curation-studio .text-sm,
+        #makaremi-curation-studio .text-\\[11px\\],
+        #makaremi-curation-studio .text-\\[10px\\],
+        #makaremi-curation-studio input,
+        #makaremi-curation-studio textarea,
+        #makaremi-curation-studio select,
+        #makaremi-curation-studio button,
+        #makaremi-curation-studio label,
+        #makaremi-curation-studio p,
+        #makaremi-curation-studio span {
+          font-size: ${basePtSize} !important;
+          line-height: 1.8 !important;
+        }
+        #makaremi-curation-studio h1 {
+          font-size: calc(${basePtSize} + 4pt) !important;
+          line-height: 1.5 !important;
+        }
+        #makaremi-curation-studio h2 {
+          font-size: calc(${basePtSize} + 2.5pt) !important;
+          line-height: 1.55 !important;
+        }
+        #makaremi-curation-studio h3,
+        #makaremi-curation-studio h4 {
+          font-size: calc(${basePtSize} + 1pt) !important;
+          line-height: 1.65 !important;
+        }
+      `}</style>
+
       {/* =====================================================================
-          TOP STICKY HEADER FOR DR. MAKAREMI
+          TOP STICKY BAR FOR DR. MAKAREMI (NO SITE HEADER/FOOTER)
          ===================================================================== */}
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b-2 border-amber-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div
+        id="curation-studio-header"
+        className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b-2 border-amber-200 shadow-sm"
+      >
+        <div className="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500" />
-              <span className="text-xs font-bold text-amber-800">
+              <span className="inline-block w-3 h-3 rounded-full bg-emerald-500" />
+              <span className="font-bold text-amber-800">
                 پورتال اختصاصی استاد دکتر حسن مکارمی • ذخیره خودکار فعال {lastSavedAt && `(${lastSavedAt})`}
               </span>
             </div>
-            <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-0.5">
+            <h1 className="font-extrabold text-slate-900 mt-1">
               میز کار تعاملی بازنگری محتوا، تکمیل آرشیو و تصمیم‌گیری سایت جدید
             </h1>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Font size selector */}
-            <div className="inline-flex items-center bg-slate-100 border border-slate-300 rounded-xl p-1 text-xs font-bold">
+            <div className="inline-flex items-center bg-slate-100 border border-slate-300 rounded-xl p-1 font-bold">
               <button
                 type="button"
                 onClick={() => setFontScale('normal')}
-                className={`px-2 py-1 rounded-lg ${
+                className={`px-3 py-1 rounded-lg ${
                   fontScale === 'normal' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
                 }`}
               >
-                A
+                ۱۳pt (پیش‌فرض)
               </button>
               <button
                 type="button"
                 onClick={() => setFontScale('large')}
-                className={`px-2 py-1 rounded-lg ${
+                className={`px-3 py-1 rounded-lg ${
                   fontScale === 'large' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
                 }`}
               >
@@ -466,7 +581,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
               <button
                 type="button"
                 onClick={() => setFontScale('xlarge')}
-                className={`px-2 py-1 rounded-lg ${
+                className={`px-3 py-1 rounded-lg ${
                   fontScale === 'xlarge' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
                 }`}
               >
@@ -478,9 +593,9 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
             <button
               type="button"
               onClick={() => openAddWorkModal('book')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-teal-700 hover:bg-teal-800 text-white shadow-sm transition"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold bg-teal-700 hover:bg-teal-800 text-white shadow-sm transition"
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle className="w-5 h-5" />
               <span>افزودن اثر جدید (نامحدود)</span>
             </button>
 
@@ -488,92 +603,15 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
             <button
               type="button"
               onClick={handleExportManifest}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-extrabold bg-amber-600 hover:bg-amber-700 text-white shadow-md transition"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold bg-amber-600 hover:bg-amber-700 text-white shadow-md transition"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-5 h-5" />
               <span>
                 {submitStatus === 'saved'
                   ? '✅ ثبت و دانلود شد (دانلود مجدد)'
                   : 'ثبت نهایی و دریافت فایل تصمیمات استاد'}
               </span>
             </button>
-          </div>
-        </div>
-
-        {/* Navigation Tabs Bar */}
-        <div className="max-w-7xl mx-auto px-4 pb-2 overflow-x-auto">
-          <div className="flex items-center gap-1.5 min-w-max">
-            {[
-              {
-                id: 'archive_macro' as const,
-                label: '۱. آرشیو شخصی و تصمیمات کلان',
-                icon: <FolderOpen className="w-4 h-4" />,
-                badge: 'شروع',
-              },
-              {
-                id: 'ai_and_auth' as const,
-                label: '۲. دستیار هوشمند (دموی زنده) و مجوز ورود',
-                icon: <Bot className="w-4 h-4" />,
-                badge: 'ویژه',
-              },
-              {
-                id: 'books' as const,
-                label: '۳. کتاب‌ها، جلد ۳بعدی و صدای استاد',
-                icon: <BookOpen className="w-4 h-4" />,
-                badge: `${catalog.stats.booksCount}`,
-              },
-              {
-                id: 'art_exhibitions' as const,
-                label: '۴. گالری‌ها (۱٬۳۹۰ تابلو) و ۲۷ نمایشگاه',
-                icon: <Palette className="w-4 h-4" />,
-                badge: `${catalog.stats.galleriesCount}`,
-              },
-              {
-                id: 'poems_videos' as const,
-                label: '۵. اشعار مصور (۳۰۱) و ویدئوها (۲۶۲)',
-                icon: <Feather className="w-4 h-4" />,
-                badge: `${catalog.stats.poemsCount + catalog.stats.videosCount}`,
-              },
-              {
-                id: 'articles_pdfs' as const,
-                label: '۶. مقالات، کنفرانس‌ها و ۵۱ سند PDF',
-                icon: <FileText className="w-4 h-4" />,
-                badge: `${catalog.stats.postsCount}`,
-              },
-              {
-                id: 'cleanup_submit' as const,
-                label: '۷. پالایش موارد تستی و ارسال نهایی',
-                icon: <Send className="w-4 h-4" />,
-                badge: `${customAddedWorks.length > 0 ? `+${customAddedWorks.length}` : 'نهایی'}`,
-              },
-            ].map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => {
-                  setActiveTab(t.id);
-                  setSearchQuery('');
-                  setSubFilter('all');
-                }}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold transition border ${
-                  activeTab === t.id
-                    ? 'bg-slate-900 text-amber-300 border-slate-900 shadow-sm'
-                    : 'bg-stone-100 text-slate-700 border-stone-200 hover:bg-stone-200'
-                }`}
-              >
-                {t.icon}
-                <span>{t.label}</span>
-                <span
-                  className={`px-1.5 py-0.5 rounded-full text-[10px] ${
-                    activeTab === t.id
-                      ? 'bg-amber-500 text-slate-950 font-black'
-                      : 'bg-white text-slate-600'
-                  }`}
-                >
-                  {t.badge}
-                </span>
-              </button>
-            ))}
           </div>
         </div>
       </div>
@@ -583,41 +621,114 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
          ===================================================================== */}
       <div className="max-w-7xl mx-auto px-4 pt-6">
         {/* Welcome Banner & Approve-by-Default explanation */}
-        <div className="rounded-3xl bg-gradient-to-l from-slate-900 via-slate-800 to-teal-950 text-white p-5 mb-6 shadow-md">
+        <div className="rounded-3xl bg-gradient-to-l from-slate-900 via-slate-800 to-teal-950 text-white p-6 mb-5 shadow-md">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-300 bg-white/10 px-3 py-1 rounded-full mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-2 font-bold text-amber-300 bg-white/10 px-3.5 py-1 rounded-full mb-2">
+                <Sparkles className="w-4 h-4" />
                 <span>راهنمای سریع برای استاد دکتر حسن مکارمی</span>
               </div>
-              <h2 className="text-lg font-extrabold text-white">
+              <h2 className="font-extrabold text-white">
                 تمامی ۳٬۱۷۲ رکورد سایت وردپرس شما استخراج و به صورت «تاییدشده پیش‌فرض» در این میز کار بارگذاری شده است.
               </h2>
-              <p className="text-xs sm:text-sm text-slate-200 mt-1 leading-relaxed">
+              <p className="text-slate-200 mt-2 leading-relaxed">
                 نیازی نیست تک‌تک ۱٬۱۰۰ اثر را تیک بزنید! همه آثار معتبر شما به صورت پیش‌فرض روی <strong>«✅ حفظ و انتشار»</strong> تنظیم شده‌اند. تنها کافی است سؤالات کلان را تیک بزنید، هر جا مایل بودید <strong>صدای خودتان را برای معرفی آثار ضبط کنید</strong>، <strong>تصاویر جلد رو/پشت/عطف و صفحات برگزیده کتاب‌ها</strong> را بارگذاری نمایید، و اگر اثر جدیدی دارید با دکمه <strong>«افزودن اثر جدید»</strong> اضافه فرمایید.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center shrink-0">
-              <div className="bg-white/10 rounded-2xl px-3 py-2 border border-white/10">
-                <div className="text-lg font-black text-amber-300">{catalog.stats.booksCount}</div>
-                <div className="text-[11px] text-slate-300">کتاب و رساله</div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center shrink-0">
+              <div className="bg-white/10 rounded-2xl px-4 py-3 border border-white/10">
+                <div className="font-black text-amber-300">{catalog.stats.booksCount}</div>
+                <div className="text-slate-200">کتاب و رساله</div>
               </div>
-              <div className="bg-white/10 rounded-2xl px-3 py-2 border border-white/10">
-                <div className="text-lg font-black text-amber-300">۱٬۳۹۰</div>
-                <div className="text-[11px] text-slate-300">تابلو در ۵۵ گالری</div>
+              <div className="bg-white/10 rounded-2xl px-4 py-3 border border-white/10">
+                <div className="font-black text-amber-300">۱٬۳۹۰</div>
+                <div className="text-slate-200">تابلو در ۵۵ گالری</div>
               </div>
-              <div className="bg-white/10 rounded-2xl px-3 py-2 border border-white/10">
-                <div className="text-lg font-black text-amber-300">{catalog.stats.poemsCount}</div>
-                <div className="text-[11px] text-slate-300">شعر مصور</div>
+              <div className="bg-white/10 rounded-2xl px-4 py-3 border border-white/10">
+                <div className="font-black text-amber-300">{catalog.stats.poemsCount}</div>
+                <div className="text-slate-200">شعر مصور</div>
               </div>
-              <div className="bg-white/10 rounded-2xl px-3 py-2 border border-white/10">
-                <div className="text-lg font-black text-amber-300">
+              <div className="bg-white/10 rounded-2xl px-4 py-3 border border-white/10">
+                <div className="font-black text-amber-300">
                   {catalog.stats.postsCount + catalog.stats.videosCount}
                 </div>
-                <div className="text-[11px] text-slate-300">مقاله و ویدئو</div>
+                <div className="text-slate-200">مقاله و ویدئو</div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* ===================================================================
+            7 NAVIGATION BUTTONS BELOW THE BANNER IN 2 STACKED ROWS (NO SCROLL)
+           =================================================================== */}
+        <div className="mb-6 space-y-3">
+          {/* Row 1: Buttons 1 to 4 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {navTabs.slice(0, 4).map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(t.id);
+                  setSearchQuery('');
+                  setSubFilter('all');
+                }}
+                className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${
+                  activeTab === t.id
+                    ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
+                    : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  {t.icon}
+                  <span>{t.label}</span>
+                </span>
+                <span
+                  className={`px-2.5 py-0.5 rounded-full shrink-0 ${
+                    activeTab === t.id
+                      ? 'bg-amber-500 text-slate-950 font-black'
+                      : 'bg-stone-100 text-slate-700 border border-stone-300'
+                  }`}
+                >
+                  {t.badge}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Row 2: Buttons 5 to 7 */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {navTabs.slice(4, 7).map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(t.id);
+                  setSearchQuery('');
+                  setSubFilter('all');
+                }}
+                className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${
+                  activeTab === t.id
+                    ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
+                    : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  {t.icon}
+                  <span>{t.label}</span>
+                </span>
+                <span
+                  className={`px-2.5 py-0.5 rounded-full shrink-0 ${
+                    activeTab === t.id
+                      ? 'bg-amber-500 text-slate-950 font-black'
+                      : 'bg-stone-100 text-slate-700 border border-stone-300'
+                  }`}
+                >
+                  {t.badge}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -888,15 +999,18 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                       mode="editorial_note"
                       existingAudio={questionnaire.generalArchiveVoiceNote}
                       onSaveAudio={(audio) =>
-                        setQuestionnaire({ ...questionnaire, generalArchiveVoiceNote: audio })
+                        setQuestionnaire((prev) => ({
+                          ...prev,
+                          generalArchiveVoiceNote: audio,
+                        }))
                       }
                       onTranscriptAppended={(txt) =>
-                        setQuestionnaire({
-                          ...questionnaire,
-                          newArticlesPoemsVideosNote: questionnaire.newArticlesPoemsVideosNote
-                            ? `${questionnaire.newArticlesPoemsVideosNote}\n${txt}`
+                        setQuestionnaire((prev) => ({
+                          ...prev,
+                          newArticlesPoemsVideosNote: prev.newArticlesPoemsVideosNote
+                            ? `${prev.newArticlesPoemsVideosNote.trim()} ${txt}`
                             : txt,
-                        })
+                        }))
                       }
                     />
                   </div>
@@ -1213,6 +1327,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                         }
                       }
                       onChange={(newSpec) => updateDecision(key, { book3DSpec: newSpec })}
+                      onTranscriptAppended={(txt) => appendItemCommentTranscript(key, txt)}
                     />
                   )}
 
@@ -1361,6 +1476,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                             mode="site_intro"
                             existingAudio={dec.siteIntroAudio}
                             onSaveAudio={(audio) => updateDecision(key, { siteIntroAudio: audio })}
+                            onTranscriptAppended={(txt) => appendItemCommentTranscript(key, txt)}
                           />
                         </div>
                       )}
@@ -1406,6 +1522,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                         compact
                         existingAudio={dec.siteIntroAudio}
                         onSaveAudio={(audio) => updateDecision(key, { siteIntroAudio: audio })}
+                        onTranscriptAppended={(txt) => appendItemCommentTranscript(key, txt)}
                       />
 
                       <input
@@ -1531,6 +1648,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                             mode="site_intro"
                             existingAudio={dec.siteIntroAudio}
                             onSaveAudio={(audio) => updateDecision(key, { siteIntroAudio: audio })}
+                            onTranscriptAppended={(txt) => appendItemCommentTranscript(key, txt)}
                           />
                         </div>
                       )}

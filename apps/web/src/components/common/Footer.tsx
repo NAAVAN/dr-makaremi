@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { Locale } from '@makaremi/shared';
 
 interface FooterProps {
@@ -7,6 +10,11 @@ interface FooterProps {
 }
 
 export function Footer({ locale }: FooterProps) {
+  const pathname = usePathname();
+  if (pathname?.includes('/curation-studio')) {
+    return null;
+  }
+
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 

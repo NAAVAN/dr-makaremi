@@ -346,6 +346,9 @@ export function AddNewWorkModal({
             bookTitle={titleFa || titleFr || 'کتاب جدید'}
             spec={book3DSpec}
             onChange={setBook3DSpec}
+            onTranscriptAppended={(txt) =>
+              setBodyText((prev) => (prev ? `${prev} ${txt}` : txt))
+            }
           />
         ) : (
           <div className="space-y-3 mb-4">

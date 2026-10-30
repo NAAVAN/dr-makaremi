@@ -44,7 +44,7 @@ export interface AuthAndAiPolicyState {
 
 interface AiAssistantDemoAndApprovalProps {
   policy: AuthAndAiPolicyState;
-  onChange: (updated: AuthAndAiPolicyState) => void;
+  onChange: React.Dispatch<React.SetStateAction<AuthAndAiPolicyState>>;
 }
 
 interface DemoExchange {
@@ -358,12 +358,12 @@ export function AiAssistantDemoAndApproval({
             mode="editorial_note"
             compact
             existingAudio={policy.authVoiceNote}
-            onSaveAudio={(audio) => onChange({ ...policy, authVoiceNote: audio })}
+            onSaveAudio={(audio) => onChange((prev) => ({ ...prev, authVoiceNote: audio }))}
             onTranscriptAppended={(txt) =>
-              onChange({
-                ...policy,
-                authComment: policy.authComment ? `${policy.authComment} ${txt}` : txt,
-              })
+              onChange((prev) => ({
+                ...prev,
+                authComment: prev.authComment ? `${prev.authComment} ${txt}` : txt,
+              }))
             }
           />
         </div>
@@ -664,12 +664,12 @@ export function AiAssistantDemoAndApproval({
             mode="editorial_note"
             compact
             existingAudio={policy.aiVoiceNote}
-            onSaveAudio={(audio) => onChange({ ...policy, aiVoiceNote: audio })}
+            onSaveAudio={(audio) => onChange((prev) => ({ ...prev, aiVoiceNote: audio }))}
             onTranscriptAppended={(txt) =>
-              onChange({
-                ...policy,
-                aiComment: policy.aiComment ? `${policy.aiComment} ${txt}` : txt,
-              })
+              onChange((prev) => ({
+                ...prev,
+                aiComment: prev.aiComment ? `${prev.aiComment} ${txt}` : txt,
+              }))
             }
           />
         </div>
