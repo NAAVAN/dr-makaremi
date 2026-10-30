@@ -430,6 +430,16 @@ export function Header({ locale }: HeaderProps) {
             </button>
 
             <Link
+              href={`/${locale}/curation-studio`}
+              aria-label={isFa ? 'میز کار بازنگری و تصمیم‌گیری استاد' : 'Studio de Curation'}
+              className="px-3 py-1.5 rounded-xl text-white bg-amber-600 hover:bg-amber-700 transition-colors border border-amber-700 flex items-center gap-1.5 text-xs font-extrabold shadow-sm"
+              title={isFa ? 'میز کار تعاملی بازنگری محتوا و تصمیم‌گیری استاد مکارمی' : 'Studio de Curation du Dr Makaremi'}
+            >
+              <Sparkles size={14} />
+              <span>{isFa ? 'میز کار تصمیم‌گیری استاد' : isFr ? 'Studio Curation' : 'Curation Studio'}</span>
+            </Link>
+
+            <Link
               href={`/${locale}/assistant`}
               aria-label={isFa ? 'دستیار پژوهشگر' : 'Research Assistant'}
               className="px-3 py-1.5 rounded-xl text-amber-800 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 flex items-center gap-1.5 text-xs font-bold"

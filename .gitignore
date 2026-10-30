@@ -38,3 +38,7 @@ infra/postgres/pgdata/
 
 # Standalone Skills Studio & Reference Lab (decoupled from deliverable website)
 studio-lab/
+
+# Raw WordPress export dumps
+*.WordPress.*.xml
+*.sql
