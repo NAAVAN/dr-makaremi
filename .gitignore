@@ -2,8 +2,9 @@
 node_modules/
 .pnpm-store/
 
-# Next.js build
+# Next.js & Vercel build
 .next/
+.vercel/
 out/
 
 # Environment & Secret files (recursive)
