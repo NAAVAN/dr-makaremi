@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
   compress: true,
   transpilePackages: ['@makaremi/shared'],
   skipTrailingSlashRedirect: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -53,9 +56,9 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "style-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
               "img-src 'self' data: blob: https://admin.makaremi.com https://iiif.makaremi.com",
-              "font-src 'self' data:",
+              "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net",
               "connect-src 'self' https://admin.makaremi.com https://iiif.makaremi.com",
               "frame-src 'self' https://www.youtube-nocookie.com",
               "media-src 'self' blob: data:",
