@@ -51,8 +51,8 @@ export default async function HomePage({
       subtitle: isFa
         ? 'جستارهای روانکاوی، فرهنگ، شاهنامه و جامعه'
         : isFr
-        ? 'Essais cliniques, culturels et sociétaux'
-        : 'Psychoanalytic, cultural & social essays',
+          ? 'Essais cliniques, culturels et sociétaux'
+          : 'Psychoanalytic, cultural & social essays',
       badge: isFa ? '۱۵۰+ مقاله' : '150+ Articles',
       href: `/${locale}/${psychoSlug}/articles`,
       icon: FileText,
@@ -64,8 +64,8 @@ export default async function HomePage({
       subtitle: isFa
         ? 'مجموعه‌های در روان‌‌پژوهی (۶۵+)، نگاه روانکاو (۸۱+) و حافظ'
         : isFr
-        ? 'Séries télévisées (160+ épisodes) et conférences'
-        : '160+ TV episodes & university lectures',
+          ? 'Séries télévisées (160+ épisodes) et conférences'
+          : '160+ TV episodes & university lectures',
       badge: isFa ? '۱۶۰+ ویدیو' : '160+ Vidéos',
       href: `/${locale}/media`,
       icon: Video,
@@ -77,8 +77,8 @@ export default async function HomePage({
       subtitle: isFa
         ? '۸ ژانر تخصصی همراه با کتاب‌خوان ورق‌خور سه‌بعدی'
         : isFr
-        ? '8 genres avec lecteur 3D interactif'
-        : '8 genres with 3D page-turning reader',
+          ? '8 genres avec lecteur 3D interactif'
+          : '8 genres with 3D page-turning reader',
       badge: isFa ? `${books.length}+ کتاب` : `${books.length}+ Livres`,
       href: `/${locale}/books`,
       icon: BookOpen,
@@ -90,8 +90,8 @@ export default async function HomePage({
       subtitle: isFa
         ? '۲۷+ نمایشگاه جهانی و ۷ اثر در موزه مدرن خوشنویسی مسکو'
         : isFr
-        ? '27+ expositions mondiales & Musée de Moscou'
-        : '27+ international shows & Moscow Museum',
+          ? '27+ expositions mondiales & Musée de Moscou'
+          : '27+ international shows & Moscow Museum',
       badge: isFa ? '۲۷+ نمایشگاه' : '27+ Expos',
       href: `/${locale}/gallery`,
       icon: Palette,
@@ -106,8 +106,8 @@ export default async function HomePage({
       description: isFa
         ? 'خوانش بالینی ناخودآگاه، ترجمه سمینار سوم لکان و مفهوم‌پردازی دگرشنیدن در بستر فرهنگ ایرانی.'
         : isFr
-        ? "Pratique clinique du sujet, écoute de l'inconscient et séminaires de Jacques Lacan."
-        : 'Clinical reading of the unconscious, Jacques Lacan seminar translations, and listening differently.',
+          ? "Pratique clinique du sujet, écoute de l'inconscient et séminaires de Jacques Lacan."
+          : 'Clinical reading of the unconscious, Jacques Lacan seminar translations, and listening differently.',
       href: `/${locale}/${psychoSlug}`,
       accent: 'var(--color-psychoanalysis)',
       icon: Sparkles,
@@ -118,8 +118,8 @@ export default async function HomePage({
       description: isFa
         ? 'بیش از ۲۷ نمایشگاه بین‌المللی در پاریس، قصر پومپادور، موزه خوشنویسی مسکو، هاوانا و فستیوال فاس.'
         : isFr
-        ? 'Expositions internationales au Château de Pompadour, à l’UNESCO et au Musée de Moscou.'
-        : 'International exhibitions across Paris UNESCO, Pompadour, Moscow Museum of Calligraphy, and Fez.',
+          ? 'Expositions internationales au Château de Pompadour, à l’UNESCO et au Musée de Moscou.'
+          : 'International exhibitions across Paris UNESCO, Pompadour, Moscow Museum of Calligraphy, and Fez.',
       href: `/${locale}/gallery`,
       accent: 'var(--color-art)',
       icon: Palette,
@@ -130,8 +130,8 @@ export default async function HomePage({
       description: isFa
         ? 'تبیین افق‌های توسعه، مدرنیزاسیون سازمانی، دموکراسی سکولار و بازخوانی مفهوم «سرزمین فرهنگی ایران».'
         : isFr
-        ? "Modèles de transition démocratique laïque et concept de la 'Terre culturelle de l'Iran'."
-        : 'Strategic blueprints for secular democratic transition and the civilizational concept of Cultural Iran.',
+          ? "Modèles de transition démocratique laïque et concept de la 'Terre culturelle de l'Iran'."
+          : 'Strategic blueprints for secular democratic transition and the civilizational concept of Cultural Iran.',
       href: `/${locale}/strategy`,
       accent: 'var(--color-strategy)',
       icon: Compass,
@@ -142,8 +142,8 @@ export default async function HomePage({
       description: isFa
         ? 'خزانه‌داری جامعه دفاع از حقوق بشر در ایران (LDDHI)، نشست‌های ژنو و مستندسازی کشتار تابستان ۱۳۶۷.'
         : isFr
-        ? 'Interventions au Conseil des droits de l’homme de l’ONU à Genève et justice pour le massacre de 1988.'
-        : 'Interventions at UN Human Rights Council Geneva sessions and documentation of the 1988 prison massacres.',
+          ? 'Interventions au Conseil des droits de l’homme de l’ONU à Genève et justice pour le massacre de 1988.'
+          : 'Interventions at UN Human Rights Council Geneva sessions and documentation of the 1988 prison massacres.',
       href: `/${locale}/human-rights`,
       accent: 'var(--color-dadkhahi)',
       icon: ShieldAlert,
@@ -153,7 +153,10 @@ export default async function HomePage({
   return (
     <div className="space-y-16 sm:space-y-20">
       {/* Hero Section with strict single H1 & Anti-Slop Museum Architecture */}
-      <section className="relative rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-8 sm:p-12 lg:p-16 overflow-hidden shadow-sm">
+      <section
+        aria-label={isFa ? 'معرفی و افق فکری دکتر حسن مکارمی' : 'Introduction et horizon de pensée'}
+        className="relative rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-8 sm:p-12 lg:p-16 overflow-hidden shadow-sm"
+      >
         {/* Subtle Archival Texture Hairline Accent */}
         <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[var(--pillar-psychoanalysis)] via-[var(--pillar-art)] to-[var(--pillar-strategy)] opacity-80" />
 
@@ -445,10 +448,10 @@ export default async function HomePage({
                   ? 'psychanalyse'
                   : 'psychoanalysis'
                 : art.pillar === 'art_calligraphy'
-                ? 'art'
-                : art.pillar === 'cultural_strategy'
-                ? 'strategy'
-                : 'human-rights';
+                  ? 'art'
+                  : art.pillar === 'cultural_strategy'
+                    ? 'strategy'
+                    : 'human-rights';
 
             return (
               <article
