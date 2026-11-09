@@ -196,3 +196,51 @@ body {
 .book-leaf-shadow-pulse {
   animation: pageTurnShadowOverlay 0.82s ease-in-out forwards;
 }
+
+/* ============================================================================
+   EMIL KOWALSKI PHYSICS & ACCELERATED MOTION (Phase 4 Foundation)
+   High-performance GPU curves, responsive taps and Apple-grade transitions
+   ============================================================================ */
+
+/* Strict Curves & Timings */
+:root {
+  --ease-emil-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-emil-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-emil-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Responsive Physical Tap Feedback */
+button:active:not(:disabled),
+.interactive-tap:active {
+  transform: scale(0.975);
+  transition: transform 120ms var(--ease-emil-out);
+}
+
+/* Smooth GPU Canvas Transition */
+.museum-canvas-smooth {
+  transition: transform 380ms var(--ease-emil-out), opacity 240ms ease-out;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+/* Archival Hover Lift (Subtle, No Jarring Jump) */
+.archival-lift {
+  transition: transform 260ms var(--ease-emil-out), box-shadow 260ms var(--ease-emil-out), border-color 200ms ease;
+  will-change: transform, box-shadow;
+}
+
+.archival-lift:hover {
+  transform: translateY(-2.5px);
+}
+
+/* Motion Accessibility Gate */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

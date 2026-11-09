@@ -102,9 +102,9 @@ export function IIIFDeepZoomViewer({
     const el = containerRef.current;
     if (!el) return;
     if (!document.fullscreenElement) {
-      el.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+      el.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => { });
     } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => { });
     }
   };
 
@@ -113,9 +113,8 @@ export function IIIFDeepZoomViewer({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-2xl bg-neutral-950 overflow-hidden border border-[var(--border-subtle)] shadow-xl ${
-        isFullscreen ? 'h-screen' : 'h-[480px] sm:h-[600px]'
-      }`}
+      className={`relative w-full rounded-2xl bg-neutral-950 overflow-hidden border border-[var(--border-subtle)] shadow-xl ${isFullscreen ? 'h-screen' : 'h-[480px] sm:h-[600px]'
+        }`}
     >
       {/* IIIF Container for OpenSeadragon */}
       <div id={viewerId} className={`w-full h-full ${isUsingFallback ? 'hidden' : 'block'}`} />
@@ -125,7 +124,7 @@ export function IIIFDeepZoomViewer({
         <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-neutral-900 select-none">
           {/* Decorative Calligraphy Texture Simulation */}
           <div
-            className="transition-transform duration-300 ease-out cursor-grab active:cursor-grabbing max-w-[85%] max-h-[85%] flex flex-col items-center justify-center p-6 text-center"
+            className="museum-canvas-smooth cursor-grab active:cursor-grabbing max-w-[85%] max-h-[85%] flex flex-col items-center justify-center p-6 text-center select-none"
             style={{ transform: `scale(${zoomLevel})` }}
           >
             <div className="w-80 sm:w-96 h-96 sm:h-[440px] rounded-xl bg-gradient-to-br from-[#1E3A8A]/30 via-neutral-900 to-[#0F766E]/20 border border-white/10 shadow-2xl flex flex-col items-center justify-center p-8 text-neutral-300 relative">

@@ -216,14 +216,14 @@ export default async function HomePage({
             <Link
               key={portal.id}
               href={portal.href}
-              className="group p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4"
+              className="group p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] archival-lift flex flex-col justify-between space-y-4 shadow-xs"
             >
               <div className="flex items-center justify-between">
                 <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[var(--surface-sunken)] group-hover:scale-110 transition-transform"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center bg-[var(--surface-sunken)] group-hover:scale-105 transition-transform duration-200"
                   style={{ color: portal.accent }}
                 >
-                  <Icon size={24} />
+                  <Icon size={22} />
                 </div>
                 <span className="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)]">
                   {portal.badge}
@@ -231,7 +231,7 @@ export default async function HomePage({
               </div>
 
               <div className="space-y-1.5">
-                <h2 className="text-lg font-black text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                <h2 className="text-lg font-black text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors duration-150">
                   {portal.title}
                 </h2>
                 <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
