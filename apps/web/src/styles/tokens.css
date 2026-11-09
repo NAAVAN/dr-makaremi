@@ -1,97 +1,113 @@
 :root {
-  /* Surfaces & Canvas (Warm Paper Theme) */
-  --surface-canvas: #FBFBF9;
+  /* =========================================================================
+     MAKAREMI-CORE-2026 DTCG TOKENS (Museum & Cultural Sanctuary Edition)
+     Engineered with Taste & Anti-Slop Principles: Warm Paper, Stone & Natural Pigments
+     ========================================================================= */
+
+  /* Surfaces & Canvas (Warm Linen & Archival Cotton Paper) */
+  --surface-canvas: #FBF9F5;
   --surface-card: #FFFFFF;
   --surface-overlay: #FFFFFF;
-  --surface-sunken: #F3F3EE;
-  --bg-primary: #FBFBF9;
-  --bg-secondary: #F3F3EE;
+  --surface-sunken: #F4F0E8;
+  --bg-primary: #FBF9F5;
+  --bg-secondary: #F4F0E8;
   --bg-elevated: #FFFFFF;
+  --surface-artifact: #FAF8F4;
 
-  /* Typography & Foreground */
-  --foreground: #1C1D21;
-  --foreground-muted: #64748B;
+  /* Typography & Foreground (Deep Charcoal, Ochre & Scholarly Ink) */
+  --foreground: #1A1A18;
+  --foreground-muted: #57534E;
   --primary-foreground: #FFFFFF;
-  --text-primary: #1C1D21;
-  --text-secondary: #52545D;
-  --text-muted: #7E828E;
+  --text-primary: #1A1A18;
+  --text-secondary: #44403C;
+  --text-muted: #78716C;
 
-  /* Borders & Dividers */
-  --border-subtle: #E2E8F0;
-  --border-medium: #CBD5E1;
+  /* Archival Borders & Dividers (Subtle Hairlines, Zero Glow) */
+  --border-subtle: #E7E2D7;
+  --border-medium: #D6CEBE;
+  --border-artifact: #C8BFAD;
 
-  /* Primary Brand (Lacanian Teal) */
-  --primary: #0F766E;
-  --primary-hover: #115E59;
-  --primary-light: #CCFBF1;
+  /* Primary Brand: Lacanian Deep Teal (Pantone 19-5226 TCX Inspired) */
+  --primary: #0D615B;
+  --primary-hover: #08433F;
+  --primary-light: #E6F3F2;
 
-  /* 4 Core Content Pillars */
-  --pillar-psychoanalysis: #0F766E;
-  --pillar-psychoanalysis-light: #CCFBF1;
-  --color-psychoanalysis: #0F766E;
+  /* 4 Core Content Pillars (Restrained Museum Pigments) */
+  --pillar-psychoanalysis: #0D615B;
+  --pillar-psychoanalysis-light: #E6F3F2;
+  --color-psychoanalysis: #0D615B;
 
-  --pillar-art: #1E3A8A;
-  --pillar-art-light: #DBEAFE;
-  --color-art: #1E3A8A;
+  --pillar-art: #1B2F6E;
+  --pillar-art-light: #EAEFFC;
+  --color-art: #1B2F6E;
 
-  --pillar-strategy: #B45309;
+  --pillar-strategy: #92400E;
   --pillar-strategy-light: #FEF3C7;
-  --color-strategy: #B45309;
+  --color-strategy: #92400E;
 
-  --pillar-rights: #991B1B;
-  --pillar-rights-light: #FEE2E2;
-  --color-dadkhahi: #991B1B;
+  --pillar-rights: #881337;
+  --pillar-rights-light: #FFE4E6;
+  --color-dadkhahi: #881337;
 
-  /* Accent & Focus */
-  --accent-gold: #D97706;
-  --focus-ring: #0F766E;
+  /* Accent & Focus (Gold Ochre & Scholarly Seal) */
+  --accent-gold: #B45309;
+  --focus-ring: #0D615B;
+  --radius-xs: 3px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  /* Archival Shadows (Multi-layered subtle ambient, non-blurry) */
+  --shadow-sm: 0 1px 2px 0 rgba(28, 25, 23, 0.04);
+  --shadow-md: 0 4px 10px -2px rgba(28, 25, 23, 0.06), 0 2px 4px -2px rgba(28, 25, 23, 0.03);
+  --shadow-lg: 0 12px 24px -4px rgba(28, 25, 23, 0.08), 0 4px 8px -2px rgba(28, 25, 23, 0.03);
+  --shadow-artifact: 0 20px 32px -8px rgba(28, 25, 23, 0.12), 0 1px 2px 0 rgba(28, 25, 23, 0.04);
 }
 
 [data-theme="dark"],
 .dark {
-  /* Surfaces & Canvas (Deep Charcoal Theme) */
-  --surface-canvas: #121316;
-  --surface-card: #1A1D24;
-  --surface-overlay: #1A1D24;
-  --surface-sunken: #15181E;
-  --bg-primary: #121316;
-  --bg-secondary: #191B20;
-  --bg-elevated: #22252C;
+  /* Surfaces & Canvas (Obsidian & Museum Dark Nocturne) */
+  --surface-canvas: #121211;
+  --surface-card: #1A1A18;
+  --surface-overlay: #21211E;
+  --surface-sunken: #151513;
+  --bg-primary: #121211;
+  --bg-secondary: #171715;
+  --bg-elevated: #21211E;
+  --surface-artifact: #1E1E1B;
 
-  /* Typography & Foreground */
-  --foreground: #F8FAFC;
-  --foreground-muted: #94A3B8;
+  /* Typography & Foreground (Warm Ivory & Titanium White) */
+  --foreground: #F5F4F0;
+  --foreground-muted: #A8A29E;
   --primary-foreground: #FFFFFF;
-  --text-primary: #F3F4F6;
-  --text-secondary: #D1D5DB;
-  --text-muted: #9CA3AF;
+  --text-primary: #F5F4F0;
+  --text-secondary: #D6D3D1;
+  --text-muted: #8C857E;
 
   /* Borders & Dividers */
-  --border-subtle: #2D313A;
-  --border-medium: #3E4350;
+  --border-subtle: #2C2C28;
+  --border-medium: #3E3E39;
+  --border-artifact: #4E4E47;
 
-  /* Primary Brand */
+  /* Primary Brand (Controlled Luminescence, Anti-Vibrant) */
   --primary: #14B8A6;
   --primary-hover: #2DD4BF;
-  --primary-light: rgba(20, 184, 166, 0.2);
+  --primary-light: rgba(20, 184, 166, 0.15);
 
-  /* Pillar Accents (Dark Mode Tint) */
-  --pillar-psychoanalysis-light: rgba(15, 118, 110, 0.25);
-  --pillar-art-light: rgba(30, 58, 138, 0.25);
-  --pillar-strategy-light: rgba(180, 83, 9, 0.25);
-  --pillar-rights-light: rgba(153, 27, 27, 0.25);
+  /* Pillar Accents (Nocturne Gallery Pigments) */
+  --pillar-psychoanalysis-light: rgba(13, 97, 91, 0.3);
+  --pillar-art-light: rgba(27, 47, 110, 0.3);
+  --pillar-strategy-light: rgba(146, 64, 14, 0.3);
+  --pillar-rights-light: rgba(136, 19, 55, 0.3);
 
-  --color-psychoanalysis: #14B8A6;
-  --color-art: #3B82F6;
-  --color-strategy: #F59E0B;
-  --color-dadkhahi: #EF4444;
+  --color-psychoanalysis: #2DD4BF;
+  --color-art: #60A5FA;
+  --color-strategy: #FBBF24;
+  --color-dadkhahi: #F43F5E;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 10px -2px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.55);
+  --shadow-artifact: 0 20px 32px -8px rgba(0, 0, 0, 0.7);
 }

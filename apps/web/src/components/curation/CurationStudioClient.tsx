@@ -469,11 +469,10 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
             key={b.val}
             type="button"
             onClick={() => updateDecision(itemKey, { status: b.val }, defaultStatus)}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold border transition ${
-              dec.status === b.val
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold border transition ${dec.status === b.val
                 ? b.activeCls
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-            }`}
+              }`}
           >
             {b.label}
           </button>
@@ -563,27 +562,24 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
               <button
                 type="button"
                 onClick={() => setFontScale('normal')}
-                className={`px-3 py-1 rounded-lg ${
-                  fontScale === 'normal' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-                }`}
+                className={`px-3 py-1 rounded-lg ${fontScale === 'normal' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                  }`}
               >
                 ۱۳pt (پیش‌فرض)
               </button>
               <button
                 type="button"
                 onClick={() => setFontScale('large')}
-                className={`px-3 py-1 rounded-lg ${
-                  fontScale === 'large' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-                }`}
+                className={`px-3 py-1 rounded-lg ${fontScale === 'large' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                  }`}
               >
                 A+
               </button>
               <button
                 type="button"
                 onClick={() => setFontScale('xlarge')}
-                className={`px-3 py-1 rounded-lg ${
-                  fontScale === 'xlarge' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
-                }`}
+                className={`px-3 py-1 rounded-lg ${fontScale === 'xlarge' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                  }`}
               >
                 A++
               </button>
@@ -674,22 +670,20 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   setSearchQuery('');
                   setSubFilter('all');
                 }}
-                className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${
-                  activeTab === t.id
+                className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${activeTab === t.id
                     ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
                     : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
-                }`}
+                  }`}
               >
                 <span className="flex items-center gap-2.5">
                   {t.icon}
                   <span>{t.label}</span>
                 </span>
                 <span
-                  className={`px-2.5 py-0.5 rounded-full shrink-0 ${
-                    activeTab === t.id
+                  className={`px-2.5 py-0.5 rounded-full shrink-0 ${activeTab === t.id
                       ? 'bg-amber-500 text-slate-950 font-black'
                       : 'bg-stone-100 text-slate-700 border border-stone-300'
-                  }`}
+                    }`}
                 >
                   {t.badge}
                 </span>
@@ -708,22 +702,20 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   setSearchQuery('');
                   setSubFilter('all');
                 }}
-                className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${
-                  activeTab === t.id
+                className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${activeTab === t.id
                     ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
                     : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
-                }`}
+                  }`}
               >
                 <span className="flex items-center gap-2.5">
                   {t.icon}
                   <span>{t.label}</span>
                 </span>
                 <span
-                  className={`px-2.5 py-0.5 rounded-full shrink-0 ${
-                    activeTab === t.id
+                  className={`px-2.5 py-0.5 rounded-full shrink-0 ${activeTab === t.id
                       ? 'bg-amber-500 text-slate-950 font-black'
                       : 'bg-stone-100 text-slate-700 border border-stone-300'
-                  }`}
+                    }`}
                 >
                   {t.badge}
                 </span>
@@ -829,11 +821,10 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                     ].map((opt) => (
                       <label
                         key={opt.val}
-                        className={`flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer text-xs font-bold ${
-                          questionnaire.hasHighResArtworksOffline === opt.val
+                        className={`flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer text-xs font-bold ${questionnaire.hasHighResArtworksOffline === opt.val
                             ? 'border-amber-600 bg-amber-50 text-slate-900'
                             : 'border-slate-200 bg-white text-slate-700'
-                        }`}
+                          }`}
                       >
                         <input
                           type="radio"
@@ -887,11 +878,10 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                     ].map((opt) => (
                       <label
                         key={opt.val}
-                        className={`flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer text-xs font-bold ${
-                          questionnaire.hasOriginalBookPdfsOffline === opt.val
+                        className={`flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer text-xs font-bold ${questionnaire.hasOriginalBookPdfsOffline === opt.val
                             ? 'border-amber-600 bg-amber-50 text-slate-900'
                             : 'border-slate-200 bg-white text-slate-700'
-                        }`}
+                          }`}
                       >
                         <input
                           type="radio"
@@ -1171,11 +1161,10 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   key={l.id}
                   type="button"
                   onClick={() => setLangFilter(l.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
-                    langFilter === l.id
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${langFilter === l.id
                       ? 'bg-slate-900 text-white border-slate-900'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                  }`}
+                    }`}
                 >
                   {l.label}
                 </button>
@@ -1216,13 +1205,12 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
               return (
                 <div
                   key={book.id}
-                  className={`rounded-3xl border-2 bg-white p-5 shadow-sm transition ${
-                    dec.status === 'delete'
+                  className={`rounded-3xl border-2 bg-white p-5 shadow-sm transition ${dec.status === 'delete'
                       ? 'border-red-300 opacity-60'
                       : dec.status === 'featured'
-                      ? 'border-amber-500 ring-2 ring-amber-200'
-                      : 'border-slate-200'
-                  }`}
+                        ? 'border-amber-500 ring-2 ring-amber-200'
+                        : 'border-slate-200'
+                    }`}
                 >
                   <div className="flex flex-col lg:flex-row items-start justify-between gap-4">
                     <div className="flex items-start gap-4 flex-1">
@@ -1358,22 +1346,20 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                 <button
                   type="button"
                   onClick={() => setArtSubTab('galleries')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
-                    artSubTab === 'galleries'
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${artSubTab === 'galleries'
                       ? 'bg-amber-600 text-white shadow-sm'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                    }`}
                 >
                   🎨 مجموعه‌گالری‌های نقاشی و خوشنویسی ({filteredGalleries.length} گالری / ۱٬۳۹۰ اثر)
                 </button>
                 <button
                   type="button"
                   onClick={() => setArtSubTab('exhibitions')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
-                    artSubTab === 'exhibitions'
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${artSubTab === 'exhibitions'
                       ? 'bg-amber-600 text-white shadow-sm'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                    }`}
                 >
                   🏛️ تاریخچه نمایشگاه‌های بین‌المللی ({exhibitionPages.length} صفحه فارسی و فرانسوی)
                 </button>
@@ -1550,22 +1536,20 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                 <button
                   type="button"
                   onClick={() => setPoemVideoSubTab('poems')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
-                    poemVideoSubTab === 'poems'
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${poemVideoSubTab === 'poems'
                       ? 'bg-amber-600 text-white shadow-sm'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                    }`}
                 >
                   📜 اشعار و کوتاه‌واره‌ها ({filteredPoems.length} شعر مصور)
                 </button>
                 <button
                   type="button"
                   onClick={() => setPoemVideoSubTab('videos')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${
-                    poemVideoSubTab === 'videos'
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${poemVideoSubTab === 'videos'
                       ? 'bg-amber-600 text-white shadow-sm'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                    }`}
                 >
                   🎬 ویدئوها و سخنرانی‌ها ({filteredVideos.length} ویدئو در ۱۹ تم + ۸۵ متن پیاده‌شده)
                 </button>
@@ -1762,44 +1746,40 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                 <button
                   type="button"
                   onClick={() => setArticleSubTab('scholarly')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${
-                    articleSubTab === 'scholarly'
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'scholarly'
                       ? 'bg-amber-600 text-white'
                       : 'bg-slate-100 text-slate-700'
-                  }`}
+                    }`}
                 >
                   🖋️ مقالات علمی روانکاوی، پژوهش و جامعه ({scholarlyPosts.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setArticleSubTab('conferences')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${
-                    articleSubTab === 'conferences'
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'conferences'
                       ? 'bg-amber-600 text-white'
                       : 'bg-slate-100 text-slate-700'
-                  }`}
+                    }`}
                 >
                   🎙️ کنفرانس‌های مکتوب و مصاحبه‌های رسانه‌ای ({conferenceAndInterviewPages.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setArticleSubTab('pdfs')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${
-                    articleSubTab === 'pdfs'
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'pdfs'
                       ? 'bg-amber-600 text-white'
                       : 'bg-slate-100 text-slate-700'
-                  }`}
+                    }`}
                 >
                   📄 کتابخانه اسناد PDF ({catalog.pdfs.length} فایل)
                 </button>
                 <button
                   type="button"
                   onClick={() => setArticleSubTab('news')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${
-                    articleSubTab === 'news'
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'news'
                       ? 'bg-amber-600 text-white'
                       : 'bg-slate-100 text-slate-700'
-                  }`}
+                    }`}
                 >
                   📰 آرشیو اخبار و رویدادها ({newsPosts.length})
                 </button>
@@ -1912,8 +1892,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                             {pg.pageGroup === 'conference'
                               ? '🎙️ متن کامل سخنرانی / کنفرانس'
                               : pg.pageGroup === 'interview_press'
-                              ? '📰 مصاحبه رسانه‌ای / مطبوعاتی'
-                              : '📜 رزومه و منابع (CV & Références)'}
+                                ? '📰 مصاحبه رسانه‌ای / مطبوعاتی'
+                                : '📜 رزومه و منابع (CV & Références)'}
                           </span>
                           <h3 className="text-base font-extrabold text-slate-900">{pg.title}</h3>
                           <p className="text-xs text-slate-600">{pg.excerpt}</p>

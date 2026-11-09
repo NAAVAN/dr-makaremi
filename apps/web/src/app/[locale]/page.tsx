@@ -152,57 +152,56 @@ export default async function HomePage({
 
   return (
     <div className="space-y-16 sm:space-y-20">
-      {/* Hero Section with strict single H1 */}
-      <section className="relative rounded-3xl bg-gradient-to-br from-stone-100 via-teal-950/5 to-amber-950/5 dark:from-stone-900 dark:via-stone-900/95 dark:to-stone-950 border border-stone-200 dark:border-stone-800 p-8 sm:p-12 lg:p-14 overflow-hidden shadow-lg">
-        {/* Subtle Ambient Geometric / Calligraphic Backdrops */}
-        <div className="absolute -top-24 -end-24 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -start-24 w-96 h-96 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
+      {/* Hero Section with strict single H1 & Anti-Slop Museum Architecture */}
+      <section className="relative rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-8 sm:p-12 lg:p-16 overflow-hidden shadow-sm">
+        {/* Subtle Archival Texture Hairline Accent */}
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[var(--pillar-psychoanalysis)] via-[var(--pillar-art)] to-[var(--pillar-strategy)] opacity-80" />
 
         <div className="relative max-w-4xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm border border-stone-200 dark:border-stone-700 text-xs text-teal-800 dark:text-teal-300 font-semibold shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>
+          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--foreground)] font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
+            <span className="font-serif tracking-wide">
               {isFa
-                ? 'پایگاه رسمی آثار علمی، هنری و فرهنگی • هنرمند · روانکاو · پژوهشگر'
+                ? 'پایگاه رسمی آثار علمی، هنری و فرهنگی • روانکاو · هنرمند · پژوهشگر'
                 : 'Site officiel et archives de référence • Artiste · Psychanalyste · Chercheur'}
             </span>
           </div>
 
           {/* EXACT SINGLE H1 PER PAGE */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-stone-950 dark:text-stone-50 tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[var(--foreground)] tracking-tight leading-[1.18]">
             {isFa
               ? 'دکتر حسن مکارمی؛ افق تفکر، هنر و دادخواهی'
               : 'Dr. Hassan Makaremi : Psychanalyse, Art et Justice'}
           </h1>
 
-          <p className="text-base sm:text-lg text-stone-700 dark:text-stone-300 leading-relaxed font-serif">
+          <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed font-serif max-w-3xl">
             {isFa
               ? 'به پایگاه من خوش آمدید. در این مجموعه از چهار دامنه فعالیت‌هایم با شما سخن می‌گویم: هنر و ادبیات (خوشنویسی، نقاشی و شعر و حافظ‌پژوهی)، ایران و حقوق بشر، خدمات راهبردی (مدرنیزاسیون و توسعه سازمانی در دانشگاه سوربن)، روانکاوی بالینی لکانی، و سفرهایی که زندگی را می‌سازند.'
               : "Bienvenue. Ce portail rassemble mes travaux dans quatre domaines : l'Art et la Poésie (calligraphie, peinture, études sur Hafez), les Droits humains en Iran (LDDHI), le Conseil stratégique (Sorbonne), et la Psychanalyse clinique lacanienne."}
           </p>
 
-          <div className="flex flex-wrap gap-3.5 pt-2">
+          <div className="flex flex-wrap items-center gap-3.5 pt-2">
             <Link
               href={`/${locale}/books`}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all"
+              className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors"
             >
               <BookOpen size={16} />
-              <span>{isFa ? `کتاب‌خانه سه‌بعدی (${books.length}+ کتاب)` : `Bibliothèque 3D (${books.length}+ Livres)`}</span>
+              <span>{isFa ? `کتاب‌خانه (${books.length}+ کتاب)` : `Bibliothèque (${books.length}+ Livres)`}</span>
             </Link>
 
             <Link
               href={`/${locale}/hafez`}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all"
+              className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--surface-sunken)] hover:bg-[var(--surface-canvas)] border border-[var(--border-medium)] text-[var(--foreground)] font-semibold text-xs sm:text-sm transition-colors shadow-xs"
             >
-              <Feather size={16} />
-              <span>{isFa ? 'قطب حافظ‌پژوهی و دیگرشنیدن حافظ' : 'Pôle Hafez & Poésie'}</span>
+              <Feather size={16} className="text-[var(--accent-gold)]" />
+              <span>{isFa ? 'قطب حافظ‌پژوهی و دگرشنیدن' : 'Pôle Hafez & Poésie'}</span>
             </Link>
 
             <Link
               href={`/${locale}/about`}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white/85 dark:bg-stone-800/85 backdrop-blur-sm border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 font-bold text-xs sm:text-sm hover:bg-white dark:hover:bg-stone-800 transition-all shadow-xs"
+              className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-secondary)] font-medium text-xs sm:text-sm transition-colors"
             >
-              <GraduationCap size={16} className="text-teal-600" />
+              <GraduationCap size={16} className="text-[var(--primary)]" />
               <span>{isFa ? 'شرح حال، ۶ دانشگاه و مصاحبه‌ها' : 'Biographie, 6 Universités & Entretiens'}</span>
             </Link>
           </div>
