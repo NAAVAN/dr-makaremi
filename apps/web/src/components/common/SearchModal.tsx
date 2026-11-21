@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, X, Book, FileText, Image as ImageIcon, Sparkles } from 'lucide-react';
+import {
+  Search,
+  X,
+  Book,
+  FileText,
+  Image as ImageIcon,
+  Sparkles,
+  Video,
+  Feather,
+  Loader2,
+} from 'lucide-react';
 import Link from 'next/link';
 import type { Locale } from '@makaremi/shared';
 
@@ -14,12 +24,12 @@ interface SearchModalProps {
 interface SearchItem {
   id: string;
   title: string;
-  type: 'book' | 'article' | 'exhibition' | 'glossary';
+  type: 'book' | 'article' | 'exhibition' | 'glossary' | 'speech' | 'poem';
   url: string;
   snippet: string;
 }
 
-const STATIC_SEARCH_INDEX: Record<Locale, SearchItem[]> = {
+const FEATURED_SHORTCUTS: Record<Locale, SearchItem[]> = {
   fa: [
     {
       id: 's1',
@@ -40,42 +50,28 @@ const STATIC_SEARCH_INDEX: Record<Locale, SearchItem[]> = {
       title: 'نمایشگاه میان نشان و نماد (پومپادور ۲۰۰۲)',
       type: 'exhibition',
       url: '/fa/art/exhibitions/pompadour-2002-between-sign-and-symbol',
-      snippet: 'تابلوهای خوشنویسی مدرن و نقاشی‌خط‌های دکتر مکارمی با نقد پروفسور مایکل بری',
+      snippet: 'تابلوهای خوشنویسی مدرن و نقاشی‌خط‌های دکتر مکارمی با ۲۴ تصویر آرشیوی',
     },
     {
       id: 's4',
-      title: 'دگر شنیدن در روان‌کاوی',
-      type: 'book',
-      url: '/fa/books/listening-differently-in-psychoanalysis',
-      snippet: 'جستارهایی در بالین، زبان و ناخودآگاه سوژه ایرانی',
+      title: 'واژه‌نامه تحلیلی لکانی (دگرشنیدن، نام پدر، حالت مرزی)',
+      type: 'glossary',
+      url: '/fa/glossary',
+      snippet: 'اصطلاح‌نامه تخصصی و کنترل‌شده روانکاوی لکانی و مطالعات راهبردی',
     },
     {
       id: 's5',
-      title: 'نگاهی راهبردی به دوران گذار',
-      type: 'book',
-      url: '/fa/books/strategic-look-at-transition',
-      snippet: 'نقشه راهبردی جامع برای عبور از استبداد دینی و استقرار جمهوری دموکراتیک سکولار',
-    },
-    {
-      id: 's6',
-      title: 'واژه: دگرشنیدن (Écouter autrement)',
-      type: 'glossary',
-      url: '/fa/psychoanalysis/articles/is-psychoanalysis-a-science',
-      snippet: 'رویکرد تحلیلی و بالینی دکتر مکارمی در بازخوانی ناخودآگاه سوژه',
-    },
-    {
-      id: 's7',
       title: 'نشست دادخواهی خاوران',
-      type: 'article',
+      type: 'speech',
       url: '/fa/human-rights/speeches/khavaran-justice-session',
       snippet: 'سخنرانی پیرامون ابعاد حقوقی و تاریخی کشتار تابستان ۱۳۶۷ و عدالت انتقالی',
     },
     {
-      id: 's8',
+      id: 's6',
       title: 'شعر مرا نوازش کن',
-      type: 'article',
+      type: 'poem',
       url: '/fa/poetry/poems/caress-me',
-      snippet: 'سروده‌ای با دکلمه صوتی مؤلف همراه با تابلوی نقاشی‌خط',
+      snippet: 'سروده همراه با تابلوی اختصاصی نقاشی‌خط در دفتر ۳۰۰ شعر',
     },
   ],
   fr: [
@@ -95,10 +91,10 @@ const STATIC_SEARCH_INDEX: Record<Locale, SearchItem[]> = {
     },
     {
       id: 'sf3',
-      title: 'Topologie des lieux saints',
-      type: 'article',
-      url: '/fr/psychanalyse/articles/topologie-des-lieux-saints',
-      snippet: "Application du Tore lacanien et de la topologie de l'espace à l'architecture sacrée",
+      title: 'Hâfez, par Hâfez (Éditions L’Harmattan)',
+      type: 'book',
+      url: '/fr/books/hafez-par-hafez',
+      snippet: 'Lecture psychanalytique et herméneutique du Divân de Hafez de Chiraz',
     },
     {
       id: 'sf4',
@@ -123,18 +119,37 @@ const STATIC_SEARCH_INDEX: Record<Locale, SearchItem[]> = {
       url: '/en/books/strategic-look-at-transition',
       snippet: 'Models for secular democracy, constitutional reform, and transitional justice in Iran',
     },
+    {
+      id: 'se3',
+      title: 'Lacanian Controlled Glossary',
+      type: 'glossary',
+      url: '/en/glossary',
+      snippet: 'Trilingual clinical and strategic ontology by Dr. Hassan Makaremi',
+    },
   ],
 };
 
+function mapApiResultToSearchItem(raw: Record<string, unknown>, locale: Locale): SearchItem {
+  const id = String(raw.id || Math.random());
+  const title = String(raw.title || raw.slug || '');
+  const type = (String(raw.type || 'article') as SearchItem['type']);
+  const rawUrl = String(raw.url || `/${locale}/articles`);
+  const snippet = String(raw.snippet || raw.text || raw.content || '').slice(0, 180);
+  // Ensure URL starts with current locale cleanly
+  const normalizedUrl = rawUrl.startsWith('/') ? rawUrl : `/${locale}/${rawUrl}`;
+  return { id, title, type, url: normalizedUrl, snippet };
+}
+
 export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
   const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SearchItem[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        // Toggle or open
-      }
       if (e.key === 'Escape' && isOpen) {
         onClose();
       }
@@ -143,16 +158,50 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setLoading(true);
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(trimmed)}&locale=${locale}&limit=14`,
+          { signal: controller.signal }
+        );
+        if (!res.ok) throw new Error('Search failed');
+        const data = (await res.json()) as { results?: Array<Record<string, unknown>> };
+        const mapped = (data.results || []).map((r) => mapApiResultToSearchItem(r, locale));
+        setResults(mapped);
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          setResults([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }, 220);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query, locale, isOpen]);
+
   if (!isOpen) return null;
 
-  const items = STATIC_SEARCH_INDEX[locale] || STATIC_SEARCH_INDEX.fa;
-  const filtered = query.trim()
-    ? items.filter(
-        (item) =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.snippet.toLowerCase().includes(query.toLowerCase())
-      )
-    : items;
+  const trimmedQuery = query.trim();
+  const displayItems =
+    trimmedQuery.length >= 2
+      ? results
+      : FEATURED_SHORTCUTS[locale] || FEATURED_SHORTCUTS.fa;
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -162,6 +211,10 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
         return <ImageIcon size={16} className="text-[var(--color-art)]" />;
       case 'glossary':
         return <Sparkles size={16} className="text-[var(--color-psychoanalysis)]" />;
+      case 'speech':
+        return <Video size={16} className="text-[var(--color-strategy)]" />;
+      case 'poem':
+        return <Feather size={16} className="text-amber-600" />;
       default:
         return <FileText size={16} className="text-[var(--color-strategy)]" />;
     }
@@ -180,18 +233,22 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 p-4 border-b border-[var(--border-subtle)]">
-          <Search size={20} className="text-[var(--foreground-muted)]" />
+          {loading ? (
+            <Loader2 size={20} className="text-[var(--primary)] animate-spin shrink-0" />
+          ) : (
+            <Search size={20} className="text-[var(--foreground-muted)] shrink-0" />
+          )}
           <input
             type="search"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={
-              locale === 'fa'
-                ? 'جستجوی کتاب‌ها، مقالات، واژه‌نامه لکانی یا نمایشگاه‌ها...'
-                : locale === 'fr'
-                ? 'Rechercher livres, articles, concepts lacaniens...'
-                : 'Search books, articles, Lacanian concepts...'
+              isFa
+                ? 'جستجو در ۴۰۴ مقاله، ۲۵ کتاب، ۳۰۰ شعر، ۲۶۱ ویدیو و ۲۷ نمایشگاه...'
+                : isFr
+                  ? 'Rechercher parmi 404 articles, 25 livres, 300 poèmes, 261 vidéos...'
+                  : 'Search across 404 articles, 25 books, 300 poems, 261 videos...'
             }
             className="w-full bg-transparent border-none text-base outline-none text-[var(--foreground)] placeholder:text-[var(--foreground-muted)]"
           />
@@ -199,49 +256,55 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
             type="button"
             onClick={onClose}
             aria-label="بستن پنجره جستجو"
-            className="p-1 rounded-lg text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)] transition-colors"
+            className="p-1 rounded-lg text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Quick Assistant CTA */}
-        <div className="p-3 bg-amber-500/10 border-b border-amber-500/20 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-            <Sparkles size={16} />
+        <div className="p-3 bg-amber-500/10 border-b border-amber-500/20 flex items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
+            <Sparkles size={16} className="shrink-0" />
             <span>
-              {locale === 'fa'
-                ? 'پاسخ‌های عمیق‌تر، تحلیلی و مستند به آثار می‌خواهید؟'
-                : 'Need deeper, grounded research synthesis?'}
+              {isFa
+                ? 'جستجوی زنده روی ۲٬۷۴۸ سند واقعی آرشیو — برای تحلیل عمیق‌تر:'
+                : 'Recherche directe sur 2 748 documents — pour une synthèse approfondie :'}
             </span>
           </div>
           <Link
             href={`/${locale}/assistant`}
             onClick={onClose}
-            className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-[11px] transition-all"
+            className="px-2.5 py-1 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-semibold text-[11px] transition-all shrink-0"
           >
-            {locale === 'fa' ? 'دستیار هوشمند پژوهشگر' : 'Research Assistant'}
+            {isFa ? 'دستیار هوشمند پژوهشگر' : 'Assistant IA'}
           </Link>
         </div>
 
         <div className="max-h-96 overflow-y-auto p-2 divide-y divide-[var(--border-subtle)]">
-          {filtered.length > 0 ? (
-            filtered.map((item) => (
+          {trimmedQuery.length < 2 && (
+            <div className="px-3 py-1.5 text-[11px] font-mono text-[var(--foreground-muted)]">
+              {isFa ? 'میانبرهای برگزیده (حداقل ۲ حرف برای جستجوی کل آرشیو تایپ کنید):' : 'Accès rapides (tapez au moins 2 lettres) :'}
+            </div>
+          )}
+
+          {displayItems.length > 0 ? (
+            displayItems.map((item) => (
               <Link
-                key={item.id}
+                key={`${item.id}-${item.url}`}
                 href={item.url}
                 onClick={onClose}
                 className="flex items-start gap-3 p-3 rounded-xl hover:bg-[var(--surface-sunken)] transition-colors group"
               >
-                <div className="mt-1 p-2 rounded-lg bg-[var(--surface-card)] border border-[var(--border-subtle)]">
+                <div className="mt-1 p-2 rounded-lg bg-[var(--surface-card)] border border-[var(--border-subtle)] shrink-0">
                   {getTypeIcon(item.type)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                    <span className="font-bold text-sm text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors truncate">
                       {item.title}
                     </span>
-                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground-muted)]">
+                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground-muted)] shrink-0">
                       {item.type}
                     </span>
                   </div>
@@ -251,9 +314,20 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
                 </div>
               </Link>
             ))
-          ) : (
+          ) : loading ? (
             <div className="p-8 text-center text-sm text-[var(--foreground-muted)]">
-              {locale === 'fa' ? 'موردی یافت نشد.' : 'Aucun résultat trouvé.'}
+              {isFa ? 'در حال جستجو در آرشیو کامل...' : 'Recherche en cours...'}
+            </div>
+          ) : (
+            <div className="p-8 text-center space-y-3 text-sm text-[var(--foreground-muted)]">
+              <p>{isFa ? 'موردی مطابق جستجوی شما یافت نشد.' : 'Aucun résultat trouvé.'}</p>
+              <Link
+                href={`/${locale}/articles?q=${encodeURIComponent(trimmedQuery)}`}
+                onClick={onClose}
+                className="inline-block px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)]"
+              >
+                {isFa ? 'جستجو در آرشیو کامل مقالات ←' : 'Chercher dans tous les articles →'}
+              </Link>
             </div>
           )}
         </div>

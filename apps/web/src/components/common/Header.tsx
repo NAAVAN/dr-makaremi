@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -48,6 +48,18 @@ export function Header({ locale }: HeaderProps) {
   const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mirrorOpen, setMirrorOpen] = useState(false);
+
+  // Global Cmd+K / Ctrl+K keyboard shortcut for live search modal
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   if (pathname?.includes('/curation-studio')) {
     return null;
@@ -113,6 +125,15 @@ export function Header({ locale }: HeaderProps) {
             : isFr
               ? 'Documentaire Biographique (4 parties)'
               : 'Biographical Documentary (4 Parts)',
+          badge: '4 Ep',
+        },
+        {
+          href: `/${locale}/about?tab=conferences`,
+          label: isFa
+            ? 'کارنامه کنفرانس‌ها و همایش‌های علمی'
+            : isFr
+              ? 'Conférences & Colloques (Archives)'
+              : 'Academic Conferences & Symposia',
         },
       ],
     },
@@ -129,24 +150,25 @@ export function Header({ locale }: HeaderProps) {
             : isFr
               ? 'Articles Cliniques & Théoriques'
               : 'Clinical & Theoretical Lacanian Articles',
+          badge: '140',
         },
         {
-          href: `/${locale}/media?series=dar-ravanpajoohi-ba-makaremi`,
+          href: `/${locale}/media?series=dar-ravanpajoohi-ba-makaremi#videos-archive`,
           label: isFa
-            ? 'مجموعه فیلم‌ها: «در روان‌‌پژوهی» (۶۵+ قسمت)'
+            ? 'مجموعه فیلم‌ها: «در روان‌‌پژوهی»'
             : isFr
-              ? 'Série Vidéo : « Recherche Psychanalytique » (65+)'
-              : 'Video Series: “In Psycho-Research” (65+ Ep)',
-          badge: '65 Ep',
+              ? 'Série Vidéo : « Recherche Psychanalytique »'
+              : 'Video Series: “In Psycho-Research”',
+          badge: '54 Ep',
         },
         {
-          href: `/${locale}/media?series=negah-e-ravankav`,
+          href: `/${locale}/media?series=negah-e-ravankav#videos-archive`,
           label: isFa
-            ? 'مجموعه فیلم‌ها: «نگاه روانکاو» (۸۱+ قسمت)'
+            ? 'مجموعه فیلم‌ها: «نگاه روانکاو»'
             : isFr
-              ? 'Série Vidéo : « Le Regard du Psychanalyste » (81+)'
-              : 'Video Series: “The Psychoanalyst’s Gaze” (81+ Ep)',
-          badge: '81 Ep',
+              ? 'Série Vidéo : « Le Regard du Psychanalyste »'
+              : 'Video Series: “The Psychoanalyst’s Gaze”',
+          badge: '57 Ep',
         },
         {
           href: `/${locale}/books?genre=psychoanalysis`,
@@ -155,6 +177,14 @@ export function Header({ locale }: HeaderProps) {
             : isFr
               ? 'Livres de Psychanalyse & Traductions de Lacan'
               : 'Psychoanalysis Books & Lacan Translations',
+        },
+        {
+          href: `/${locale}/about/konferans-ravankavi-ir`,
+          label: isFa
+            ? 'کنفرانس‌های روانکاوی و همایش روان‌پژوهان'
+            : isFr
+              ? 'Conférences en Psychanalyse'
+              : 'Psychoanalysis Conferences',
         },
         {
           href: `/${locale}/glossary`,
@@ -173,20 +203,29 @@ export function Header({ locale }: HeaderProps) {
       icon: Compass,
       subItems: [
         {
+          href: `/${locale}/articles`,
+          label: isFa
+            ? 'خبر، بلاگ و آرشیو جامع همه مقالات'
+            : isFr
+              ? 'Actualités, Blog & Tous les Articles'
+              : 'News, Blog & All Articles Archive',
+          badge: '404',
+        },
+        {
           href: `/${locale}/strategy/articles`,
           label: isFa
-            ? 'مقالات پژوهش، اسطوره‌شناسی و سرزمین فرهنگی ایران'
+            ? 'مقالات پژوهش، جامعه و سرزمین فرهنگی ایران'
             : isFr
               ? 'Articles Recherche & Terre Culturelle d’Iran'
-              : 'Cultural Research & Mythology Articles',
+              : 'Cultural Research & Society Articles',
         },
         {
           href: `/${locale}/human-rights`,
           label: isFa
-            ? 'مقالات جامعه، حقوق بشر و دادخواهی'
+            ? 'حقوق بشر، دادخواهی و عدالت انتقالی'
             : isFr
-              ? 'Articles Société, Droits Humains & Justice'
-              : 'Society, Human Rights & Transitional Justice',
+              ? 'Droits Humains & Justice Transitionnelle'
+              : 'Human Rights & Transitional Justice',
         },
         {
           href: `/${locale}/books?genre=strategy`,
@@ -205,9 +244,9 @@ export function Header({ locale }: HeaderProps) {
               : 'Cultural Research Monographs',
         },
         {
-          href: `/${locale}/media?pillar=human_rights_dadkhahi`,
+          href: `/${locale}/about?tab=conferences`,
           label: isFa
-            ? 'کنفرانس‌های پژوهش و جامعه'
+            ? 'کنفرانس‌های پژوهش و جامعه (متن کامل)'
             : isFr
               ? 'Conférences Recherche & Société'
               : 'Research & Society Conferences',
@@ -227,15 +266,16 @@ export function Header({ locale }: HeaderProps) {
             : isFr
               ? 'Galeries Thématiques & Zoom Muséal IIIF'
               : 'Thematic Galleries & IIIF Deep Zoom Museum',
+          badge: '29',
         },
         {
           href: `/${locale}/gallery#exhibitions-hall`,
           label: isFa
-            ? 'نمایشگاه‌های بین‌المللی (۳۵ نمایشگاه جهانی)'
+            ? 'نمایشگاه‌های بین‌المللی (آرشیو عکس‌دار)'
             : isFr
-              ? 'Historique des Expositions (35 Internationales)'
-              : 'International Exhibitions Archive (35 Shows)',
-          badge: '35',
+              ? 'Historique des Expositions Internationales'
+              : 'International Exhibitions Archive',
+          badge: '27',
         },
         {
           href: `/${locale}/art/exhibitions/moscow-museum-modern-calligraphy`,
@@ -246,12 +286,29 @@ export function Header({ locale }: HeaderProps) {
               : 'Moscow Museum of Calligraphy (7 Permanent Works)',
         },
         {
-          href: `/${locale}/media?series=az-namadpardazi-ta-nastaaliq`,
+          href: `/${locale}/art/exhibitions/unesco-paris-2009-dialogue-of-scripts`,
           label: isFa
-            ? 'فیلم‌ها و کنفرانس‌های هنر (از نمادپردازی تا نستعلیق)'
+            ? 'نمایشگاه و نشست یونسکو پاریس ۲۰۰۹'
             : isFr
-              ? 'Vidéos & Conférences Art (Du Symbolisme au Nasta’liq)'
-              : 'Art Films & UNESCO Lectures',
+              ? 'Exposition & Colloque UNESCO Paris 2009'
+              : 'UNESCO Paris 2009 Exhibition & Lecture',
+        },
+        {
+          href: `/${locale}/art/articles`,
+          label: isFa
+            ? 'مقالات هنر، خوشنویسی و زیبایی‌شناسی'
+            : isFr
+              ? 'Articles Art & Calligraphie'
+              : 'Art & Calligraphy Essays',
+          badge: '28',
+        },
+        {
+          href: `/${locale}/media?series=az-namadpardazi-ta-nastaaliq#videos-archive`,
+          label: isFa
+            ? 'فیلم‌های هنر، نستعلیق و یونسکو ۲۰۰۹'
+            : isFr
+              ? 'Vidéos Art, Nasta’liq & UNESCO 2009'
+              : 'Art Films, Nasta’liq & UNESCO 2009',
         },
         {
           href: `/${locale}/books?genre=art`,
@@ -285,14 +342,15 @@ export function Header({ locale }: HeaderProps) {
             : isFr
               ? 'Série Vidéo « La Voix de l’Amour (Hafez) »'
               : 'Video Series: “The Voice of Love (Hafez)”',
+          badge: '17',
         },
         {
           href: `/${locale}/poetry`,
           label: isFa
-            ? 'شعر و تصویر (همگام‌سازی دکلمه و نقاشی‌خط)'
+            ? 'شعر و تصویر (سروده‌ها و تابلوهای اختصاصی)'
             : isFr
-              ? 'Poésie & Image (Récitation & Calligraphie)'
-              : 'Poetry & Image (Synchronized Recitation & Art)',
+              ? 'Poésie & Image (Poèmes & Calligraphie)'
+              : 'Poetry & Image (Poems & Calligraphic Art)',
         },
         {
           href: `/${locale}/poetry#poems-archive`,
@@ -301,6 +359,7 @@ export function Header({ locale }: HeaderProps) {
             : isFr
               ? 'Recueil de Poèmes'
               : 'Archive of Poems',
+          badge: '300',
         },
         {
           href: `/${locale}/books?genre=poetry`,
@@ -321,11 +380,11 @@ export function Header({ locale }: HeaderProps) {
         {
           href: `/${locale}/books`,
           label: isFa
-            ? 'تالار جامع کتاب‌ها و کتاب‌خوان ورق‌خور سه‌بعدی'
+            ? 'تالار جامع ۲۵ کتاب و کتاب‌خوان ورق‌خور سه‌بعدی'
             : isFr
-              ? 'Bibliothèque 3D & Lecteur Interactif'
-              : '3D Book Showcase & Interactive Page-Flip Reader',
-          badge: 'v8.0 3D',
+              ? 'Bibliothèque 3D (25 Livres) & Lecteur Interactif'
+              : '3D Book Showcase (25 Books) & Page-Flip Reader',
+          badge: '25 3D',
         },
         {
           href: `/${locale}/books?genre=psychoanalysis`,
@@ -337,15 +396,23 @@ export function Header({ locale }: HeaderProps) {
         },
         {
           href: `/${locale}/books?genre=strategy`,
-          label: isFa ? 'کتاب‌های مطالعات راهبردی و فرهنگ' : isFr ? 'Livres de Stratégie & Culture' : 'Strategy & Culture Books',
+          label: isFa ? 'کتاب‌های مطالعات راهبردی و ایران آینده' : isFr ? 'Livres de Stratégie' : 'Strategy Books',
         },
         {
           href: `/${locale}/books?genre=novel`,
           label: isFa
-            ? 'رمان و خاطرات (جغرافیای بازار وکیل / گریز ناگزیر)'
+            ? 'رمان (جغرافیای بازار وکیل)'
             : isFr
-              ? 'Romans & Mémoires (Bazar Vakil / Mémoires)'
-              : 'Novels & Memoirs (Vakil Bazaar / Thirty Narratives)',
+              ? 'Roman (Géographie du Bazar Vakil)'
+              : 'Novel (Geography of Vakil Bazaar)',
+        },
+        {
+          href: `/${locale}/books?genre=memoir`,
+          label: isFa
+            ? 'خاطرات و تاریخ شفاهی (گریز ناگزیر / دفتر خاطرات)'
+            : isFr
+              ? 'Mémoires & Récits (Fuite inévitable)'
+              : 'Memoirs & Oral History',
         },
         {
           href: `/${locale}/book-studio`,
@@ -367,10 +434,19 @@ export function Header({ locale }: HeaderProps) {
         {
           href: `/${locale}/media`,
           label: isFa
-            ? 'آرشیو جامع فیلم‌ها، سخنرانی‌ها و پادکست‌ها'
+            ? 'آرشیو جامع ۲۶۱ فیلم، سخنرانی و مستند'
             : isFr
-              ? 'Archives Vidéos, Conférences & Podcasts'
-              : 'Complete Video Lectures & Podcasts Archive',
+              ? 'Archives Complètes des 261 Vidéos & Conférences'
+              : 'Complete 261 Video Lectures & Documentaries Archive',
+          badge: '261',
+        },
+        {
+          href: `/${locale}/articles`,
+          label: isFa
+            ? 'خبر، بلاگ و آرشیو ۴۰۴ مقاله'
+            : isFr
+              ? 'Actualités & 404 Articles'
+              : 'News & 404 Articles',
         },
         {
           href: `/${locale}/assistant`,
@@ -394,10 +470,9 @@ export function Header({ locale }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-[#FBFBF9]/95 dark:bg-[#121316]/95 border-b border-stone-200 dark:border-stone-800 transition-colors shadow-sm">
-      {/* TIER 1: Brand Identity (Right in RTL) + Framed Language & Utility Controls (Left in RTL) */}
+      {/* TIER 1: Brand Identity + Utility Controls */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-between py-3.5 sm:py-4 gap-4">
-          {/* Logo / Brand Identity with Generous Breathing Space */}
           <Link
             href={`/${locale}`}
             className="flex items-center gap-3.5 group select-none shrink-0"
@@ -420,7 +495,6 @@ export function Header({ locale }: HeaderProps) {
             </div>
           </Link>
 
-          {/* Action Tools & Language Switcher (Strictly Framed & Contained Inside Header) */}
           <div className="flex items-center flex-wrap gap-2 sm:gap-2.5 shrink-0">
             <button
               type="button"
@@ -463,13 +537,9 @@ export function Header({ locale }: HeaderProps) {
               <Radio size={16} />
             </button>
 
-            {/* Framed Language Switcher */}
             <LanguageSwitcher currentLocale={locale} />
-
-            {/* Dark / Light Theme Toggle */}
             <ThemeToggle />
 
-            {/* Mobile menu button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -482,7 +552,7 @@ export function Header({ locale }: HeaderProps) {
         </div>
       </div>
 
-      {/* TIER 2: Dedicated Cultural Mega-Navigation Bar (Separated with Generous Spacing & Centered Balance) */}
+      {/* TIER 2: Cultural Mega-Navigation Bar */}
       <div className="hidden lg:block border-t border-stone-200/80 dark:border-stone-800/80 bg-[#F4F2EC]/90 dark:bg-[#16181E]/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav
@@ -536,13 +606,13 @@ export function Header({ locale }: HeaderProps) {
                         </div>
                         {group.subItems.map((sub) => (
                           <Link
-                            key={sub.href}
+                            key={`${group.href}-${sub.href}`}
                             href={sub.href}
                             className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-200/65 dark:hover:bg-stone-800 hover:text-stone-950 dark:hover:text-white transition-colors"
                           >
                             <span className="leading-relaxed">{sub.label}</span>
                             {sub.badge && (
-                              <span className="shrink-0 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
+                              <span className="shrink-0 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 tabular-nums">
                                 {sub.badge}
                               </span>
                             )}
@@ -599,14 +669,14 @@ export function Header({ locale }: HeaderProps) {
                   <div className="border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-3 py-2 space-y-1">
                     {group.subItems.map((sub) => (
                       <Link
-                        key={sub.href}
+                        key={`mobile-${group.href}-${sub.href}`}
                         href={sub.href}
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center justify-between py-2 px-2.5 rounded-lg text-xs font-medium text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors"
                       >
                         <span>{sub.label}</span>
                         {sub.badge && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 tabular-nums">
                             {sub.badge}
                           </span>
                         )}
@@ -620,7 +690,7 @@ export function Header({ locale }: HeaderProps) {
         </div>
       )}
 
-      {/* Instant Search Modal */}
+      {/* Instant Live Search Modal */}
       <SearchModal
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}

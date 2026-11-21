@@ -21,6 +21,7 @@ import {
   getExhibitions,
   ACADEMIC_INSTITUTIONS,
   GLOBAL_AUTHORITY_BADGES,
+  resolveBadgeHref,
 } from '@/lib/cms';
 import { Book3DShowcase } from '@/components/books/Book3DShowcase';
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup';
@@ -53,14 +54,14 @@ export default async function HomePage({
   const fourHeroPortals = [
     {
       id: 'portal-publications',
-      title: isFa ? 'انتشارات و مقالات' : isFr ? 'Publications & Articles' : 'Publications & Essays',
+      title: isFa ? 'انتشارات، خبر و مقالات' : isFr ? 'Articles & Actualités' : 'Publications & Essays',
       subtitle: isFa
-        ? 'جستارهای روانکاوی، فرهنگ، شاهنامه و جامعه'
+        ? 'آرشیو جامع مقالات روانکاوی، فرهنگ، پژوهش، هنر و جامعه'
         : isFr
-          ? 'Essais cliniques, culturels et sociétaux'
-          : 'Psychoanalytic, cultural & social essays',
+          ? 'Tous les essais cliniques, culturels, artistiques et sociétaux'
+          : 'All psychoanalytic, cultural, art & social essays',
       badge: isFa ? `${articles.length} مقاله` : `${articles.length} Articles`,
-      href: `/${locale}/${psychoSlug}/articles`,
+      href: `/${locale}/articles`,
       icon: FileText,
       accent: 'var(--color-psychoanalysis)',
     },
@@ -68,10 +69,10 @@ export default async function HomePage({
       id: 'portal-films',
       title: isFa ? 'فیلم‌ها و سخنرانی‌ها' : isFr ? 'Vidéos & Conférences' : 'Films & Lectures',
       subtitle: isFa
-        ? 'مجموعه‌های در روان‌‌پژوهی (۶۵+)، نگاه روانکاو (۸۱+) و حافظ'
+        ? 'مجموعه‌های در روان‌‌پژوهی، نگاه روانکاو، صدای سخن عشق حافظ و یونسکو'
         : isFr
-          ? 'Séries télévisées (160+ épisodes) et conférences'
-          : '160+ TV episodes & university lectures',
+          ? 'Séries télévisées, conférences UNESCO et séminaires Hafez'
+          : 'TV lecture series, UNESCO conferences & Hafez seminars',
       badge: isFa ? `${videos.length} ویدیو` : `${videos.length} Vidéos`,
       href: `/${locale}/media`,
       icon: Video,
@@ -94,10 +95,10 @@ export default async function HomePage({
       id: 'portal-exhibitions',
       title: isFa ? 'نمایشگاه‌ها و گالری‌ها' : isFr ? 'Expositions & Galeries' : 'Exhibitions & Galleries',
       subtitle: isFa
-        ? '۲۷+ نمایشگاه جهانی و ۷ اثر در موزه مدرن خوشنویسی مسکو'
+        ? `${exhibitions.length} نمایشگاه جهانی، ۲۹ مجموعه گالری و موزه مسکو`
         : isFr
-          ? '27+ expositions mondiales & Musée de Moscou'
-          : '27+ international shows & Moscow Museum',
+          ? `${exhibitions.length} expositions mondiales, 29 séries & Musée de Moscou`
+          : `${exhibitions.length} international shows, 29 series & Moscow Museum`,
       badge: isFa ? `${exhibitions.length} نمایشگاه` : `${exhibitions.length} Expos`,
       href: `/${locale}/gallery`,
       icon: Palette,
@@ -412,25 +413,34 @@ export default async function HomePage({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
-          {GLOBAL_AUTHORITY_BADGES.map((badge) => (
-            <div
-              key={badge.id}
-              className="p-3.5 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-1"
-            >
-              <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 block">
-                {badge.badgeText[locale]}
-              </span>
-              <h3 className="text-xs font-bold text-[var(--foreground)] leading-snug">
-                {badge.title[locale]}
-              </h3>
-            </div>
-          ))}
+          {GLOBAL_AUTHORITY_BADGES.map((badge) => {
+            const href = resolveBadgeHref(badge, locale);
+            return (
+              <Link
+                key={badge.id}
+                href={href}
+                className="group p-3.5 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all flex flex-col justify-between space-y-2"
+              >
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 block">
+                    {badge.badgeText[locale]}
+                  </span>
+                  <h3 className="text-xs font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug">
+                    {badge.title[locale]}
+                  </h3>
+                </div>
+                <span className="text-[10px] font-bold text-[var(--primary)] inline-flex items-center gap-1">
+                  <span>{isFa ? 'مشاهده ←' : 'Explorer →'}</span>
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
       {/* Recent Scholarly Articles */}
       <section aria-label="آخرین مقالات پژوهشی" className="space-y-6">
-        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
           <div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
               {isFa ? 'گزیده مقالات و بیانیه‌های پژوهشی' : 'Articles & Essais Récents'}
@@ -441,6 +451,12 @@ export default async function HomePage({
                 : 'Études cliniques et stratégiques indexées'}
             </p>
           </div>
+          <Link
+            href={`/${locale}/articles`}
+            className="text-xs font-bold text-[var(--primary)] hover:underline shrink-0"
+          >
+            {isFa ? `مشاهده آرشیو کامل ${articles.length} مقاله ←` : `Voir tous les ${articles.length} articles →`}
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

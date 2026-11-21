@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, Calendar, Video, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { VideoSpeech, Locale } from '@makaremi/shared';
+import { useSearchParams } from 'next/navigation';
+import { Search, Calendar, Video, FileText, ChevronLeft, ChevronRight, Film } from 'lucide-react';
+import type { ContentPillar, VideoSpeech, Locale } from '@makaremi/shared';
 
 interface PaginatedVideosGridProps {
   videos: VideoSpeech[];
@@ -12,12 +13,127 @@ interface PaginatedVideosGridProps {
 
 const PAGE_SIZE = 24;
 
-export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps) {
+const SERIES_FILTERS: Array<{
+  key: string;
+  label: Record<Locale, string>;
+  matchSlugs?: string[];
+}> = [
+  {
+    key: 'all',
+    label: { fa: 'همه ویدیوها', fr: 'Toutes les vidéos', en: 'All Videos' },
+  },
+  {
+    key: 'dar-ravanpajoohi-ba-makaremi',
+    label: { fa: 'در روان‌پژوهی', fr: 'Recherche Psychanalytique', en: 'In Psycho-Research' },
+  },
+  {
+    key: 'negah-e-ravankav',
+    label: { fa: 'نگاه روانکاو', fr: 'Le Regard du Psychanalyste', en: 'The Psychoanalyst’s Gaze' },
+  },
+  {
+    key: 'sedaye-sokhan-eshgh-hafez',
+    label: { fa: 'صدای سخن عشق (حافظ)', fr: 'La Voix de l’Amour (Hafez)', en: 'Voice of Love (Hafez)' },
+  },
+  {
+    key: 'az-namadpardazi-ta-nastaaliq',
+    label: { fa: 'هنر، نستعلیق و یونسکو ۲۰۰۹', fr: 'Art, Nasta’liq & UNESCO 2009', en: 'Art, Nasta’liq & UNESCO' },
+    matchSlugs: ['az-namadpardazi-ta-nastaaliq', 'unesco-2009'],
+  },
+  {
+    key: 'morouri-bar-60-sal-zendegi',
+    label: { fa: 'مستند ۶۰ سال زندگی', fr: 'Documentaire 60 ans', en: '60 Years Documentary' },
+  },
+  {
+    key: 'video-poems',
+    label: { fa: 'شعر و تصویر', fr: 'Poésie & Vidéo', en: 'Video-Poems' },
+  },
+  {
+    key: 'human-rights-speeches',
+    label: { fa: 'حقوق بشر و دادخواهی', fr: 'Droits Humains & Justice', en: 'Human Rights Speeches' },
+  },
+];
+
+function matchesSeriesFilter(vid: VideoSpeech, seriesKey: string): boolean {
+  if (seriesKey === 'all') return true;
+  const def = SERIES_FILTERS.find((s) => s.key === seriesKey);
+  if (def?.matchSlugs) {
+    return def.matchSlugs.includes(vid.series_slug || '');
+  }
+  return (vid.series_slug || 'general') === seriesKey;
+}
+
+function PaginatedVideosGridInner({ videos, locale }: PaginatedVideosGridProps) {
   const isFa = locale === 'fa';
+  const searchParams = useSearchParams();
+
   const [query, setQuery] = useState('');
+  const [selectedSeries, setSelectedSeries] = useState<string>('all');
+  const [selectedPillar, setSelectedPillar] = useState<'all' | ContentPillar>('all');
   const [selectedTheme, setSelectedTheme] = useState<string>('all');
   const [onlyTranscript, setOnlyTranscript] = useState<boolean>(false);
   const [page, setPage] = useState(1);
+
+  // Sync URL query params (?series=, ?pillar=, ?theme=, ?q=) and scroll to filtered grid when coming from Mega Menu
+  useEffect(() => {
+    const sParam = searchParams.get('series');
+    const pParam = searchParams.get('pillar');
+    const tParam = searchParams.get('theme');
+    const qParam = searchParams.get('q');
+
+    let hasDeepFilter = false;
+
+    if (sParam) {
+      const normalized = sParam === 'unesco-2009' ? 'az-namadpardazi-ta-nastaaliq' : sParam;
+      if (SERIES_FILTERS.some((f) => f.key === normalized)) {
+        setSelectedSeries(normalized);
+        hasDeepFilter = true;
+      }
+    } else {
+      setSelectedSeries('all');
+    }
+
+    if (
+      pParam === 'psychoanalysis' ||
+      pParam === 'art_calligraphy' ||
+      pParam === 'cultural_strategy' ||
+      pParam === 'human_rights_dadkhahi'
+    ) {
+      setSelectedPillar(pParam);
+      hasDeepFilter = true;
+    } else {
+      setSelectedPillar('all');
+    }
+
+    if (tParam) {
+      setSelectedTheme(tParam);
+      hasDeepFilter = true;
+    } else {
+      setSelectedTheme('all');
+    }
+
+    if (qParam) {
+      setQuery(qParam);
+      hasDeepFilter = true;
+    }
+
+    setPage(1);
+
+    if (hasDeepFilter) {
+      const el = document.getElementById('videos-archive');
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+      }
+    }
+  }, [searchParams]);
+
+  const seriesCounts = useMemo(() => {
+    const map: Record<string, number> = { all: videos.length };
+    for (const def of SERIES_FILTERS) {
+      if (def.key === 'all') continue;
+      map[def.key] = videos.filter((v) => matchesSeriesFilter(v, def.key)).length;
+    }
+    return map;
+  }, [videos]);
 
   const topThemes = useMemo(() => {
     const counts = new Map<string, number>();
@@ -38,6 +154,8 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
       const trans =
         vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
         vid.translations?.[0];
+      if (!matchesSeriesFilter(vid, selectedSeries)) return false;
+      if (selectedPillar !== 'all' && vid.pillar !== selectedPillar) return false;
       if (selectedTheme !== 'all' && !(vid.themes || []).includes(selectedTheme)) {
         return false;
       }
@@ -48,7 +166,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
       const hay = `${trans?.title || ''} ${trans?.description || ''} ${(vid.themes || []).join(' ')}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [videos, locale, query, selectedTheme, onlyTranscript]);
+  }, [videos, locale, query, selectedSeries, selectedPillar, selectedTheme, onlyTranscript]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
@@ -56,6 +174,58 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
 
   return (
     <div className="space-y-6">
+      {/* Series Filter Pills (Synced with Mega Menu ?series= & Top Series Cards) */}
+      <div className="space-y-2">
+        <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-amber-700 dark:text-amber-400">
+          <Film size={14} />
+          <span>{isFa ? 'فیلتر بر اساس مجموعه ویدیویی:' : 'Filtrer par série :'}</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5">
+          {SERIES_FILTERS.map((s) => {
+            const isSelected = selectedSeries === s.key;
+            const count = seriesCounts[s.key] || 0;
+            return (
+              <button
+                key={s.key}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => {
+                  setSelectedSeries(s.key);
+                  setSelectedPillar('all');
+                  setPage(1);
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer tabular-nums ${
+                  isSelected
+                    ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
+                    : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
+                }`}
+              >
+                {s.label[locale]} ({count})
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Active Pillar Banner when deep-linked with ?pillar= */}
+      {selectedPillar !== 'all' && (
+        <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs">
+          <span className="font-bold text-amber-900 dark:text-amber-200">
+            {isFa ? `فیلتر فعال ستون: ${selectedPillar}` : `Filtre de pilier actif : ${selectedPillar}`}
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedPillar('all');
+              setPage(1);
+            }}
+            className="font-bold text-[var(--primary)] hover:underline cursor-pointer"
+          >
+            {isFa ? 'نمایش همه ستون‌ها' : 'Tout afficher'}
+          </button>
+        </div>
+      )}
+
       {/* Search & Theme Filter */}
       <div className="space-y-3 p-4 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -158,6 +328,8 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
             type="button"
             onClick={() => {
               setQuery('');
+              setSelectedSeries('all');
+              setSelectedPillar('all');
               setSelectedTheme('all');
               setOnlyTranscript(false);
               setPage(1);
@@ -168,77 +340,77 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
           </button>
         </div>
       ) : (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {pageItems.map((vid) => {
-          const trans =
-            vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-            vid.translations?.[0];
-          const href =
-            vid.pillar === 'human_rights_dadkhahi'
-              ? `/${locale}/human-rights/speeches/${vid.slug}`
-              : `/${locale}/media/videos/${vid.slug}`;
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pageItems.map((vid) => {
+            const trans =
+              vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+              vid.translations?.[0];
+            const href =
+              vid.pillar === 'human_rights_dadkhahi'
+                ? `/${locale}/human-rights/speeches/${vid.slug}`
+                : `/${locale}/media/videos/${vid.slug}`;
 
-          return (
-            <article
-              key={vid.id}
-              className="archival-lift min-w-0 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-xl transition-all overflow-hidden flex flex-col justify-between"
-            >
-              {vid.thumbnail_url && (
-                <Link href={href} className="block aspect-video w-full overflow-hidden bg-neutral-900 relative">
-                  <img
-                    src={vid.thumbnail_url}
-                    alt={trans?.title || vid.slug}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                  {trans?.transcript_markdown && (
-                    <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 text-white text-[10px] font-mono">
-                      <FileText size={10} className="shrink-0" />
-                      {isFa ? 'متن کامل' : 'Texte'}
-                    </span>
-                  )}
-                </Link>
-              )}
+            return (
+              <article
+                key={vid.id}
+                className="archival-lift min-w-0 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-xl transition-all overflow-hidden flex flex-col justify-between"
+              >
+                {vid.thumbnail_url && (
+                  <Link href={href} className="block aspect-video w-full overflow-hidden bg-neutral-900 relative">
+                    <img
+                      src={vid.thumbnail_url}
+                      alt={trans?.title || vid.slug}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                    {trans?.transcript_markdown && (
+                      <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 text-white text-[10px] font-mono">
+                        <FileText size={10} className="shrink-0" />
+                        {isFa ? 'متن کامل' : 'Texte'}
+                      </span>
+                    )}
+                  </Link>
+                )}
 
-              <div className="p-5 space-y-3 flex-1 flex flex-col justify-between min-w-0">
-                <div className="space-y-2 min-w-0">
-                  <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono tabular-nums">
-                    <span className="flex items-center gap-1 shrink-0">
-                      <Calendar size={12} className="shrink-0" />
-                      {vid.event_date}
-                    </span>
-                    <span className="inline-flex items-center gap-1 shrink-0">
-                      <Video size={12} className="shrink-0" />
-                      {vid.youtube_video_id ? 'YouTube' : vid.vimeo_url ? 'Vimeo' : 'Archive'}
-                    </span>
+                <div className="p-5 space-y-3 flex-1 flex flex-col justify-between min-w-0">
+                  <div className="space-y-2 min-w-0">
+                    <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono tabular-nums">
+                      <span className="flex items-center gap-1 shrink-0">
+                        <Calendar size={12} className="shrink-0" />
+                        {vid.event_date}
+                      </span>
+                      <span className="inline-flex items-center gap-1 shrink-0">
+                        <Video size={12} className="shrink-0" />
+                        {vid.youtube_video_id ? 'YouTube' : vid.vimeo_url ? 'Vimeo' : 'Archive'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-[var(--foreground)] leading-snug break-words">
+                      <Link href={href} className="hover:text-[var(--primary)] transition-colors">
+                        {trans?.title || vid.slug}
+                      </Link>
+                    </h3>
+
+                    {trans?.description && trans.description !== trans.title && (
+                      <p className="text-xs text-[var(--foreground-muted)] line-clamp-2 leading-relaxed break-words">
+                        {trans.description}
+                      </p>
+                    )}
                   </div>
 
-                  <h3 className="text-base font-bold text-[var(--foreground)] leading-snug break-words">
-                    <Link href={href} className="hover:text-[var(--primary)] transition-colors">
-                      {trans?.title || vid.slug}
+                  <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between gap-2 text-xs">
+                    <span className="text-[11px] text-[var(--foreground-muted)] truncate min-w-0">
+                      {vid.themes?.[0] || vid.event_location}
+                    </span>
+                    <Link href={href} className="font-bold text-[var(--primary)] hover:underline shrink-0 whitespace-nowrap">
+                      {isFa ? 'مشاهده ←' : 'Voir →'}
                     </Link>
-                  </h3>
-
-                  {trans?.description && trans.description !== trans.title && (
-                    <p className="text-xs text-[var(--foreground-muted)] line-clamp-2 leading-relaxed break-words">
-                      {trans.description}
-                    </p>
-                  )}
+                  </div>
                 </div>
-
-                <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between gap-2 text-xs">
-                  <span className="text-[11px] text-[var(--foreground-muted)] truncate min-w-0">
-                    {vid.themes?.[0] || vid.event_location}
-                  </span>
-                  <Link href={href} className="font-bold text-[var(--primary)] hover:underline shrink-0 whitespace-nowrap">
-                    {isFa ? 'مشاهده ←' : 'Voir →'}
-                  </Link>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
       )}
 
       {totalPages > 1 && (
@@ -255,7 +427,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
             {isFa ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
             <span>{isFa ? 'قبلی' : 'Prev'}</span>
           </button>
-          <span className="px-4 py-2 text-xs font-mono text-[var(--foreground-muted)]">
+          <span className="px-4 py-2 text-xs font-mono text-[var(--foreground-muted)] tabular-nums">
             {safePage} / {totalPages}
           </span>
           <button
@@ -270,5 +442,19 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
         </nav>
       )}
     </div>
+  );
+}
+
+export function PaginatedVideosGrid(props: PaginatedVideosGridProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center text-xs text-[var(--foreground-muted)]">
+          Loading videos archive...
+        </div>
+      }
+    >
+      <PaginatedVideosGridInner {...props} />
+    </Suspense>
   );
 }

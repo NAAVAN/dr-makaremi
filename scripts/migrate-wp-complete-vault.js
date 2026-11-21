@@ -79,7 +79,75 @@ const CANONICAL_BOOK_SLUGS = {
 
 const CANONICAL_EXHIBITION_SLUGS = {
   2975: 'pompadour-2002-between-sign-and-symbol',
-  2430: 'novgorod-international-calligraphy',
+  4721: 'pompadour-2002-between-sign-and-symbol',
+  2430: 'moscow-museum-modern-calligraphy',
+  4806: 'moscow-museum-modern-calligraphy',
+  3125: 'unesco-paris-2009-dialogue-of-scripts',
+  4780: 'unesco-paris-2009-dialogue-of-scripts',
+  3215: 'havana-cuba-2012-man-na-manam',
+  4844: 'havana-cuba-2012-man-na-manam',
+  3225: 'fez-sacred-music-festival',
+  4850: 'fez-sacred-music-festival',
+  3243: 'saint-petersburg-national-library-2013',
+  4866: 'saint-petersburg-national-library-2013',
+};
+
+// Explicit pillar + genre_key accuracy map for all WordPress books (prevents psychoanalysis fallback)
+const BOOK_CLASSIFICATION_OVERRIDES = {
+  'pathology-of-fragmentation-death-drive': { pillar: 'psychoanalysis', genre_key: 'psychoanalysis' },
+  'listening-differently-in-psychoanalysis': { pillar: 'psychoanalysis', genre_key: 'psychoanalysis' },
+  'television-lacan': { pillar: 'psychoanalysis', genre_key: 'psychoanalysis' },
+  'sexologie-et-ecoute-psychanalytique': { pillar: 'psychoanalysis', genre_key: 'psychoanalysis' },
+  'listening-differently-to-hafez': { pillar: 'art_calligraphy', genre_key: 'hafez' },
+  'another-look-at-secret-of-hafez': { pillar: 'art_calligraphy', genre_key: 'hafez' },
+  'hafez-par-hafez': { pillar: 'art_calligraphy', genre_key: 'hafez' },
+  'ce-jardin-tu-es-en-lair': { pillar: 'art_calligraphy', genre_key: 'poetry' },
+  'piano-with-four-hands': { pillar: 'art_calligraphy', genre_key: 'poetry' },
+  'regards-croises-calligraphie': { pillar: 'art_calligraphy', genre_key: 'art' },
+  'le-langage-des-oiseaux-projet-d-installation': { pillar: 'art_calligraphy', genre_key: 'art' },
+  'strategic-look-at-transition': { pillar: 'cultural_strategy', genre_key: 'strategy' },
+  'strategic-perspectives-future-iran': { pillar: 'cultural_strategy', genre_key: 'strategy' },
+  'document-de-reference-numero-3': { pillar: 'cultural_strategy', genre_key: 'strategy' },
+  'mutation-culturelle-livre-de-reference-les-haras-nationa': { pillar: 'cultural_strategy', genre_key: 'strategy' },
+  'mutation-culturelle-livre-de-reference2-les-haras-nation': { pillar: 'cultural_strategy', genre_key: 'strategy' },
+  'experience-de-mise-en-place-du-pilotage-strategique-hn': { pillar: 'cultural_strategy', genre_key: 'strategy' },
+  'cultural-land-of-iran': { pillar: 'cultural_strategy', genre_key: 'culture' },
+  'listening-differently-to-past': { pillar: 'cultural_strategy', genre_key: 'culture' },
+  'nouvel-entendement-recueil-darticles': { pillar: 'cultural_strategy', genre_key: 'culture' },
+  'geography-of-vakil-bazaar-mamdali': { pillar: 'cultural_strategy', genre_key: 'novel' },
+  'ketab-daftar-khaterat': { pillar: 'cultural_strategy', genre_key: 'memoir' },
+  'inevitable-escape-thirty-narratives': { pillar: 'human_rights_dadkhahi', genre_key: 'memoir' },
+};
+
+// Clean editorial titles for WP pages that carried internal developer annotations (body text untouched!)
+const CLEAN_WP_PAGE_TITLES = {
+  4346: 'منابع و اسناد حقوق بشری',
+  4348: 'مصاحبه با دکتر حسن مکارمی',
+  3381: 'انتشارات و بازتاب‌ها در نشریات',
+  4443: 'کنفرانس‌های پژوهش و جامعه',
+  4334: 'تماس با دکتر حسن مکارمی',
+  5691: 'شرح حال و کارنامه علمی و هنری',
+  2673: 'شعرواره‌ها (پیش‌گفتار دفتر شعر)',
+  5251: 'سفرهایی که زندگی را می‌سازند و دیگر یادداشت‌ها',
+};
+
+// WP structural wrapper / placeholder pages that must redirect cleanly rather than pollute /about cards
+const WP_SHELL_REDIRECT_PAGES = {
+  27: '/fr',
+  32: '/en',
+  34: '/fa',
+  36: '/fr',
+  39: '/en',
+  42: '/fa',
+  1461: '/fr/gallery#exhibitions-hall',
+  2250: '/fa/gallery',
+  2892: '/fa/gallery#exhibitions-hall',
+  4330: '/en/gallery#exhibitions-hall',
+  3344: '/fr/gallery',
+  2586: '/fr/about?tab=conferences',
+  2589: '/fr/about?tab=conferences',
+  2592: '/fr/about?tab=conferences',
+  2595: '/fr/about?tab=conferences',
 };
 
 // Known WordPress test/junk item IDs (verified forensically from XML)
@@ -480,10 +548,35 @@ function makeSafeAsciiSlug(rawSlug, wpId, prefix, usedSlugs, canonicalOverride) 
   return candidate;
 }
 
-function classifyPillar(categories, title, content, defaultPillar = 'cultural_strategy') {
-  const catStr = categories.join(' ').toLowerCase();
-  const textSample = `${title} ${content.slice(0, 600)}`.toLowerCase();
+function normalizeArabicChars(str) {
+  return (str || '')
+    .replace(/[\u064A\u0649]/g, 'ی')
+    .replace(/\u0643/g, 'ک')
+    .replace(/\u06C0/g, 'هٔ');
+}
 
+function classifyPillar(categories, title, content, defaultPillar = 'cultural_strategy') {
+  const normCats = categories.map((c) => normalizeArabicChars(c).toLowerCase());
+  const catStr = normCats.join(' ');
+  const normTitle = normalizeArabicChars(title).toLowerCase();
+  const textSample = `${normTitle} ${normalizeArabicChars(content.slice(0, 600)).toLowerCase()}`;
+
+  // 1. Honor explicit WordPress editorial categories/taxonomies FIRST
+  if (normCats.some((c) => /روان.?کاوی|psychanalyse|psychoanalysis/.test(c))) {
+    // Unless the title itself is explicitly about Khavaran / 1988 executions / LDDHI human rights
+    if (/خاوران|دادخواهی|کشتار\s*۶۷|کشتار\s*67|اعدام|زندانیان\s*سیاسی|lddhi|fidh|تجاوز\s*در\s*زندان/.test(normTitle)) {
+      return 'human_rights_dadkhahi';
+    }
+    return 'psychoanalysis';
+  }
+  if (normCats.some((c) => /^شعر$|^هنر$|^حافظ$|^hafez$|^art$|^po[eé]sie$|^unesco/.test(c))) {
+    return 'art_calligraphy';
+  }
+  if (normCats.some((c) => /^راهبردی$|^strat[eé]gie$/.test(c))) {
+    return 'cultural_strategy';
+  }
+
+  // 2. Content-driven domain classification for multi-purpose / news ("اخبار" / "جامعه") posts
   if (
     /خاوران|دادخواهی|کشتار\s*۶۷|کشتار\s*67|حقوق\s*بشر|اعدام|زندانیان\s*سیاسی|lddhi|fidh|droits\s*de\s*l['’]?homme|human\s*rights|massacre|khavaran|iran\s*tribunal|مادران/.test(
       catStr + ' ' + textSample
@@ -500,7 +593,7 @@ function classifyPillar(categories, title, content, defaultPillar = 'cultural_st
   }
   if (
     /خوشنویسی|calligraphie|نقاشی|peinture|تابلو|نمایشگاه|exposition|شعر|po[eè]me|po[eé]sie|حافظ|hafez|hâfez|سیمرغ|simorq|گالری|هنر/.test(
-      catStr + ' ' + title.toLowerCase()
+      catStr + ' ' + normTitle
     )
   ) {
     return 'art_calligraphy';
@@ -509,6 +602,35 @@ function classifyPillar(categories, title, content, defaultPillar = 'cultural_st
     return 'cultural_strategy';
   }
   return defaultPillar;
+}
+
+function classifyVideoSeries(themes, title, slug, pillar) {
+  const norm = normalizeArabicChars(`${title} ${slug} ${themes.join(' ')}`).toLowerCase();
+  if (/در\s*روان|روان[\u200c ]?پژوهی|ravan[\s-]?paj|ravanpaj/.test(norm)) {
+    return 'dar-ravanpajoohi-ba-makaremi';
+  }
+  if (/نگاه[\u200c ]?روانکاو|نگاهِ\s*روانکاو|negah.*ravankav|negah-e-ravankav/.test(norm)) {
+    return 'negah-e-ravankav';
+  }
+  if (/صدای\s*سخن\s*عشق|حافظ|hafez|hâfez/.test(norm)) {
+    return 'sedaye-sokhan-eshgh-hafez';
+  }
+  if (/نمادپردازی|نماد\s*تا\s*نستعلیق|نستعلیق|symbolisme|nastaaliq|nastaeligh|nastaelugh/.test(norm)) {
+    return 'az-namadpardazi-ta-nastaaliq';
+  }
+  if (/۶۰\s*سال|60\s*سال|شصت\s*سال|60-sal|مروری\s*بر\s*شصت|مینا\s*راد|video-4369/.test(norm)) {
+    return 'morouri-bar-60-sal-zendegi';
+  }
+  if (/unesco|یونسکو/.test(norm)) {
+    return 'unesco-2009';
+  }
+  if (themes.some((th) => /شعر|po[eé]sie/i.test(normalizeArabicChars(th)))) {
+    return 'video-poems';
+  }
+  if (pillar === 'human_rights_dadkhahi') {
+    return 'human-rights-speeches';
+  }
+  return 'general';
 }
 
 function parsePoemVerses(rawHtml, lang) {
@@ -738,8 +860,12 @@ function resolvePdfUrls(item) {
 
 const legacyRedirects = {};
 const excludedItems = [];
+const wpIdToCanonicalPath = new Map();
 
 function registerLegacyRedirect(item, canonicalPath) {
+  if (item.id && !wpIdToCanonicalPath.has(item.id)) {
+    wpIdToCanonicalPath.set(item.id, canonicalPath);
+  }
   const slugs = new Set();
   if (item.slugRaw) slugs.add(item.slugRaw);
   const oldSlugs = item.metas._wp_old_slug;
@@ -773,8 +899,8 @@ for (const item of parsedItems) {
     continue;
   }
 
-  const categories = item.terms.filter((t) => t.domain === 'category').map((t) => t.name);
-  const tags = item.terms.filter((t) => t.domain === 'post_tag').map((t) => t.name);
+  const categories = item.terms.filter((t) => t.domain === 'category').map((t) => normalizeArabicChars(t.name));
+  const tags = item.terms.filter((t) => t.domain === 'post_tag').map((t) => normalizeArabicChars(t.name));
   const bodyMarkdown = htmlToCleanMarkdown(item.contentRaw, item.lang);
   const excerptText = htmlToCleanMarkdown(item.excerptRaw, item.lang) || makeExcerpt(bodyMarkdown, 260);
   const pillar = classifyPillar(categories, item.title, bodyMarkdown, 'cultural_strategy');
@@ -850,11 +976,14 @@ for (const item of parsedItems) {
   const amazonUrl = normalizeUrl(typeof item.metas._book_meta_amazon === 'string' ? item.metas._book_meta_amazon : '');
   const pdfUrls = resolvePdfUrls(item);
   const coverUrl = resolveAttachmentUrl(item.metas._thumbnail_id) || extractInlineImageUrlsFromHtml(item.contentRaw)[0] || null;
-  const pillar = classifyPillar(genres, item.title, bodyMarkdown, 'psychoanalysis');
 
   const canonicalSlug = CANONICAL_BOOK_SLUGS[item.id];
   const slug = canonicalSlug || makeSafeAsciiSlug(item.slugRaw, item.id, 'book', usedBookSlugs);
   usedBookSlugs.add(slug);
+
+  const bookOverride = BOOK_CLASSIFICATION_OVERRIDES[slug];
+  const pillar = bookOverride ? bookOverride.pillar : classifyPillar(genres, item.title, bodyMarkdown, 'cultural_strategy');
+  const genreKey = bookOverride ? bookOverride.genre_key : null;
 
   const iranLinks = [];
   const intlLinks = [];
@@ -903,7 +1032,8 @@ for (const item of parsedItems) {
       cover_image_url: coverUrl,
       cover_3d_front_id: coverUrl,
       pdf_urls: pdfUrls,
-      genres,
+      genres: genres.map((g) => normalizeArabicChars(g)),
+      genre_key: genreKey,
       legacy_wp_slug: item.slugRaw || null,
       order_index: bookOrder++,
       status: 'published',
@@ -969,7 +1099,7 @@ for (const item of parsedItems) {
     continue;
   }
 
-  const themes = item.terms.filter((t) => t.domain === 'mk_video_theme').map((t) => t.name);
+  const themes = item.terms.filter((t) => t.domain === 'mk_video_theme').map((t) => normalizeArabicChars(t.name));
   const oembedText = item.metaList.filter((m) => m.key.startsWith('_oembed_')).map((m) => m.value).join(' ');
   const combinedSource = `${item.contentRaw} ${oembedText}`;
   const ytId = extractYouTubeId(combinedSource);
@@ -982,6 +1112,7 @@ for (const item of parsedItems) {
   const transcriptMd = htmlToCleanMarkdown(transcriptRaw, item.lang);
   const pillar = classifyPillar(themes, item.title, `${descMd} ${transcriptMd}`, 'psychoanalysis');
   const slug = makeSafeAsciiSlug(item.slugRaw, item.id, 'video', usedVideoSlugs, CANONICAL_VIDEO_SLUGS[item.id]);
+  const seriesSlug = classifyVideoSeries(themes, item.title, slug, pillar);
   const thumbUrl = resolveAttachmentUrl(item.metas._thumbnail_id) || (ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : null);
 
   videos.push({
@@ -995,6 +1126,7 @@ for (const item of parsedItems) {
     vimeo_url: vimeoUrl,
     thumbnail_url: thumbUrl,
     themes,
+    series_slug: seriesSlug,
     legacy_wp_slug: item.slugRaw || null,
     status: 'published',
     created_at: item.dateIso,
@@ -1012,12 +1144,28 @@ for (const item of parsedItems) {
 
   const targetPath = pillar === 'human_rights_dadkhahi' ? `/${item.lang}/human-rights/speeches/${slug}` : `/${item.lang}/media/videos/${slug}`;
   registerLegacyRedirect(item, targetPath);
+  if (item.slugRaw) {
+    legacyRedirects[`/video/${item.slugRaw}`] = targetPath;
+  }
 }
 videos.sort((a, b) => b.event_date.localeCompare(a.event_date));
 
-// --- PASS 6: Migrate Artworks / Galleries (mk_tabl) -> artworks.json ---
-const artworks = [];
+// --- PASS 6: Migrate Artworks / Galleries (mk_tabl) -> artworks.json (Polylang bilingual paired!) ---
+const artworksByGroup = new Map();
 const usedArtworkSlugs = new Set();
+let rawArtworksLiveCount = 0;
+
+function mergeUniqueGalleryImages(existingImgs, newImgs) {
+  const seen = new Set(existingImgs.map((img) => img.url));
+  const merged = [...existingImgs];
+  for (const img of newImgs) {
+    if (img && img.url && !seen.has(img.url)) {
+      seen.add(img.url);
+      merged.push(img);
+    }
+  }
+  return merged;
+}
 
 for (const item of parsedItems) {
   if (item.postType !== 'mk_tabl') continue;
@@ -1025,55 +1173,94 @@ for (const item of parsedItems) {
     excludedItems.push({ wp_id: item.id, post_type: 'mk_tabl', status: item.status, title: item.title, slug: item.slugRaw, reason: KNOWN_TEST_IDS.has(item.id) ? 'test_artifact' : `status_${item.status}` });
     continue;
   }
+  rawArtworksLiveCount++;
 
   const galleryImages = resolveGalleryImages(item.contentRaw, item.id, item.metas._thumbnail_id);
   const coverUrl = resolveAttachmentUrl(item.metas._thumbnail_id) || galleryImages[0]?.url || null;
   const descMd = htmlToCleanMarkdown(item.contentRaw, item.lang);
-  const slug = makeSafeAsciiSlug(item.slugRaw, item.id, 'artwork', usedArtworkSlugs);
   const dimsMatch = descMd.match(/\b(\d+\s*[x×]\s*\d+\s*(?:cm|m|سانتی)?)\b/i);
 
-  artworks.push({
-    id: `wp-tabl-${item.id}`,
-    wp_id: item.id,
-    slug,
-    iiif_image_id: `makaremi-${slug}`,
-    image_url: coverUrl,
-    gallery_images: galleryImages,
-    year: Number(item.dateIso.slice(0, 4)) || 2010,
-    dimensions: dimsMatch ? dimsMatch[1] : null,
-    medium: item.lang === 'fa' ? 'مرکب، اکریلیک و نقاشی‌خط روی بوم یا کاغذ' : 'Encre, acrylique et calligraphie contemporaine',
-    artform: /خط|خوشنویس|calligraph/i.test(item.title + ' ' + descMd) ? 'calligraphy' : 'painting',
-    legacy_wp_slug: item.slugRaw || null,
-    status: 'published',
-    created_at: item.dateIso,
-    translations: [
-      {
-        id: `wp-tabl-tr-${item.id}-${item.lang}`,
-        artworks_id: `wp-tabl-${item.id}`,
-        languages_code: toDbLangCode(item.lang),
-        title: item.title || `تابلو #${item.id}`,
-        description_markdown: descMd || item.title,
-      },
-    ],
-  });
-  registerLegacyRedirect(item, `/${item.lang}/gallery`);
-}
+  const pll = groupByPostId.get(item.id);
+  const groupKey = pll ? `pll:${pll.groupSlug}` : `single:${item.id}`;
 
-// --- PASS 7: Migrate Pages (page) -> exhibitions.json + pages.json ---
+  const tr = {
+    id: `wp-tabl-tr-${item.id}-${item.lang}`,
+    artworks_id: `wp-tabl-${item.id}`,
+    languages_code: toDbLangCode(item.lang),
+    title: item.title || `تابلو #${item.id}`,
+    description_markdown: descMd || item.title,
+  };
+
+  if (artworksByGroup.has(groupKey)) {
+    const existing = artworksByGroup.get(groupKey);
+    if (!existing.translations.some((t) => t.languages_code === tr.languages_code)) {
+      tr.artworks_id = existing.id;
+      if (item.lang === 'fa') existing.translations.unshift(tr);
+      else existing.translations.push(tr);
+    }
+    existing.gallery_images = mergeUniqueGalleryImages(existing.gallery_images || [], galleryImages);
+    if (!existing.image_url && coverUrl) existing.image_url = coverUrl;
+    if (!existing.dimensions && dimsMatch) existing.dimensions = dimsMatch[1];
+    registerLegacyRedirect(item, `/${item.lang}/gallery?series=${existing.slug}`);
+  } else {
+    // Prefer readable ASCII slug (for works-2015 / iconic galleries)
+    const preferredSlugOverride =
+      item.id === 6169 || item.id === 6741
+        ? 'works-2015'
+        : item.id === 4644 || item.id === 1646
+          ? 'non-je-ne-suis-pas-moi-meme'
+          : item.id === 4198 || item.id === 2376
+            ? 'man-cheh-sabzm-ir'
+            : item.id === 6139
+              ? 'tablo-in-bagh-ra-hva-toyy'
+              : item.id === 6116
+                ? 'kaz-eshgh-be-ghayti-resanm'
+                : item.id === 6737 || item.id === 5988
+                  ? 'registre-des-actions'
+                  : undefined;
+    const slug = makeSafeAsciiSlug(item.slugRaw, item.id, 'artwork', usedArtworkSlugs, preferredSlugOverride);
+    const artworkObj = {
+      id: `wp-tabl-${item.id}`,
+      wp_id: item.id,
+      slug,
+      iiif_image_id: `makaremi-${slug}`,
+      image_url: coverUrl,
+      gallery_images: galleryImages,
+      year: Number(item.dateIso.slice(0, 4)) || 2010,
+      dimensions: dimsMatch ? dimsMatch[1] : null,
+      medium: item.lang === 'fa' ? 'مرکب، اکریلیک و نقاشی‌خط روی بوم یا کاغذ' : 'Encre, acrylique et calligraphie contemporaine',
+      artform: /خط|خوشنویس|calligraph/i.test(item.title + ' ' + descMd) ? 'calligraphy' : 'painting',
+      legacy_wp_slug: item.slugRaw || null,
+      status: 'published',
+      created_at: item.dateIso,
+      translations: [tr],
+    };
+    artworksByGroup.set(groupKey, artworkObj);
+    registerLegacyRedirect(item, `/${item.lang}/gallery?series=${slug}`);
+  }
+}
+const artworks = [...artworksByGroup.values()].sort((a, b) => (b.gallery_images?.length || 0) - (a.gallery_images?.length || 0));
+
+// --- PASS 7: Migrate Pages (page) -> exhibitions.json (Polylang paired!) + pages.json (Clean!) ---
 const EXHIBITION_PARENT_IDS = new Set([1461, 2892]);
 const CONFERENCE_PARENT_IDS = new Set([4443, 2586, 2589, 2592, 2595, 3360]);
+const INTERVIEW_PARENT_IDS = new Set([4348, 2065]);
+const REFERENCE_PARENT_IDS = new Set([2062, 4346]);
 
-const exhibitions = [];
+const exhibitionsByGroup = new Map();
 const usedExpoSlugs = new Set();
-const archivePages = [];
+let rawExhibitionsLiveCount = 0;
+
+const pagesByGroup = new Map();
 const usedPageSlugs = new Set();
+let rawPagesLiveCount = 0;
 
 function isEmptyStructuralStub(item, bodyMd) {
   if (KNOWN_TEST_IDS.has(item.id)) return 'test_artifact';
   if (item.status !== 'publish') return `status_${item.status}`;
+  if (WP_SHELL_REDIRECT_PAGES[item.id]) return 'wp_shell_or_placeholder_redirected';
   // Never drop genuine historical exhibition pages even if body text is brief
   if (EXHIBITION_PARENT_IDS.has(item.parentId)) return null;
-  // Pure WordPress listing/landing shell pages with near-empty body
   if (bodyMd.length < 40 && [27, 29, 32, 34, 47, 51, 87, 96, 1358, 1783, 1984, 2231, 2273, 4330].includes(item.id)) {
     return 'wp_structural_stub';
   }
@@ -1082,22 +1269,44 @@ function isEmptyStructuralStub(item, bodyMd) {
 }
 
 function classifyPageGroup(item) {
-  const s = `${item.title} ${item.slugRaw}`.toLowerCase();
-  if (CONFERENCE_PARENT_IDS.has(item.id) || CONFERENCE_PARENT_IDS.has(item.parentId) || /conf[eé]rence|کنفرانس|همایش|سمینار/.test(s)) return 'conferences';
+  if (INTERVIEW_PARENT_IDS.has(item.id) || INTERVIEW_PARENT_IDS.has(item.parentId)) return 'interviews';
+  if (REFERENCE_PARENT_IDS.has(item.id) || REFERENCE_PARENT_IDS.has(item.parentId)) return 'references';
+  if (CONFERENCE_PARENT_IDS.has(item.id) || CONFERENCE_PARENT_IDS.has(item.parentId)) return 'conferences';
+  const s = normalizeArabicChars(`${item.title} ${item.slugRaw}`).toLowerCase();
+  if (/conf[eé]rence|کنفرانس|همایش|سمینار/.test(s)) return 'conferences';
   if (/curriculum|cv|biograph|شرح حال|زندگی/.test(s)) return 'biography';
-  if (/entretien|مصاحبه|گفتگو/.test(s)) return 'interviews';
-  if (/r[eé]f[eé]rence|منابع|حقوق بشر/.test(s)) return 'references';
+  if (/entretien|interview|مصاحبه|گفتگو/.test(s)) return 'interviews';
+  if (/r[eé]f[eé]rence|منابع|حقوق بشر|p[eé]tition/.test(s)) return 'references';
   if (/publication|انتشارات|gazette/.test(s)) return 'publications';
   if (/contact|mention|تماس/.test(s)) return 'contact';
   return 'general';
 }
 
-function parseVenueFromExhibitionTitle(title) {
-  const yearMatch = title.match(/\b(19\d{2}|20\d{2})\b/);
-  const year = yearMatch ? yearMatch[1] : '2005';
-  const cities = ['Paris', 'Limoges', 'Pompadour', 'Novgorod', 'Moscou', 'Moscow', 'Saint-Pétersbourg', 'La Havane', 'Havana', 'Fès', 'Fez', 'Hollande', 'Erevan', 'پاریس', 'مسکو', 'لیموز', 'پومپادور', 'سنت‌پترزبورگ', 'هاوانا', 'فاس', 'هلند', 'ایروان', 'شیراز'];
-  const city = cities.find((c) => title.toLowerCase().includes(c.toLowerCase())) || 'Paris';
-  return { startDate: `${year}-01-01`, city };
+function parseVenueFromExhibitionTitle(title, slug = '') {
+  const combined = `${title} ${slug}`;
+  const yearMatch = combined.match(/\b(199\d|20[0-2]\d)\b/);
+  const year = yearMatch ? yearMatch[1] : null;
+  const cityRules = [
+    [/limoges|لیموژ|لیموز/i, 'Limoges, France'],
+    [/pompadour|پومپادور/i, 'Pompadour, France'],
+    [/tarbes|تارب/i, 'Tarbes, France'],
+    [/novgorod|نووگورود|روسیه|moscou|moscow|مسکو/i, 'Novgorod / Moscow, Russia'],
+    [/p[eé]tersbourg|petersburg|پترسبورگ|پترزبورگ/i, 'Saint Petersburg, Russia'],
+    [/havane|havana|cuba|هاوانا|کوبا/i, 'Havana, Cuba'],
+    [/f[eè]s|fez|فاس|مراکش/i, 'Fez, Morocco'],
+    [/hollande|هلند|holnd/i, 'Netherlands'],
+    [/arm[eé]nie|erevan|ارمنستان|ایروان|armnsatn/i, 'Yerevan, Armenia'],
+    [/unesco|یونسکو/i, 'Paris (UNESCO), France'],
+    [/paris|پاریس/i, 'Paris, France'],
+  ];
+  let city = null;
+  for (const [re, label] of cityRules) {
+    if (re.test(combined)) {
+      city = label;
+      break;
+    }
+  }
+  return { startDate: year ? `${year}-01-01` : null, city };
 }
 
 for (const item of parsedItems) {
@@ -1105,6 +1314,9 @@ for (const item of parsedItems) {
   const bodyMd = htmlToCleanMarkdown(item.contentRaw, item.lang);
   const stubReason = isEmptyStructuralStub(item, bodyMd);
   if (stubReason) {
+    if (WP_SHELL_REDIRECT_PAGES[item.id]) {
+      registerLegacyRedirect(item, WP_SHELL_REDIRECT_PAGES[item.id]);
+    }
     excludedItems.push({ wp_id: item.id, post_type: 'page', status: item.status, title: item.title, slug: item.slugRaw, reason: stubReason });
     continue;
   }
@@ -1118,58 +1330,240 @@ for (const item of parsedItems) {
     /fa-expo-|namyeshgah|namayeshgah|exposition-internationale/i.test(item.slugRaw);
 
   if (isExhibitionPage) {
-    const slug = makeSafeAsciiSlug(item.slugRaw, item.id, 'exhibition', usedExpoSlugs, CANONICAL_EXHIBITION_SLUGS[item.id]);
-    const { startDate, city } = parseVenueFromExhibitionTitle(item.title);
-    exhibitions.push({
-      id: `wp-expo-${item.id}`,
-      wp_id: item.id,
-      slug,
-      start_date: startDate,
-      venue_city: city,
-      venue_name: item.title,
-      cover_image_url: coverUrl,
-      gallery_images: galleryImages,
-      legacy_wp_slug: item.slugRaw || null,
-      status: 'published',
-      created_at: item.dateIso,
-      translations: [
-        {
-          id: `wp-expo-tr-${item.id}-${item.lang}`,
-          exhibitions_id: `wp-expo-${item.id}`,
-          languages_code: toDbLangCode(item.lang),
-          title: item.title,
-          curatorial_statement_markdown: bodyMd,
-        },
-      ],
-    });
-    registerLegacyRedirect(item, `/${item.lang}/art/exhibitions/${slug}`);
+    rawExhibitionsLiveCount++;
+    const pll = groupByPostId.get(item.id);
+    const groupKey = pll ? `pll:${pll.groupSlug}` : `single:${item.id}`;
+    const parsedVenue = parseVenueFromExhibitionTitle(item.title, item.slugRaw);
+
+    const tr = {
+      id: `wp-expo-tr-${item.id}-${item.lang}`,
+      exhibitions_id: `wp-expo-${item.id}`,
+      languages_code: toDbLangCode(item.lang),
+      title: item.title,
+      curatorial_statement_markdown: bodyMd,
+    };
+
+    if (exhibitionsByGroup.has(groupKey)) {
+      const existing = exhibitionsByGroup.get(groupKey);
+      if (!existing.translations.some((t) => t.languages_code === tr.languages_code)) {
+        tr.exhibitions_id = existing.id;
+        if (item.lang === 'fa') existing.translations.unshift(tr);
+        else existing.translations.push(tr);
+      }
+      existing.gallery_images = mergeUniqueGalleryImages(existing.gallery_images || [], galleryImages);
+      if (!existing.cover_image_url && coverUrl) existing.cover_image_url = coverUrl;
+      // Prefer more specific date/city if the first language missed it (e.g., FR title has exact year & city)
+      if (parsedVenue.startDate && existing.start_date === '2005-01-01') existing.start_date = parsedVenue.startDate;
+      if (parsedVenue.city && (!existing.venue_city || existing.venue_city === 'Paris, France')) existing.venue_city = parsedVenue.city;
+      const canonicalExpoPath = `/${item.lang}/art/exhibitions/${existing.slug}`;
+      registerLegacyRedirect(item, canonicalExpoPath);
+      if (item.slugRaw) {
+        legacyRedirects[`/nameyshgah-ir/${item.slugRaw}`] = canonicalExpoPath;
+        legacyRedirects[`/expositions/${item.slugRaw}`] = canonicalExpoPath;
+      }
+    } else {
+      // Check if either partner ID in the Polylang pair has a canonical exhibition slug
+      let canonicalOverride = CANONICAL_EXHIBITION_SLUGS[item.id];
+      if (!canonicalOverride && pll) {
+        for (const pid of Object.values(pll.mapping)) {
+          if (CANONICAL_EXHIBITION_SLUGS[pid]) {
+            canonicalOverride = CANONICAL_EXHIBITION_SLUGS[pid];
+            break;
+          }
+        }
+      }
+      const slug = makeSafeAsciiSlug(item.slugRaw, item.id, 'exhibition', usedExpoSlugs, canonicalOverride);
+      const expoObj = {
+        id: `wp-expo-${item.id}`,
+        wp_id: item.id,
+        slug,
+        start_date: parsedVenue.startDate || '2005-01-01',
+        venue_city: parsedVenue.city || 'Paris, France',
+        venue_name: item.title,
+        cover_image_url: coverUrl,
+        gallery_images: galleryImages,
+        legacy_wp_slug: item.slugRaw || null,
+        status: 'published',
+        created_at: item.dateIso,
+        translations: [tr],
+      };
+      exhibitionsByGroup.set(groupKey, expoObj);
+      const canonicalExpoPath = `/${item.lang}/art/exhibitions/${slug}`;
+      registerLegacyRedirect(item, canonicalExpoPath);
+      if (item.slugRaw) {
+        legacyRedirects[`/nameyshgah-ir/${item.slugRaw}`] = canonicalExpoPath;
+        legacyRedirects[`/expositions/${item.slugRaw}`] = canonicalExpoPath;
+      }
+    }
   } else {
-    const slug = makeSafeAsciiSlug(item.slugRaw, item.id, 'page', usedPageSlugs);
+    rawPagesLiveCount++;
+    const cleanTitle = CLEAN_WP_PAGE_TITLES[item.id] || item.title || `صفحه #${item.id}`;
     const group = classifyPageGroup(item);
-    archivePages.push({
-      id: `wp-page-${item.id}`,
-      wp_id: item.id,
-      parent_wp_id: item.parentId || 0,
-      slug,
-      group,
-      cover_image_url: coverUrl,
-      gallery_images: galleryImages,
-      pdf_urls: pdfUrls,
-      legacy_wp_slug: item.slugRaw || null,
-      status: 'published',
-      created_at: item.dateIso,
-      translations: [
-        {
-          id: `wp-page-tr-${item.id}-${item.lang}`,
-          pages_id: `wp-page-${item.id}`,
-          languages_code: toDbLangCode(item.lang),
-          title: item.title || `صفحه #${item.id}`,
-          excerpt: makeExcerpt(bodyMd, 220),
-          body_markdown: bodyMd,
-        },
-      ],
-    });
-    registerLegacyRedirect(item, `/${item.lang}/about/${slug}`);
+    // Pair explicit CV pages (5691 FA & 1792 FR) plus Polylang pairs
+    const pll = groupByPostId.get(item.id);
+    const groupKey =
+      item.id === 5691 || item.id === 1792
+        ? 'manual:cv-hassan-makaremi'
+        : pll && !Object.values(pll.mapping).some((pid) => WP_SHELL_REDIRECT_PAGES[pid])
+          ? `pll:${pll.groupSlug}`
+          : `single:${item.id}`;
+
+    const tr = {
+      id: `wp-page-tr-${item.id}-${item.lang}`,
+      pages_id: `wp-page-${item.id}`,
+      languages_code: toDbLangCode(item.lang),
+      title: cleanTitle,
+      excerpt: makeExcerpt(bodyMd, 220),
+      body_markdown: bodyMd,
+    };
+
+    if (pagesByGroup.has(groupKey)) {
+      const existing = pagesByGroup.get(groupKey);
+      if (!existing.translations.some((t) => t.languages_code === tr.languages_code)) {
+        tr.pages_id = existing.id;
+        if (item.lang === 'fa') existing.translations.unshift(tr);
+        else existing.translations.push(tr);
+      }
+      existing.gallery_images = mergeUniqueGalleryImages(existing.gallery_images || [], galleryImages);
+      existing.pdf_urls = [...new Set([...(existing.pdf_urls || []), ...pdfUrls])];
+      registerLegacyRedirect(item, `/${item.lang}/about/${existing.slug}`);
+      if (item.slugRaw && item.parentId) {
+        const parentItem = parsedItems.find((p) => p.id === item.parentId);
+        if (parentItem?.slugRaw) legacyRedirects[`/${parentItem.slugRaw}/${item.slugRaw}`] = `/${item.lang}/about/${existing.slug}`;
+      }
+    } else {
+      const slugOverride =
+        item.id === 5691 || item.id === 1792
+          ? 'cv-en-persane'
+          : item.id === 4348 || item.id === 2065
+            ? 'entretiens-fa'
+            : item.id === 4346 || item.id === 2062
+              ? 'references-fa'
+              : item.id === 3381 || item.id === 2100
+                ? 'entesharat-fa'
+                : item.id === 4334 || item.id === 104 || item.id === 106
+                  ? 'contact-mention-fa'
+                  : item.id === 5251 || item.id === 5254
+                    ? 'about-hassan-makaremi-other-fa'
+                    : undefined;
+      const slug = makeSafeAsciiSlug(item.slugRaw, item.id, 'page', usedPageSlugs, slugOverride);
+      const pageObj = {
+        id: `wp-page-${item.id}`,
+        wp_id: item.id,
+        parent_wp_id: item.parentId || 0,
+        slug,
+        group,
+        cover_image_url: coverUrl,
+        gallery_images: galleryImages,
+        pdf_urls: pdfUrls,
+        legacy_wp_slug: item.slugRaw || null,
+        status: 'published',
+        created_at: item.dateIso,
+        translations: [tr],
+      };
+      pagesByGroup.set(groupKey, pageObj);
+      registerLegacyRedirect(item, `/${item.lang}/about/${slug}`);
+      if (item.slugRaw && item.parentId) {
+        const parentItem = parsedItems.find((p) => p.id === item.parentId);
+        if (parentItem?.slugRaw) legacyRedirects[`/${parentItem.slugRaw}/${item.slugRaw}`] = `/${item.lang}/about/${slug}`;
+      }
+    }
+  }
+}
+
+const exhibitions = [...exhibitionsByGroup.values()].sort((a, b) => (b.start_date || '').localeCompare(a.start_date || ''));
+const archivePages = [...pagesByGroup.values()];
+
+// --- PASS 8: Rewrite Internal Legacy makaremi.com / makaremi.net / wp-admin Links Inside Migrated Markdown ---
+let rewrittenInternalLinksCount = 0;
+
+function rewriteInternalMarkdownLinks(text, defaultLang = 'fa') {
+  if (!text || typeof text !== 'string') return text;
+  return text.replace(/https?:\/\/(?:www\.)?(?:hassan)?makaremi\.(?:com|net)(\/[^\s)\]"'<>]*)?/gi, (fullMatch, rawRel = '') => {
+    // Keep wp-content/uploads asset links (PDFs, images) intact on https://www.makaremi.com
+    if (rawRel.includes('/wp-content/uploads/')) {
+      return fullMatch.replace(/^http:\/\//i, 'https://').replace(/[?&]fbclid=[^&#\s)]+/gi, '');
+    }
+    // Fix broken wp-admin/post.php?post=ID links -> resolve via wpIdToCanonicalPath or attachmentById
+    const adminMatch = rawRel.match(/wp-admin\/post\.php\?[^#\s)]*post=(\d+)/i);
+    if (adminMatch) {
+      const targetId = Number(adminMatch[1]);
+      const resolved = wpIdToCanonicalPath.get(targetId) || attachmentById.get(targetId)?.url || `/${defaultLang}/about?tab=conferences`;
+      rewrittenInternalLinksCount++;
+      return resolved;
+    }
+    // Strip fbclid / query noise and resolve path via legacyRedirects
+    const cleanRel = rawRel.split('?')[0].split('#')[0].replace(/\/+$/, '');
+    if (!cleanRel || cleanRel === '/') {
+      rewrittenInternalLinksCount++;
+      return `/${defaultLang}`;
+    }
+    let decodedRel = cleanRel;
+    try { decodedRel = decodeURIComponent(cleanRel); } catch { /* ignore */ }
+    const lastSeg = '/' + decodedRel.split('/').filter(Boolean).pop();
+    const mapped =
+      legacyRedirects[cleanRel] ||
+      legacyRedirects[decodedRel] ||
+      legacyRedirects[lastSeg];
+    if (mapped) {
+      rewrittenInternalLinksCount++;
+      return mapped;
+    }
+    // Clean legacy taxonomy/section paths
+    if (/^\/tag\/hafez$/i.test(cleanRel)) { rewrittenInternalLinksCount++; return `/${defaultLang}/hafez`; }
+    if (/^\/expositions$/i.test(cleanRel)) { rewrittenInternalLinksCount++; return `/${defaultLang}/gallery#exhibitions-hall`; }
+    if (/^\/galeries-sur-flickr$/i.test(cleanRel)) { rewrittenInternalLinksCount++; return `/${defaultLang}/about/galeries-sur-flickr`; }
+    if (/^\/livre\/([^/]+)$/i.test(cleanRel)) {
+      const bookSeg = '/' + cleanRel.split('/').pop();
+      if (legacyRedirects[bookSeg]) { rewrittenInternalLinksCount++; return legacyRedirects[bookSeg]; }
+    }
+    if (/^\/video\/([^/]+)$/i.test(cleanRel)) {
+      const vidSeg = '/' + decodedRel.split('/').pop();
+      if (legacyRedirects[vidSeg]) { rewrittenInternalLinksCount++; return legacyRedirects[vidSeg]; }
+    }
+    // At minimum strip fbclid & force https
+    return fullMatch.replace(/^http:\/\//i, 'https://').replace(/[?&]fbclid=[^&#\s)]+/gi, '');
+  });
+}
+
+for (const art of articles) {
+  for (const tr of art.translations || []) {
+    const lang = tr.languages_code.slice(0, 2);
+    tr.body_markdown = rewriteInternalMarkdownLinks(tr.body_markdown, lang);
+    tr.executive_summary = rewriteInternalMarkdownLinks(tr.executive_summary, lang);
+  }
+}
+for (const pg of archivePages) {
+  for (const tr of pg.translations || []) {
+    const lang = tr.languages_code.slice(0, 2);
+    tr.body_markdown = rewriteInternalMarkdownLinks(tr.body_markdown, lang);
+    tr.excerpt = rewriteInternalMarkdownLinks(tr.excerpt, lang);
+  }
+}
+for (const bk of books) {
+  for (const tr of bk.translations || []) {
+    const lang = tr.languages_code.slice(0, 2);
+    tr.synopsis = rewriteInternalMarkdownLinks(tr.synopsis, lang);
+    if (tr.sample_chapter_markdown) tr.sample_chapter_markdown = rewriteInternalMarkdownLinks(tr.sample_chapter_markdown, lang);
+  }
+}
+for (const ex of exhibitions) {
+  for (const tr of ex.translations || []) {
+    const lang = tr.languages_code.slice(0, 2);
+    if (tr.curatorial_statement_markdown) tr.curatorial_statement_markdown = rewriteInternalMarkdownLinks(tr.curatorial_statement_markdown, lang);
+  }
+}
+for (const aw of artworks) {
+  for (const tr of aw.translations || []) {
+    const lang = tr.languages_code.slice(0, 2);
+    if (tr.description_markdown) tr.description_markdown = rewriteInternalMarkdownLinks(tr.description_markdown, lang);
+  }
+}
+for (const vid of videos) {
+  for (const tr of vid.translations || []) {
+    const lang = tr.languages_code.slice(0, 2);
+    if (tr.description) tr.description = rewriteInternalMarkdownLinks(tr.description, lang);
+    if (tr.transcript_markdown) tr.transcript_markdown = rewriteInternalMarkdownLinks(tr.transcript_markdown, lang);
   }
 }
 
@@ -1215,8 +1609,11 @@ const manifest = {
       poems: poems.length,
       videos: videos.length,
       artworks_galleries: artworks.length,
+      artworks_raw_wp_records: rawArtworksLiveCount,
       exhibitions_from_pages: exhibitions.length,
+      exhibitions_raw_wp_records: rawExhibitionsLiveCount,
       editorial_pages: archivePages.length,
+      editorial_pages_raw_wp_records: rawPagesLiveCount,
       media_attachments: mediaManifest.length,
     },
     excluded_drafts_tests_stubs: excludedItems.length,
@@ -1226,15 +1623,17 @@ const manifest = {
       parsedItems.filter((i) => i.postType === 'mk_book' && i.status === 'publish').length +
       poems.length +
       videos.length +
-      artworks.length +
-      exhibitions.length +
-      archivePages.length +
+      rawArtworksLiveCount +
+      rawExhibitionsLiveCount +
+      rawPagesLiveCount +
       mediaManifest.length +
       excludedItems.length +
       wpInfraItems.length,
   },
   quality_metrics: {
     articles_by_pillar: articles.reduce((acc, a) => { acc[a.pillar] = (acc[a.pillar] || 0) + 1; return acc; }, {}),
+    videos_by_series: videos.reduce((acc, v) => { acc[v.series_slug] = (acc[v.series_slug] || 0) + 1; return acc; }, {}),
+    rewritten_internal_legacy_links: rewrittenInternalLinksCount,
     videos_with_youtube_id: videos.filter((v) => v.youtube_video_id).length,
     videos_with_vimeo_url: videos.filter((v) => v.vimeo_url).length,
     videos_with_transcript: videos.filter((v) => v.translations?.[0]?.transcript_markdown).length,

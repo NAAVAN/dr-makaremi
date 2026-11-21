@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { BookOpen, Sparkles, Sliders, Layers, Eye } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { BookOpen, Sparkles, Sliders, Eye } from 'lucide-react';
 import { getBookStudioProfile, BOOK_GENRE_LABELS, type BookGenreKey } from '@/lib/legacy-heritage';
 import { Book3DShowcase } from './Book3DShowcase';
 import { BookSampleReader } from './BookSampleReader';
@@ -25,9 +26,25 @@ const GENRE_FILTER_KEYS: Array<'all' | BookGenreKey> = [
   'memoir',
 ];
 
-export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatalogProps) {
+function resolveGenreFromParams(genreParam: string | null, pillarParam: string | null): 'all' | BookGenreKey {
+  const valid = new Set<string>(GENRE_FILTER_KEYS);
+  if (genreParam && valid.has(genreParam.toLowerCase())) {
+    return genreParam.toLowerCase() as 'all' | BookGenreKey;
+  }
+  if (pillarParam) {
+    const p = pillarParam.toLowerCase();
+    if (p === 'psychoanalysis' || p === 'psychanalyse') return 'psychoanalysis';
+    if (p === 'art' || p === 'art_calligraphy') return 'art';
+    if (p === 'strategy' || p === 'cultural_strategy') return 'strategy';
+    if (p === 'human-rights' || p === 'human_rights_dadkhahi') return 'memoir';
+  }
+  return 'all';
+}
+
+function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalogProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const searchParams = useSearchParams();
 
   const [selectedGenre, setSelectedGenre] = useState<'all' | BookGenreKey>('all');
   const [spotlightSlug, setSpotlightSlug] = useState<string>(
@@ -35,19 +52,48 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
   );
   const [showInlineReader, setShowInlineReader] = useState<boolean>(false);
 
-  const filteredBooks = books.filter((b) => {
-    if (selectedGenre === 'all') return true;
-    const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar);
-    return prof.genreKey === selectedGenre;
-  });
+  // Sync URL query parameters (?genre= and ?pillar=) into active genre filter & spotlight book
+  useEffect(() => {
+    const resolved = resolveGenreFromParams(searchParams.get('genre'), searchParams.get('pillar'));
+    setSelectedGenre(resolved);
+    if (resolved !== 'all') {
+      const firstMatch = books.find((b) => {
+        const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key);
+        return prof.genreKey === resolved;
+      });
+      if (firstMatch) setSpotlightSlug(firstMatch.slug);
+    }
+  }, [searchParams, books]);
+
+  const genreCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: books.length };
+    for (const b of books) {
+      const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key);
+      counts[prof.genreKey] = (counts[prof.genreKey] || 0) + 1;
+    }
+    return counts;
+  }, [books]);
+
+  const filteredBooks = useMemo(() => {
+    if (selectedGenre === 'all') return books;
+    return books.filter((b) => {
+      const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key);
+      return prof.genreKey === selectedGenre;
+    });
+  }, [books, selectedGenre]);
 
   const spotlightBook =
-    books.find((b) => b.slug === spotlightSlug) || filteredBooks[0] || books[0];
+    filteredBooks.find((b) => b.slug === spotlightSlug) || filteredBooks[0] || books[0];
   const spotlightTrans =
     spotlightBook?.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     spotlightBook?.translations?.[0];
   const spotlightProfile = spotlightBook
-    ? getBookStudioProfile(spotlightBook.slug, spotlightBook.page_count || 240, spotlightBook.pillar)
+    ? getBookStudioProfile(
+      spotlightBook.slug,
+      spotlightBook.page_count || 240,
+      spotlightBook.pillar,
+      spotlightBook.genre_key
+    )
     : null;
 
   return (
@@ -59,7 +105,6 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
           className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-8 lg:p-10 shadow-sm space-y-8"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* 3D Book Mesh Column */}
             <div className="lg:col-span-5 flex flex-col items-center justify-center bg-[var(--surface-card)] rounded-2xl p-4 border border-[var(--border-subtle)]">
               <Book3DShowcase
                 book={spotlightBook}
@@ -68,7 +113,6 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
               />
             </div>
 
-            {/* Book Details & Sanctuary Actions Column */}
             <div className="lg:col-span-7 space-y-5">
               <div className="flex flex-wrap items-center gap-2 text-xs">
                 <span className="px-3 py-1 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 font-bold">
@@ -77,7 +121,7 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
                 <span className="px-2.5 py-1 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] font-mono text-[var(--foreground-muted)]">
                   {spotlightBook.publication_year} • {spotlightTrans?.publisher_name}
                 </span>
-                <span className="px-2.5 py-1 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] font-mono text-[var(--foreground-muted)]">
+                <span className="px-2.5 py-1 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] font-mono text-[var(--foreground-muted)] tabular-nums">
                   {spotlightBook.page_count || 240} {isFa ? 'صفحه' : 'p.'} ({spotlightProfile.spineWidthMm} mm)
                 </span>
               </div>
@@ -97,7 +141,6 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
                 {spotlightTrans?.synopsis}
               </p>
 
-              {/* Calm Physical Specifications Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="p-3 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)]">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
@@ -111,7 +154,7 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
                     {isFa ? 'قطر عطف و وزن' : 'Dos & Poids'}
                   </span>
-                  <span className="text-xs font-bold font-mono text-[var(--foreground)]">
+                  <span className="text-xs font-bold font-mono text-[var(--foreground)] tabular-nums">
                     {spotlightProfile.spineWidthMm}mm • {spotlightProfile.weightGrams}g
                   </span>
                 </div>
@@ -125,15 +168,15 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
                         ? 'راست‌به‌چپ (فارسی)'
                         : 'RTL (Persan)'
                       : isFa
-                      ? 'چپ‌به‌راست (فرانسوی)'
-                      : 'LTR (Français)'}
+                        ? 'چپ‌به‌راست (فرانسوی)'
+                        : 'LTR (Français)'}
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)]">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
                     {isFa ? 'بازه مطالعه مجاز' : 'Extrait autorisé'}
                   </span>
-                  <span className="text-xs font-bold font-mono text-[var(--foreground)]">
+                  <span className="text-xs font-bold font-mono text-[var(--foreground)] tabular-nums">
                     {isFa
                       ? `ص ۱ + ص ${spotlightProfile.previewStartPage}–${spotlightProfile.previewEndPage}`
                       : `p. 1 + p. ${spotlightProfile.previewStartPage}–${spotlightProfile.previewEndPage}`}
@@ -141,7 +184,6 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
                   type="button"
@@ -155,8 +197,8 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
                         ? 'بستن کتاب‌خوان ورق‌خور'
                         : 'Fermer le lecteur'
                       : isFa
-                      ? 'گشودن و تورق سه‌بعدی کتاب (شروع از صفحه ۱)'
-                      : 'Ouvrir et feuilleter en 3D (Page 1)'}
+                        ? 'گشودن و تورق سه‌بعدی کتاب (شروع از صفحه ۱)'
+                        : 'Ouvrir et feuilleter en 3D (Page 1)'}
                   </span>
                 </button>
 
@@ -179,7 +221,6 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
             </div>
           </div>
 
-          {/* Expandable Inline 3D Page-Flip Reader */}
           {showInlineReader && (
             <div className="pt-4 border-t border-[var(--border-subtle)] animate-fade-in">
               <BookSampleReader
@@ -196,30 +237,42 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
         </section>
       )}
 
-      {/* 2. 8-Genre Filter Bar (Matching the Legacy WordPress Bibliography Categories) */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
+      {/* 2. 8-Genre Filter Bar (Synced with URL ?genre= / ?pillar=) */}
+      <div
+        id="books-genre-bar"
+        className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4"
+      >
         <div className="flex flex-wrap items-center gap-1.5">
           {GENRE_FILTER_KEYS.map((gKey) => {
+            const count = genreCounts[gKey] || 0;
             const label =
               gKey === 'all'
                 ? isFa
-                  ? `همه کتاب‌ها (${books.length})`
+                  ? `همه کتاب‌ها (${count})`
                   : isFr
-                  ? `Tous les livres (${books.length})`
-                  : `All Books (${books.length})`
-                : BOOK_GENRE_LABELS[gKey][locale];
+                    ? `Tous les livres (${count})`
+                    : `All Books (${count})`
+                : `${BOOK_GENRE_LABELS[gKey][locale]} (${count})`;
             const isSelected = selectedGenre === gKey;
 
             return (
               <button
                 key={gKey}
                 type="button"
-                onClick={() => setSelectedGenre(gKey)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  isSelected
+                onClick={() => {
+                  setSelectedGenre(gKey);
+                  if (gKey !== 'all') {
+                    const first = books.find(
+                      (b) => getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key).genreKey === gKey
+                    );
+                    if (first) setSpotlightSlug(first.slug);
+                  }
+                }}
+                aria-pressed={isSelected}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer tabular-nums ${isSelected
                     ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
                     : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border-subtle)]'
-                }`}
+                  }`}
               >
                 {label}
               </button>
@@ -228,90 +281,120 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
         </div>
       </div>
 
-      {/* 3. Categorized Books Grid with 3D Spine Indicator */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredBooks.map((b) => {
-          const trans =
-            b.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-            b.translations?.[0];
-          const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar);
-          const isSpotlight = b.slug === spotlightBook?.slug;
+      {/* 3. Categorized Books Grid */}
+      {filteredBooks.length === 0 ? (
+        <div
+          role="status"
+          className="p-10 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-3"
+        >
+          <p className="text-sm font-bold text-[var(--foreground)]">
+            {isFa ? 'کتابی در این ژانر یافت نشد.' : 'Aucun livre dans ce genre.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => setSelectedGenre('all')}
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer"
+          >
+            {isFa ? 'نمایش همه کتاب‌ها' : 'Afficher tous les livres'}
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredBooks.map((b) => {
+            const trans =
+              b.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+              b.translations?.[0];
+            const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key);
+            const isSpotlight = b.slug === spotlightBook?.slug;
 
-          return (
-            <article
-              key={b.id}
-              className={`group rounded-2xl bg-[var(--surface-card)] border transition-all duration-300 p-6 flex flex-col justify-between ${
-                isSpotlight
-                  ? 'border-amber-600/60 ring-2 ring-amber-500/20 shadow-lg'
-                  : 'border-[var(--border-subtle)] hover:shadow-xl'
-              }`}
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--primary)]">
-                    {prof.genreLabel[locale]}
-                  </span>
-                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-[var(--foreground-muted)]">
-                    <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-800 dark:text-amber-300">
-                      {prof.direction.toUpperCase()}
+            return (
+              <article
+                key={b.id}
+                className={`group min-w-0 rounded-2xl bg-[var(--surface-card)] border transition-all duration-300 p-6 flex flex-col justify-between ${isSpotlight
+                    ? 'border-amber-600/60 ring-2 ring-amber-500/20 shadow-lg'
+                    : 'border-[var(--border-subtle)] hover:shadow-xl'
+                  }`}
+              >
+                <div className="space-y-4 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--primary)]">
+                      {prof.genreLabel[locale]}
                     </span>
-                    <span>{b.publication_year}</span>
+                    <div className="flex items-center gap-1.5 text-[11px] font-mono text-[var(--foreground-muted)] tabular-nums shrink-0">
+                      <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-800 dark:text-amber-300">
+                        {prof.direction.toUpperCase()}
+                      </span>
+                      <span>{b.publication_year}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h2 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug break-words">
+                      <Link href={`/${locale}/books/${b.slug}`}>
+                        {trans?.title || b.slug}
+                      </Link>
+                    </h2>
+                    {trans?.subtitle && (
+                      <p className="text-xs text-[var(--foreground-muted)] font-medium break-words">
+                        {trans.subtitle}
+                      </p>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-[var(--foreground-muted)] line-clamp-3 leading-relaxed break-words">
+                    {trans?.synopsis}
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] space-y-3">
+                  <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono tabular-nums">
+                    <span className="truncate max-w-[160px]">{trans?.publisher_name}</span>
+                    <span>
+                      {b.page_count || 240} ص • عطف {prof.spineWidthMm}mm
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSpotlightSlug(b.slug);
+                        setShowInlineReader(true);
+                        window.scrollTo({ top: 140, behavior: 'smooth' });
+                      }}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 dark:text-amber-400 hover:underline cursor-pointer"
+                    >
+                      <Sparkles size={13} />
+                      <span>{isFa ? 'بارگذاری در ویترین 3D بالا' : 'Voir en 3D'}</span>
+                    </button>
+
+                    <Link
+                      href={`/${locale}/books/${b.slug}`}
+                      className="text-xs font-bold text-[var(--primary)] hover:underline whitespace-nowrap"
+                    >
+                      {isFa ? 'مشاهده و مطالعه ←' : 'Découvrir →'}
+                    </Link>
                   </div>
                 </div>
-
-                <div className="space-y-1">
-                  <h2 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug">
-                    <Link href={`/${locale}/books/${b.slug}`}>
-                      {trans?.title || b.slug}
-                    </Link>
-                  </h2>
-                  {trans?.subtitle && (
-                    <p className="text-xs text-[var(--foreground-muted)] font-medium">
-                      {trans.subtitle}
-                    </p>
-                  )}
-                </div>
-
-                <p className="text-xs text-[var(--foreground-muted)] line-clamp-3 leading-relaxed">
-                  {trans?.synopsis}
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] space-y-3">
-                <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono">
-                  <span className="truncate max-w-[160px]">{trans?.publisher_name}</span>
-                  <span>
-                    {b.page_count || 240} ص • عطف {prof.spineWidthMm}mm
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSpotlightSlug(b.slug);
-                      setShowInlineReader(true);
-                      window.scrollTo({ top: 140, behavior: 'smooth' });
-                    }}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 dark:text-amber-400 hover:underline cursor-pointer"
-                  >
-                    <Sparkles size={13} />
-                    <span>{isFa ? 'بارگذاری در ویترین 3D بالا' : 'Voir en 3D'}</span>
-                  </button>
-
-                  <Link
-                    href={`/${locale}/books/${b.slug}`}
-                    className="text-xs font-bold text-[var(--primary)] hover:underline"
-                  >
-                    {isFa ? 'مشاهده و مطالعه ←' : 'Découvrir →'}
-                  </Link>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
+export function BooksInteractiveCatalog(props: BooksInteractiveCatalogProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center text-xs text-[var(--foreground-muted)]">
+          Loading 3D Library...
+        </div>
+      }
+    >
+      <BooksInteractiveCatalogInner {...props} />
+    </Suspense>
+  );
+}

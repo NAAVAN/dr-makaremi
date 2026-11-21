@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-21T17:46:41.991Z",
+  "generated_at": "2026-11-21T19:23:21.658Z",
   "source_file": "hassanmakaremi.WordPress.2026-10-30.xml",
   "llm_tokens_consumed": 0,
-  "elapsed_ms": 1123,
+  "elapsed_ms": 1212,
   "reconciliation": {
     "total_xml_items": 3172,
     "live_migrated": {
@@ -11,29 +11,44 @@
       "books_raw_wp_records": 26,
       "poems": 300,
       "videos": 261,
-      "artworks_galleries": 54,
-      "exhibitions_from_pages": 52,
-      "editorial_pages": 47,
+      "artworks_galleries": 29,
+      "artworks_raw_wp_records": 54,
+      "exhibitions_from_pages": 27,
+      "exhibitions_raw_wp_records": 52,
+      "editorial_pages": 25,
+      "editorial_pages_raw_wp_records": 32,
       "media_attachments": 1938
     },
-    "excluded_drafts_tests_stubs": 24,
+    "excluded_drafts_tests_stubs": 39,
     "wp_infra_menus_forms_styles": 67,
     "accounted_total": 3172
   },
   "quality_metrics": {
     "articles_by_pillar": {
-      "human_rights_dadkhahi": 28,
+      "human_rights_dadkhahi": 26,
       "art_calligraphy": 28,
-      "cultural_strategy": 227,
-      "psychoanalysis": 120
+      "cultural_strategy": 209,
+      "psychoanalysis": 140
     },
+    "videos_by_series": {
+      "sedaye-sokhan-eshgh-hafez": 17,
+      "general": 92,
+      "negah-e-ravankav": 57,
+      "dar-ravanpajoohi-ba-makaremi": 54,
+      "human-rights-speeches": 12,
+      "unesco-2009": 17,
+      "video-poems": 5,
+      "az-namadpardazi-ta-nastaaliq": 3,
+      "morouri-bar-60-sal-zendegi": 4
+    },
+    "rewritten_internal_legacy_links": 151,
     "videos_with_youtube_id": 255,
     "videos_with_vimeo_url": 2,
     "videos_with_transcript": 76,
     "poems_with_artwork_thumbnail": 294,
-    "artworks_total_resolved_gallery_images": 1464,
-    "exhibitions_total_resolved_gallery_images": 648,
-    "legacy_redirect_rules_generated": 1692,
+    "artworks_total_resolved_gallery_images": 856,
+    "exhibitions_total_resolved_gallery_images": 390,
+    "legacy_redirect_rules_generated": 2072,
     "all_slugs_ascii_safe": true
   }
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Music, Feather, BookOpen } from 'lucide-react';
-import { getPoems, getArtworks } from '@/lib/cms';
+import { Music, Feather, BookOpen, Video } from 'lucide-react';
+import { getPoems, getArtworks, getArchivePageBySlug } from '@/lib/cms';
 import { isValidLocale, type Locale } from '@/lib/i18n';
 import { PoetryArtworkSync } from '@/components/gallery/PoetryArtworkSync';
 import { PaginatedPoemsGrid } from '@/components/archive/PaginatedPoemsGrid';
@@ -16,8 +16,12 @@ export default async function PoetryOverviewPage({
   if (!isValidLocale(locale)) notFound();
 
   const isFa = locale === 'fa';
-  const rawPoems = await getPoems(locale);
-  const artworks = await getArtworks(locale);
+  const [rawPoems, artworks, prefacePage] = await Promise.all([
+    getPoems(locale),
+    getArtworks(locale),
+    getArchivePageBySlug('page-2673', locale),
+  ]);
+  const prefaceText = prefacePage?.translations?.[0]?.body_markdown;
 
   const featuredPoem = rawPoems[0];
   const featuredArtwork = artworks[0];
@@ -45,9 +49,32 @@ export default async function PoetryOverviewPage({
         </h1>
         <p className="text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
           {isFa
-            ? 'طنین واژگان و رقص قلم‌مو؛ سروده‌های دوزبانه فارسی-فرانسوی دکتر حسن مکارمی همراه با تابلوهای اختصاصی و دکلمه صوتی مؤلف.'
+            ? 'طنین واژگان و رقص قلم‌مو؛ سروده‌های دوزبانه فارسی-فرانسوی دکتر حسن مکارمی همراه با تابلوهای اختصاصی و بخش شعر و تصویر.'
             : 'Dialogue poétique et visuel entre la parole déclamée et la matière calligraphique.'}
         </p>
+
+        {isFa && prefaceText && (
+          <blockquote className="p-5 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs sm:text-sm font-serif text-[var(--foreground)] leading-loose whitespace-pre-line max-w-3xl">
+            {prefaceText}
+          </blockquote>
+        )}
+
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <Link
+            href={`/${locale}/media?series=video-poems#videos-archive`}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
+          >
+            <Video size={14} />
+            <span>{isFa ? 'بخش ویدیویی «شعر و تصویر»' : 'Vidéos Poésie & Image'}</span>
+          </Link>
+          <Link
+            href={`/${locale}/books?genre=poetry`}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
+          >
+            <BookOpen size={14} />
+            <span>{isFa ? 'کتاب‌های شعر دوزبانه' : 'Livres de poésie bilingue'}</span>
+          </Link>
+        </div>
       </header>
 
       {/* 1. Synchronized Poetry & Artwork Showcase (شعر و تصویر) */}

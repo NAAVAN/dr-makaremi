@@ -303,6 +303,28 @@ export async function GET(request: NextRequest) {
     markdown += `> Interactive 3D book engineering workbench supporting Persian RTL and French LTR bindings, volumetric spine calculation, print-spread cover slicing, and Page 1 Title Page + custom admin page range previews.\n\n`;
   }
 
+  // 6.11 Unified Articles & News Archive: /[locale]/articles
+  if (segments.length === 2 && segments[1] === 'articles') {
+    const articles = await getArticles(locale);
+    markdown = `# Complete Articles, Essays & News Archive (${articles.length}) | آرشیو جامع مقالات، جستارها و اخبار دکتر حسن مکارمی\n\n`;
+    for (const a of articles.slice(0, 80)) {
+      const tr =
+        a.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+        a.translations?.[0];
+      const pSeg =
+        a.pillar === 'psychoanalysis'
+          ? locale === 'fr'
+            ? 'psychanalyse'
+            : 'psychoanalysis'
+          : a.pillar === 'art_calligraphy'
+          ? 'art'
+          : a.pillar === 'cultural_strategy'
+          ? 'strategy'
+          : 'human-rights';
+      markdown += `- [${tr?.title || a.slug}](https://makaremi.com/${locale}/${pSeg}/articles/${a.slug}) (${a.published_at?.slice(0, 10) || ''})\n`;
+    }
+  }
+
   // 7. Books Catalog fallback: /[locale]/books
   if (!markdown && segments.length === 2 && segments[1] === 'books') {
     const books = await getBooks(locale);

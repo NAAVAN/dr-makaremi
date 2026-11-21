@@ -20,16 +20,20 @@ export const STATIC_LEGACY_REDIRECTS: Record<string, string> = {
   '/topologie-des-lieux-saints/': '/fr/psychanalyse/articles/topologie-des-lieux-saints',
   '/role-de-l-inconscient-relation-entre-cavalier-et-cheval': '/fr/psychanalyse/articles/relation-cavalier-cheval',
   '/role-de-l-inconscient-relation-entre-cavalier-et-cheval/': '/fr/psychanalyse/articles/relation-cavalier-cheval',
-  '/genre/gen-psychanalyse-fa': '/fa/books?pillar=psychoanalysis',
-  '/genre/gen-psychanalyse-fa/': '/fa/books?pillar=psychoanalysis',
+  '/genre/gen-psychanalyse-fa': '/fa/books?genre=psychoanalysis',
+  '/genre/gen-psychanalyse-fa/': '/fa/books?genre=psychoanalysis',
 
   // 3. Pillar 2: Modern Calligraphy & Art Exhibitions
   '/nameyshgah-ir/fa-expo-8': '/fa/art/exhibitions/pompadour-2002-between-sign-and-symbol',
   '/nameyshgah-ir/fa-expo-8/': '/fa/art/exhibitions/pompadour-2002-between-sign-and-symbol',
-  '/nameyshgah-ir': '/fa/art/exhibitions',
-  '/nameyshgah-ir/': '/fa/art/exhibitions',
-  '/galerie-art': '/fr/art/galerie',
-  '/galerie-art/': '/fr/art/galerie',
+  '/nameyshgah-ir': '/fa/gallery#exhibitions-hall',
+  '/nameyshgah-ir/': '/fa/gallery#exhibitions-hall',
+  '/expositions': '/fr/gallery#exhibitions-hall',
+  '/expositions/': '/fr/gallery#exhibitions-hall',
+  '/galerie-art': '/fr/gallery',
+  '/galerie-art/': '/fr/gallery',
+  '/galleries-persan': '/fa/gallery',
+  '/galleries-persan/': '/fa/gallery',
 
   // 4. Poetry & Audio Recitations
   '/poeme/mra-navazesh-kn': '/fa/poetry/poems/caress-me',
@@ -45,8 +49,8 @@ export const STATIC_LEGACY_REDIRECTS: Record<string, string> = {
   '/انشست-پالتاکی-خاور-fa/': '/fa/human-rights/speeches/khavaran-justice-session',
   '/neshast-paltaki-khavar-fa': '/fa/human-rights/speeches/khavaran-justice-session',
   '/neshast-paltaki-khavar-fa/': '/fa/human-rights/speeches/khavaran-justice-session',
-  '/lddhi-reports': '/fa/human-rights/lddhi',
-  '/lddhi-reports/': '/fa/human-rights/lddhi',
+  '/lddhi-reports': '/fa/about?tab=references',
+  '/lddhi-reports/': '/fa/about?tab=references',
 
   // 6. Books Showcase
   '/list-ketabhay-farsi-ir': '/fa/books',
@@ -57,6 +61,19 @@ export const STATIC_LEGACY_REDIRECTS: Record<string, string> = {
   // 7. Videos and Speeches
   '/video/hassan-makaremi-parle-de-hafez-de-chiraz': '/fr/media/videos/hafez-de-chiraz',
   '/video/hassan-makaremi-parle-de-hafez-de-chiraz/': '/fr/media/videos/hafez-de-chiraz',
-  '/video': '/fa/media/videos',
-  '/video/': '/fa/media/videos',
+  '/video': '/fa/media',
+  '/video/': '/fa/media',
+  '/videos-persan': '/fa/media',
+  '/videos-persan/': '/fa/media',
+
+  // 8. Legacy Exhibition Aliases (from merged supplemental records)
+  '/fa/art/exhibitions/havana-cuba-2013-man-na-manam': '/fa/art/exhibitions/havana-cuba-2012-man-na-manam',
+  '/fr/art/exhibitions/havana-cuba-2013-man-na-manam': '/fr/art/exhibitions/havana-cuba-2012-man-na-manam',
+  '/en/art/exhibitions/havana-cuba-2013-man-na-manam': '/en/art/exhibitions/havana-cuba-2012-man-na-manam',
+  '/fa/art/exhibitions/saint-petersburg-national-library-2007': '/fa/art/exhibitions/saint-petersburg-national-library-2013',
+  '/fr/art/exhibitions/saint-petersburg-national-library-2007': '/fr/art/exhibitions/saint-petersburg-national-library-2013',
+  '/en/art/exhibitions/saint-petersburg-national-library-2007': '/en/art/exhibitions/saint-petersburg-national-library-2013',
+  '/fa/art/exhibitions/novgorod-international-calligraphy': '/fa/art/exhibitions/moscow-museum-modern-calligraphy',
+  '/fr/art/exhibitions/novgorod-international-calligraphy': '/fr/art/exhibitions/moscow-museum-modern-calligraphy',
+  '/en/art/exhibitions/novgorod-international-calligraphy': '/en/art/exhibitions/moscow-museum-modern-calligraphy',
 };

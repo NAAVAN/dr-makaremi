@@ -1,8 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Sparkles, FileText, ArrowLeft, ArrowRight, BookOpen } from 'lucide-react';
-import { getArticles, getBooks, mapPillarSlugToPillar } from '@/lib/cms';
+import { Sparkles, Video, BookOpen, Palette, Feather, ShieldAlert, FileCheck2 } from 'lucide-react';
+import {
+  getArticles,
+  getBooks,
+  getVideoSpeeches,
+  mapPillarSlugToPillar,
+} from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import type { ContentPillar } from '@makaremi/shared';
 
@@ -36,8 +41,11 @@ export default async function PillarHubPage({
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  const articles = await getArticles(locale, pillarKey);
-  const allBooks = await getBooks(locale);
+  const [articles, allBooks, pillarVideos] = await Promise.all([
+    getArticles(locale, pillarKey),
+    getBooks(locale),
+    getVideoSpeeches(locale, pillarKey),
+  ]);
   const pillarBooks = allBooks.filter((b) => b.pillar === pillarKey);
 
   const pillarTitles: Record<ContentPillar, { fa: string; fr: string; en: string }> = {
@@ -47,14 +55,14 @@ export default async function PillarHubPage({
       en: 'Lacanian Psychoanalysis',
     },
     art_calligraphy: {
-      fa: 'هنر و خوشنویسی مدرن',
-      fr: 'Art & Calligraphie Contemporaine',
-      en: 'Modern Art & Calligraphy',
+      fa: 'هنر، خوشنویسی، شعر و حافظ',
+      fr: 'Art, Calligraphie & Poésie',
+      en: 'Modern Art, Calligraphy & Poetry',
     },
     cultural_strategy: {
-      fa: 'مطالعات راهبردی و فرهنگ',
-      fr: 'Stratégie Culturelle & Politique',
-      en: 'Cultural & Political Strategy',
+      fa: 'مطالعات راهبردی، پژوهش و جامعه',
+      fr: 'Stratégie Culturelle, Recherche & Société',
+      en: 'Cultural Strategy, Research & Society',
     },
     human_rights_dadkhahi: {
       fa: 'حقوق بشر و دادخواهی',
@@ -64,6 +72,37 @@ export default async function PillarHubPage({
   };
 
   const currentTitle = pillarTitles[pillarKey][locale];
+
+  const quickLinks =
+    pillarKey === 'psychoanalysis'
+      ? [
+          { href: `/${locale}/${pillar}/articles`, label: isFa ? `همه ${articles.length} مقاله روانکاوی` : `${articles.length} Articles`, icon: Sparkles },
+          { href: `/${locale}/media?series=dar-ravanpajoohi-ba-makaremi#videos-archive`, label: isFa ? 'مجموعه «در روان‌پژوهی»' : 'Série Recherche Psy.', icon: Video },
+          { href: `/${locale}/media?series=negah-e-ravankav#videos-archive`, label: isFa ? 'مجموعه «نگاه روانکاو»' : 'Le Regard du Psy.', icon: Video },
+          { href: `/${locale}/glossary`, label: isFa ? 'واژه‌نامه تحلیلی لکانی' : 'Glossaire Lacanien', icon: BookOpen },
+          { href: `/${locale}/about/konferans-ravankavi-ir`, label: isFa ? 'کنفرانس‌های روانکاوی' : 'Conférences', icon: FileCheck2 },
+        ]
+      : pillarKey === 'art_calligraphy'
+        ? [
+            { href: `/${locale}/gallery`, label: isFa ? 'گالری IIIF و ۲۹ مجموعه تابلو' : 'Galerie IIIF', icon: Palette },
+            { href: `/${locale}/gallery#exhibitions-hall`, label: isFa ? '۲۷ نمایشگاه بین‌المللی' : '27 Expositions', icon: Palette },
+            { href: `/${locale}/hafez`, label: isFa ? 'قطب حافظ‌پژوهی' : 'Pôle Hafez', icon: Feather },
+            { href: `/${locale}/poetry`, label: isFa ? 'دفتر ۳۰۰ شعر و تصویر' : '300 Poèmes', icon: Feather },
+            { href: `/${locale}/${pillar}/articles`, label: isFa ? `${articles.length} مقاله هنر` : `${articles.length} Articles Art`, icon: Sparkles },
+          ]
+        : pillarKey === 'cultural_strategy'
+          ? [
+              { href: `/${locale}/${pillar}/articles`, label: isFa ? `همه ${articles.length} مقاله راهبرد و جامعه` : `${articles.length} Articles`, icon: Sparkles },
+              { href: `/${locale}/about?tab=conferences`, label: isFa ? 'کنفرانس‌های پژوهش و جامعه' : 'Conférences', icon: FileCheck2 },
+              { href: `/${locale}/books?genre=strategy`, label: isFa ? 'کتاب‌های راهبردی' : 'Livres Stratégie', icon: BookOpen },
+              { href: `/${locale}/books?genre=culture`, label: isFa ? 'کتاب‌های فرهنگ ایران' : 'Livres Culture', icon: BookOpen },
+            ]
+          : [
+              { href: `/${locale}/${pillar}/articles`, label: isFa ? `همه ${articles.length} مقاله و بیانیه` : `${articles.length} Articles`, icon: ShieldAlert },
+              { href: `/${locale}/about?tab=references`, label: isFa ? 'منابع و اسناد LDDHI / سازمان ملل' : 'Références LDDHI / ONU', icon: FileCheck2 },
+              { href: `/${locale}/media?pillar=human_rights_dadkhahi#videos-archive`, label: isFa ? `${pillarVideos.length} سخنرانی دادخواهی` : `${pillarVideos.length} Discours`, icon: Video },
+              { href: `/${locale}/about/conference-26-khavaran-matn-ir`, label: isFa ? 'سند دادخواهی خاوران ۶۷' : 'Mémoire Khavaran 1988', icon: FileCheck2 },
+            ];
 
   return (
     <div className="space-y-12">
@@ -78,9 +117,26 @@ export default async function PillarHubPage({
         </h1>
         <p className="text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
           {isFa
-            ? 'آرشیو متمرکز مقالات پژوهشی، کتاب‌ها، مفاهیم واژه‌نامه تخصصی و بیانیه‌های دکتر حسن مکارمی در این ستون محتوایی.'
-            : 'Archives thématiques d’articles, monographies et concepts cliniques.'}
+            ? `آرشیو متمرکز ${articles.length} مقاله پژوهشی، ${pillarBooks.length} کتاب، ${pillarVideos.length} ویدیو و سخنرانی و اسناد مرتبط در این ستون محتوایی.`
+            : `Archives thématiques : ${articles.length} articles, ${pillarBooks.length} livres et ${pillarVideos.length} vidéos.`}
         </p>
+
+        {/* Sub-hub Quick Access Links */}
+        <nav aria-label="دسترسی سریع این ستون" className="flex flex-wrap items-center gap-2 pt-2">
+          {quickLinks.map((ql) => {
+            const Icon = ql.icon;
+            return (
+              <Link
+                key={ql.href}
+                href={ql.href}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
+              >
+                <Icon size={14} className="text-[var(--primary)]" />
+                <span>{ql.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
       </header>
 
       {/* Articles Section */}
@@ -141,12 +197,82 @@ export default async function PillarHubPage({
         </div>
       </section>
 
+      {/* Pillar Videos & Speeches Section */}
+      {pillarVideos.length > 0 && (
+        <section aria-label="ویدیوها و سخنرانی‌های این ستون" className="space-y-6 pt-4">
+          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+            <h2 className="text-xl font-bold text-[var(--foreground)]">
+              {isFa
+                ? `ویدیوها و سخنرانی‌های این ستون (${pillarVideos.length} ویدیو)`
+                : `Vidéos & Conférences (${pillarVideos.length})`}
+            </h2>
+            <Link
+              href={`/${locale}/media?pillar=${pillarKey}#videos-archive`}
+              className="text-xs font-bold text-[var(--primary)] hover:underline"
+            >
+              {isFa ? `مشاهده همه ${pillarVideos.length} ویدیو ←` : `Toutes les ${pillarVideos.length} vidéos →`}
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {pillarVideos.slice(0, 6).map((vid) => {
+              const vTrans =
+                vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+                vid.translations?.[0];
+              const vHref =
+                vid.pillar === 'human_rights_dadkhahi'
+                  ? `/${locale}/human-rights/speeches/${vid.slug}`
+                  : `/${locale}/media/videos/${vid.slug}`;
+              return (
+                <Link
+                  key={vid.id}
+                  href={vHref}
+                  className="group rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
+                >
+                  {vid.thumbnail_url && (
+                    <div className="aspect-video w-full overflow-hidden bg-neutral-900">
+                      <img
+                        src={vid.thumbnail_url}
+                        alt={vTrans?.title || vid.slug}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono text-[var(--foreground-muted)]">
+                        {vid.event_date}
+                      </span>
+                      <h3 className="text-sm font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] leading-snug line-clamp-2 mt-1">
+                        {vTrans?.title || vid.slug}
+                      </h3>
+                    </div>
+                    <span className="text-xs font-bold text-[var(--primary)]">
+                      {isFa ? 'مشاهده ویدیو ←' : 'Regarder →'}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Pillar Books Section */}
       {pillarBooks.length > 0 && (
         <section aria-label="کتاب‌های مرتبط با این ستون" className="space-y-6 pt-4">
-          <h2 className="text-xl font-bold text-[var(--foreground)] border-b border-[var(--border-subtle)] pb-3">
-            {isFa ? 'کتاب‌های مرتبط' : 'Livres Associés'}
-          </h2>
+          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+            <h2 className="text-xl font-bold text-[var(--foreground)]">
+              {isFa ? `کتاب‌های مرتبط (${pillarBooks.length} عنوان)` : `Livres Associés (${pillarBooks.length})`}
+            </h2>
+            <Link
+              href={`/${locale}/books?pillar=${pillarKey}`}
+              className="text-xs font-bold text-[var(--primary)] hover:underline"
+            >
+              {isFa ? 'مشاهده در کتاب‌خانه 3D ←' : 'Bibliothèque 3D →'}
+            </Link>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {pillarBooks.map((b) => {

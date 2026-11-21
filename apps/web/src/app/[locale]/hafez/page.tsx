@@ -14,6 +14,9 @@ import {
 } from 'lucide-react';
 import {
   getBooks,
+  getArticles,
+  getVideoSpeeches,
+  getArchivePages,
   VIDEO_SERIES_CATALOG,
   THEMATIC_GALLERIES,
 } from '@/lib/cms';
@@ -62,13 +65,29 @@ export default async function HafezologyHubPage({
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  const allBooks = await getBooks(locale);
+  const [allBooks, allVideos, allArticles, archivePages] = await Promise.all([
+    getBooks(locale),
+    getVideoSpeeches(locale),
+    getArticles(locale),
+    getArchivePages(locale),
+  ]);
+
   const hafezBooks = allBooks.filter(
-    (b) =>
-      b.slug.includes('hafez') ||
-      b.slug === 'listening-differently-to-hafez' ||
-      b.slug === 'another-look-at-secret-of-hafez' ||
-      b.slug === 'hafez-par-hafez'
+    (b) => b.slug.includes('hafez') || b.genre_key === 'hafez'
+  );
+  const hafezVideos = allVideos.filter(
+    (v) => v.series_slug === 'sedaye-sokhan-eshgh-hafez'
+  );
+  const hafezArticles = allArticles
+    .filter((a) => {
+      const tr =
+        a.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+        a.translations?.[0];
+      return /حافظ|hafez|hâfez/i.test(`${tr?.title || ''} ${(a.categories || []).join(' ')}`);
+    })
+    .slice(0, 6);
+  const hafezConferences = archivePages.filter((p) =>
+    ['fa-conf-hafez-didar', 'poesie-hafez-do-ajahan-ir', 'rfi-hafez-ir'].includes(p.slug)
   );
 
   const primaryHafezBook = hafezBooks[0] || allBooks[0];
@@ -87,50 +106,54 @@ export default async function HafezologyHubPage({
     {
       id: 'del-in-persian-culture',
       title: isFa
-        ? 'مفهوم «دل» در فرهنگ پارسی و شعر حافظ'
+        ? 'دیگرشنیدن حافظ: رند شیراز در برابر زاهد و محتسب'
         : isFr
-        ? 'Le concept de « Del » (Cœur) dans la culture persane et chez Hafez'
-        : 'The Concept of “Del” (Heart) in Persian Culture and Hafez’s Poetry',
+          ? 'Écouter Hafez autrement : Le Rend face à l’hypocrisie'
+          : 'Listening Differently to Hafez: The Rend Against Hypocrisy',
       summary: isFa
-        ? 'کالبدشکافی واژه «دل» در دیوان حافظ به عنوان جایگاه تلاقی ناخودآگاه، آیینه شهود و کانون مقاومت در برابر جزم‌اندیشی.'
-        : 'Analyse sémiotique et psychanalytique du « Cœur » comme miroir de l’inconscient dans le Divân.',
-      tag: isFa ? 'رساله پژوهشی' : 'Essai',
+        ? 'بازخوانی مفهوم «رند» و واژه «دل» در دیوان حافظ با ابزارهای روانکاوی لکانی؛ گذار از ریاکاری زاهدانه به اخلاق آزادی درونی.'
+        : 'Relecture lacanienne de la figure du Rend et du concept de « Del » dans le Divân.',
+      tag: isFa ? 'کتاب مرجع' : 'Monographie',
+      href: `/${locale}/books/listening-differently-to-hafez`,
     },
     {
       id: 'rend-and-divided-subject',
       title: isFa
-        ? '«رند» کیست؟ سوژه شکافته و شالوده‌شکنی از ریاکاری'
+        ? 'شعر حافظ و کارگاه هستی (گفتگوی مشروح با رادیو RFI)'
         : isFr
-        ? 'La figure du « Rend » : éthique de la sincérité contre l’hypocrisie'
-        : 'Who Is the “Rend”? The Divided Subject and Deconstruction of Hypocrisy',
+          ? 'Poésie de Hafez et l’atelier de l’être (Entretien RFI)'
+          : 'Hafez Poetry & Workshop of Being (RFI Interview)',
       summary: isFa
-        ? 'تبیین جایگاه رند شیراز در برابر زاهد و محتسب؛ چگونه حافظ با پذیرش کاستی انسان، اخلاقی نوین بر پایه مدارا و آزادی می‌آفریند.'
-        : 'Comment Hafez déconstruit le discours moralisateur par la figure subersive du Rend.',
-      tag: isFa ? 'روانکاوی ادبیات' : 'Psychanalyse & Poésie',
+        ? 'متن کامل گفتگوی رادیویی درباره پیوند غزل حافظ با روانکاوی مدرن و چرایی ماندگاری حافظ در حافظه ایرانیان.'
+        : 'Texte intégral de l’entretien RFI sur la modernité radicale du Ghazal de Hafez.',
+      tag: isFa ? 'مصاحبه RFI' : 'Entretien RFI',
+      href: `/${locale}/about/rfi-hafez-ir`,
     },
     {
       id: 'ontology-of-hafez-love',
       title: isFa
-        ? 'هستی‌شناسی حافظ؛ عشق، ایهام و دو جهان'
+        ? 'حافظ شیراز و دیدار / شب شعر حافظ و عشق دو جهان'
         : isFr
-        ? 'Ontologie de Hafez : l’amour, la polysémie et les deux mondes'
-        : 'Ontology of Hafez: Love, Polysemy, and the Two Worlds',
+          ? 'Hafez de Chiraz : Rencontre et Amour des Deux Mondes'
+          : 'Hafez of Shiraz & Night of Two-World Love (Paris)',
       summary: isFa
-        ? 'بررسی ساختار چندمعنایی (ایهام) در غزل حافظ که در آن عشق زمینی و عشق کیهانی بدون مرز بر روی یکدیگر می‌لغزند.'
-        : 'La structure polysémique du Ghazal où l’amour terrestre et cosmique se répondent.',
-      tag: isFa ? 'نقد و نظر' : 'Herméneutique',
+        ? 'گزارش و اسناد کنفرانس‌ها و شب‌های شعر حافظ در پاریس و بررسی ساختار چندمعنایی (ایهام) در غزل حافظ.'
+        : 'Conférences et soirées poétiques consacrées à Hafez et à la polysémie du Ghazal à Paris.',
+      tag: isFa ? 'کنفرانس پاریس' : 'Conférence',
+      href: `/${locale}/about/fa-conf-hafez-didar`,
     },
     {
       id: 'hafez-by-hafez-methodology',
       title: isFa
-        ? 'روش‌شناسی «حافظ به روایت حافظ» (Hafez par Hafez)'
+        ? 'جستجو در ده‌ها مقاله و جستار حافظ‌پژوهی پایگاه'
         : isFr
-        ? 'Méthodologie « Hafez par Hafez » : lire le Divân par ses signifiants'
-        : '“Hafez by Hafez” Methodology: Reading the Divan Through Its Own Signifiers',
+          ? 'Explorer tous les articles et essais sur Hafez'
+          : 'Explore All Articles & Essays on Hafez',
       summary: isFa
-        ? 'روش ابداعی دکتر مکارمی در رمزگشایی از شبکه واژگان کلیدی دیوان حافظ (می، پیر مغان، زلف، خرابات، شاهد) در پیوند با یکدیگر.'
-        : 'Déchiffrer le réseau des signifiants clés du Divân sans plaquer de dogme extérieur.',
-      tag: isFa ? 'روش‌شناسی' : 'Méthodologie',
+        ? 'دسترسی مستقیم به همه مقالات، یادداشت‌ها و جستارهای دکتر مکارمی که به رمزگشایی از دیوان حافظ پرداخته‌اند.'
+        : 'Accès direct à l’ensemble des articles consacrés à Hafez dans nos archives.',
+      tag: isFa ? 'آرشیو مقالات' : 'Archives',
+      href: `/${locale}/articles?q=${encodeURIComponent(isFa ? 'حافظ' : 'Hafez')}`,
     },
   ];
 
@@ -279,88 +302,178 @@ export default async function HafezologyHubPage({
         </div>
       </section>
 
-      {/* SECTION 2: HAFEZOLOGY TREATISES & ARTICLES */}
+      {/* SECTION 2: HAFEZOLOGY TREATISES, CONFERENCES & REAL ARTICLES */}
       <section aria-label="جستارها و مقالات حافظ‌پژوهی" className="space-y-6">
         <h2 className="text-2xl font-black text-[var(--foreground)] border-b border-[var(--border-subtle)] pb-3">
           {isFa
-            ? 'محورهای نظری و جستارهای حافظ‌پژوهی'
+            ? 'محورهای نظری، کنفرانس‌ها و جستارهای حافظ‌پژوهی'
             : isFr
-            ? 'Axes Théoriques et Essais sur Hafez'
-            : 'Key Theoretical Axes & Hafezology Essays'}
+              ? 'Axes Théoriques, Conférences et Essais sur Hafez'
+              : 'Key Theoretical Axes, Conferences & Hafezology Essays'}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {hafezTreatises.map((item) => (
-            <article
+            <Link
               key={item.id}
-              className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3"
+              href={item.href}
+              className="group p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all flex flex-col justify-between space-y-4"
             >
-              <span className="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[var(--surface-sunken)] text-amber-700 dark:text-amber-400 border border-[var(--border-subtle)]">
-                {item.tag}
-              </span>
-              <h3 className="text-lg font-bold text-[var(--foreground)] leading-snug">
-                {item.title}
-              </h3>
-              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                {item.summary}
-              </p>
-            </article>
+              <div className="space-y-3">
+                <span className="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[var(--surface-sunken)] text-amber-700 dark:text-amber-400 border border-[var(--border-subtle)]">
+                  {item.tag}
+                </span>
+                <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  {item.summary}
+                </p>
+              </div>
+              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-end text-xs font-bold text-[var(--primary)]">
+                <span>{isFa ? 'مشاهده و مطالعه ←' : 'Consulter →'}</span>
+              </div>
+            </Link>
           ))}
         </div>
+
+        {(hafezConferences.length > 0 || hafezArticles.length > 0) && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            {hafezConferences.map((pg) => {
+              const tr = pg.translations?.find((t) => t.languages_code.startsWith(locale)) || pg.translations?.[0];
+              return (
+                <Link
+                  key={pg.id}
+                  href={`/${locale}/about/${pg.slug}`}
+                  className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] hover:border-[var(--primary)] transition-colors space-y-1.5"
+                >
+                  <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400">
+                    {isFa ? 'سند / کنفرانس حافظ' : 'Conférence / Entretien'}
+                  </span>
+                  <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug line-clamp-2">
+                    {tr?.title || pg.slug}
+                  </h3>
+                </Link>
+              );
+            })}
+            {hafezArticles.slice(0, 3).map((art) => {
+              const tr = art.translations?.find((t) => t.languages_code.startsWith(locale)) || art.translations?.[0];
+              const pSeg =
+                art.pillar === 'psychoanalysis'
+                  ? isFr
+                    ? 'psychanalyse'
+                    : 'psychoanalysis'
+                  : art.pillar === 'art_calligraphy'
+                    ? 'art'
+                    : art.pillar === 'cultural_strategy'
+                      ? 'strategy'
+                      : 'human-rights';
+              return (
+                <Link
+                  key={art.id}
+                  href={`/${locale}/${pSeg}/articles/${art.slug}`}
+                  className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] hover:border-[var(--primary)] transition-colors space-y-1.5"
+                >
+                  <span className="text-[10px] font-mono font-bold text-[var(--primary)]">
+                    {isFa ? 'مقاله حافظ‌پژوهی' : 'Article sur Hafez'}
+                  </span>
+                  <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug line-clamp-2">
+                    {tr?.title || art.slug}
+                  </h3>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </section>
 
-      {/* SECTION 3: VIDEO SERIES «صدای سخن عشق (حافظ)» & SORBONNE CONFERENCE */}
+      {/* SECTION 3: REAL MIGRATED HAFEZ VIDEO SERIES «صدای سخن عشق (حافظ)» */}
       <section
         id="hafez-videos"
         aria-label="مجموعه ویدیویی صدای سخن عشق"
-        className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 space-y-6"
+        className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 space-y-6 scroll-mt-28"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-amber-600 font-bold">
               <Video size={16} />
-              <span>{isFa ? 'آرشیو دیداری و شنیداری حافظ‌پژوهی' : 'Séminaires Vidéos sur Hafez'}</span>
+              <span>
+                {isFa
+                  ? `آرشیو دیداری حافظ‌پژوهی (${hafezVideos.length} ویدیوی واقعی)`
+                  : `Séminaires Vidéos sur Hafez (${hafezVideos.length})`}
+              </span>
             </div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
               {hafezVideoSeries?.title[locale]}
             </h2>
           </div>
 
-          <Link
-            href={`/${locale}/media/videos/hafez-de-chiraz`}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-700 text-white hover:bg-amber-800 transition-colors shrink-0"
-          >
-            <Video size={14} />
-            <span>
-              {isFa
-                ? 'مشاهده کنفرانس سوربن پاریس درباره حافظ'
-                : 'Conférence à la Sorbonne sur Hafez'}
-            </span>
-          </Link>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <Link
+              href={`/${locale}/media/videos/hafez-de-chiraz`}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-700 text-white hover:bg-amber-800 transition-colors"
+            >
+              <Video size={14} />
+              <span>
+                {isFa
+                  ? 'کنفرانس پاریس درباره حافظ'
+                  : 'Conférence à Paris sur Hafez'}
+              </span>
+            </Link>
+            <Link
+              href={`/${locale}/media?series=sedaye-sokhan-eshgh-hafez#videos-archive`}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
+            >
+              <span>{isFa ? `همه ${hafezVideos.length} ویدیو ←` : `Toutes les ${hafezVideos.length} vidéos →`}</span>
+            </Link>
+          </div>
         </div>
 
         <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
           {hafezVideoSeries?.description[locale]}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {hafezVideoSeries?.sampleTopics[locale].map((topic, i) => (
-            <div
-              key={i}
-              className="p-4 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-2"
-            >
-              <span className="text-[11px] font-mono font-bold text-amber-700 dark:text-amber-400">
-                {isFa ? `محور گفتار ${i + 1}` : `Thème ${i + 1}`}
-              </span>
-              <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
-                {topic}
-              </h3>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {hafezVideos.slice(0, 9).map((vid) => {
+            const vTrans =
+              vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+              vid.translations?.[0];
+            return (
+              <Link
+                key={vid.id}
+                href={`/${locale}/media/videos/${vid.slug}`}
+                className="group rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
+              >
+                {vid.thumbnail_url && (
+                  <div className="aspect-video w-full overflow-hidden bg-neutral-900">
+                    <img
+                      src={vid.thumbnail_url}
+                      alt={vTrans?.title || vid.slug}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400">
+                      {vid.event_date}
+                    </span>
+                    <h3 className="text-sm font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] leading-snug line-clamp-2">
+                      {vTrans?.title || vid.slug}
+                    </h3>
+                  </div>
+                  <span className="text-xs font-bold text-[var(--primary)] pt-2">
+                    {isFa ? 'مشاهده ویدیو ←' : 'Regarder →'}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
-      {/* SECTION 4: CALLIGRAPHIC GALLERY «ثبت اقدامات / حافظ ۲۰۱۵» */}
+      {/* SECTION 4: CALLIGRAPHIC GALLERY «آثار ۲۰۱۵ / حافظ» (Linked Directly to works-2015 in IIIF!) */}
       {hafezGallery && (
         <section
           aria-label="گالری نقاشی‌خط حافظ"
@@ -389,11 +502,11 @@ export default async function HafezologyHubPage({
           </div>
 
           <Link
-            href={`/${locale}/gallery`}
+            href={`/${locale}/gallery?series=${hafezGallery.artworkSeriesSlug}#iiif-stage`}
             className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
           >
             <Sparkles size={15} />
-            <span>{isFa ? 'ورود به موزه زوم عمیق آثار (IIIF)' : 'Visiter la Galerie IIIF'}</span>
+            <span>{isFa ? 'گشودن گالری حافظ در موزه زوم عمیق (IIIF)' : 'Ouvrir la Série Hafez (IIIF)'}</span>
           </Link>
         </section>
       )}

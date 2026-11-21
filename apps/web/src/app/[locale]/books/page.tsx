@@ -37,8 +37,8 @@ export default async function BooksCatalogPage({
           </h1>
           <p className="text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
             {isFa
-              ? 'مجموعه بیش از ۱۶ عنوان کتاب تألیفی و ترجمه در ۸ ژانر تخصصی (روانکاوی بالینی لکانی، حافظ‌پژوهی، مطالعات راهبردی، فرهنگ ایران، هنر خوشنویسی، شعر دوزبانه، رمان و خاطرات) همراه با کتاب‌خوان ورق‌خور سه‌بعدی.'
-              : "Monographies, études sur Hafez, romans, traductions de Jacques Lacan et essais stratégiques publiés en France et en Iran."}
+              ? `مجموعه کامل ${books.length} عنوان کتاب تألیفی و ترجمه در ۸ ژانر تخصصی (روانکاوی بالینی لکانی، حافظ‌پژوهی، مطالعات راهبردی، فرهنگ ایران، هنر خوشنویسی، شعر دوزبانه، رمان و خاطرات) همراه با کتاب‌خوان ورق‌خور سه‌بعدی.`
+              : `Collection complète de ${books.length} monographies, études sur Hafez, romans, traductions de Jacques Lacan et essais stratégiques publiés en France et en Iran.`}
           </p>
         </div>
 

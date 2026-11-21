@@ -98,6 +98,7 @@ export interface Book {
   cover_image_url?: string | null;
   pdf_urls?: string[];
   genres?: string[];
+  genre_key?: string | null;
   legacy_wp_slug?: string | null;
   author_audio_commentary_id?: string | null;
   order_index: number;
@@ -210,6 +211,7 @@ export interface VideoSpeech {
   vimeo_url?: string | null;
   thumbnail_url?: string | null;
   themes?: string[];
+  series_slug?: string | null;
   legacy_wp_slug?: string | null;
   self_hosted_hls_url?: string | null;
   self_hosted_audio_url?: string | null;

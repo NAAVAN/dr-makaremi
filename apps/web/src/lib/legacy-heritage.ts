@@ -144,8 +144,18 @@ export interface GlobalAuthorityBadge {
   id: string;
   title: Record<Locale, string>;
   subtitle: Record<Locale, string>;
+  /** Locale-relative path (e.g. '/gallery') or full https URL */
   externalUrl: string;
+  officialExternalUrl?: string;
   badgeText: Record<Locale, string>;
+}
+
+export function resolveBadgeHref(badge: GlobalAuthorityBadge, locale: Locale): string {
+  const url = badge.externalUrl;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const psychoSlug = locale === 'fr' ? 'psychanalyse' : 'psychoanalysis';
+  const normalized = url.replace(/^\/(fa|fr|en)(?=\/|$)/, '').replace(/^\/psychoanalysis(?=\/|$)/, `/${psychoSlug}`);
+  return `/${locale}${normalized.startsWith('/') ? normalized : `/${normalized}`}`;
 }
 
 export const GLOBAL_AUTHORITY_BADGES: GlobalAuthorityBadge[] = [
@@ -161,7 +171,8 @@ export const GLOBAL_AUTHORITY_BADGES: GlobalAuthorityBadge[] = [
       fr: '7 œuvres calligraphiques conservées dans la collection permanente du musée',
       en: '7 calligraphic canvases preserved in the permanent museum collection',
     },
-    externalUrl: 'https://www.calligraphy-museum.com/en/participants/hassan_makaremi',
+    externalUrl: '/art/exhibitions/moscow-museum-modern-calligraphy',
+    officialExternalUrl: 'https://www.calligraphy-museum.com/en/participants/hassan_makaremi',
     badgeText: {
       fa: '۷ اثر در گنجینه دائمی',
       fr: '7 Œuvres Permanentes',
@@ -180,7 +191,7 @@ export const GLOBAL_AUTHORITY_BADGES: GlobalAuthorityBadge[] = [
       fr: 'Exposition et conférence internationale sur le dialogue des écritures (2009)',
       en: 'International exhibition & symposium on dialogue of scripts (2009)',
     },
-    externalUrl: '/fa/art/exhibitions/pompadour-2002-between-sign-and-symbol',
+    externalUrl: '/art/exhibitions/unesco-paris-2009-dialogue-of-scripts',
     badgeText: {
       fa: 'یونسکو پاریس ۲۰۰۹',
       fr: 'UNESCO Paris 2009',
@@ -199,7 +210,7 @@ export const GLOBAL_AUTHORITY_BADGES: GlobalAuthorityBadge[] = [
       fr: 'Référencé parmi les maîtres de la peinture et calligraphie iranienne contemporaine',
       en: 'Recognized among contemporary masters of Iranian painting and calligraphy',
     },
-    externalUrl: '/fa/gallery',
+    externalUrl: '/gallery',
     badgeText: {
       fa: 'بنیاد توس',
       fr: 'Fondation Toos',
@@ -218,7 +229,7 @@ export const GLOBAL_AUTHORITY_BADGES: GlobalAuthorityBadge[] = [
       fr: 'Trésorier et défenseur actif des droits humains et de la justice transitionnelle',
       en: 'Treasurer & human rights advocate submitting reports to the UN',
     },
-    externalUrl: '/fa/about?tab=references',
+    externalUrl: '/about?tab=references',
     badgeText: {
       fa: 'حقوق بشر و دادخواهی',
       fr: 'Droits Humains (LDDHI)',
@@ -237,7 +248,7 @@ export const GLOBAL_AUTHORITY_BADGES: GlobalAuthorityBadge[] = [
       fr: 'Psychanalyste clinicien à Paris et membre du conseil d’administration',
       en: 'Clinical Psychoanalyst in Paris & Board Member',
     },
-    externalUrl: '/fa/psychoanalysis',
+    externalUrl: '/psychoanalysis',
     badgeText: {
       fa: 'روانکاو بالینی پاریس',
       fr: 'Psychanalyste à Paris',
@@ -612,10 +623,39 @@ export const BOOK_STUDIO_PROFILES: Record<string, BookStudioProfile> = {
   },
 };
 
+const EXPLICIT_BOOK_GENRES: Record<string, BookGenreKey> = {
+  'lacan-seminar-3-psychoses': 'psychoanalysis',
+  'empathies-of-a-psychoanalyst': 'psychoanalysis',
+  'pathology-of-fragmentation-death-drive': 'psychoanalysis',
+  'listening-differently-in-psychoanalysis': 'psychoanalysis',
+  'television-lacan': 'psychoanalysis',
+  'sexologie-et-ecoute-psychanalytique': 'psychoanalysis',
+  'listening-differently-to-hafez': 'hafez',
+  'another-look-at-secret-of-hafez': 'hafez',
+  'hafez-par-hafez': 'hafez',
+  'ce-jardin-tu-es-en-lair': 'poetry',
+  'piano-with-four-hands': 'poetry',
+  'regards-croises-calligraphie': 'art',
+  'le-langage-des-oiseaux-projet-d-installation': 'art',
+  'strategic-look-at-transition': 'strategy',
+  'strategic-perspectives-future-iran': 'strategy',
+  'document-de-reference-numero-3': 'strategy',
+  'mutation-culturelle-livre-de-reference-les-haras-nationa': 'strategy',
+  'mutation-culturelle-livre-de-reference2-les-haras-nation': 'strategy',
+  'experience-de-mise-en-place-du-pilotage-strategique-hn': 'strategy',
+  'cultural-land-of-iran': 'culture',
+  'listening-differently-to-past': 'culture',
+  'nouvel-entendement-recueil-darticles': 'culture',
+  'geography-of-vakil-bazaar-mamdali': 'novel',
+  'ketab-daftar-khaterat': 'memoir',
+  'inevitable-escape-thirty-narratives': 'memoir',
+};
+
 export function getBookStudioProfile(
   slug: string,
   pageCount: number = 240,
-  pillar: ContentPillar = 'psychoanalysis'
+  pillar: ContentPillar = 'psychoanalysis',
+  explicitGenreKey?: string | null
 ): BookStudioProfile {
   if (BOOK_STUDIO_PROFILES[slug]) {
     return BOOK_STUDIO_PROFILES[slug];
@@ -624,16 +664,26 @@ export function getBookStudioProfile(
   const isFrenchLtr =
     slug.includes('regards-croises') ||
     slug.includes('mutation-culturelle') ||
-    slug.includes('hafez-par-hafez');
+    slug.includes('hafez-par-hafez') ||
+    slug.includes('document-de-reference') ||
+    slug.includes('le-langage-des-oiseaux') ||
+    slug.includes('sexologie-et-ecoute') ||
+    slug.includes('nouvel-entendement') ||
+    slug.includes('experience-de-mise-en-place');
 
   const genreMap: Record<ContentPillar, BookGenreKey> = {
     psychoanalysis: 'psychoanalysis',
-    art_calligraphy: slug.includes('hafez') ? 'hafez' : slug.includes('piano') || slug.includes('garden') ? 'poetry' : 'art',
-    cultural_strategy: slug.includes('cultural-land') ? 'culture' : slug.includes('bazaar') || slug.includes('diary') ? 'novel' : 'strategy',
+    art_calligraphy: slug.includes('hafez') ? 'hafez' : slug.includes('piano') || slug.includes('jardin') || slug.includes('garden') ? 'poetry' : 'art',
+    cultural_strategy: slug.includes('cultural-land') || slug.includes('past') || slug.includes('nouvel') ? 'culture' : slug.includes('bazaar') ? 'novel' : slug.includes('khaterat') || slug.includes('diary') ? 'memoir' : 'strategy',
     human_rights_dadkhahi: 'memoir',
   };
 
-  const genreKey = genreMap[pillar] || 'psychoanalysis';
+  const validGenreKeys = new Set<string>(Object.keys(BOOK_GENRE_LABELS));
+  const genreKey: BookGenreKey =
+    (explicitGenreKey && validGenreKeys.has(explicitGenreKey) ? (explicitGenreKey as BookGenreKey) : undefined) ||
+    EXPLICIT_BOOK_GENRES[slug] ||
+    genreMap[pillar] ||
+    'psychoanalysis';
   const spineMm = Number(((pageCount / 2) * 0.07 * 1.8 + 3).toFixed(1));
   const startP = Math.min(40, Math.max(12, Math.floor(pageCount * 0.25)));
   const endP = Math.min(pageCount - 10, startP + 32);
@@ -745,6 +795,8 @@ export function getBookStudioProfile(
 export interface ThematicGallerySeries {
   id: string;
   slug: string;
+  /** Exact slug in packages/shared/src/data/vault/artworks.json for live IIIF selection */
+  artworkSeriesSlug: string;
   year: number;
   dimensions: string;
   medium: Record<Locale, string>;
@@ -759,6 +811,7 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
   {
     id: 'gal-hafez-2015',
     slug: 'sabt-eghdamat-hafez-2015',
+    artworkSeriesSlug: 'works-2015',
     year: 2015,
     dimensions: '100×100 cm & 120×90 cm',
     medium: {
@@ -767,9 +820,9 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
       en: 'Ink, acrylic and gold leaf on canvas',
     },
     title: {
-      fa: 'مجموعه «ثبت اقدامات / حافظ ۲۰۱۵»',
-      fr: 'Série « Résonances de Hafez 2015 »',
-      en: '“Hafez Resonances 2015” Series',
+      fa: 'مجموعه «آثار ۲۰۱۵ / ثبت اقدامات و حافظ»',
+      fr: 'Série « Works 2015 & Résonances de Hafez »',
+      en: '“Works 2015 & Hafez Resonances” Series',
     },
     inspiration: {
       fa: 'الهام از غزلیات خواجه شمس‌الدین محمد حافظ شیرازی',
@@ -781,11 +834,12 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
       fr: 'Les vers de Hafez se libèrent de la ligne horizontale pour devenir vibration chromatique et mouvement circulaire.',
       en: 'Verses of Hafez break free from horizontal lines into chromatic vibration and circular calligraphic motion.',
     },
-    artworkCount: 18,
+    artworkCount: 112,
   },
   {
     id: 'gal-in-bagh-ra-hava-toyi',
     slug: 'in-bagh-ra-hava-toyi',
+    artworkSeriesSlug: 'tablo-in-bagh-ra-hva-toyy',
     year: 2014,
     dimensions: '300×200 cm (بوم عظیم ۶ مترمربعی)',
     medium: {
@@ -808,11 +862,12 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
       fr: 'Une œuvre muséale majeure de 3×2 mètres où la lettre respire comme le vent dans un jardin persan.',
       en: 'A major 3×2m museum work where calligraphic letters breathe across the canvas like wind through a Persian garden.',
     },
-    artworkCount: 12,
+    artworkCount: 13,
   },
   {
     id: 'gal-man-na-manam',
     slug: 'man-na-manam-havana-paris',
+    artworkSeriesSlug: 'non-je-ne-suis-pas-moi-meme',
     year: 2013,
     dimensions: '80×120 cm',
     medium: {
@@ -822,7 +877,7 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
     },
     title: {
       fa: 'مجموعه «من نه منم» (نمایشگاه هاوانا کوبا و پاریس)',
-      fr: 'Série « Je ne suis pas moi » (La Havane & Paris)',
+      fr: 'Série « Non, je ne suis pas moi-même » (La Havane & Paris)',
       en: '“I Am Not Myself” Series (Havana & Paris)',
     },
     inspiration: {
@@ -840,11 +895,12 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
       fr: 'Critique d’art : Farhad Zamani',
       en: 'Art Critique by Farhad Zamani',
     },
-    artworkCount: 22,
+    artworkCount: 29,
   },
   {
     id: 'gal-nezami-eshgh',
     slug: 'kaz-eshgh-be-ghayati-resanam',
+    artworkSeriesSlug: 'kaz-eshgh-be-ghayti-resanm',
     year: 2011,
     dimensions: '90×90 cm',
     medium: {
@@ -867,11 +923,12 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
       fr: 'Réinterprétation contemporaine de la poésie épique et amoureuse de Nizami.',
       en: 'Contemporary calligraphic reinterpretation of Nizami’s lyrical epic.',
     },
-    artworkCount: 15,
+    artworkCount: 2,
   },
   {
     id: 'gal-sohrab-ghali',
     slug: 'man-che-sabzam-emrouz-sohrab',
+    artworkSeriesSlug: 'man-cheh-sabzm-ir',
     year: 2010,
     dimensions: '150×100 cm',
     medium: {
@@ -881,7 +938,7 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
     },
     title: {
       fa: 'مجموعه و قالی هنری «من چه سبزم امروز»',
-      fr: 'Série & Tapis d’Art « Que je suis verdoyant aujourd’hui »',
+      fr: 'Série & Tapis d’Art « Comme je suis fleuri aujourd’hui »',
       en: 'Art Carpet & Series “How Green I Am Today”',
     },
     inspiration: {
@@ -894,7 +951,7 @@ export const THEMATIC_GALLERIES: ThematicGallerySeries[] = [
       fr: 'Alliance entre la poésie moderne de Sohrab Sepehri, la calligraphie et le tissage d’art persan.',
       en: 'Synthesis of Sohrab Sepehri’s modern poetry, calligraphy, and traditional Persian weaving.',
     },
-    artworkCount: 9,
+    artworkCount: 17,
   },
 ];
 
@@ -917,12 +974,12 @@ export const VIDEO_SERIES_CATALOG: VideoSeriesInfo[] = [
   {
     id: 'series-dar-ravanpajoohi',
     slug: 'dar-ravanpajoohi-ba-makaremi',
-    episodeCount: 65,
+    episodeCount: 54,
     pillar: 'psychoanalysis',
     title: {
-      fa: 'مجموعه «در روان‌‌پژوهی با دکتر حسن مکارمی» (۶۵+ قسمت)',
-      fr: 'Série « Recherche Psychanalytique avec le Dr Makaremi » (65+ épisodes)',
-      en: '“In Psycho-Research with Dr. Hassan Makaremi” Series (65+ Episodes)',
+      fa: 'مجموعه «در روان‌‌پژوهی با دکتر حسن مکارمی» (۵۴ قسمت)',
+      fr: 'Série « Recherche Psychanalytique avec le Dr Makaremi » (54 épisodes)',
+      en: '“In Psycho-Research with Dr. Hassan Makaremi” Series (54 Episodes)',
     },
     broadcaster: {
       fa: 'برنامه‌های آموزشی و تحلیلی تلویزیونی (پاریس)',
@@ -956,12 +1013,12 @@ export const VIDEO_SERIES_CATALOG: VideoSeriesInfo[] = [
   {
     id: 'series-negah-e-ravankav',
     slug: 'negah-e-ravankav',
-    episodeCount: 81,
+    episodeCount: 57,
     pillar: 'psychoanalysis',
     title: {
-      fa: 'مجموعه «نگاه روانکاو» (۸۱+ قسمت)',
-      fr: 'Série « Le Regard du Psychanalyste » (81+ épisodes)',
-      en: '“The Psychoanalyst’s Gaze” Series (81+ Episodes)',
+      fa: 'مجموعه «نگاه روانکاو» (۵۷ قسمت)',
+      fr: 'Série « Le Regard du Psychanalyste » (57 épisodes)',
+      en: '“The Psychoanalyst’s Gaze” Series (57 Episodes)',
     },
     broadcaster: {
       fa: 'تلویزیون و رسانه همگانی فارسی‌زبان',
@@ -995,12 +1052,12 @@ export const VIDEO_SERIES_CATALOG: VideoSeriesInfo[] = [
   {
     id: 'series-sedaye-sokhan-eshgh',
     slug: 'sedaye-sokhan-eshgh-hafez',
-    episodeCount: 14,
+    episodeCount: 17,
     pillar: 'art_calligraphy',
     title: {
-      fa: 'مجموعه «صدای سخن عشق» — دیگرشنیدن حافظ (۱۴ قسمت)',
-      fr: 'Série « La Voix de l’Amour : Écouter Hafez » (14 épisodes)',
-      en: '“The Voice of Love: Listening Differently to Hafez” (14 Episodes)',
+      fa: 'مجموعه «صدای سخن عشق» — دیگرشنیدن حافظ (۱۷ ویدیو)',
+      fr: 'Série « La Voix de l’Amour : Écouter Hafez » (17 vidéos)',
+      en: '“The Voice of Love: Listening Differently to Hafez” (17 Videos)',
     },
     broadcaster: {
       fa: 'نشست‌های حافظ‌پژوهی پاریس و کلن',
@@ -1031,12 +1088,12 @@ export const VIDEO_SERIES_CATALOG: VideoSeriesInfo[] = [
   {
     id: 'series-symbolism-to-nastaaliq',
     slug: 'az-namadpardazi-ta-nastaaliq',
-    episodeCount: 4,
+    episodeCount: 20,
     pillar: 'art_calligraphy',
     title: {
-      fa: 'مجموعه «از نمادپردازی تا خوشنویسی نستعلیق» (۴ بخش)',
-      fr: 'Série « Du Symbolisme à la Calligraphie Nasta’liq » (4 parties)',
-      en: '“From Symbolism to Nasta’liq Calligraphy” (4 Parts)',
+      fa: 'مجموعه هنر، «از نمادپردازی تا نستعلیق» و جشنواره یونسکو ۲۰۰۹ (۲۰ ویدیو)',
+      fr: 'Série Art, « Du Symbolisme au Nasta’liq » & Festival UNESCO 2009 (20 vidéos)',
+      en: 'Art, “From Symbolism to Nasta’liq” & UNESCO 2009 Festival (20 Videos)',
     },
     broadcaster: {
       fa: 'مستند و کنفرانس تاریخ هنر خوشنویسی (پاریس / یونسکو)',
@@ -1120,6 +1177,8 @@ export interface MediaInterviewItem {
   topicCategory: 'psychoanalysis' | 'human_rights' | 'hafez_culture' | 'strategy' | 'art';
   title: Record<Locale, string>;
   summary: Record<Locale, string>;
+  /** Real migrated archive page or video path (locale-relative) */
+  targetPath: string;
 }
 
 export const MEDIA_INTERVIEWS_ARCHIVE: MediaInterviewItem[] = [
@@ -1127,29 +1186,30 @@ export const MEDIA_INTERVIEWS_ARCHIVE: MediaInterviewItem[] = [
     id: 'int-rfi-white-torture',
     date: '2016-05-18',
     outlet: {
-      fa: 'رادیو بین‌المللی فرانسه (RFI فارسی)',
-      fr: 'RFI Persan (Radio France Internationale)',
-      en: 'Radio France Internationale (RFI Persian)',
+      fa: 'رادیو فردا / RFI فارسی',
+      fr: 'Radio Farda & RFI Persan',
+      en: 'Radio Farda & RFI Persian',
     },
     topicCategory: 'psychoanalysis',
     title: {
-      fa: 'پیامدهای روان‌شناختی سلول انفرادی و «شکنجه سفید» بر ساختار سوژه',
-      fr: 'Conséquences psychiques de l’isolement cellulaire et de la « torture blanche »',
-      en: 'Psychological Impact of Solitary Confinement and “White Torture”',
+      fa: 'تجاوز در زندان‌های ایران، شکنجه سفید، روان‌کاوی و رک‌گویی',
+      fr: 'Violence carcérale, « torture blanche » et écoute psychanalytique',
+      en: 'Prison Trauma, “White Torture”, and Psychoanalytic Listening',
     },
     summary: {
-      fa: 'تحلیل بالینی محرومیت حسی در سلول انفرادی، فروپاشی مرزهای تصویر تن و چگونگی بازسازی روانی زندانیان سیاسی پس از آزادی.',
+      fa: 'تحلیل بالینی محرومیت حسی، آسیب‌های زندان و چگونگی بازسازی روانی زندانیان سیاسی از دیدگاه روانکاوی لکانی.',
       fr: 'Analyse clinique de la privation sensorielle et de la reconstruction subjective après l’incarcération.',
       en: 'Clinical analysis of sensory deprivation and psychological recovery of political prisoners.',
     },
+    targetPath: '/about/tajavz-farada-ir',
   },
   {
     id: 'int-zamaneh-collective-trauma',
     date: '2017-08-24',
     outlet: {
-      fa: 'رادیو زمانه (آمستردام)',
-      fr: 'Radio Zamaneh (Amsterdam)',
-      en: 'Radio Zamaneh (Amsterdam)',
+      fa: 'آرشیو جامع مصاحبه‌ها (رادیو زمانه و رسانه‌ها)',
+      fr: 'Archives des Entretiens (Radio Zamaneh & Médias)',
+      en: 'Complete Interviews Archive (Radio Zamaneh & Press)',
     },
     topicCategory: 'human_rights',
     title: {
@@ -1162,86 +1222,91 @@ export const MEDIA_INTERVIEWS_ARCHIVE: MediaInterviewItem[] = [
       fr: 'Comment les traumatismes historiques non parlés se transmettent aux nouvelles générations.',
       en: 'How unspoken historical traumas are transmitted across generations and healed through truth-telling.',
     },
+    targetPath: '/human-rights/speeches/khavaran-justice-session',
   },
   {
     id: 'int-rfi-hafez-secret',
     date: '2015-10-12',
     outlet: {
-      fa: 'رادیو بین‌المللی فرانسه (بخش فرهنگ و ادب)',
-      fr: 'RFI Culture',
+      fa: 'رادیو بین‌المللی فرانسه (RFI — آرش ادیب‌زاده)',
+      fr: 'RFI Culture (Radio France Internationale)',
       en: 'RFI Cultural Program',
     },
     topicCategory: 'hafez_culture',
     title: {
-      fa: 'چگونه حافظ را «دگرگونه» بشنویم؟ درباره کتاب «نگرشی دیگر بر راز حافظ»',
-      fr: 'Comment écouter Hafez autrement ? Autour du secret de Hafez',
-      en: 'How to Listen Differently to Hafez? On “Another Look at the Secret of Hafez”',
+      fa: 'شعر حافظ و کارگاه هستی به زبان حسن مکارمی (دیگرشنیدن راز حافظ)',
+      fr: 'Poésie de Hafez et l’atelier de l’être — Entretien RFI',
+      en: 'Hafez Poetry & Workshop of Being — RFI Interview',
     },
     summary: {
       fa: 'گفتگو درباره پیوند رندی حافظ با مفهوم سوژه در روانکاوی مدرن و چرایی ماندگاری غزل حافظ در حافظه ایرانیان.',
       fr: 'Entretien sur la modernité radicale du Ghazal de Hafez lu au prisme de la psychanalyse.',
       en: 'Conversation on the radical modernity of Hafez’s Ghazals through a psychoanalytic lens.',
     },
+    targetPath: '/about/rfi-hafez-ir',
   },
   {
-    id: 'int-child-rights-dolto',
-    date: '2018-11-20',
+    id: 'int-unesco-courier-art',
+    date: '2012-03-10',
     outlet: {
-      fa: 'تلویزیون کانال جدید و رادیو فرهنگ',
-      fr: 'Kanal Jadid & Radio Farhang',
-      en: 'Kanal Jadid & Radio Farhang',
-    },
-    topicCategory: 'psychoanalysis',
-    title: {
-      fa: 'حقوق کودک، زبان راستین با نوزاد و آموزه‌های فرانسواز دولتو برای خانواده‌های ایرانی',
-      fr: 'Droits de l’enfant, parler vrai au nourrisson et l’héritage de Françoise Dolto',
-      en: 'Children’s Rights, Speaking Truthfully to Infants, and Françoise Dolto’s Legacy',
-    },
-    summary: {
-      fa: 'تبیین اهمیت «گفتن حقیقت به کودک از بدو تولد» و نقد خشونت کلامی و تنبیه در نظام تربیتی سنتی.',
-      fr: 'L’importance de la parole vraie adressée à l’enfant dès la naissance selon Françoise Dolto.',
-      en: 'The clinical importance of speaking truthfully to children from birth according to Françoise Dolto.',
-    },
-  },
-  {
-    id: 'int-moscow-museum-art',
-    date: '2014-04-09',
-    outlet: {
-      fa: 'مجله هنر و موزه خوشنویسی مسکو',
-      fr: 'Revue du Musée de la Calligraphie de Moscou',
-      en: 'Moscow Museum of Calligraphy Review',
+      fa: 'پیک یونسکو (Courrier de l’UNESCO)',
+      fr: 'Le Courrier de l’UNESCO',
+      en: 'The UNESCO Courier',
     },
     topicCategory: 'art',
     title: {
-      fa: 'رقص مرکب بر بوم؛ از خط شکسته نستعلیق سنتی تا نقاشی‌خط آوانگارد در اروپا',
-      fr: 'La danse de l’encre : du Shekasteh traditionnel à l’abstraction contemporaine',
-      en: 'Dance of Ink: From Traditional Shekasteh to Contemporary Abstraction in Europe',
+      fa: 'خوشنویسی؛ هنری که واژگان را به آواز درمی‌آورد (مصاحبه رسمی پیک یونسکو)',
+      fr: 'La calligraphie, l’art qui fait chanter les mots (Courrier de l’UNESCO)',
+      en: 'Calligraphy: The Art That Makes Words Sing (UNESCO Courier)',
     },
     summary: {
-      fa: 'گفتگو پیرامون تکنیک رهاسازی قلم‌مو، تنفس فضای خالی (خلوت بوم) و چگونگی درک مخاطب غربی از موسیقی بصری حروف فارسی.',
+      fa: 'گفتگوی مشروح با پیک یونسکو درباره پیوند خوشنویسی ایرانی، ریتم قلم‌مو و گفتگوی فرهنگ‌ها در نمایشگاه‌های اروپا.',
+      fr: 'Entretien approfondi dans le Courrier de l’UNESCO sur le dialogue calligraphique entre Orient et Occident.',
+      en: 'In-depth UNESCO Courier interview on Persian calligraphy, rhythm, and intercultural dialogue.',
+    },
+    targetPath: '/about/interview-courier-de-lunesco-la-calligraphie-lart-qui-fa',
+  },
+  {
+    id: 'int-dw-calligraphy-art',
+    date: '2014-04-09',
+    outlet: {
+      fa: 'دویچه‌وله فارسی (Deutsche Welle)',
+      fr: 'Deutsche Welle (DW Persan)',
+      en: 'Deutsche Welle (DW Persian)',
+    },
+    topicCategory: 'art',
+    title: {
+      fa: 'خط برای نقاشی؛ پای صحبت حسن مکارمی، هنرمند و خوشنویس ایرانی',
+      fr: 'La lettre pour la peinture : entretien avec Hassan Makaremi (DW)',
+      en: 'Script for Painting: In Conversation with Hassan Makaremi (DW)',
+    },
+    summary: {
+      fa: 'گفتگوی تفصیلی با دویچه‌وله پیرامون تکنیک رهاسازی قلم‌مو، نقاشی‌خط نوگرا و درک مخاطب اروپایی از موسیقی بصری حروف فارسی.',
       fr: 'Entretien sur la respiration du vide, le geste spontané et la réception européenne de la calligraphie persane.',
       en: 'Interview on negative space, spontaneous brushwork, and European reception of Persian calligraphy.',
     },
+    targetPath: '/about/dw-khat-bray-nghashy-ir',
   },
   {
-    id: 'int-strategic-iran-future',
+    id: 'int-complete-entretiens-list',
     date: '2019-03-15',
     outlet: {
-      fa: 'میزگرد مطالعات راهبردی پاریس',
-      fr: 'Table Ronde d’Études Stratégiques (Paris)',
-      en: 'Paris Strategic Studies Roundtable',
+      fa: 'فهرست جامع مصاحبه‌های رسانه‌ای (۳۴+ گفتگو)',
+      fr: 'Répertoire Complet des Entretiens (34+ Interviews)',
+      en: 'Complete Media Interviews Directory (34+ Conversations)',
     },
     topicCategory: 'strategy',
     title: {
-      fa: 'الزامات نوسازی سازمانی، جامعه مدنی و سکولاریسم در ایران فردا',
-      fr: 'Modernisation institutionnelle, société civile et laïcité dans l’Iran de demain',
-      en: 'Institutional Modernization, Civil Society, and Secularism in Future Iran',
+      fa: 'آرشیو کامل مصاحبه‌ها با RFI، دویچه‌وله، زمانه، صدای آمریکا و نشریات اروپا',
+      fr: 'Index intégral des entretiens médias et tables rondes (Paris)',
+      en: 'Complete Index of Media Interviews & Strategic Roundtables',
     },
     summary: {
-      fa: 'بررسی نقش نهادهای مدنی، سندیکاها، کانون‌های وکلا و انجمن‌های صنفی به عنوان ستون‌های پایداری دموکراسی در دوران گذار.',
-      fr: 'Le rôle crucial des corps intermédiaires et syndicats dans la transition démocratique.',
-      en: 'The vital role of civil society institutions and trade unions in democratic transition.',
+      fa: 'مشاهده فهرست کامل و لینک‌های مستند بیش از ۳۴ گفتگوی رادیویی، تلویزیونی و مطبوعاتی دکتر حسن مکارمی در حوزه‌های روانکاوی، هنر، حافظ و جامعه.',
+      fr: 'Consulter la liste complète des entretiens radiophoniques, télévisés et presse.',
+      en: 'Browse the complete directory of 34+ radio, TV, and print interviews.',
     },
+    targetPath: '/about/entretiens-fa',
   },
 ];
 
@@ -1257,6 +1322,8 @@ export interface HumanRightsReferenceDoc {
   title: Record<Locale, string>;
   summary: Record<Locale, string>;
   documentType: 'un_letter' | 'lddhi_statement' | 'paris_rally' | 'tribunal_report';
+  /** Real migrated archive page or article path (locale-relative) */
+  targetPath: string;
 }
 
 export const HUMAN_RIGHTS_REFERENCES_ARCHIVE: HumanRightsReferenceDoc[] = [
@@ -1271,78 +1338,82 @@ export const HUMAN_RIGHTS_REFERENCES_ARCHIVE: HumanRightsReferenceDoc[] = [
     location: 'Paris / Geneva',
     documentType: 'un_letter',
     title: {
-      fa: 'نامه سرگشاده و گزارش مستند به دبیرکل سازمان ملل در روز جهانی مبارزه با اعدام',
-      fr: 'Lettre ouverte au Secrétaire général de l’ONU contre la peine de mort en Iran',
-      en: 'Open Letter to the UN Secretary-General on World Day Against the Death Penalty',
+      fa: 'مجموعه نامه‌های سرگشاده به دبیرکل سازمان ملل و بیانیه‌های حقوق بشری (۲۷+ سند)',
+      fr: 'Recueil des lettres ouvertes à l’ONU et déclarations LDDHI (27+ documents)',
+      en: 'Collection of Open Letters to the UN Secretary-General & LDDHI Statements',
     },
     summary: {
-      fa: 'گزارش آماری و حقوقی جامعه دفاع از حقوق بشر در ایران (LDDHI) درباره موج اعدام‌ها، اعدام نوجوانان و فقدان دادرسی عادلانه.',
-      fr: 'Rapport documenté de la LDDHI sur les exécutions et l’absence de procès équitable.',
-      en: 'Documented LDDHI report on executions, juvenile death penalty, and lack of fair trials.',
+      fa: 'آرشیو کامل نامه‌های سرگشاده و گزارش‌های مستند جامعه دفاع از حقوق بشر در ایران (LDDHI) درباره اعدام‌ها، زندانیان سیاسی و دادرسی عادلانه.',
+      fr: 'Archives complètes des lettres ouvertes et rapports documentés de la LDDHI.',
+      en: 'Complete archive of documented LDDHI open letters and reports to the UN.',
     },
+    targetPath: '/about/references-fa',
   },
   {
     id: 'ref-trocadero-paris-rally',
-    date: '2015-06-20',
+    date: '2009-07-01',
     recipient: {
-      fa: 'افکار عمومی اروپا و نهادهای حقوق بشری فرانسه (میدان حقوق بشر تروکادرو پاریس)',
-      fr: 'Parvis des Droits de l’Homme du Trocadéro, Paris',
-      en: 'Place du Trocadéro Human Rights Esplanade, Paris',
+      fa: 'افکار عمومی اروپا و کارزار «آزادی» برای ایران (Rebonds / پاریس)',
+      fr: 'Pétition internationale « Azadi » pour la liberté en Iran (Paris)',
+      en: 'International “Azadi” Petition for Freedom in Iran (Paris)',
     },
-    location: 'Paris (Trocadéro)',
+    location: 'Paris',
     documentType: 'paris_rally',
     title: {
-      fa: 'بیانیه و سخنرانی در تجمع دفاع از زندانیان عقیدتی، وکلا و کنشگران مدنی در پاریس',
-      fr: 'Déclaration au rassemblement du Trocadéro pour la libération des prisonniers d’opinion',
-      en: 'Statement at the Trocadéro Rally for Prisoners of Conscience and Human Rights Lawyers',
+      fa: 'کارزار و طومار بین‌المللی «آزادی» برای دفاع از آزادی و حقوق شهروندی در ایران',
+      fr: 'Rebonds : « Azadi », pétition pour la liberté en Iran',
+      en: 'Rebonds: “Azadi” International Petition for Freedom in Iran',
     },
     summary: {
-      fa: 'فراخوان مشترک فدراسیون بین‌المللی جامعه‌های حقوق بشر (FIDH) و LDDHI برای آزادی فوری وکلای دربند، معلمان و فعالان کارگری.',
-      fr: 'Appel conjoint de la FIDH et de la LDDHI pour la libération des avocats, enseignants et syndicalistes.',
-      en: 'Joint FIDH and LDDHI call for the immediate release of imprisoned lawyers, teachers, and labor activists.',
+      fa: 'فراخوان مشترک روشنفکران، هنرمندان و نهادهای حقوق بشری در پاریس برای آزادی زندانیان عقیدتی و دفاع از حقوق مردم ایران.',
+      fr: 'Appel conjoint d’intellectuels et défenseurs des droits humains à Paris.',
+      en: 'Joint appeal of intellectuals and human rights defenders in Paris.',
     },
+    targetPath: '/about/rebonds-azadi-petition-pour-la-liberte-en-iran',
   },
   {
     id: 'ref-khavaran-1988-tribunal',
-    date: '2013-09-01',
+    date: '2009-09-05',
     recipient: {
-      fa: 'گزارشگر ویژه حقوق بشر سازمان ملل در امور ایران و خانواده‌های خاوران',
-      fr: 'Rapporteur spécial des Nations Unies sur la situation des droits de l’homme en Iran',
-      en: 'UN Special Rapporteur on the Situation of Human Rights in Iran',
+      fa: 'مراسم سالگرد جان‌باختگان کشتار تابستان ۶۷ (بروکسل) و خانواده‌های خاوران',
+      fr: 'Commémoration du massacre de l’été 1988 (Bruxelles) & familles de Khavaran',
+      en: '1988 Massacre Memorial (Brussels) & Khavaran Families',
     },
-    location: 'Paris / London / The Hague',
+    location: 'Brussels / Paris',
     documentType: 'tribunal_report',
     title: {
-      fa: 'سند ثبت حقیقت و دادخواهی کشتار زندانیان سیاسی تابستان ۱۳۶۷ و حفاظت از گورستان خاوران',
-      fr: 'Mémoire pour la vérité et la justice concernant le massacre de l’été 1988 et Khavaran',
-      en: 'Memorial for Truth and Justice on the 1988 Political Prisoners Massacre and Khavaran',
+      fa: 'متن کامل سخنرانی و سند دادخواهی کشتار زندانیان سیاسی تابستان ۱۳۶۷ در بروکسل',
+      fr: 'Texte intégral : Mémoire et justice pour le massacre de l’été 1988 (Bruxelles)',
+      en: 'Full Text: Truth & Justice Memorial on the 1988 Political Prisoners Massacre',
     },
     summary: {
-      fa: 'تاکید بر حق خانواده‌ها برای دانستن محل دفن عزیزان، توقف تخریب خاوران و پیگرد آمران جنایت علیه بشریت در مراجع بین‌المللی.',
-      fr: 'Défense du droit imprescriptible des familles à la vérité et protection du site de Khavaran.',
-      en: 'Defending families’ inalienable right to truth and protection of the Khavaran mass graves.',
+      fa: 'متن کامل ۳۴ کیلوبایتی سخنرانی تاریخی دکتر مکارمی پیرامون حقیقت‌یابی، حافظه جمعی و دادخواهی کشتار تابستان ۱۳۶۷ و گورستان خاوران.',
+      fr: 'Texte complet de l’intervention de Bruxelles sur la vérité, la mémoire et la justice pour Khavaran.',
+      en: 'Complete historical address in Brussels on truth-telling and transitional justice for Khavaran.',
     },
+    targetPath: '/about/conference-26-khavaran-matn-ir',
   },
   {
     id: 'ref-cultural-heritage-unesco',
     date: '2016-02-14',
     recipient: {
-      fa: 'مدیرکل یونسکو (UNESCO) — پاریس',
-      fr: 'Direction générale de l’UNESCO — Paris',
-      en: 'Director-General of UNESCO — Paris',
+      fa: 'آرشیو مقالات و بیانیه‌های حقوق بشر و دادخواهی',
+      fr: 'Archives des Articles Droits Humains & Justice Transitionnelle',
+      en: 'Human Rights & Transitional Justice Articles Archive',
     },
-    location: 'Paris',
+    location: 'Paris / Geneva',
     documentType: 'lddhi_statement',
     title: {
-      fa: 'بیانیه صیانت از میراث باستانی پاسارگاد، شوش و محیط زیست سرزمین فرهنگی ایران',
-      fr: 'Appel à l’UNESCO pour la sauvegarde du patrimoine archéologique et écologique d’Iran',
-      en: 'Appeal to UNESCO for the Protection of Iran’s Archaeological and Ecological Heritage',
+      fa: 'مجموعه مقالات، بیانیه‌ها و گزارش‌های مستند حقوق بشر و دادخواهی',
+      fr: 'Recueil complet d’articles et déclarations sur les droits humains',
+      en: 'Complete Archive of Human Rights & Dadkhahi Articles & Statements',
     },
     summary: {
-      fa: 'هشدار مستند پیرامون خطرات زیست‌محیطی، خشکیدن تالاب‌ها و لزوم حفاظت بین‌المللی از محوطه‌های تاریخی ثبت‌شده در میراث جهانی.',
-      fr: 'Alerte documentée sur la préservation des sites historiques et des ressources hydriques.',
-      en: 'Documented alert on preserving World Heritage sites and critical water resources in Iran.',
+      fa: 'دسترسی یکجا به تمام مقالات، بیانیه‌ها و سخنرانی‌های حقوق بشری مهاجرت‌شده از وب‌سایت رسمی دکتر حسن مکارمی.',
+      fr: 'Accès direct à l’ensemble des textes et discours consacrés aux droits humains.',
+      en: 'Direct access to all migrated human rights articles, statements, and speeches.',
     },
+    targetPath: '/human-rights',
   },
 ];
 

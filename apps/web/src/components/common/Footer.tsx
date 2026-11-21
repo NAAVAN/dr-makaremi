@@ -32,8 +32,8 @@ export function Footer({ locale }: FooterProps) {
             {isFa
               ? 'روانکاو بالینی لکانی، پژوهشگر مطالعات راهبردی در دانشگاه سوربن، هنرمند نقاش و خوشنویس نوگرا (۷ اثر در گنجینه دائمی موزه مدرن خوشنویسی مسکو)، حافظ‌پژوه، شاعر، و خزانه‌دار جامعه دفاع از حقوق بشر در ایران (LDDHI).'
               : isFr
-              ? "Psychanalyste clinicien d'orientation lacanienne, chercheur à l'Université de la Sorbonne, calligraphe contemporain (Musée de Moscou), chercheur sur Hafez et trésorier de la Ligue de défense des droits de l'Homme en Iran (LDDHI)."
-              : 'Clinical Lacanian Psychoanalyst, Sorbonne Researcher, Contemporary Calligrapher (7 permanent works in Moscow Museum), Hafez Scholar, Poet, and Treasurer of the League for the Defence of Human Rights in Iran (LDDHI).'}
+                ? "Psychanalyste clinicien d'orientation lacanienne, chercheur à l'Université de la Sorbonne, calligraphe contemporain (Musée de Moscou), chercheur sur Hafez et trésorier de la Ligue de défense des droits de l'Homme en Iran (LDDHI)."
+                : 'Clinical Lacanian Psychoanalyst, Sorbonne Researcher, Contemporary Calligrapher (7 permanent works in Moscow Museum), Hafez Scholar, Poet, and Treasurer of the League for the Defence of Human Rights in Iran (LDDHI).'}
           </p>
           <div className="flex flex-wrap gap-2 text-xs pt-2">
             <Link
@@ -63,6 +63,14 @@ export function Footer({ locale }: FooterProps) {
             {isFa ? 'دامنه‌های اندیشه و هنر' : isFr ? 'Domaines & Piliers' : 'Core Domains'}
           </span>
           <ul className="space-y-2 text-xs">
+            <li>
+              <Link
+                href={`/${locale}/articles`}
+                className="hover:text-[var(--primary)] transition-colors font-semibold"
+              >
+                {isFa ? 'خبر، بلاگ و آرشیو ۴۰۴ مقاله' : isFr ? 'Actualités & 404 Articles' : 'News & All 404 Articles'}
+              </Link>
+            </li>
             <li>
               <Link
                 href={`/${locale}/${psychoSlug}`}
@@ -119,22 +127,27 @@ export function Footer({ locale }: FooterProps) {
             </li>
             <li>
               <Link href={`/${locale}/gallery`} className="hover:text-[var(--color-art)] transition-colors">
-                {isFa ? 'گالری‌ها و ۲۷+ نمایشگاه جهانی' : isFr ? 'Galeries & 27+ Expositions' : 'Galleries & 27+ Exhibitions'}
+                {isFa ? 'گالری‌ها (۲۹ سری) و ۲۷ نمایشگاه جهانی' : isFr ? 'Galeries (29) & 27 Expositions' : 'Galleries (29) & 27 Exhibitions'}
               </Link>
             </li>
             <li>
               <Link href={`/${locale}/poetry`} className="hover:text-[var(--primary)] transition-colors">
-                {isFa ? 'دفتر اشعار و شعر و تصویر' : isFr ? 'Poésie & Image' : 'Poetry & Synchronized Art'}
+                {isFa ? 'دفتر ۳۰۰ شعر و شعر و تصویر' : isFr ? '300 Poèmes & Image' : '300 Poems & Synchronized Art'}
               </Link>
             </li>
             <li>
               <Link href={`/${locale}/media`} className="hover:text-[var(--color-strategy)] transition-colors">
-                {isFa ? 'فیلم‌ها (در روان‌‌پژوهی و نگاه روانکاو)' : isFr ? 'Séries Vidéos & Conférences' : 'Video Series & Lectures'}
+                {isFa ? 'آرشیو ۲۶۱ فیلم، سخنرانی و مستند' : isFr ? '261 Vidéos & Conférences' : '261 Video Series & Lectures'}
               </Link>
             </li>
             <li>
               <Link href={`/${locale}/about?tab=interviews`} className="hover:text-[var(--primary)] transition-colors">
                 {isFa ? 'مصاحبه‌ها (۳۴+ گفتگو) و منابع' : isFr ? 'Entretiens (34+) & Références' : 'Interviews (34+) & References'}
+              </Link>
+            </li>
+            <li>
+              <Link href={`/${locale}/about?tab=contact`} className="hover:text-[var(--primary)] transition-colors">
+                {isFa ? 'تماس با استاد و دعوت‌های علمی' : isFr ? 'Contact & Mentions Légales' : 'Contact Dr. Makaremi'}
               </Link>
             </li>
           </ul>

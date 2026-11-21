@@ -61,16 +61,16 @@ export async function generateMetadata({
     article.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     article.translations?.[0];
 
-  const pillarSegment =
+  const faPillar =
     article.pillar === 'psychoanalysis'
-      ? locale === 'fr'
-        ? 'psychanalyse'
-        : 'psychoanalysis'
+      ? 'psychoanalysis'
       : article.pillar === 'art_calligraphy'
-      ? 'art'
-      : article.pillar === 'cultural_strategy'
-      ? 'strategy'
-      : 'human-rights';
+        ? 'art'
+        : article.pillar === 'cultural_strategy'
+          ? 'strategy'
+          : 'human-rights';
+  const frPillar = article.pillar === 'psychoanalysis' ? 'psychanalyse' : faPillar;
+  const pillarSegment = locale === 'fr' ? frPillar : faPillar;
 
   const academicMeta = buildArticleAcademicMeta(article, locale as Locale);
 
@@ -80,10 +80,10 @@ export async function generateMetadata({
     alternates: {
       canonical: `https://makaremi.com/${locale}/${pillarSegment}/articles/${slug}`,
       languages: {
-        'fa-IR': `https://makaremi.com/fa/${pillarSegment}/articles/${slug}`,
-        'fr-FR': `https://makaremi.com/fr/${pillarSegment}/articles/${slug}`,
-        'en-US': `https://makaremi.com/en/${pillarSegment}/articles/${slug}`,
-        'x-default': `https://makaremi.com/fa/${pillarSegment}/articles/${slug}`,
+        'fa-IR': `https://makaremi.com/fa/${faPillar}/articles/${slug}`,
+        'fr-FR': `https://makaremi.com/fr/${frPillar}/articles/${slug}`,
+        'en-US': `https://makaremi.com/en/${faPillar}/articles/${slug}`,
+        'x-default': `https://makaremi.com/fa/${faPillar}/articles/${slug}`,
       },
       types: {
         'text/markdown': `https://makaremi.com/${locale}/${pillarSegment}/articles/${slug}.md`,

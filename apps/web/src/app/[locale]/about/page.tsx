@@ -13,6 +13,11 @@ import {
   Award,
   Sparkles,
   Download,
+  BookOpen,
+  ArrowLeft,
+  ArrowRight,
+  Video,
+  FileText,
 } from 'lucide-react';
 import {
   ACADEMIC_INSTITUTIONS,
@@ -21,8 +26,11 @@ import {
   HUMAN_RIGHTS_REFERENCES_ARCHIVE,
   VIDEO_SERIES_CATALOG,
   getArchivePages,
+  getVideoSpeeches,
+  resolveBadgeHref,
 } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
+import { AboutTabNavigator } from '@/components/about/AboutTabNavigator';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -41,8 +49,8 @@ export async function generateMetadata({
     title: isFa
       ? 'در مورد دکتر حسن مکارمی | کارنامه ۶ دانشگاه، مصاحبه‌ها و منابع'
       : isFr
-      ? 'À Propos du Dr Hassan Makaremi | CV, 6 Universités, Entretiens & Références'
-      : 'About Dr. Hassan Makaremi | Academic CV, 6 Universities, Interviews & References',
+        ? 'À Propos du Dr Hassan Makaremi | CV, 6 Universités, Entretiens & Références'
+        : 'About Dr. Hassan Makaremi | Academic CV, 6 Universities, Interviews & References',
     description: isFa
       ? 'شرح حال علمی و هنری دکتر حسن مکارمی (متولد ۱۳۲۹ شیراز)، تحصیل و تدریس در ۶ دانشگاه ایران و فرانسه، ۷ اثر دائمی در موزه خوشنویسی مسکو، ۳۴+ مصاحبه و ۲۷+ سند حقوق بشری.'
       : 'Biographie académique et artistique du Dr Hassan Makaremi : 6 universités, Musée de Moscou, entretiens et références des droits humains.',
@@ -69,7 +77,18 @@ export default async function AboutProfessorPage({
   const bioDocumentary = VIDEO_SERIES_CATALOG.find(
     (s) => s.slug === 'morouri-bar-60-sal-zendegi'
   );
-  const archivePages = await getArchivePages(locale);
+  const [archivePages, allVideos] = await Promise.all([
+    getArchivePages(locale),
+    getVideoSpeeches(locale),
+  ]);
+
+  const bioDocVideos = allVideos
+    .filter((v) => v.series_slug === 'morouri-bar-60-sal-zendegi')
+    .sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const conferencePages = archivePages.filter((p) => p.group === 'conferences');
+  const otherReferencePages = archivePages.filter(
+    (p) => p.group !== 'conferences' && p.slug !== 'page-2673'
+  );
 
   return (
     <div className="space-y-16">
@@ -87,16 +106,17 @@ export default async function AboutProfessorPage({
             <Award size={16} />
             <span>
               {isFa
-                ? 'در مورد استاد • شرح حال، ۶ دانشگاه، مصاحبه‌ها و منابع'
+                ? 'در مورد استاد • شرح حال، ۶ دانشگاه، مصاحبه‌ها، کنفرانس‌ها و منابع'
                 : isFr
-                ? 'À Propos • Biographie, 6 Universités, Entretiens & Références'
-                : 'About • Biography, 6 Universities, Interviews & References'}
+                  ? 'À Propos • Biographie, 6 Universités, Entretiens & Références'
+                  : 'About • Biography, 6 Universities, Interviews & References'}
             </span>
           </div>
 
           <Link
             href={`/${locale}/about.md`}
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
           >
             <Download size={13} />
@@ -108,82 +128,57 @@ export default async function AboutProfessorPage({
           {isFa
             ? 'دکتر حسن مکارمی؛ پنج دهه اندیشه، روانکاوی، هنر خوشنویسی و دادخواهی'
             : isFr
-            ? 'Dr Hassan Makaremi : Parcours Académique, Psychanalytique et Artistique'
-            : 'Dr. Hassan Makaremi: Five Decades of Psychoanalysis, Art, Strategy & Human Rights'}
+              ? 'Dr Hassan Makaremi : Parcours Académique, Psychanalytique et Artistique'
+              : 'Dr. Hassan Makaremi: Five Decades of Psychoanalysis, Art, Strategy & Human Rights'}
         </h1>
 
         <p className="text-sm sm:text-base text-[var(--foreground-muted)] max-w-4xl leading-relaxed">
           {isFa
-            ? 'زاده ۱۳۲۹ خورشیدی (۱۹۵۰ میلادی) در شیراز. روانکاو بالینی و عضو هیئت مدیره انجمن روان‌پژوهان ایران در فرانسه، پژوهشگر دانشگاه سوربن پاریس، متخصص مشاوره راهبردی در بخش فرهنگی و نوسازی سازمانی، خزانه‌دار جامعه دفاع از حقوق بشر در ایران (LDDHI)، شاعر و هنرمند خوشنویس با ۲۷+ نمایشگاه جهانی و ۷ اثر در گنجینه دائمی موزه مدرن خوشنویسی مسکو.'
+            ? 'زاده ۱۳۲۹ خورشیدی (۱۹۵۰ میلادی) در شیراز. روانکاو بالینی و عضو هیئت مدیره انجمن روان‌پژوهان ایران در فرانسه، پژوهشگر دانشگاه سوربن پاریس، متخصص مشاوره راهبردی در بخش فرهنگی و نوسازی سازمانی، خزانه‌دار جامعه دفاع از حقوق بشر در ایران (LDDHI)، شاعر و هنرمند خوشنویس با ۲۷ نمایشگاه جهانی و ۷ اثر در گنجینه دائمی موزه مدرن خوشنویسی مسکو.'
             : isFr
-            ? 'Né en 1950 à Chiraz. Psychanalyste clinicien à Paris, chercheur à la Sorbonne, consultant stratégique, trésorier de la LDDHI, poète et calligraphe avec 7 œuvres permanentes au Musée Contemporain de la Calligraphie de Moscou.'
-            : 'Born in 1950 in Shiraz. Clinical psychoanalyst in Paris, Sorbonne researcher, strategic consultant, Treasurer of LDDHI, poet, and contemporary calligrapher with 7 permanent works at the Moscow Museum of Calligraphy.'}
+              ? 'Né en 1950 à Chiraz. Psychanalyste clinicien à Paris, chercheur à la Sorbonne, consultant stratégique, trésorier de la LDDHI, poète et calligraphe avec 27 expositions internationales et 7 œuvres permanentes au Musée Contemporain de la Calligraphie de Moscou.'
+              : 'Born in 1950 in Shiraz. Clinical psychoanalyst in Paris, Sorbonne researcher, strategic consultant, Treasurer of LDDHI, poet, and contemporary calligrapher with 27 international exhibitions and 7 permanent works at the Moscow Museum of Calligraphy.'}
         </p>
 
-        {/* Sub-navigation Anchors mirroring the 5 submenus of "در مورد" */}
-        <nav
-          aria-label="بخش‌های درباره استاد"
-          className="flex flex-wrap items-center gap-2 pt-2"
-        >
-          <a
-            href="#cv-universities"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
-          >
-            <GraduationCap size={14} className="text-teal-600" />
-            <span>{isFa ? '۱. شرح حال و ۶ دانشگاه' : '1. CV & 6 Universités'}</span>
-          </a>
-          <a
-            href="#global-presence"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
-          >
-            <Globe size={14} className="text-amber-600" />
-            <span>{isFa ? '۲. حضور من در هستی' : '2. Présence Mondiale'}</span>
-          </a>
-          <a
-            href="#interviews-archive"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
-          >
-            <Mic size={14} className="text-sky-600" />
-            <span>{isFa ? '۳. مصاحبه با استاد (۳۴+ گفتگو)' : '3. Entretiens (34+)'}</span>
-          </a>
-          <a
-            href="#human-rights-references"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
-          >
-            <FileCheck2 size={14} className="text-rose-600" />
-            <span>{isFa ? '۴. منابع و اسناد حقوق بشری (۲۷+)' : '4. Références (27+)'}</span>
-          </a>
-          <a
-            href="#bio-documentary"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
-          >
-            <Film size={14} className="text-purple-600" />
-            <span>{isFa ? '۵. فیلم‌های زندگی‌نامه (۴ قسمت)' : '5. Film Biographique'}</span>
-          </a>
-          <a
-            href="#contact-section"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
-          >
-            <Mail size={14} className="text-emerald-600" />
-            <span>{isFa ? '۶. تماس با استاد' : '6. Contact'}</span>
-          </a>
-        </nav>
+        {/* Interactive Tab Navigator synced with ?tab= query parameter */}
+        <AboutTabNavigator locale={locale} conferenceCount={conferencePages.length} />
       </header>
 
-      {/* SECTION 1: 6 UNIVERSITIES & ACADEMIC TRAJECTORY (ایران و فرانسه) */}
-      <section id="cv-universities" aria-label="کارنامه دانشگاهی" className="space-y-6">
-        <div className="space-y-2 border-b border-[var(--border-subtle)] pb-4">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-teal-600 font-bold">
-            <GraduationCap size={16} />
-            <span>{isFa ? 'مسیر دانشگاهی از تهران و شیراز تا پاریس و سوربن' : 'Parcours Universitaire'}</span>
+      {/* SECTION 1: 6 UNIVERSITIES & ACADEMIC TRAJECTORY */}
+      <section id="cv-universities" aria-label="کارنامه دانشگاهی" className="space-y-6 scroll-mt-28">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-teal-600 font-bold">
+              <GraduationCap size={16} />
+              <span>{isFa ? 'مسیر دانشگاهی از تهران و شیراز تا پاریس و سوربن' : 'Parcours Universitaire'}</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
+              {isFa
+                ? 'تحصیل، پژوهش و تدریس در ۶ قطب دانشگاهی ایران و فرانسه'
+                : isFr
+                  ? 'Formation, Recherche et Enseignement dans 6 Grandes Universités'
+                  : 'Education, Research & Teaching Across 6 Major Universities'}
+            </h2>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'تحصیل، پژوهش و تدریس در ۶ قطب دانشگاهی ایران و فرانسه'
-              : isFr
-              ? 'Formation, Recherche et Enseignement dans 6 Grandes Universités'
-              : 'Education, Research & Teaching Across 6 Major Universities'}
-          </h2>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <Link
+              href={`/${locale}/about/cv-en-persane`}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)]"
+            >
+              <FileText size={14} />
+              <span>{isFa ? 'متن کامل شرح حال (CV)' : 'Lire le CV complet'}</span>
+            </Link>
+            <a
+              href="https://www.makaremi.com/wp-content/uploads/2015/02/cv-hassan-makaremi.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
+            >
+              <Download size={14} />
+              <span>{isFa ? 'دانلود PDF رسمی CV' : 'Télécharger CV (PDF)'}</span>
+            </a>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -216,7 +211,7 @@ export default async function AboutProfessorPage({
       </section>
 
       {/* SECTION 2: GLOBAL PRESENCE («حضور من در هستی») */}
-      <section id="global-presence" aria-label="حضور من در هستی" className="space-y-6">
+      <section id="global-presence" aria-label="حضور من در هستی" className="space-y-6 scroll-mt-28">
         <div className="space-y-2 border-b border-[var(--border-subtle)] pb-4">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-amber-600 font-bold">
             <Globe size={16} />
@@ -226,194 +221,350 @@ export default async function AboutProfessorPage({
             {isFa
               ? 'جایگاه بین‌المللی در موزه‌ها، مجامع علمی و نهادهای حقوق بشری'
               : isFr
-              ? 'Reconnaissance Muséale, Scientifique et Civique'
-              : 'International Museum Collections, Academic & Civic Authorities'}
+                ? 'Reconnaissance Muséale, Scientifique et Civique'
+                : 'International Museum Collections, Academic & Civic Authorities'}
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {GLOBAL_AUTHORITY_BADGES.map((badge) => (
-            <div
-              key={badge.id}
-              className="p-6 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-3 flex flex-col justify-between"
-            >
-              <div className="space-y-2">
-                <span className="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
-                  {badge.badgeText[locale]}
-                </span>
-                <h3 className="text-lg font-bold text-[var(--foreground)]">
-                  {badge.title[locale]}
-                </h3>
-                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                  {badge.subtitle[locale]}
-                </p>
-              </div>
+          {GLOBAL_AUTHORITY_BADGES.map((badge) => {
+            const targetHref = resolveBadgeHref(badge, locale);
+            return (
+              <div
+                key={badge.id}
+                className="p-6 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-3 flex flex-col justify-between"
+              >
+                <div className="space-y-2">
+                  <span className="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
+                    {badge.badgeText[locale]}
+                  </span>
+                  <h3 className="text-lg font-bold text-[var(--foreground)]">
+                    <Link href={targetHref} className="hover:text-[var(--primary)] transition-colors">
+                      {badge.title[locale]}
+                    </Link>
+                  </h3>
+                  <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                    {badge.subtitle[locale]}
+                  </p>
+                </div>
 
-              <div className="pt-3 border-t border-[var(--border-subtle)]">
-                <Link
-                  href={badge.externalUrl}
-                  target={badge.externalUrl.startsWith('http') ? '_blank' : undefined}
-                  rel={badge.externalUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--primary)] hover:underline"
-                >
-                  <span>{isFa ? 'مشاهده جزئیات و مستندات' : 'Voir les détails'}</span>
-                  <ExternalLink size={12} />
-                </Link>
+                <div className="pt-3 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2">
+                  <Link
+                    href={targetHref}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--primary)] hover:underline"
+                  >
+                    <span>{isFa ? 'مشاهده جزئیات و مستندات' : 'Voir les détails'}</span>
+                    {isFa ? <ArrowLeft size={13} /> : <ArrowRight size={13} />}
+                  </Link>
+                  {badge.officialExternalUrl && (
+                    <a
+                      href={badge.officialExternalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-mono text-[var(--foreground-muted)] hover:text-[var(--primary)]"
+                    >
+                      <span>{isFa ? 'سایت رسمی موزه' : 'Site officiel'}</span>
+                      <ExternalLink size={11} />
+                    </a>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
-      {/* SECTION 3: MEDIA INTERVIEWS ARCHIVE (/entretiens-fa/ — 34+ Interviews) */}
-      <section id="interviews-archive" aria-label="مصاحبه با استاد" className="space-y-6">
-        <div className="space-y-2 border-b border-[var(--border-subtle)] pb-4">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-sky-600 font-bold">
-            <Mic size={16} />
-            <span>{isFa ? 'زیرمنوی مصاحبه با استاد (/entretiens-fa/)' : 'Entretiens Médias'}</span>
+      {/* SECTION 3: MEDIA INTERVIEWS ARCHIVE (Linked to Real Migrated XML Pages!) */}
+      <section id="interviews-archive" aria-label="مصاحبه با استاد" className="space-y-6 scroll-mt-28">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-sky-600 font-bold">
+              <Mic size={16} />
+              <span>{isFa ? 'آرشیو مصاحبه با استاد (۳۴+ گفتگوی رسانه‌ای)' : 'Entretiens Médias'}</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
+              {isFa
+                ? 'مصاحبه‌های رسانه‌ای (RFI، دویچه‌وله، رادیو فردا، پیک یونسکو و رادیو زمانه)'
+                : isFr
+                  ? 'Archives des Entretiens Médias (RFI, Courrier de l’UNESCO, DW...)'
+                  : 'Media Interviews Archive (RFI, UNESCO Courier, DW, Radio Zamaneh)'}
+            </h2>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'گزیده آرشیو ۳۴+ مصاحبه رسانه‌ای (رادیو بین‌المللی فرانسه RFI، رادیو زمانه و...)'
-              : isFr
-              ? 'Archives de 34+ Entretiens avec les Médias Internationaux (RFI, Zamaneh...)'
-              : 'Selected Archive of 34+ Media Interviews (RFI, Radio Zamaneh, TV)'}
-          </h2>
+
+          <Link
+            href={`/${locale}/about/entretiens-fa`}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
+          >
+            <span>{isFa ? 'مشاهده فهرست کامل ۳۴+ مصاحبه ←' : 'Voir la liste complète (34+) →'}</span>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {MEDIA_INTERVIEWS_ARCHIVE.map((item) => (
-            <article
+            <Link
               key={item.id}
-              className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-md transition-all space-y-3"
+              href={`/${locale}${item.targetPath}`}
+              className="group p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all flex flex-col justify-between space-y-4"
             >
-              <div className="flex items-center justify-between text-xs text-[var(--foreground-muted)]">
-                <span className="font-bold text-sky-700 dark:text-sky-400">
-                  {item.outlet[locale]}
-                </span>
-                <span className="font-mono">{item.date}</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs text-[var(--foreground-muted)]">
+                  <span className="font-bold text-sky-700 dark:text-sky-400">
+                    {item.outlet[locale]}
+                  </span>
+                  <span className="font-mono">{item.date}</span>
+                </div>
+                <h3 className="text-base font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug">
+                  {item.title[locale]}
+                </h3>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  {item.summary[locale]}
+                </p>
               </div>
-              <h3 className="text-base font-bold text-[var(--foreground)] leading-snug">
-                {item.title[locale]}
-              </h3>
-              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                {item.summary[locale]}
-              </p>
-            </article>
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-end text-xs font-bold text-[var(--primary)]">
+                <span>{isFa ? 'مطالعه متن کامل مصاحبه ←' : 'Lire l’entretien →'}</span>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* SECTION 4: HUMAN RIGHTS REFERENCES (/references-fa/ — 27+ Open Letters & UN Reports) */}
-      <section id="human-rights-references" aria-label="منابع و اسناد حقوق بشری" className="space-y-6">
-        <div className="space-y-2 border-b border-[var(--border-subtle)] pb-4">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-rose-600 font-bold">
-            <FileCheck2 size={16} />
-            <span>{isFa ? 'زیرمنوی منابع (/references-fa/) • اسناد و بیانیه‌ها' : 'Références & Archives Civiques'}</span>
+      {/* SECTION 4: HUMAN RIGHTS REFERENCES (Linked to Real Migrated XML Documents!) */}
+      <section id="human-rights-references" aria-label="منابع و اسناد حقوق بشری" className="space-y-6 scroll-mt-28">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-rose-600 font-bold">
+              <FileCheck2 size={16} />
+              <span>{isFa ? 'منابع و اسناد حقوق بشری (LDDHI / سازمان ملل)' : 'Références & Archives Civiques'}</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
+              {isFa
+                ? 'منابع، نامه‌های سرگشاده به سازمان ملل و کارزارهای حقوق بشری (۲۷+ سند)'
+                : isFr
+                  ? 'Références, Lettres Ouvertes à l’ONU et Actions LDDHI / FIDH'
+                  : 'Human Rights References, UN Open Letters & LDDHI Statements'}
+            </h2>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'منابع، نامه‌های سرگشاده به سازمان ملل و کارزارهای حقوق بشری (۲۷+ سند تاریخی)'
-              : isFr
-              ? 'Références, Lettres Ouvertes à l’ONU et Actions LDDHI / FIDH (27+ Documents)'
-              : 'Human Rights References, UN Open Letters & LDDHI Statements (27+ Documents)'}
-          </h2>
+
+          <Link
+            href={`/${locale}/about/references-fa`}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
+          >
+            <span>{isFa ? 'مشاهده آرشیو کامل ۲۷+ سند ←' : 'Voir toutes les références →'}</span>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {HUMAN_RIGHTS_REFERENCES_ARCHIVE.map((doc) => (
-            <article
+            <Link
               key={doc.id}
-              className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3"
+              href={`/${locale}${doc.targetPath}`}
+              className="group p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all flex flex-col justify-between space-y-4"
             >
-              <div className="flex items-center justify-between text-xs">
-                <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-800 dark:text-rose-300 border border-rose-500/25 font-bold">
-                  {doc.location}
-                </span>
-                <span className="font-mono text-[var(--foreground-muted)]">{doc.date}</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-800 dark:text-rose-300 border border-rose-500/25 font-bold">
+                    {doc.location}
+                  </span>
+                  <span className="font-mono text-[var(--foreground-muted)]">{doc.date}</span>
+                </div>
+                <h3 className="text-base font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug">
+                  {doc.title[locale]}
+                </h3>
+                <p className="text-[11px] font-semibold text-[var(--primary)]">
+                  {isFa ? 'مخاطب سند: ' : 'Destinataire : '}
+                  {doc.recipient[locale]}
+                </p>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  {doc.summary[locale]}
+                </p>
               </div>
-              <h3 className="text-base font-bold text-[var(--foreground)] leading-snug">
-                {doc.title[locale]}
-              </h3>
-              <p className="text-[11px] font-semibold text-[var(--primary)]">
-                {isFa ? 'مخاطب سند: ' : 'Destinataire : '}
-                {doc.recipient[locale]}
-              </p>
-              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                {doc.summary[locale]}
-              </p>
-            </article>
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-end text-xs font-bold text-[var(--primary)]">
+                <span>{isFa ? 'مشاهده سند کامل ←' : 'Consulter le document →'}</span>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* SECTION 5: 4-PART BIOGRAPHICAL DOCUMENTARY & JOURNEYS OF LIFE */}
+      {/* SECTION 5: 4-PART BIOGRAPHICAL DOCUMENTARY (Connected Directly to Real YouTube Videos in Vault!) */}
       {bioDocumentary && (
         <section
           id="bio-documentary"
           aria-label="مستند زندگی‌نامه"
-          className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 space-y-6"
+          className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 space-y-6 scroll-mt-28"
         >
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-purple-600 font-bold">
-              <Film size={16} />
-              <span>
-                {isFa
-                  ? 'فیلم‌های درباره استاد • سفرهایی که زندگی را می‌سازند'
-                  : 'Documentaire Biographique en 4 Parties'}
-              </span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-purple-600 font-bold">
+                <Film size={16} />
+                <span>
+                  {isFa
+                    ? 'فیلم‌های درباره استاد • سفرهایی که زندگی را می‌سازند'
+                    : 'Documentaire Biographique en 4 Parties'}
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
+                {bioDocumentary.title[locale]}
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] max-w-3xl leading-relaxed">
+                {bioDocumentary.description[locale]}
+              </p>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-              {bioDocumentary.title[locale]}
-            </h2>
-            <p className="text-xs sm:text-sm text-[var(--foreground-muted)] max-w-3xl leading-relaxed">
-              {bioDocumentary.description[locale]}
-            </p>
+            <Link
+              href={`/${locale}/media?series=morouri-bar-60-sal-zendegi#videos-archive`}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
+            >
+              <Video size={14} />
+              <span>{isFa ? 'پخش در آرشیو ویدیو' : 'Voir la série'}</span>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {bioDocumentary.sampleTopics[locale].map((epTitle, idx) => (
-              <div
-                key={idx}
-                className="p-4 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-2"
-              >
-                <span className="text-[11px] font-mono font-bold text-purple-700 dark:text-purple-400">
-                  {isFa ? `بخش ${idx + 1} از ۴` : `Partie ${idx + 1} / 4`}
-                </span>
-                <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
-                  {epTitle}
-                </h3>
-              </div>
-            ))}
+            {bioDocVideos.length > 0
+              ? bioDocVideos.map((vid, idx) => {
+                const tr =
+                  vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+                  vid.translations?.[0];
+                return (
+                  <Link
+                    key={vid.id}
+                    href={`/${locale}/media/videos/${vid.slug}`}
+                    className="group rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
+                  >
+                    {vid.thumbnail_url && (
+                      <div className="aspect-video w-full overflow-hidden bg-neutral-900">
+                        <img
+                          src={vid.thumbnail_url}
+                          alt={tr?.title || vid.slug}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
+                      <div className="space-y-1.5">
+                        <span className="text-[11px] font-mono font-bold text-purple-700 dark:text-purple-400">
+                          {isFa ? `قسمت ${idx + 1} از ${bioDocVideos.length}` : `Partie ${idx + 1} / ${bioDocVideos.length}`}
+                        </span>
+                        <h3 className="text-xs font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] leading-snug line-clamp-2">
+                          {tr?.title || vid.slug}
+                        </h3>
+                      </div>
+                      <span className="text-[11px] font-bold text-[var(--primary)] pt-2">
+                        {isFa ? 'پخش ویدیو ←' : 'Regarder →'}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })
+              : bioDocumentary.sampleTopics[locale].map((epTitle, idx) => (
+                <Link
+                  key={idx}
+                  href={`/${locale}/media?series=morouri-bar-60-sal-zendegi#videos-archive`}
+                  className="p-4 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] space-y-2"
+                >
+                  <span className="text-[11px] font-mono font-bold text-purple-700 dark:text-purple-400">
+                    {isFa ? `بخش ${idx + 1} از ۴` : `Partie ${idx + 1} / 4`}
+                  </span>
+                  <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
+                    {epTitle}
+                  </h3>
+                </Link>
+              ))}
           </div>
         </section>
       )}
 
-      {/* SECTION 5.5: MIGRATED WORDPRESS ARCHIVAL REFERENCE PAGES */}
-      {archivePages.length > 0 && (
+      {/* SECTION 5.5: DEDICATED CONFERENCES & SYMPOSIA ARCHIVE (Synced with ?tab=conferences) */}
+      {conferencePages.length > 0 && (
+        <section
+          id="conferences-archive"
+          aria-label="آرشیو کنفرانس‌ها و همایش‌ها"
+          className="space-y-6 scroll-mt-28"
+        >
+          <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-indigo-600 font-bold">
+              <BookOpen size={15} />
+              <span>
+                {isFa
+                  ? `کنفرانس‌ها و همایش‌های علمی و فرهنگی (${conferencePages.length} سند کامل)`
+                  : `Conférences & Colloques (${conferencePages.length})`}
+              </span>
+            </div>
+            <h2 className="text-2xl font-black text-[var(--foreground)]">
+              {isFa
+                ? 'کارنامه کنفرانس‌های روانکاوی، پژوهش و جامعه، حافظ و دادخواهی'
+                : 'Conférences en Psychanalyse, Recherche & Société'}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {conferencePages.map((pg) => {
+              const tr =
+                pg.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+                pg.translations?.[0];
+
+              return (
+                <article
+                  key={pg.id}
+                  className="archival-lift p-5 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3"
+                >
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-bold">
+                      {isFa ? 'کنفرانس / همایش' : 'Conférence'}
+                    </span>
+                    <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
+                      <Link
+                        href={`/${locale}/about/${pg.slug}`}
+                        className="hover:text-[var(--primary)] transition-colors"
+                      >
+                        {tr?.title || pg.slug}
+                      </Link>
+                    </h3>
+                    <p className="text-xs text-[var(--foreground-muted)] line-clamp-2 leading-relaxed">
+                      {tr?.excerpt}
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-[var(--border-subtle)] flex justify-end text-xs">
+                    <Link
+                      href={`/${locale}/about/${pg.slug}`}
+                      className="font-bold text-[var(--primary)] hover:underline"
+                    >
+                      {isFa ? 'مطالعه متن کامل ←' : 'Consulter →'}
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* SECTION 5.6: CLEAN MIGRATED ARCHIVAL REFERENCE PAGES (Zero WP Shells!) */}
+      {otherReferencePages.length > 0 && (
         <section
           id="migrated-reference-pages"
           aria-label="آرشیو صفحات و اسناد مستقل"
-          className="space-y-6"
+          className="space-y-6 scroll-mt-28"
         >
           <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
             <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--primary)] font-bold">
               <FileCheck2 size={15} />
               <span>
                 {isFa
-                  ? `آرشیو کامل اسناد، کنفرانس‌ها و صفحات مرجع (${archivePages.length} سند)`
-                  : `Pages d’Archive & Conférences (${archivePages.length})`}
+                  ? `اسناد، انتشارات و صفحات مرجع تکمیلی (${otherReferencePages.length} سند)`
+                  : `Documents de Référence (${otherReferencePages.length})`}
               </span>
             </div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
               {isFa
-                ? 'صفحات مرجع، کارنامه کنفرانس‌ها، مصاحبه‌ها و اسناد کامل'
-                : 'Documents de Référence, Conférences & Archives Éditoriales'}
+                ? 'اسناد مرجع، نشریات، مصاحبه‌ها و یادداشت‌های مستقل'
+                : 'Publications, Entretiens & Archives Éditoriales'}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {archivePages.map((pg) => {
+            {otherReferencePages.map((pg) => {
               const tr =
                 pg.translations?.find((t) => t.languages_code.startsWith(locale)) ||
                 pg.translations?.[0];
@@ -454,11 +605,11 @@ export default async function AboutProfessorPage({
         </section>
       )}
 
-      {/* SECTION 6: CONTACT & ACADEMIC / ARTISTIC INVITATIONS (/contact-mention-fa/) */}
+      {/* SECTION 6: CONTACT & ACADEMIC / ARTISTIC INVITATIONS */}
       <section
         id="contact-section"
         aria-label="تماس با استاد"
-        className="rounded-3xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+        className="rounded-3xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center scroll-mt-28"
       >
         <div className="lg:col-span-7 space-y-4">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-emerald-600 font-bold">
@@ -469,8 +620,8 @@ export default async function AboutProfessorPage({
             {isFa
               ? 'تماس با دکتر حسن مکارمی (پاریس)'
               : isFr
-              ? 'Contacter le Dr Hassan Makaremi (Paris)'
-              : 'Contact Dr. Hassan Makaremi (Paris)'}
+                ? 'Contacter le Dr Hassan Makaremi (Paris)'
+                : 'Contact Dr. Hassan Makaremi (Paris)'}
           </h2>
           <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
             {isFa
@@ -486,7 +637,9 @@ export default async function AboutProfessorPage({
           </div>
           <div className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)]">
             <span className="text-[var(--foreground-muted)]">{isFa ? 'پست الکترونیک رسمی:' : 'Email :'}</span>
-            <span className="font-mono font-bold text-[var(--primary)]">contact@makaremi.com</span>
+            <a href="mailto:contact@makaremi.com" className="font-mono font-bold text-[var(--primary)] hover:underline">
+              contact@makaremi.com
+            </a>
           </div>
           <div className="pt-2 flex flex-wrap gap-2">
             <Link
@@ -496,10 +649,15 @@ export default async function AboutProfessorPage({
               <Sparkles size={14} />
               <span>{isFa ? 'گفتگو با دستیار هوشمند آثار' : 'Assistant IA'}</span>
             </Link>
+            <Link
+              href={`/${locale}/about/contact-mention-fa`}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
+            >
+              <span>{isFa ? 'اطلاعات حقوقی' : 'Mentions légales'}</span>
+            </Link>
           </div>
         </div>
       </section>
     </div>
   );
 }
-

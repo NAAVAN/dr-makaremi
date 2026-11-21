@@ -130,6 +130,7 @@ const SUPPLEMENTAL_BOOKS: Book[] = [
     publication_year: 2018,
     page_count: 420,
     pillar: 'psychoanalysis',
+    genre_key: 'psychoanalysis',
     order_index: 1,
     status: 'published',
     created_at: '2018-01-01T00:00:00Z',
@@ -170,6 +171,7 @@ const SUPPLEMENTAL_BOOKS: Book[] = [
     publication_year: 2022,
     page_count: 310,
     pillar: 'psychoanalysis',
+    genre_key: 'psychoanalysis',
     order_index: 2,
     status: 'published',
     created_at: '2022-03-01T00:00:00Z',
@@ -197,108 +199,49 @@ const SUPPLEMENTAL_BOOKS: Book[] = [
   },
 ];
 
-const SUPPLEMENTAL_EXHIBITIONS: Exhibition[] = [
-  {
-    id: 'e2000000-0000-0000-0000-000000000002',
-    slug: 'moscow-museum-modern-calligraphy',
+// All 27 historical exhibitions are now natively Polylang-paired in vault/exhibitions.json with 390 real photos.
+// Keep enriched bilingual venue metadata for iconic museum shows without creating 0-photo duplicates.
+const EXHIBITION_ENRICHMENTS: Record<
+  string,
+  { start_date?: string; venue_city?: string; venue_name?: string; fa_title?: string }
+> = {
+  'pompadour-2002-between-sign-and-symbol': {
+    start_date: '2002-07-01',
+    venue_city: 'Pompadour, France',
+    venue_name: 'Château de Pompadour, France',
+    fa_title: 'میان نشان و نماد (قصر پومپادور ۲۰۰۲)',
+  },
+  'moscow-museum-modern-calligraphy': {
     start_date: '2010-09-10',
-    end_date: '2010-09-25',
-    venue_city: 'Moscow',
-    venue_name: 'Contemporary Museum of Calligraphy',
-    status: 'published',
-    created_at: '2010-09-10T00:00:00Z',
-    translations: [
-      {
-        id: 'et200000-0000-0000-0000-000000000001',
-        exhibitions_id: 'e2000000-0000-0000-0000-000000000002',
-        languages_code: 'fa-IR',
-        title: 'مجموعه آثار در موزه مدرن خوشنویسی مسکو (۷ اثر دائمی)',
-        curatorial_statement_markdown:
-          'نمایش و حضور دائمی ۷ اثر شاخص از نقاشی‌خط‌های نوگرای دکتر حسن مکارمی در گنجینه بین‌المللی موزه مدرن خوشنویسی مسکو و نمایشگاه بین‌المللی ولیکی نووگورود.',
-      },
-    ],
+    venue_city: 'Novgorod / Moscow, Russia',
+    venue_name: 'Contemporary Museum of Calligraphy (Moscow & Veliky Novgorod)',
+    fa_title: 'نمایشگاه بین‌المللی خوشنویسی روسیه و موزه مدرن خوشنویسی مسکو (۷ اثر دائمی)',
   },
-  {
-    id: 'e3000000-0000-0000-0000-000000000003',
-    slug: 'fez-sacred-music-festival',
-    start_date: '2008-06-05',
-    end_date: '2008-06-14',
-    venue_city: 'Fez',
-    venue_name: 'Festival de Fès des Musiques Sacrées du Monde',
-    status: 'published',
-    created_at: '2008-06-05T00:00:00Z',
-    translations: [
-      {
-        id: 'et300000-0000-0000-0000-000000000001',
-        exhibitions_id: 'e3000000-0000-0000-0000-000000000003',
-        languages_code: 'fa-IR',
-        title: 'نمایشگاه فستیوال موسیقی مقدس فاس (مراکش)',
-        curatorial_statement_markdown:
-          'پیوند میان هنر خوشنویسی ایرانی و نغمه‌های معنوی در بیست‌وپنج تابلوی اختصاصی به نمایش درآمده در فاس مراکش.',
-      },
-    ],
-  },
-  {
-    id: 'e4000000-0000-0000-0000-000000000004',
-    slug: 'unesco-paris-2009-dialogue-of-scripts',
+  'unesco-paris-2009-dialogue-of-scripts': {
     start_date: '2009-05-12',
-    end_date: '2009-05-28',
-    venue_city: 'Paris',
-    venue_name: 'UNESCO Headquarters (Maison de l’UNESCO)',
-    status: 'published',
-    created_at: '2009-05-12T00:00:00Z',
-    translations: [
-      {
-        id: 'et400000-0000-0000-0000-000000000001',
-        exhibitions_id: 'e4000000-0000-0000-0000-000000000004',
-        languages_code: 'fa-IR',
-        title: 'نمایشگاه و نشست یونسکو پاریس (گفتگوی خط و فرهنگ‌ها)',
-        curatorial_statement_markdown:
-          'نمایشگاه آثار خوشنویسی مدرن در مقر سازمان یونسکو در پاریس هم‌زمان با گفتگوی هنری میان سنت خوشنویسی ایرانی و خوشنویسی شرق دور (با حضور استاد فن زنگ).',
-      },
-    ],
+    venue_city: 'Paris (UNESCO), France',
+    venue_name: 'UNESCO Headquarters (Maison de l’UNESCO, Paris)',
+    fa_title: 'نمایشگاه و نشست یونسکو پاریس ۲۰۰۹ (گفتگوی خط و فرهنگ‌ها)',
   },
-  {
-    id: 'e5000000-0000-0000-0000-000000000005',
-    slug: 'havana-cuba-2013-man-na-manam',
-    start_date: '2013-11-04',
-    end_date: '2013-11-29',
-    venue_city: 'Havana',
+  'havana-cuba-2012-man-na-manam': {
+    start_date: '2012-04-09',
+    venue_city: 'Havana, Cuba',
     venue_name: 'Centro Hispanoamericano de Cultura, La Habana (Cuba)',
-    status: 'published',
-    created_at: '2013-11-04T00:00:00Z',
-    translations: [
-      {
-        id: 'et500000-0000-0000-0000-000000000001',
-        exhibitions_id: 'e5000000-0000-0000-0000-000000000005',
-        languages_code: 'fa-IR',
-        title: 'نمایشگاه «من نه منم» در هاوانا (کوبا)',
-        curatorial_statement_markdown:
-          'نخستین نمایشگاه بزرگ نقاشی‌خط ایرانی معاصر در مرکز فرهنگی هاوانا (کوبا) با محوریت اشعار مولانا و مفهوم سوژه شکافته.',
-      },
-    ],
+    fa_title: 'نمایشگاه هاوانا (کوبا ۲۰۱۲) — «چه گوارا / من نه منم»',
   },
-  {
-    id: 'e6000000-0000-0000-0000-000000000006',
-    slug: 'saint-petersburg-national-library-2007',
-    start_date: '2007-09-15',
-    end_date: '2007-10-10',
-    venue_city: 'Saint Petersburg',
+  'fez-sacred-music-festival': {
+    start_date: '2012-06-05',
+    venue_city: 'Fez, Morocco',
+    venue_name: 'Festival de Fès des Musiques Sacrées du Monde (Maroc)',
+    fa_title: 'نمایشگاه فستیوال موسیقی مقدس فاس مراکش ۲۰۱۲ («من نه منم»)',
+  },
+  'saint-petersburg-national-library-2013': {
+    start_date: '2013-09-15',
+    venue_city: 'Saint Petersburg, Russia',
     venue_name: 'National Library of Russia, Saint Petersburg',
-    status: 'published',
-    created_at: '2007-09-15T00:00:00Z',
-    translations: [
-      {
-        id: 'et600000-0000-0000-0000-000000000001',
-        exhibitions_id: 'e6000000-0000-0000-0000-000000000006',
-        languages_code: 'fa-IR',
-        title: 'نمایشگاه کتابخانه ملی روسیه در سنت‌پترزبورگ',
-        curatorial_statement_markdown:
-          'نمایش تابلوهای نقاشی‌خط دکتر حسن مکارمی در تالار نسخ خطی و شرقی کتابخانه ملی روسیه در سنت‌پترزبورگ.',
-      },
-    ],
+    fa_title: 'نمایشگاه کتابخانه ملی روسیه در سنت‌پترزبورگ (۲۰۱۳)',
   },
-];
+};
 
 // -----------------------------------------------------------------------------
 // Build Complete Vault-Backed Collections (100% Real WordPress XML Data)
@@ -380,36 +323,33 @@ function buildBooksCollection(): Book[] {
 
 function buildExhibitionsCollection(): Exhibition[] {
   const vaultExhibitions = loadVaultExhibitions().map((ex) => {
-    if (ex.slug === 'pompadour-2002-between-sign-and-symbol') {
-      const existingLangs = new Set((ex.translations || []).map((t) => t.languages_code));
-      const merged = [...(ex.translations || [])];
-      if (!existingLangs.has('fa-IR')) {
-        merged.unshift({
-          id: 'et100000-0000-0000-0000-000000000001',
-          exhibitions_id: ex.id,
-          languages_code: 'fa-IR',
-          title: 'میان نشان و نماد (قصر پومپادور ۲۰۰۲)',
-          curatorial_statement_markdown:
-            'نمایشگاه تابلوهای خوشنویسی مدرن و نقاشی‌خط‌های دکتر حسن مکارمی در قصر تاریخی پومپادور فرانسه با الهام از خط شکسته نستعلیق و توپولوژی فضای نمادین لکان.',
-        });
-      }
-      return {
-        ...ex,
-        venue_city: 'Pompadour',
-        venue_name: 'Château de Pompadour, France',
-        translations: merged,
-      };
-    }
-    return ex;
+    const enrich = EXHIBITION_ENRICHMENTS[ex.slug];
+    if (!enrich) return ex;
+    const translations = (ex.translations || []).map((t) =>
+      enrich.fa_title && t.languages_code.startsWith('fa') ? { ...t, title: enrich.fa_title } : t
+    );
+    return {
+      ...ex,
+      start_date: enrich.start_date || ex.start_date,
+      venue_city: enrich.venue_city || ex.venue_city,
+      venue_name: enrich.venue_name || ex.venue_name,
+      translations,
+    };
   });
 
-  const existingSlugs = new Set(vaultExhibitions.map((e) => e.slug));
-  const featuredFirst = [
-    ...vaultExhibitions.filter((e) => e.slug === 'pompadour-2002-between-sign-and-symbol'),
-    ...SUPPLEMENTAL_EXHIBITIONS.filter((e) => !existingSlugs.has(e.slug)),
-    ...vaultExhibitions.filter((e) => e.slug !== 'pompadour-2002-between-sign-and-symbol'),
+  const featuredSlugs = [
+    'pompadour-2002-between-sign-and-symbol',
+    'moscow-museum-modern-calligraphy',
+    'unesco-paris-2009-dialogue-of-scripts',
+    'fez-sacred-music-festival',
+    'havana-cuba-2012-man-na-manam',
+    'saint-petersburg-national-library-2013',
   ];
-  return featuredFirst;
+  const featured = featuredSlugs
+    .map((s) => vaultExhibitions.find((e) => e.slug === s))
+    .filter((e): e is Exhibition => Boolean(e));
+  const rest = vaultExhibitions.filter((e) => !featuredSlugs.includes(e.slug));
+  return [...featured, ...rest];
 }
 
 function buildPoemsCollection(): Poem[] {
@@ -629,8 +569,23 @@ export async function getExhibitionBySlug(slug: string, locale: Locale = 'fa'): 
   return exhibitions.find((e) => e.slug === slug);
 }
 
-export async function getPoems(_locale: Locale = 'fa'): Promise<Poem[]> {
-  return FALLBACK_POEMS;
+function prioritizeByLocale<T extends { slug: string; translations?: Array<{ languages_code: string }> }>(
+  items: T[],
+  locale: Locale,
+  pinnedSlugs: string[] = []
+): T[] {
+  const pinnedSet = new Set(pinnedSlugs);
+  const pinned = pinnedSlugs
+    .map((s) => items.find((i) => i.slug === s))
+    .filter((i): i is T => Boolean(i));
+  const rest = items.filter((i) => !pinnedSet.has(i.slug));
+  const matching = rest.filter((i) => i.translations?.some((t) => t.languages_code.startsWith(locale)));
+  const others = rest.filter((i) => !i.translations?.some((t) => t.languages_code.startsWith(locale)));
+  return [...pinned, ...matching, ...others];
+}
+
+export async function getPoems(locale: Locale = 'fa'): Promise<Poem[]> {
+  return prioritizeByLocale(FALLBACK_POEMS, locale, ['caress-me']);
 }
 
 export async function getPoemBySlug(slug: string, locale: Locale = 'fa'): Promise<Poem | undefined> {
@@ -638,8 +593,8 @@ export async function getPoemBySlug(slug: string, locale: Locale = 'fa'): Promis
   return poems.find((p) => p.slug === slug);
 }
 
-export async function getArtworks(_locale: Locale = 'fa'): Promise<Artwork[]> {
-  return FALLBACK_ARTWORKS;
+export async function getArtworks(locale: Locale = 'fa'): Promise<Artwork[]> {
+  return prioritizeByLocale(FALLBACK_ARTWORKS, locale);
 }
 
 export async function getArtworkBySlug(slug: string, locale: Locale = 'fa'): Promise<Artwork | undefined> {
@@ -647,11 +602,9 @@ export async function getArtworkBySlug(slug: string, locale: Locale = 'fa'): Pro
   return artworks.find((a) => a.slug === slug);
 }
 
-export async function getVideoSpeeches(_locale: Locale = 'fa', pillar?: ContentPillar): Promise<VideoSpeech[]> {
-  if (pillar) {
-    return FALLBACK_VIDEOS.filter((v) => v.pillar === pillar);
-  }
-  return FALLBACK_VIDEOS;
+export async function getVideoSpeeches(locale: Locale = 'fa', pillar?: ContentPillar): Promise<VideoSpeech[]> {
+  const base = pillar ? FALLBACK_VIDEOS.filter((v) => v.pillar === pillar) : FALLBACK_VIDEOS;
+  return prioritizeByLocale(base, locale, ['khavaran-justice-session', 'hafez-de-chiraz']);
 }
 
 export async function getVideoSpeechBySlug(slug: string, locale: Locale = 'fa'): Promise<VideoSpeech | undefined> {
@@ -659,11 +612,9 @@ export async function getVideoSpeechBySlug(slug: string, locale: Locale = 'fa'):
   return videos.find((v) => v.slug === slug);
 }
 
-export async function getArchivePages(_locale: Locale = 'fa', group?: ArchivePageGroup): Promise<ArchivePage[]> {
-  if (group) {
-    return FALLBACK_PAGES.filter((p) => p.group === group);
-  }
-  return FALLBACK_PAGES;
+export async function getArchivePages(locale: Locale = 'fa', group?: ArchivePageGroup): Promise<ArchivePage[]> {
+  const base = group ? FALLBACK_PAGES.filter((p) => p.group === group) : FALLBACK_PAGES;
+  return prioritizeByLocale(base, locale);
 }
 
 export async function getArchivePageBySlug(slug: string, locale: Locale = 'fa'): Promise<ArchivePage | undefined> {

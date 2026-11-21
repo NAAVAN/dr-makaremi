@@ -20,19 +20,25 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
 
   const verses = poemTrans?.verses || [];
 
+  const hasOwnArtwork = Boolean(poem.artwork_image_url);
+  const viewerTitle = hasOwnArtwork
+    ? poemTrans?.title || poem.slug
+    : artworkTrans?.title || poemTrans?.title || 'میان نشان و نماد';
+  const hasRealAudio = Boolean(poem.audio_recitation_file_id);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       {/* Visual Canvas Side */}
       <div className="space-y-4">
         <IIIFDeepZoomViewer
-          imageId={artwork?.iiif_image_id || `poem-${poem.slug}`}
+          imageId={hasOwnArtwork ? `poem-${poem.slug}` : artwork?.iiif_image_id || `poem-${poem.slug}`}
           imageUrl={poem.artwork_image_url || artwork?.image_url || artwork?.gallery_images?.[0]?.url || null}
-          title={artworkTrans?.title || poemTrans?.title || 'میان نشان و نماد'}
-          medium={artwork?.medium}
-          dimensions={artwork?.dimensions}
+          title={viewerTitle}
+          medium={hasOwnArtwork ? undefined : artwork?.medium}
+          dimensions={hasOwnArtwork ? undefined : artwork?.dimensions}
           locale={locale}
         />
-        {artworkTrans?.curator_critique_markdown && (
+        {!hasOwnArtwork && artworkTrans?.curator_critique_markdown && (
           <div className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] italic leading-relaxed">
             {artworkTrans.curator_critique_markdown}
           </div>
@@ -41,10 +47,10 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
 
       {/* Poetry & Recitation Side */}
       <div className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 sm:p-8 space-y-6">
-        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
+        <div className="flex items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
           <div>
             <span className="text-[11px] font-mono tracking-wider uppercase text-[var(--primary)] block">
-              {isFa ? 'شعر و تصویر (دکلمه و خوشنویسی)' : 'Poésie & Image Synchronisée'}
+              {isFa ? 'شعر و تصویر (سروده و تابلوی اختصاصی)' : 'Poésie & Image'}
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-[var(--foreground)] mt-1">
               {poemTrans?.title || poem.slug}
@@ -54,10 +60,19 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
           <button
             type="button"
             onClick={() => setIsPlaying(!isPlaying)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold shadow-md hover:opacity-90 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold shadow-md hover:opacity-90 transition-all cursor-pointer shrink-0"
           >
-            {isPlaying ? <Pause size={15} /> : <Play size={15} />}
-            <span>{isPlaying ? (isFa ? 'توقف دکلمه' : 'Pause') : (isFa ? 'پخش دکلمه صوتی' : 'Écouter la récitation')}</span>
+            {hasRealAudio ? (
+              <>
+                {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+                <span>{isPlaying ? (isFa ? 'توقف دکلمه' : 'Pause') : (isFa ? 'پخش دکلمه صوتی' : 'Écouter')}</span>
+              </>
+            ) : (
+              <>
+                <Sparkles size={15} />
+                <span>{isPlaying ? (isFa ? 'حالت عادی' : 'Vue normale') : (isFa ? 'حالت تمرکز خوانش' : 'Mode lecture')}</span>
+              </>
+            )}
           </button>
         </div>
 

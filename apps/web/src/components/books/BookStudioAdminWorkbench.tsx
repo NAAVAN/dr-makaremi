@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
   Sliders,
   Eye,
@@ -35,9 +36,10 @@ const TRIM_SIZES = [
   { id: 'rahli', labelFa: 'رحلی هنری (۲۱۰×۲۹۰ میلی‌متر)', labelFr: 'Art Quarto 210×290 mm', w: 210, h: 290 },
 ];
 
-export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkbenchProps) {
+function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkbenchProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const searchParams = useSearchParams();
 
   const [selectedSlug, setSelectedSlug] = useState<string>(
     books[0]?.slug || 'lacan-seminar-3-psychoses'
@@ -50,7 +52,8 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
   const baseProfile = getBookStudioProfile(
     selectedBook.slug,
     selectedBook.page_count || 264,
-    selectedBook.pillar
+    selectedBook.pillar,
+    selectedBook.genre_key
   );
 
   // Live Studio State
@@ -62,6 +65,22 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
   const [previewStart, setPreviewStart] = useState<number>(baseProfile.previewStartPage);
   const [previewEnd, setPreviewEnd] = useState<number>(baseProfile.previewEndPage);
   const [copiedConfig, setCopiedConfig] = useState<boolean>(false);
+
+  // Read ?book=<slug> query parameter so deep links from /books open the exact book
+  useEffect(() => {
+    const paramSlug = searchParams.get('book');
+    if (paramSlug && books.some((b) => b.slug === paramSlug)) {
+      const target = books.find((b) => b.slug === paramSlug);
+      if (target) {
+        const prof = getBookStudioProfile(target.slug, target.page_count || 240, target.pillar, target.genre_key);
+        setSelectedSlug(target.slug);
+        setDirection(prof.direction);
+        setPageCount(target.page_count || 240);
+        setPreviewStart(prof.previewStartPage);
+        setPreviewEnd(prof.previewEndPage);
+      }
+    }
+  }, [searchParams, books]);
 
   const paper = PAPER_TYPES[paperIdx];
   const trim = TRIM_SIZES[trimIdx];
@@ -148,11 +167,10 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
           <button
             type="button"
             onClick={() => setViewMode('studio')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              viewMode === 'studio'
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${viewMode === 'studio'
                 ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             <Sliders size={14} />
             <span>{isFa ? '۱. میز کار مهندسی مدیر' : '1. Console Admin'}</span>
@@ -161,11 +179,10 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
           <button
             type="button"
             onClick={() => setViewMode('visitor')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              viewMode === 'visitor'
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${viewMode === 'visitor'
                 ? 'bg-emerald-700 text-white'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             <Eye size={14} />
             <span>{isFa ? '۲. نمای خالص خواننده سایت (Sanctuary)' : '2. Vue Lecteur Pure'}</span>
@@ -174,11 +191,10 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
           <button
             type="button"
             onClick={() => setViewMode('reels')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              viewMode === 'reels'
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${viewMode === 'reels'
                 ? 'bg-amber-700 text-white'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             <Film size={14} />
             <span>{isFa ? '۳. استودیو ریلز ۹:۱۶ (شبکه‌های اجتماعی)' : '3. Studio Reels 9:16'}</span>
@@ -213,22 +229,20 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
                   <button
                     type="button"
                     onClick={() => setDirection('rtl')}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                      direction === 'rtl'
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${direction === 'rtl'
                         ? 'bg-amber-700 text-white border-amber-700'
                         : 'bg-[var(--surface-sunken)] text-[var(--foreground)] border-[var(--border-subtle)]'
-                    }`}
+                      }`}
                   >
                     {isFa ? 'راست‌به‌چپ (RTL فارسی)' : 'RTL (Persan)'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setDirection('ltr')}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                      direction === 'ltr'
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${direction === 'ltr'
                         ? 'bg-amber-700 text-white border-amber-700'
                         : 'bg-[var(--surface-sunken)] text-[var(--foreground)] border-[var(--border-subtle)]'
-                    }`}
+                      }`}
                   >
                     {isFa ? 'چپ‌به‌راست (LTR فرانسوی)' : 'LTR (Français)'}
                   </button>
@@ -452,8 +466,8 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
                       ? 'تنظیمات سه‌بعدی کتاب کپی شد!'
                       : 'Configuration copiée !'
                     : isFa
-                    ? 'ذخیره و کپی تنظیمات JSON برای فرانت‌اند'
-                    : 'Exporter la configuration JSON'}
+                      ? 'ذخیره و کپی تنظیمات JSON برای فرانت‌اند'
+                      : 'Exporter la configuration JSON'}
                 </span>
               </button>
             </div>
@@ -588,4 +602,19 @@ export function BookStudioAdminWorkbench({ books, locale }: BookStudioAdminWorkb
     </div>
   );
 }
+
+export function BookStudioAdminWorkbench(props: BookStudioAdminWorkbenchProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center text-xs text-[var(--foreground-muted)]">
+          Loading 3D Book Studio...
+        </div>
+      }
+    >
+      <BookStudioAdminWorkbenchInner {...props} />
+    </Suspense>
+  );
+}
+
 

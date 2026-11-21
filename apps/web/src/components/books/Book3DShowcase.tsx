@@ -26,7 +26,7 @@ type CameraPose = 'isometric' | 'front' | 'spine' | 'back';
 type MotionMode = 'float' | 'turntable' | 'paused';
 
 export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProps) {
-  const profile = getBookStudioProfile(book.slug, book.page_count || 240, book.pillar);
+  const profile = getBookStudioProfile(book.slug, book.page_count || 240, book.pillar, book.genre_key);
   const isRtlBook = profile.direction === 'rtl';
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
@@ -102,8 +102,8 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
     motionMode === 'turntable'
       ? 'book-3d-motion-turntable'
       : motionMode === 'float'
-      ? 'book-3d-motion-float'
-      : 'book-3d-motion-paused';
+        ? 'book-3d-motion-float'
+        : 'book-3d-motion-paused';
 
   // 22 dense solid paper block slices across the entire Z depth (-halfPaperDepth to +halfPaperDepth)
   // This guarantees a 100% solid volumetric paper block from every angle (bottom, top, side, or open cover) — never a hollow box!
@@ -127,8 +127,8 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
               ? 'صحافی فارسی (راست‌به‌چپ RTL)'
               : 'Reliure Persane (RTL)'
             : isFa
-            ? 'صحافی لاتین (چپ‌به‌راست LTR)'
-            : 'Reliure Française (LTR)'}
+              ? 'صحافی لاتین (چپ‌به‌راست LTR)'
+              : 'Reliure Française (LTR)'}
         </span>
         <span className="px-2.5 py-1 rounded-full bg-stone-200/80 dark:bg-stone-800/90 font-bold">
           {isFa ? `قطر عطف: ${profile.spineWidthMm} میلی‌متر` : `Dos : ${profile.spineWidthMm} mm`}
@@ -225,9 +225,8 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
               style={{
                 transformStyle: 'preserve-3d',
                 transformOrigin: isRtlBook ? 'right center' : 'left center',
-                transform: `translateZ(${halfSpine}px) rotateY(${
-                  coverOpen ? (isRtlBook ? 142 : -142) : 0
-                }deg)`,
+                transform: `translateZ(${halfSpine}px) rotateY(${coverOpen ? (isRtlBook ? 142 : -142) : 0
+                  }deg)`,
               }}
             >
               {/* Front Cover Outer Face */}
@@ -320,13 +319,13 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                 transformOrigin: 'center center',
                 ...(isRtlBook
                   ? {
-                      right: `-${halfSpine}px`,
-                      transform: 'rotateY(90deg)',
-                    }
+                    right: `-${halfSpine}px`,
+                    transform: 'rotateY(90deg)',
+                  }
                   : {
-                      left: `-${halfSpine}px`,
-                      transform: 'rotateY(-90deg)',
-                    }),
+                    left: `-${halfSpine}px`,
+                    transform: 'rotateY(-90deg)',
+                  }),
                 backgroundColor: profile.coverPalette.spineBg,
                 borderTop: `2px solid ${profile.coverPalette.accentGold}`,
                 borderBottom: `2px solid ${profile.coverPalette.accentGold}`,
@@ -352,13 +351,13 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                 transformOrigin: 'center center',
                 ...(isRtlBook
                   ? {
-                      left: `${3 - halfPaperDepth}px`,
-                      transform: 'rotateY(-90deg)',
-                    }
+                    left: `${3 - halfPaperDepth}px`,
+                    transform: 'rotateY(-90deg)',
+                  }
                   : {
-                      right: `${3 - halfPaperDepth}px`,
-                      transform: 'rotateY(90deg)',
-                    }),
+                    right: `${3 - halfPaperDepth}px`,
+                    transform: 'rotateY(90deg)',
+                  }),
                 background:
                   'repeating-linear-gradient(90deg, #FBF9F4 0px, #FBF9F4 1.5px, #DFD6C0 1.5px, #DFD6C0 3px)',
                 boxShadow: 'inset 0 0 8px rgba(0,0,0,0.15)',
@@ -433,8 +432,8 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                     {isFa
                       ? 'درباره کتاب و چکیده اثر'
                       : isFr
-                      ? 'Quatrième de couverture'
-                      : 'Back Cover Synopsis'}
+                        ? 'Quatrième de couverture'
+                        : 'Back Cover Synopsis'}
                   </span>
                   <p className="text-xs leading-relaxed opacity-90 line-clamp-8">
                     {translation?.synopsis || 'توضیحات اثر در دست تکمیل است.'}
@@ -470,11 +469,10 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
               if (pose === 'back') setPose('isometric');
               setCoverOpen((prev) => !prev);
             }}
-            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-              coverOpen
+            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${coverOpen
                 ? 'bg-amber-700 text-white border-amber-700 shadow-sm'
                 : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-amber-600/60'
-            }`}
+              }`}
           >
             <BookOpen size={14} />
             <span>
@@ -483,19 +481,18 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                   ? 'بستن جلد کتاب'
                   : 'Fermer la couverture'
                 : isFa
-                ? 'باز کردن جلد (صفحه ۱)'
-                : 'Ouvrir (Page 1)'}
+                  ? 'باز کردن جلد (صفحه ۱)'
+                  : 'Ouvrir (Page 1)'}
             </span>
           </button>
 
           <button
             type="button"
             onClick={() => selectPose(pose === 'back' ? 'isometric' : 'back')}
-            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-              pose === 'back'
+            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${pose === 'back'
                 ? 'bg-teal-800 text-white border-teal-800 shadow-sm'
                 : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-teal-600/60'
-            }`}
+              }`}
           >
             <RotateCw
               size={14}
@@ -507,8 +504,8 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                   ? 'نمای روی جلد'
                   : 'Voir la couverture'
                 : isFa
-                ? 'مشاهده پشت جلد'
-                : 'Quatrième de couv.'}
+                  ? 'مشاهده پشت جلد'
+                  : 'Quatrième de couv.'}
             </span>
           </button>
         </div>
@@ -518,11 +515,10 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => setMotionMode('float')}
-            className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-bold transition-all cursor-pointer ${
-              motionMode === 'float'
+            className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-bold transition-all cursor-pointer ${motionMode === 'float'
                 ? 'bg-teal-800 text-white shadow-sm'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             <Play size={12} />
             <span>{isFa ? 'شناور ۳بعدی' : 'Flottement 3D'}</span>
@@ -531,11 +527,10 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => setMotionMode('turntable')}
-            className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-bold transition-all cursor-pointer ${
-              motionMode === 'turntable'
+            className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-bold transition-all cursor-pointer ${motionMode === 'turntable'
                 ? 'bg-amber-700 text-white shadow-sm'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             <RefreshCw size={12} className={motionMode === 'turntable' ? 'animate-spin' : ''} />
             <span>{isFa ? 'چرخش ۳۶۰°' : 'Rotation 360°'}</span>
@@ -544,11 +539,10 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => setMotionMode('paused')}
-            className={`flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer ${
-              motionMode === 'paused'
+            className={`flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer ${motionMode === 'paused'
                 ? 'bg-stone-800 text-white shadow-sm'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             <Pause size={12} />
             <span>{isFa ? 'توقف' : 'Pause'}</span>
@@ -560,33 +554,30 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => selectPose('isometric')}
-            className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
-              pose === 'isometric' && manualOffset.rx === 0 && manualOffset.ry === 0
+            className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${pose === 'isometric' && manualOffset.rx === 0 && manualOffset.ry === 0
                 ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             {isFa ? 'سه‌رخ' : '3D Iso'}
           </button>
           <button
             type="button"
             onClick={() => selectPose('front')}
-            className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
-              pose === 'front' && manualOffset.rx === 0 && manualOffset.ry === 0
+            className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${pose === 'front' && manualOffset.rx === 0 && manualOffset.ry === 0
                 ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             {isFa ? 'روبه‌رو' : 'Face'}
           </button>
           <button
             type="button"
             onClick={() => selectPose('spine')}
-            className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
-              pose === 'spine' && manualOffset.rx === 0 && manualOffset.ry === 0
+            className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${pose === 'spine' && manualOffset.rx === 0 && manualOffset.ry === 0
                 ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
             {isFa ? 'عطف' : 'Dos'}
           </button>

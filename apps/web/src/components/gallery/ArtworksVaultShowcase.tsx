@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search, Images, Layers } from 'lucide-react';
 import { IIIFDeepZoomViewer } from './IIIFDeepZoomViewer';
 import type { Artwork, Locale } from '@makaremi/shared';
@@ -10,22 +11,43 @@ interface ArtworksVaultShowcaseProps {
   locale: Locale;
 }
 
-export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcaseProps) {
+function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseProps) {
   const isFa = locale === 'fa';
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState('');
   const [selectedArtworkId, setSelectedArtworkId] = useState<string>(artworks[0]?.id || '');
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(
     artworks[0]?.image_url || artworks[0]?.gallery_images?.[0]?.url || null
   );
 
+  // Read ?series=<slug> to open the exact artwork collection directly inside the IIIF stage
+  useEffect(() => {
+    const seriesSlug = searchParams.get('series');
+    if (!seriesSlug) return;
+    const match = artworks.find(
+      (a) => a.slug === seriesSlug || a.legacy_wp_slug === seriesSlug
+    );
+    if (match) {
+      setSelectedArtworkId(match.id);
+      setSelectedImageUrl(match.image_url || match.gallery_images?.[0]?.url || null);
+      const stage = document.getElementById('iiif-stage');
+      if (stage) {
+        setTimeout(() => stage.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }
+    }
+  }, [searchParams, artworks]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return artworks;
     return artworks.filter((a) => {
-      const tr = a.translations?.find((t) => t.languages_code.startsWith(locale)) || a.translations?.[0];
-      return `${tr?.title || ''} ${tr?.description_markdown || ''}`.toLowerCase().includes(q);
+      const allText = (a.translations || [])
+        .map((t) => `${t.title || ''} ${t.description_markdown || ''}`)
+        .join(' ')
+        .toLowerCase();
+      return allText.includes(q);
     });
-  }, [artworks, locale, query]);
+  }, [artworks, query]);
 
   const activeArtwork =
     artworks.find((a) => a.id === selectedArtworkId) || filtered[0] || artworks[0];
@@ -39,10 +61,14 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
   const selectArtwork = (art: Artwork) => {
     setSelectedArtworkId(art.id);
     setSelectedImageUrl(art.image_url || art.gallery_images?.[0]?.url || null);
+    const stage = document.getElementById('iiif-stage');
+    if (stage) {
+      stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
-    <div className="space-y-8">
+    <div id="iiif-stage" className="space-y-8 scroll-mt-28">
       {/* Interactive Museum Deep-Zoom Stage */}
       {activeArtwork && (
         <div className="space-y-4">
@@ -61,7 +87,7 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
               <h3 className="text-lg font-bold text-[var(--foreground)]">
                 {activeTrans?.title || activeArtwork.slug}
               </h3>
-              <span className="text-xs font-mono text-[var(--foreground-muted)]">
+              <span className="text-xs font-mono tabular-nums text-[var(--foreground-muted)]">
                 {activeArtwork.year} • {activeImages.length}{' '}
                 {isFa ? 'تصویر در این مجموعه' : 'images dans cette série'}
               </span>
@@ -80,10 +106,11 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
                     key={`${img.id}-${i}`}
                     type="button"
                     onClick={() => setSelectedImageUrl(img.url)}
-                    className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${viewerImage === img.url
+                    className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                      viewerImage === img.url
                         ? 'border-[var(--primary)] scale-105'
                         : 'border-transparent opacity-75 hover:opacity-100'
-                      }`}
+                    }`}
                   >
                     <img
                       src={img.url}
@@ -99,7 +126,7 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
         </div>
       )}
 
-      {/* Searchable Complete Catalog of All 54 WordPress Artwork Galleries */}
+      {/* Searchable Complete Catalog of All Canonical Bilingual Artwork Galleries */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--primary)] font-bold">
@@ -146,7 +173,9 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtered.map((art) => {
-              const tr = art.translations?.find((t) => t.languages_code.startsWith(locale)) || art.translations?.[0];
+              const tr =
+                art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+                art.translations?.[0];
               const isSelected = activeArtwork?.id === art.id;
               const thumb = art.image_url || art.gallery_images?.[0]?.url;
 
@@ -155,10 +184,11 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
                   key={art.id}
                   type="button"
                   onClick={() => selectArtwork(art)}
-                  className={`text-start min-w-0 rounded-2xl overflow-hidden border transition-all cursor-pointer flex flex-col justify-between bg-[var(--surface-card)] ${isSelected
+                  className={`text-start min-w-0 rounded-2xl overflow-hidden border transition-all cursor-pointer flex flex-col justify-between bg-[var(--surface-card)] ${
+                    isSelected
                       ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20 shadow-lg'
                       : 'border-[var(--border-subtle)] hover:shadow-md'
-                    }`}
+                  }`}
                 >
                   <div className="aspect-[4/3] w-full bg-[var(--surface-sunken)] overflow-hidden relative">
                     {thumb ? (
@@ -185,7 +215,7 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
                       {tr?.title || art.slug}
                     </h4>
                     <span className="text-[10px] font-mono tabular-nums text-[var(--foreground-muted)] block">
-                      {art.year} • {tr?.languages_code?.slice(0, 2).toUpperCase()}
+                      {art.year} • {art.gallery_images?.length || 0} {isFa ? 'اثر' : 'œuvres'}
                     </span>
                   </div>
                 </button>
@@ -195,5 +225,19 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
         )}
       </div>
     </div>
+  );
+}
+
+export function ArtworksVaultShowcase(props: ArtworksVaultShowcaseProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center text-xs text-[var(--foreground-muted)]">
+          Loading IIIF Museum Showcase...
+        </div>
+      }
+    >
+      <ArtworksVaultShowcaseInner {...props} />
+    </Suspense>
   );
 }

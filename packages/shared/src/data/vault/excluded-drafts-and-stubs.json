@@ -65,12 +65,60 @@
       "reason": "test_artifact"
     },
     {
+      "wp_id": 27,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Landing page fr",
+      "slug": "landing-page",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
       "wp_id": 29,
       "post_type": "page",
       "status": "publish",
       "title": "Blog",
       "slug": "blog",
       "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 32,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Landing page us",
+      "slug": "landing-page-us",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 34,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Landing page fa_IR",
+      "slug": "landing-page-fa_ir",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 36,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Accueil",
+      "slug": "accueil",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 39,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Homepage",
+      "slug": "homepage",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 42,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Home-Persan",
+      "slug": "home-persan",
+      "reason": "wp_shell_or_placeholder_redirected"
     },
     {
       "wp_id": 47,
@@ -121,6 +169,14 @@
       "reason": "wp_structural_stub"
     },
     {
+      "wp_id": 1461,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Historique des Expositions",
+      "slug": "expositions",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
       "wp_id": 1783,
       "post_type": "page",
       "status": "publish",
@@ -145,6 +201,14 @@
       "reason": "wp_structural_stub"
     },
     {
+      "wp_id": 2250,
+      "post_type": "page",
+      "status": "publish",
+      "title": "گالری‌ها aq",
+      "slug": "galleries-persan",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
       "wp_id": 2273,
       "post_type": "page",
       "status": "publish",
@@ -153,12 +217,60 @@
       "reason": "wp_structural_stub"
     },
     {
+      "wp_id": 2586,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Conférences en Art",
+      "slug": "conferences-en-art",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 2589,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Conférences en Psychanalyse",
+      "slug": "conferences-en-psychanalyse",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 2592,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Conférences en Poésie",
+      "slug": "conferences-en-poesie",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 2595,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Conférences: Recherche & Société",
+      "slug": "conferences-recherche-societe",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
+      "wp_id": 2892,
+      "post_type": "page",
+      "status": "publish",
+      "title": "نمایشگاه‌ها",
+      "slug": "nameyshgah-ir",
+      "reason": "wp_shell_or_placeholder_redirected"
+    },
+    {
       "wp_id": 3405,
       "post_type": "page",
       "status": "publish",
       "title": "convertisseur spécial galeries fr -> fa",
       "slug": "convertisseur-special",
       "reason": "test_artifact"
+    },
+    {
+      "wp_id": 4330,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Exhibitions summary",
+      "slug": "exhibitions-en",
+      "reason": "wp_shell_or_placeholder_redirected"
     },
     {
       "wp_id": 4434,
@@ -175,6 +287,14 @@
       "title": "test -- fa -- lionel",
       "slug": "test-fa",
       "reason": "test_artifact"
+    },
+    {
+      "wp_id": 3344,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Plus de tableaux...",
+      "slug": "plus-de-tableaux",
+      "reason": "wp_shell_or_placeholder_redirected"
     },
     {
       "wp_id": 3348,
