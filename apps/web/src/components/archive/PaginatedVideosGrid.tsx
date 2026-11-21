@@ -134,7 +134,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
         )}
       </div>
 
-      <div className="flex items-center justify-between text-xs text-[var(--foreground-muted)] font-mono">
+      <div className="flex items-center justify-between text-xs text-[var(--foreground-muted)] font-mono tabular-nums">
         <span>
           {isFa
             ? `نمایش ${pageItems.length} از ${filtered.length} ویدیو`
@@ -145,7 +145,29 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
         </span>
       </div>
 
-      {/* Videos Grid */}
+      {/* Empty State */}
+      {pageItems.length === 0 ? (
+        <div
+          role="status"
+          className="p-10 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-3"
+        >
+          <p className="text-sm font-bold text-[var(--foreground)]">
+            {isFa ? 'ویدیویی مطابق فیلتر یا جستجوی شما یافت نشد.' : 'Aucune vidéo ne correspond à vos critères.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setQuery('');
+              setSelectedTheme('all');
+              setOnlyTranscript(false);
+              setPage(1);
+            }}
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer"
+          >
+            {isFa ? 'پاک کردن فیلترها' : 'Réinitialiser'}
+          </button>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {pageItems.map((vid) => {
           const trans =
@@ -159,7 +181,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
           return (
             <article
               key={vid.id}
-              className="archival-lift rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-xl transition-all overflow-hidden flex flex-col justify-between"
+              className="archival-lift min-w-0 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-xl transition-all overflow-hidden flex flex-col justify-between"
             >
               {vid.thumbnail_url && (
                 <Link href={href} className="block aspect-video w-full overflow-hidden bg-neutral-900 relative">
@@ -171,44 +193,44 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                   />
                   {trans?.transcript_markdown && (
                     <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 text-white text-[10px] font-mono">
-                      <FileText size={10} />
+                      <FileText size={10} className="shrink-0" />
                       {isFa ? 'متن کامل' : 'Texte'}
                     </span>
                   )}
                 </Link>
               )}
 
-              <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono">
-                    <span className="flex items-center gap-1">
-                      <Calendar size={12} />
+              <div className="p-5 space-y-3 flex-1 flex flex-col justify-between min-w-0">
+                <div className="space-y-2 min-w-0">
+                  <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono tabular-nums">
+                    <span className="flex items-center gap-1 shrink-0">
+                      <Calendar size={12} className="shrink-0" />
                       {vid.event_date}
                     </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Video size={12} />
+                    <span className="inline-flex items-center gap-1 shrink-0">
+                      <Video size={12} className="shrink-0" />
                       {vid.youtube_video_id ? 'YouTube' : vid.vimeo_url ? 'Vimeo' : 'Archive'}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-[var(--foreground)] leading-snug">
+                  <h3 className="text-base font-bold text-[var(--foreground)] leading-snug break-words">
                     <Link href={href} className="hover:text-[var(--primary)] transition-colors">
                       {trans?.title || vid.slug}
                     </Link>
                   </h3>
 
                   {trans?.description && trans.description !== trans.title && (
-                    <p className="text-xs text-[var(--foreground-muted)] line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-[var(--foreground-muted)] line-clamp-2 leading-relaxed break-words">
                       {trans.description}
                     </p>
                   )}
                 </div>
 
-                <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between text-xs">
-                  <span className="text-[11px] text-[var(--foreground-muted)] truncate max-w-[60%]">
+                <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between gap-2 text-xs">
+                  <span className="text-[11px] text-[var(--foreground-muted)] truncate min-w-0">
                     {vid.themes?.[0] || vid.event_location}
                   </span>
-                  <Link href={href} className="font-bold text-[var(--primary)] hover:underline shrink-0">
+                  <Link href={href} className="font-bold text-[var(--primary)] hover:underline shrink-0 whitespace-nowrap">
                     {isFa ? 'مشاهده ←' : 'Voir →'}
                   </Link>
                 </div>
@@ -217,6 +239,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
           );
         })}
       </div>
+      )}
 
       {totalPages > 1 && (
         <nav

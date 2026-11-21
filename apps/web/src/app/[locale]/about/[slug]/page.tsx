@@ -79,7 +79,7 @@ export default async function ArchiveReferencePageDetail({
 
         <Link
           href={`/${locale}/about/${slug}.md`}
-          target="_blank"
+          target="_blank" rel="noopener noreferrer"
           className="flex items-center gap-1 font-mono px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
         >
           <Download size={12} />

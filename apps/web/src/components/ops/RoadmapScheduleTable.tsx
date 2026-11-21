@@ -76,7 +76,10 @@ export function RoadmapScheduleTable({ locale }: RoadmapScheduleTableProps) {
   ];
 
   return (
-    <section className="bg-[var(--surface-overlay)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
+    <section
+      aria-label={isFa ? 'نقشه راه اجرایی ۱۲ هفته‌ای' : '12-Week Implementation Roadmap'}
+      className="bg-[var(--surface-overlay)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] flex items-center gap-2.5">

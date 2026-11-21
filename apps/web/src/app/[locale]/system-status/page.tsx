@@ -139,7 +139,7 @@ export default async function SystemStatusPage({ params }: PageProps) {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/${locale}/system-status.md`}
-                  target="_blank"
+                  target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--surface-sunken)] hover:bg-[var(--surface-sunken)]/80 text-[var(--foreground)] border border-[var(--border-subtle)] transition-colors"
                 >
                   <FileText size={14} className="text-amber-500" />
@@ -149,7 +149,7 @@ export default async function SystemStatusPage({ params }: PageProps) {
 
                 <Link
                   href="/api/health"
-                  target="_blank"
+                  target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 transition-colors"
                 >
                   <HeartPulse size={14} />

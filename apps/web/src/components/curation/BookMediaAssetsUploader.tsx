@@ -305,7 +305,7 @@ export function BookMediaAssetsUploader({
                     key={i}
                     href={p.url}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="block text-teal-700 underline truncate"
                   >
                     📄 {p.title}

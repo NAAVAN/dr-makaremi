@@ -20,7 +20,7 @@
   --primary-foreground: #FFFFFF;
   --text-primary: #1A1A18;
   --text-secondary: #44403C;
-  --text-muted: #78716C;
+  --text-muted: #665F5A;
 
   /* Archival Borders & Dividers (Subtle Hairlines, Zero Glow) */
   --border-subtle: #E7E2D7;
@@ -80,7 +80,7 @@
   /* Typography & Foreground (Warm Ivory & Titanium White) */
   --foreground: #F5F4F0;
   --foreground-muted: #A8A29E;
-  --primary-foreground: #FFFFFF;
+  --primary-foreground: #081C1B;
   --text-primary: #F5F4F0;
   --text-secondary: #D6D3D1;
   --text-muted: #8C857E;

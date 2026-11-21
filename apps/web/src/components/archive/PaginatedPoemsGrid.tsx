@@ -72,11 +72,10 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
                 setLangFilter(code);
                 setPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
-                langFilter === code
+              className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${langFilter === code
                   ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
                   : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
-              }`}
+                }`}
             >
               {code === 'all' ? (isFa ? 'همه' : 'Tous') : code === 'fa' ? 'فارسی' : 'Français'}
             </button>
@@ -84,7 +83,7 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-[var(--foreground-muted)] font-mono">
+      <div className="flex items-center justify-between text-xs text-[var(--foreground-muted)] font-mono tabular-nums">
         <span>
           {isFa
             ? `نمایش ${pageItems.length} از ${filtered.length} سروده`
@@ -95,71 +94,93 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
         </span>
       </div>
 
-      {/* Poems Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {pageItems.map((p) => {
-          const trans =
-            p.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-            p.translations?.[0];
+      {/* Empty State */}
+      {pageItems.length === 0 ? (
+        <div
+          role="status"
+          className="p-10 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-3"
+        >
+          <p className="text-sm font-bold text-[var(--foreground)]">
+            {isFa ? 'شعری مطابق جستجوی شما یافت نشد.' : 'Aucun poème ne correspond à votre recherche.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setQuery('');
+              setLangFilter('all');
+              setPage(1);
+            }}
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer"
+          >
+            {isFa ? 'پاک کردن فیلترها' : 'Réinitialiser'}
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {pageItems.map((p) => {
+            const trans =
+              p.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+              p.translations?.[0];
 
-          return (
-            <article
-              key={p.id}
-              className="archival-lift rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-lg transition-all overflow-hidden flex flex-col justify-between"
-            >
-              {p.artwork_image_url && (
-                <div className="aspect-[16/10] w-full overflow-hidden bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)]">
-                  <img
-                    src={p.artwork_image_url}
-                    alt={trans?.title || p.slug}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
+            return (
+              <article
+                key={p.id}
+                className="archival-lift min-w-0 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-lg transition-all overflow-hidden flex flex-col justify-between"
+              >
+                {p.artwork_image_url && (
+                  <div className="aspect-[16/10] w-full overflow-hidden bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)]">
+                    <img
+                      src={p.artwork_image_url}
+                      alt={trans?.title || p.slug}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
 
-              <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono">
-                    <span>{p.creation_year || 2015}</span>
-                    <span className="inline-flex items-center gap-1">
-                      <Feather size={11} />
-                      {trans?.languages_code?.slice(0, 2).toUpperCase()}
-                    </span>
+                <div className="p-5 space-y-3 flex-1 flex flex-col justify-between min-w-0">
+                  <div className="space-y-3 min-w-0">
+                    <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono tabular-nums">
+                      <span>{p.creation_year || 2015}</span>
+                      <span className="inline-flex items-center gap-1 shrink-0">
+                        <Feather size={11} className="shrink-0" />
+                        {trans?.languages_code?.slice(0, 2).toUpperCase()}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-[var(--foreground)] leading-snug break-words">
+                      <Link
+                        href={`/${locale}/poetry/poems/${p.slug}`}
+                        className="hover:text-[var(--primary)] transition-colors"
+                      >
+                        {trans?.title || p.slug}
+                      </Link>
+                    </h3>
+
+                    {trans?.verses && trans.verses[0] && (
+                      <blockquote className="p-3 rounded-xl bg-[var(--surface-sunken)] text-xs font-serif leading-relaxed space-y-1 text-[var(--foreground)] break-words">
+                        <p className="line-clamp-2">{trans.verses[0].hemistich_a}</p>
+                        {trans.verses[0].hemistich_b && (
+                          <p className="opacity-80 line-clamp-2">{trans.verses[0].hemistich_b}</p>
+                        )}
+                      </blockquote>
+                    )}
                   </div>
 
-                  <h3 className="text-base font-bold text-[var(--foreground)] leading-snug">
+                  <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end text-xs">
                     <Link
                       href={`/${locale}/poetry/poems/${p.slug}`}
-                      className="hover:text-[var(--primary)] transition-colors"
+                      className="font-bold text-[var(--primary)] hover:underline whitespace-nowrap"
                     >
-                      {trans?.title || p.slug}
+                      {isFa ? 'خوانش کامل شعر ←' : 'Lire le poème →'}
                     </Link>
-                  </h3>
-
-                  {trans?.verses && trans.verses[0] && (
-                    <blockquote className="p-3 rounded-xl bg-[var(--surface-sunken)] text-xs font-serif leading-relaxed space-y-1 text-[var(--foreground)]">
-                      <p className="line-clamp-2">{trans.verses[0].hemistich_a}</p>
-                      {trans.verses[0].hemistich_b && (
-                        <p className="opacity-80 line-clamp-2">{trans.verses[0].hemistich_b}</p>
-                      )}
-                    </blockquote>
-                  )}
+                  </div>
                 </div>
-
-                <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end text-xs">
-                  <Link
-                    href={`/${locale}/poetry/poems/${p.slug}`}
-                    className="font-bold text-[var(--primary)] hover:underline"
-                  >
-                    {isFa ? 'خوانش کامل شعر ←' : 'Lire le poème →'}
-                  </Link>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
 
       {totalPages > 1 && (
         <nav

@@ -80,11 +80,10 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
                     key={`${img.id}-${i}`}
                     type="button"
                     onClick={() => setSelectedImageUrl(img.url)}
-                    className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                      viewerImage === img.url
+                    className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${viewerImage === img.url
                         ? 'border-[var(--primary)] scale-105'
                         : 'border-transparent opacity-75 hover:opacity-100'
-                    }`}
+                      }`}
                   >
                     <img
                       src={img.url}
@@ -128,55 +127,72 @@ export function ArtworksVaultShowcase({ artworks, locale }: ArtworksVaultShowcas
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filtered.map((art) => {
-            const tr = art.translations?.find((t) => t.languages_code.startsWith(locale)) || art.translations?.[0];
-            const isSelected = activeArtwork?.id === art.id;
-            const thumb = art.image_url || art.gallery_images?.[0]?.url;
+        {filtered.length === 0 ? (
+          <div
+            role="status"
+            className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-3"
+          >
+            <p className="text-sm font-bold text-[var(--foreground)]">
+              {isFa ? 'تابلویی مطابق جستجوی شما یافت نشد.' : 'Aucune œuvre trouvée.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer"
+            >
+              {isFa ? 'نمایش همه تابلوها' : 'Tout afficher'}
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filtered.map((art) => {
+              const tr = art.translations?.find((t) => t.languages_code.startsWith(locale)) || art.translations?.[0];
+              const isSelected = activeArtwork?.id === art.id;
+              const thumb = art.image_url || art.gallery_images?.[0]?.url;
 
-            return (
-              <button
-                key={art.id}
-                type="button"
-                onClick={() => selectArtwork(art)}
-                className={`text-start rounded-2xl overflow-hidden border transition-all cursor-pointer flex flex-col justify-between bg-[var(--surface-card)] ${
-                  isSelected
-                    ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20 shadow-lg'
-                    : 'border-[var(--border-subtle)] hover:shadow-md'
-                }`}
-              >
-                <div className="aspect-[4/3] w-full bg-[var(--surface-sunken)] overflow-hidden relative">
-                  {thumb ? (
-                    <img
-                      src={thumb}
-                      alt={tr?.title || art.slug}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[var(--foreground-muted)]">
-                      <Images size={24} />
-                    </div>
-                  )}
-                  {(art.gallery_images?.length || 0) > 0 && (
-                    <span className="absolute bottom-2 end-2 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-mono">
-                      {art.gallery_images?.length}
+              return (
+                <button
+                  key={art.id}
+                  type="button"
+                  onClick={() => selectArtwork(art)}
+                  className={`text-start min-w-0 rounded-2xl overflow-hidden border transition-all cursor-pointer flex flex-col justify-between bg-[var(--surface-card)] ${isSelected
+                      ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20 shadow-lg'
+                      : 'border-[var(--border-subtle)] hover:shadow-md'
+                    }`}
+                >
+                  <div className="aspect-[4/3] w-full bg-[var(--surface-sunken)] overflow-hidden relative">
+                    {thumb ? (
+                      <img
+                        src={thumb}
+                        alt={tr?.title || art.slug}
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[var(--foreground-muted)]">
+                        <Images size={24} />
+                      </div>
+                    )}
+                    {(art.gallery_images?.length || 0) > 0 && (
+                      <span className="absolute bottom-2 end-2 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-mono tabular-nums">
+                        {art.gallery_images?.length}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="p-3 space-y-1 min-w-0 w-full">
+                    <h4 className="text-xs font-bold text-[var(--foreground)] line-clamp-2 leading-snug break-words">
+                      {tr?.title || art.slug}
+                    </h4>
+                    <span className="text-[10px] font-mono tabular-nums text-[var(--foreground-muted)] block">
+                      {art.year} • {tr?.languages_code?.slice(0, 2).toUpperCase()}
                     </span>
-                  )}
-                </div>
-
-                <div className="p-3 space-y-1">
-                  <h4 className="text-xs font-bold text-[var(--foreground)] line-clamp-2 leading-snug">
-                    {tr?.title || art.slug}
-                  </h4>
-                  <span className="text-[10px] font-mono text-[var(--foreground-muted)] block">
-                    {art.year} • {tr?.languages_code?.slice(0, 2).toUpperCase()}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

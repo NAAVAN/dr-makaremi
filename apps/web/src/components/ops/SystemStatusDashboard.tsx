@@ -135,7 +135,7 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping motion-reduce:animate-none" />
                 <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase">
                   {isFa ? 'سامانه کاملاً عملیاتی و سبز' : isFr ? 'SYSTÈME OPÉRATIONNEL & CERTIFIÉ' : 'ALL SYSTEMS OPERATIONAL & CERTIFIED'}
                 </span>
@@ -144,15 +144,15 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
                 {isFa
                   ? 'گواهی رسمی آمادگی پروداکشن (Production Readiness Certificate)'
                   : isFr
-                  ? 'Certification Officielle de Pré-Lancement en Production'
-                  : 'Official Pre-Launch Production Readiness Certificate'}
+                    ? 'Certification Officielle de Pré-Lancement en Production'
+                    : 'Official Pre-Launch Production Readiness Certificate'}
               </h2>
               <p className="text-xs sm:text-sm text-emerald-200/80 mt-1">
                 {isFa
                   ? 'تمامی ۷ فاز با موفقیت پیاده‌سازی شده و بیش از ۵۲۰ آزمون خودکار به صورت متوالی سبز شده‌اند.'
                   : isFr
-                  ? 'Les 7 phases sont implémentées avec succès et plus de 520 tests automatisés sont validés consécutivement.'
-                  : 'All 7 architectural phases are fully implemented with 520+ automated tests passing consecutively with 0 regressions.'}
+                    ? 'Les 7 phases sont implémentées avec succès et plus de 520 tests automatisés sont validés consécutivement.'
+                    : 'All 7 architectural phases are fully implemented with 520+ automated tests passing consecutively with 0 regressions.'}
               </p>
             </div>
           </div>
@@ -180,7 +180,7 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
       </div>
 
       {/* 7 Phases Card Grid */}
-      <section className="space-y-4">
+      <section aria-label={isFa ? 'کارنامه ۷ فاز معماری' : '7 Architectural Phases Scorecard'} className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg sm:text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
             <Layers className="text-amber-500" size={20} />
@@ -229,7 +229,7 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
       </section>
 
       {/* 6-Point Pre-Launch QA Gate Cards */}
-      <section className="space-y-4">
+      <section aria-label={isFa ? 'گیت‌های ۶گانه کنترل کیفیت' : '6 Pre-Launch QA Gates'} className="space-y-4">
         <h2 className="text-lg sm:text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
           <CheckCircle2 className="text-emerald-500" size={20} />
           <span>
@@ -270,7 +270,10 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
       </section>
 
       {/* Cryptography & Infrastructure Summary */}
-      <section className="bg-[var(--surface-overlay)] border border-[var(--border-subtle)] rounded-xl p-6 space-y-4">
+      <section
+        aria-label={isFa ? 'مشخصات رمزنگاری و پایداری' : 'Cryptographic and System Resilience Specs'}
+        className="bg-[var(--surface-overlay)] border border-[var(--border-subtle)] rounded-xl p-6 space-y-4"
+      >
         <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
           <KeyRound className="text-amber-500" size={18} />
           <span>

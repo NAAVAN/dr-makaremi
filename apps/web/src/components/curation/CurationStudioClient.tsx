@@ -470,8 +470,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
             type="button"
             onClick={() => updateDecision(itemKey, { status: b.val }, defaultStatus)}
             className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold border transition ${dec.status === b.val
-                ? b.activeCls
-                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+              ? b.activeCls
+              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
               }`}
           >
             {b.label}
@@ -671,8 +671,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   setSubFilter('all');
                 }}
                 className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${activeTab === t.id
-                    ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
-                    : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
+                  ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
+                  : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
                   }`}
               >
                 <span className="flex items-center gap-2.5">
@@ -681,8 +681,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                 </span>
                 <span
                   className={`px-2.5 py-0.5 rounded-full shrink-0 ${activeTab === t.id
-                      ? 'bg-amber-500 text-slate-950 font-black'
-                      : 'bg-stone-100 text-slate-700 border border-stone-300'
+                    ? 'bg-amber-500 text-slate-950 font-black'
+                    : 'bg-stone-100 text-slate-700 border border-stone-300'
                     }`}
                 >
                   {t.badge}
@@ -703,8 +703,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   setSubFilter('all');
                 }}
                 className={`w-full flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl font-extrabold transition border-2 text-right ${activeTab === t.id
-                    ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
-                    : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
+                  ? 'bg-slate-900 text-amber-300 border-amber-500 shadow-md'
+                  : 'bg-white text-slate-800 border-stone-300 hover:bg-amber-50 hover:border-amber-400 shadow-sm'
                   }`}
               >
                 <span className="flex items-center gap-2.5">
@@ -713,8 +713,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                 </span>
                 <span
                   className={`px-2.5 py-0.5 rounded-full shrink-0 ${activeTab === t.id
-                      ? 'bg-amber-500 text-slate-950 font-black'
-                      : 'bg-stone-100 text-slate-700 border border-stone-300'
+                    ? 'bg-amber-500 text-slate-950 font-black'
+                    : 'bg-stone-100 text-slate-700 border border-stone-300'
                     }`}
                 >
                   {t.badge}
@@ -822,8 +822,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                       <label
                         key={opt.val}
                         className={`flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer text-xs font-bold ${questionnaire.hasHighResArtworksOffline === opt.val
-                            ? 'border-amber-600 bg-amber-50 text-slate-900'
-                            : 'border-slate-200 bg-white text-slate-700'
+                          ? 'border-amber-600 bg-amber-50 text-slate-900'
+                          : 'border-slate-200 bg-white text-slate-700'
                           }`}
                       >
                         <input
@@ -879,8 +879,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                       <label
                         key={opt.val}
                         className={`flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer text-xs font-bold ${questionnaire.hasOriginalBookPdfsOffline === opt.val
-                            ? 'border-amber-600 bg-amber-50 text-slate-900'
-                            : 'border-slate-200 bg-white text-slate-700'
+                          ? 'border-amber-600 bg-amber-50 text-slate-900'
+                          : 'border-slate-200 bg-white text-slate-700'
                           }`}
                       >
                         <input
@@ -1162,8 +1162,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setLangFilter(l.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${langFilter === l.id
-                      ? 'bg-slate-900 text-white border-slate-900'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    ? 'bg-slate-900 text-white border-slate-900'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                     }`}
                 >
                   {l.label}
@@ -1206,10 +1206,10 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                 <div
                   key={book.id}
                   className={`rounded-3xl border-2 bg-white p-5 shadow-sm transition ${dec.status === 'delete'
-                      ? 'border-red-300 opacity-60'
-                      : dec.status === 'featured'
-                        ? 'border-amber-500 ring-2 ring-amber-200'
-                        : 'border-slate-200'
+                    ? 'border-red-300 opacity-60'
+                    : dec.status === 'featured'
+                      ? 'border-amber-500 ring-2 ring-amber-200'
+                      : 'border-slate-200'
                     }`}
                 >
                   <div className="flex flex-col lg:flex-row items-start justify-between gap-4">
@@ -1347,8 +1347,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setArtSubTab('galleries')}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${artSubTab === 'galleries'
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                 >
                   🎨 مجموعه‌گالری‌های نقاشی و خوشنویسی ({filteredGalleries.length} گالری / ۱٬۳۹۰ اثر)
@@ -1357,8 +1357,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setArtSubTab('exhibitions')}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${artSubTab === 'exhibitions'
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                 >
                   🏛️ تاریخچه نمایشگاه‌های بین‌المللی ({exhibitionPages.length} صفحه فارسی و فرانسوی)
@@ -1440,7 +1440,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                                   key={art.id}
                                   href={art.url}
                                   target="_blank"
-                                  rel="noreferrer"
+                                  rel="noopener noreferrer"
                                   className="group block rounded-xl border border-slate-200 p-1.5 bg-slate-50 hover:border-amber-500 transition"
                                 >
                                   <img
@@ -1537,8 +1537,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setPoemVideoSubTab('poems')}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${poemVideoSubTab === 'poems'
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                 >
                   📜 اشعار و کوتاه‌واره‌ها ({filteredPoems.length} شعر مصور)
@@ -1547,8 +1547,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setPoemVideoSubTab('videos')}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition ${poemVideoSubTab === 'videos'
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                 >
                   🎬 ویدئوها و سخنرانی‌ها ({filteredVideos.length} ویدئو در ۱۹ تم + ۸۵ متن پیاده‌شده)
@@ -1693,7 +1693,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                             <a
                               href={vid.youtubeUrl}
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-bold text-teal-700 hover:underline"
                             >
                               <ExternalLink className="w-3.5 h-3.5" /> مشاهده ویدئو در یوتیوب
@@ -1747,8 +1747,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setArticleSubTab('scholarly')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'scholarly'
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-slate-100 text-slate-700'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-slate-100 text-slate-700'
                     }`}
                 >
                   🖋️ مقالات علمی روانکاوی، پژوهش و جامعه ({scholarlyPosts.length})
@@ -1757,8 +1757,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setArticleSubTab('conferences')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'conferences'
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-slate-100 text-slate-700'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-slate-100 text-slate-700'
                     }`}
                 >
                   🎙️ کنفرانس‌های مکتوب و مصاحبه‌های رسانه‌ای ({conferenceAndInterviewPages.length})
@@ -1767,8 +1767,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setArticleSubTab('pdfs')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'pdfs'
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-slate-100 text-slate-700'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-slate-100 text-slate-700'
                     }`}
                 >
                   📄 کتابخانه اسناد PDF ({catalog.pdfs.length} فایل)
@@ -1777,8 +1777,8 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                   type="button"
                   onClick={() => setArticleSubTab('news')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${articleSubTab === 'news'
-                      ? 'bg-amber-600 text-white'
-                      : 'bg-slate-100 text-slate-700'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-slate-100 text-slate-700'
                     }`}
                 >
                   📰 آرشیو اخبار و رویدادها ({newsPosts.length})
@@ -1825,7 +1825,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                                 <a
                                   href={post.pdfUrl}
                                   target="_blank"
-                                  rel="noreferrer"
+                                  rel="noopener noreferrer"
                                   className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 underline"
                                 >
                                   📄 دارای فایل PDF پیوست
@@ -1931,7 +1931,7 @@ export function CurationStudioClient({ catalog }: { catalog: CatalogData }) {
                           <a
                             href={pdf.url}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="text-xs font-bold text-amber-700 hover:underline inline-flex items-center gap-1"
                           >
                             <ExternalLink className="w-3.5 h-3.5" /> مشاهده فایل PDF

@@ -83,7 +83,7 @@ export function ArticleReader({
 
             <Link
               href={`/${locale}/${article.pillar === 'psychoanalysis' ? (locale === 'fr' ? 'psychanalyse' : 'psychoanalysis') : article.pillar === 'art_calligraphy' ? 'art' : article.pillar === 'cultural_strategy' ? 'strategy' : 'human-rights'}/articles/${article.slug}.md`}
-              target="_blank"
+              target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
               title="Clean Markdown Twin for AI Agents (AEO/GEO)"
             >
@@ -115,7 +115,10 @@ export function ArticleReader({
       />
 
       {/* Main Body with Safe AST Markdown & Lacanian Glossary Popovers */}
-      <section className="article-body text-base sm:text-lg leading-loose text-[var(--foreground)] font-serif space-y-6">
+      <section
+        aria-label={isFa ? 'متن اصلی مقاله' : 'Article Body'}
+        className="article-body text-base sm:text-lg leading-loose text-[var(--foreground)] font-serif space-y-6 break-words"
+      >
         {renderSafeMarkdown(body, { glossaryTerms })}
       </section>
 

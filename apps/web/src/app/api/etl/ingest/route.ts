@@ -37,13 +37,15 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'Internal Server Error', message: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Internal Server Error', message: 'Failed to process archive request' },
       { status: 500 }
     );
   }
 }
+
+const MAX_INGEST_BYTES = 1024 * 1024; // 1 MB payload ceiling
 
 export async function POST(request: NextRequest) {
   // Rate limiting: 30 requests per minute
@@ -55,6 +57,13 @@ export async function POST(request: NextRequest) {
     rawBodyText = await request.text();
   } catch {
     return NextResponse.json({ error: 'Bad Request', message: 'Unable to read request payload' }, { status: 400 });
+  }
+
+  if (Buffer.byteLength(rawBodyText, 'utf8') > MAX_INGEST_BYTES) {
+    return NextResponse.json(
+      { error: 'Payload Too Large', message: 'Ingestion payload exceeds 1 MB limit' },
+      { status: 413 }
+    );
   }
 
   // Refinement 2: Cloudflare Security Audit Guard for Prototype Pollution

@@ -159,7 +159,7 @@ export default async function HafezologyHubPage({
 
           <Link
             href={`/${locale}/hafez.md`}
-            target="_blank"
+            target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
           >
             <Download size={13} />
