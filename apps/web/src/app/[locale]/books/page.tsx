@@ -33,7 +33,7 @@ export async function generateMetadata({
       ? 'مجموعه کامل ۲۵ عنوان کتاب تألیفی و ترجمه ژاک لکان در ۸ ژانر تخصصی همراه با کتاب‌خوان ورق‌خور سه‌بعدی و شناسنامه کتاب‌شناختی.'
       : isFr
         ? 'Collection complète de 25 ouvrages de psychanalyse lacanienne, études sur Hafez, stratégie culturelle, poésie et romans.'
-        : 'Complete catalog of 25 books on Lacanian psychoanalysis, Hafezology, cultural strategy, calligraphy, poetry, and memoirs.',
+        : 'Complete catalogue of 25 books on Lacanian psychoanalysis, Hafezology, cultural strategy, calligraphy, poetry, and memoirs.',
   });
 }
 
@@ -47,6 +47,7 @@ export default async function BooksCatalogPage({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const books = await getBooks(locale);
 
@@ -57,19 +58,21 @@ export default async function BooksCatalogPage({
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--primary)] font-bold">
             <BookOpen size={16} />
-            <span>{isFa ? 'کتاب‌خانه سه‌بعدی و منشورات' : 'Bibliothèque 3D & Publications'}</span>
+            <span>{tx('کتاب‌خانه سه‌بعدی و منشورات', 'Bibliothèque 3D & Publications', '3D Library & Publications')}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
-            {isFa
-              ? 'کتاب‌خانه دیجیتال و تألیفات دکتر حسن مکارمی'
-              : isFr
-                ? 'Publications & Livres du Dr. Hassan Makaremi'
-                : 'Digital Library & Publications of Dr. Hassan Makaremi'}
+            {tx(
+              'کتاب‌خانه دیجیتال و تألیفات دکتر حسن مکارمی',
+              'Publications & Livres du Dr Hassan Makaremi',
+              'Digital Library & Publications of Dr Hassan Makaremi'
+            )}
           </h1>
           <p className="text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
-            {isFa
-              ? `مجموعه کامل ${books.length} عنوان کتاب تألیفی و ترجمه در ۸ ژانر تخصصی (روانکاوی بالینی لکانی، حافظ‌پژوهی، مطالعات راهبردی، فرهنگ ایران، هنر خوشنویسی، شعر دوزبانه، رمان و خاطرات) همراه با کتاب‌خوان ورق‌خور سه‌بعدی.`
-              : `Collection complète de ${books.length} monographies, études sur Hafez, romans, traductions de Jacques Lacan et essais stratégiques publiés en France et en Iran.`}
+            {tx(
+              `مجموعه کامل ${books.length} عنوان کتاب تألیفی و ترجمه در ۸ ژانر تخصصی (روانکاوی بالینی لکانی، حافظ‌پژوهی، مطالعات راهبردی، فرهنگ ایران، هنر خوشنویسی، شعر دوزبانه، رمان و خاطرات) همراه با کتاب‌خوان ورق‌خور سه‌بعدی.`,
+              `Collection complète de ${books.length} monographies, études sur Hafez, romans, traductions de Jacques Lacan et essais stratégiques publiés en France et en Iran.`,
+              `Complete collection of ${books.length} monographs, Hafezology studies, novels, translations of Jacques Lacan, and strategic essays published in France, Germany, the UK, and Iran.`
+            )}
           </p>
         </div>
 

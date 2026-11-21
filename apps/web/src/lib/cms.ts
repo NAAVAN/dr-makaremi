@@ -51,13 +51,13 @@ L'opération Nom-du-Père et la démarche d'écouter autrement constituent les f
     {
       id: 'at100000-0000-0000-0000-000000000003',
       articles_id: 'wp-post-5247',
-      languages_code: 'en-US',
+      languages_code: 'en-GB',
       title: 'Is Psychoanalysis a Science?',
       executive_summary:
         "Epistemological analysis of the unconscious, Jacques Lacan's Écrits, and CNRS empirical data on 3,954 clinical research projects.",
       body_markdown: `Psychoanalysis is not an empirical reductionist science, but a rigorous science of the subject and language.
 
-According to CNRS research metrics surveying 3,954 clinical psychoanalytic research endeavors, 3,755 are interdisciplinary, 184 clinical, and 15 linguistic. Through listening differently, psychoanalysis examines how the unconscious is structured as a language.`,
+According to CNRS research metrics surveying 3,954 clinical psychoanalytic research endeavours, 3,755 are interdisciplinary, 184 clinical, and 15 linguistic. Through listening differently, psychoanalysis examines how the unconscious is structured as a language.`,
     },
   ],
   'etat-limite-concept-psychanalytique': [

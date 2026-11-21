@@ -367,7 +367,7 @@ export function Header({ locale }: HeaderProps) {
             : isFr
               ? 'Pôle Hafez : Écouter Hafez Autrement'
               : 'Hafezology Hub: Listening Differently to Hafez',
-          badge: isFa ? 'ویژه' : 'Hafez',
+          badge: isFa ? 'ویژه' : isFr ? 'Hafez' : 'Hafez',
         },
         {
           href: `/${locale}/hafez#hafez-videos`,
@@ -510,14 +510,20 @@ export function Header({ locale }: HeaderProps) {
           <Link
             href={`/${locale}`}
             className="flex items-center gap-3.5 group select-none shrink-0"
-            aria-label="صفحه اصلی دکتر حسن مکارمی"
+            aria-label={
+              isFa
+                ? 'صفحه اصلی دکتر حسن مکارمی'
+                : isFr
+                  ? 'Accueil — Dr Hassan Makaremi'
+                  : 'Dr Hassan Makaremi — Home'
+            }
           >
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-800 to-stone-900 text-amber-300 flex items-center justify-center text-lg font-bold shadow-sm border border-amber-500/30 shrink-0">
               ✦
             </div>
             <div className="flex flex-col space-y-1">
               <span className="text-xl sm:text-2xl font-black tracking-tight text-stone-900 dark:text-stone-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors leading-none">
-                {isFa ? 'دکتر حسن مکارمی' : 'Dr. Hassan Makaremi'}
+                {isFa ? 'دکتر حسن مکارمی' : isFr ? 'Dr Hassan Makaremi' : 'Dr Hassan Makaremi'}
               </span>
               <span className="text-[11px] sm:text-xs text-stone-500 dark:text-stone-400 font-medium">
                 {isFa
@@ -533,9 +539,9 @@ export function Header({ locale }: HeaderProps) {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              aria-label="جستجو در سایت"
+              aria-label={isFa ? 'جستجو در سایت' : isFr ? 'Rechercher sur le site' : 'Search the archive'}
               className="px-3 py-1.5 rounded-xl text-stone-700 dark:text-stone-200 hover:bg-stone-200/70 dark:hover:bg-stone-800 transition-colors border border-stone-300/80 dark:border-stone-700 flex items-center gap-1.5 text-xs font-bold cursor-pointer"
-              title="جستجو (Cmd+K)"
+              title={isFa ? 'جستجو (Cmd+K)' : isFr ? 'Recherche (Cmd+K)' : 'Search (Cmd+K)'}
             >
               <Search size={15} />
               <span className="hidden sm:inline">{isFa ? 'جستجو' : isFr ? 'Recherche' : 'Search'}</span>
@@ -543,9 +549,21 @@ export function Header({ locale }: HeaderProps) {
 
             <Link
               href={`/${locale}/curation-studio`}
-              aria-label={isFa ? 'میز کار بازنگری و تصمیم‌گیری استاد' : 'Studio de Curation'}
+              aria-label={
+                isFa
+                  ? 'میز کار بازنگری و تصمیم‌گیری استاد'
+                  : isFr
+                    ? 'Studio de Curation'
+                    : 'Author Curation Studio'
+              }
               className="px-3 py-1.5 rounded-xl text-white bg-amber-600 hover:bg-amber-700 transition-colors border border-amber-700 flex items-center gap-1.5 text-xs font-extrabold shadow-sm"
-              title={isFa ? 'میز کار تعاملی بازنگری محتوا و تصمیم‌گیری استاد مکارمی' : 'Studio de Curation du Dr Makaremi'}
+              title={
+                isFa
+                  ? 'میز کار تعاملی بازنگری محتوا و تصمیم‌گیری استاد مکارمی'
+                  : isFr
+                    ? 'Studio de Curation du Dr Makaremi'
+                    : 'Dr Makaremi’s Interactive Curation Studio'
+              }
             >
               <Sparkles size={14} />
               <span>{isFa ? 'میز کار تصمیم‌گیری استاد' : isFr ? 'Studio Curation' : 'Curation Studio'}</span>
@@ -553,32 +571,44 @@ export function Header({ locale }: HeaderProps) {
 
             <Link
               href={`/${locale}/assistant`}
-              aria-label={isFa ? 'دستیار پژوهشگر' : 'Research Assistant'}
+              aria-label={isFa ? 'دستیار پژوهشگر' : isFr ? 'Assistant de recherche' : 'Research Assistant'}
               className="px-3 py-1.5 rounded-xl text-amber-800 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 transition-colors border border-amber-500/30 flex items-center gap-1.5 text-xs font-bold"
-              title={isFa ? 'دستیار هوشمند پژوهشگر' : 'AI Research Assistant'}
+              title={isFa ? 'دستیار هوشمند پژوهشگر' : isFr ? 'Assistant de recherche IA' : 'AI Research Assistant'}
             >
               <Sparkles size={14} />
-              <span className="hidden md:inline">{isFa ? 'دستیار هوشمند' : 'Assistant IA'}</span>
+              <span className="hidden md:inline">{isFa ? 'دستیار هوشمند' : isFr ? 'Assistant IA' : 'AI Assistant'}</span>
             </Link>
 
             <button
               type="button"
               onClick={() => setMirrorOpen(true)}
-              aria-label={isFa ? 'مسیرهای ضدسانسور و آینه‌ها' : 'Miroirs et accès anti-censure'}
+              aria-label={
+                isFa
+                  ? 'مسیرهای ضدسانسور و آینه‌ها'
+                  : isFr
+                    ? 'Miroirs et accès anti-censure'
+                    : 'Anti-censorship mirrors and access'
+              }
               className="p-2 rounded-xl text-sky-700 dark:text-sky-400 hover:bg-sky-500/10 transition-colors border border-sky-500/30 cursor-pointer"
-              title={isFa ? 'مسیرهای ضدسانسور و آینه‌های ابری' : 'Miroirs et accès anti-censure'}
+              title={
+                isFa
+                  ? 'مسیرهای ضدسانسور و آینه‌های ابری'
+                  : isFr
+                    ? 'Miroirs et accès anti-censure'
+                    : 'Anti-censorship mirrors'
+              }
             >
               <Radio size={16} />
             </button>
 
             <LanguageSwitcher currentLocale={locale} />
-            <ThemeToggle />
+            <ThemeToggle locale={locale} />
 
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 rounded-xl text-stone-700 dark:text-stone-200 hover:bg-stone-200/70 dark:hover:bg-stone-800 transition-colors border border-stone-300 dark:border-stone-700 cursor-pointer"
-              aria-label="منوی موبایل"
+              aria-label={isFa ? 'منوی موبایل' : isFr ? 'Menu mobile' : 'Mobile menu'}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -592,7 +622,7 @@ export function Header({ locale }: HeaderProps) {
           <nav
             ref={navBarRef}
             className="flex items-center justify-center gap-1.5 xl:gap-3 py-2"
-            aria-label="ناوبری اصلی"
+            aria-label={isFa ? 'ناوبری اصلی' : isFr ? 'Navigation principale' : 'Primary navigation'}
           >
             {navGroups.map((group) => {
               const isHome = group.href === `/${locale}`;

@@ -11,7 +11,7 @@ interface LanguageSwitcherProps {
 const LOCALES: Array<{ code: Locale; label: string; dir: 'rtl' | 'ltr' }> = [
   { code: 'fa', label: 'فارسی', dir: 'rtl' },
   { code: 'fr', label: 'Français', dir: 'ltr' },
-  { code: 'en', label: 'English', dir: 'ltr' },
+  { code: 'en', label: 'English (UK)', dir: 'ltr' },
 ];
 
 function LanguageSwitcherInner({ currentLocale }: LanguageSwitcherProps) {
@@ -50,7 +50,13 @@ function LanguageSwitcherInner({ currentLocale }: LanguageSwitcherProps) {
       dir="ltr"
       className="inline-flex items-center gap-1 rounded-xl border border-stone-300/90 dark:border-stone-700 bg-stone-200/75 dark:bg-stone-800/90 p-1 text-xs font-bold shrink-0 overflow-hidden shadow-inner"
       role="group"
-      aria-label="انتخاب زبان سایت"
+      aria-label={
+        currentLocale === 'fa'
+          ? 'انتخاب زبان سایت'
+          : currentLocale === 'fr'
+            ? 'Choisir la langue du site'
+            : 'Select site language'
+      }
     >
       {LOCALES.map(({ code, label }) => {
         const isActive = code === currentLocale;
@@ -79,9 +85,28 @@ export function LanguageSwitcher(props: LanguageSwitcherProps) {
       fallback={
         <div
           dir="ltr"
-          className="inline-flex items-center gap-1 rounded-xl border border-stone-300/90 dark:border-stone-700 bg-stone-200/75 dark:bg-stone-800/90 p-1 text-xs font-bold shrink-0"
+          className="inline-flex items-center gap-1 rounded-xl border border-stone-300/90 dark:border-stone-700 bg-stone-200/75 dark:bg-stone-800/90 p-1 text-xs font-bold shrink-0 overflow-hidden shadow-inner"
+          role="group"
+          aria-label={
+            props.currentLocale === 'fa'
+              ? 'انتخاب زبان سایت'
+              : props.currentLocale === 'fr'
+                ? 'Choisir la langue du site'
+                : 'Select site language'
+          }
         >
-          <span className="px-2.5 py-1">فارسی</span>
+          {LOCALES.map(({ code, label }) => (
+            <span
+              key={code}
+              className={`px-2.5 py-1 rounded-lg whitespace-nowrap shrink-0 ${
+                code === props.currentLocale
+                  ? 'bg-teal-800 text-white font-bold shadow-sm'
+                  : 'text-stone-700 dark:text-stone-300'
+              }`}
+            >
+              {label}
+            </span>
+          ))}
         </div>
       }
     >

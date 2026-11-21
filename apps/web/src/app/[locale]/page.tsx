@@ -162,7 +162,7 @@ export default async function HomePage({
           ===================================================================== */}
       <EditorialReveal>
         <section
-          aria-label={isFa ? 'چهار درگاه اصلی آرشیو' : 'Quatre portails principaux des archives'}
+          aria-label={isFa ? 'چهار درگاه اصلی آرشیو' : isFr ? 'Quatre portails principaux des archives' : 'Four Primary Archive Portals'}
           className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden shadow-[var(--shadow-sm)]"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x sm:divide-x-reverse divide-[var(--border-subtle)]">
@@ -220,7 +220,7 @@ export default async function HomePage({
       {featuredBook && (
         <EditorialReveal>
           <section
-            aria-label={isFa ? 'ویترین سه‌بعدی کتاب برگزیده' : 'Vitrine 3D du livre sélectionné'}
+            aria-label={isFa ? 'ویترین سه‌بعدی کتاب برگزیده' : isFr ? 'Vitrine 3D du livre sélectionné' : 'Featured Book 3D Showcase'}
             className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-artifact)] p-6 sm:p-10 lg:p-12 overflow-hidden shadow-[var(--shadow-sm)]"
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -297,7 +297,7 @@ export default async function HomePage({
           ===================================================================== */}
       <EditorialReveal>
         <section
-          aria-label={isFa ? 'ستون‌های چهارگانه اندیشه و آفرینش' : 'Quatre piliers de pensée et de création'}
+          aria-label={isFa ? 'ستون‌های چهارگانه اندیشه و آفرینش' : isFr ? 'Quatre piliers de pensée et de création' : 'Four Pillars of Thought and Creation'}
           className="space-y-7"
         >
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
@@ -364,7 +364,7 @@ export default async function HomePage({
                     ? 'خوانش بالینی ناخودآگاه، ترجمه سمینار سوم ژاک لکان (پسیکوزها) و صورت‌بندی دگرشنیدن در بستر زبان و فرهنگ ایرانی.'
                     : isFr
                       ? 'Pratique clinique du sujet, traduction persane du Séminaire III de Jacques Lacan et écoute analytique dans la culture iranienne.'
-                      : 'Clinical reading of the unconscious, translation of Jacques Lacan’s Seminar III, and conceptualizing Listening Differently.'}
+                      : 'Clinical reading of the unconscious, translation of Jacques Lacan’s Seminar III, and conceptualising Listening Differently.'}
                 </p>
               </div>
 
@@ -448,14 +448,14 @@ export default async function HomePage({
                     ? 'مطالعات راهبردی و سرزمین فرهنگی ایران'
                     : isFr
                       ? 'Stratégie Culturelle & Modernisation'
-                      : 'Cultural Strategy & Modernization'}
+                      : 'Cultural Strategy & Modernisation'}
                 </h3>
                 <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
                   {isFa
                     ? 'مدرنیزاسیون سازمانی، دموکراسی سکولار، همکاری پژوهشی در دانشگاه سوربن و بازخوانی مفهوم «سرزمین فرهنگی ایران».'
                     : isFr
                       ? 'Modernisation organisationnelle, transition démocratique laïque, travaux à la Sorbonne et « Terre culturelle de l’Iran ».'
-                      : 'Organizational modernization, secular democratic transition, Sorbonne research, and the concept of Cultural Iran.'}
+                      : 'Organisational modernisation, secular democratic transition, Sorbonne research, and the concept of Cultural Iran.'}
                 </p>
               </div>
 
@@ -511,7 +511,7 @@ export default async function HomePage({
           ===================================================================== */}
       <EditorialReveal>
         <section
-          aria-label={isFa ? 'کارنامه دانشگاهی و حضور جهانی' : 'Parcours académique et présence internationale'}
+          aria-label={isFa ? 'کارنامه دانشگاهی و حضور جهانی' : isFr ? 'Parcours académique et présence internationale' : 'Academic Trajectory and Global Presence'}
           className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 lg:p-12 space-y-10"
         >
           {/* Editorial Header Paired with Iconic Parisian Reflection Portrait (hassan-reflet.jpg) */}
@@ -589,7 +589,7 @@ export default async function HomePage({
                 />
               </div>
               <figcaption className="mt-2 px-1 flex items-center justify-between text-[11px] font-mono text-[var(--foreground-muted)]">
-                <span>{isFa ? 'پاریس · انعکاس' : 'Paris · Reflet'}</span>
+                <span>{isFa ? 'پاریس · انعکاس' : isFr ? 'Paris · Reflet' : 'Paris · Reflection'}</span>
                 <span>1983 — 2026</span>
               </figcaption>
             </figure>
@@ -685,7 +685,7 @@ export default async function HomePage({
       {leadArticle && (
         <EditorialReveal>
           <section
-            aria-label={isFa ? 'گزیده مقالات و بیانیه‌های پژوهشی' : 'Articles et essais récents'}
+            aria-label={isFa ? 'گزیده مقالات و بیانیه‌های پژوهشی' : isFr ? 'Articles et essais récents' : 'Selected Scholarly Essays'}
             className="space-y-7"
           >
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">

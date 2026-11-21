@@ -10,6 +10,8 @@ import { SpeechTranscriptView } from '@/components/media/SpeechTranscriptView';
 import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import { buildVideoObjectNode, buildBreadcrumbNode, buildFullGraph } from '@/lib/schema-org';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
+import { resolveWorkTranslation } from '@/lib/work-language';
 
 export const dynamicParams = true;
 
@@ -36,9 +38,13 @@ export async function generateMetadata({
   const speech = await getVideoSpeechBySlug(slug, locale);
   if (!speech) return {};
 
-  const trans =
-    speech.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-    speech.translations?.[0];
+  const resolved = resolveWorkTranslation({
+    collection: 'videos',
+    slug: speech.slug,
+    translations: speech.translations,
+    siteLocale: locale,
+  });
+  const trans = resolved.originalRecord || speech.translations?.[0];
 
   const title = trans?.title || speech.slug;
   const description = trans?.description?.slice(0, 160) || title;
@@ -67,9 +73,13 @@ export default async function SpeechDetailPage({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
-  const trans =
-    speech.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-    speech.translations?.[0];
+  const resolved = resolveWorkTranslation({
+    collection: 'videos',
+    slug: speech.slug,
+    translations: speech.translations,
+    siteLocale: locale,
+  });
+  const trans = resolved.originalRecord || speech.translations?.[0];
 
   const title = trans?.title || speech.slug;
   const jsonLdGraph = buildFullGraph({
@@ -145,12 +155,19 @@ export default async function SpeechDetailPage({
         locale={locale}
       />
 
-      {/* Full Transcript View */}
-      <SpeechTranscriptView
-        title={title}
-        transcriptMarkdown={trans?.transcript_markdown}
-        description={trans?.description}
-        locale={locale}
+      {/* Full Transcript View with Bilingual Reader */}
+      <BilingualWorkReader
+        originalLang={resolved.originalLang}
+        siteLocale={locale}
+        translated={resolved.translatedRecord}
+        originalContent={
+          <SpeechTranscriptView
+            title={title}
+            transcriptMarkdown={trans?.transcript_markdown}
+            description={trans?.description}
+            locale={locale}
+          />
+        }
       />
     </div>
   );

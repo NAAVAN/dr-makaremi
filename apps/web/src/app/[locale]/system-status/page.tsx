@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const descriptions: Record<Locale, string> = {
     fa: 'پایش بلادرنگ وضعیت سلامت زیرساخت، اسنپ‌شات‌های تغییرناپذیر Ed25519، نتایج ممیزی ۶گانه Pre-Launch، نقشه راه ۱۲ هفته‌ای و جدول بهینه‌سازی هزینه‌های ابری در اروپا.',
     fr: 'Surveillance en temps réel de la santé de l’infrastructure, instantanés immuables Ed25519, audit QA 6-points de pré-lancement, feuille de route sur 12 semaines et optimisation des coûts cloud.',
-    en: 'Real-time telemetry and infrastructure health monitoring, Ed25519 immutable snapshots, 6-point pre-launch QA gate results, 12-week roadmap, and European cloud cost optimization.',
+    en: 'Real-time telemetry and infrastructure health monitoring, Ed25519 immutable snapshots, 6-point pre-launch QA gate results, 12-week roadmap, and European cloud cost optimisation.',
   };
 
   return buildTrilingualMetadata({
@@ -57,6 +57,7 @@ export default async function SystemStatusPage({ params }: PageProps) {
   const locale = rawLocale as Locale;
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const jsonLdPayload = {
     '@context': 'https://schema.org',
@@ -65,19 +66,23 @@ export default async function SystemStatusPage({ params }: PageProps) {
         '@type': 'WebPage',
         '@id': `https://makaremi.com/${locale}/system-status#webpage`,
         url: `https://makaremi.com/${locale}/system-status`,
-        name: isFa
-          ? 'مرکز پایش وضعیت سیستم و آمادگی پروداکشن دکتر حسن مکارمی'
-          : 'Dr. Hassan Makaremi System Status & Production Readiness',
-        description: isFa
-          ? 'پایش بلادرنگ سلامت زیرساخت، اسنپ‌شات‌های Ed25519 و گواهی کنترل کیفیت پیش از راه‌اندازی'
-          : 'Real-time infrastructure telemetry, Ed25519 snapshots, and pre-launch QA gate certification',
+        name: tx(
+          'مرکز پایش وضعیت سیستم و آمادگی پروداکشن دکتر حسن مکارمی',
+          'État du système et certification de production — Dr Hassan Makaremi',
+          'Dr Hassan Makaremi System Status & Production Readiness'
+        ),
+        description: tx(
+          'پایش بلادرنگ سلامت زیرساخت، اسنپ‌شات‌های Ed25519 و گواهی کنترل کیفیت پیش از راه‌اندازی',
+          'Télémétrie en temps réel, instantanés Ed25519 et certification qualité QA',
+          'Real-time infrastructure telemetry, Ed25519 snapshots, and pre-launch QA gate certification'
+        ),
         isPartOf: {
           '@type': 'WebSite',
           '@id': 'https://makaremi.com/#website',
           name: 'Dr. Hassan Makaremi Official Archive',
           url: 'https://makaremi.com',
         },
-        inLanguage: locale === 'fa' ? 'fa-IR' : locale === 'fr' ? 'fr-FR' : 'en-US',
+        inLanguage: locale === 'fa' ? 'fa-IR' : locale === 'fr' ? 'fr-FR' : 'en-GB',
       },
       {
         '@type': 'AboutPage',
@@ -110,7 +115,7 @@ export default async function SystemStatusPage({ params }: PageProps) {
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-mono">
                   <Activity size={14} />
-                  <span>{isFa ? 'پایش زنده سیستم' : 'Live Telemetry'}</span>
+                  <span>{tx('پایش زنده سیستم', 'Télémétrie en direct', 'Live Telemetry')}</span>
                 </span>
                 <span className="text-xs font-mono text-[var(--foreground-muted)]">
                   Release v1.0.0-PROD
@@ -125,7 +130,7 @@ export default async function SystemStatusPage({ params }: PageProps) {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--surface-sunken)] hover:bg-[var(--surface-sunken)]/80 text-[var(--foreground)] border border-[var(--border-subtle)] transition-colors"
                 >
                   <FileText size={14} className="text-amber-500" />
-                  <span>{isFa ? 'دوقلوی مارک‌داون (.md)' : 'Jumeau Markdown (.md)'}</span>
+                  <span>{tx('دوقلوی مارک‌داون (.md)', 'Jumeau Markdown (.md)', 'Markdown Twin (.md)')}</span>
                   <ArrowUpRight size={12} className="text-[var(--foreground-muted)]" />
                 </Link>
 
@@ -135,7 +140,7 @@ export default async function SystemStatusPage({ params }: PageProps) {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 transition-colors"
                 >
                   <HeartPulse size={14} />
-                  <span>{isFa ? 'تله‌متری JSON' : 'JSON Telemetry'}</span>
+                  <span>{tx('تله‌متری JSON', 'Télémétrie JSON', 'JSON Telemetry')}</span>
                   <ArrowUpRight size={12} />
                 </Link>
               </div>
@@ -143,19 +148,19 @@ export default async function SystemStatusPage({ params }: PageProps) {
 
             {/* The single <h1> element for this page */}
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[var(--foreground)] tracking-tight">
-              {isFa
-                ? 'مرکز پایش وضعیت سیستم و گواهی آمادگی پروداکشن'
-                : isFr
-                ? 'État du Système et Certification de Production'
-                : 'System Status & Production Readiness Certification'}
+              {tx(
+                'مرکز پایش وضعیت سیستم و گواهی آمادگی پروداکشن',
+                'État du Système et Certification de Production',
+                'System Status & Production Readiness Certification'
+              )}
             </h1>
 
             <p className="text-sm sm:text-base text-[var(--foreground-muted)] max-w-3xl leading-relaxed">
-              {isFa
-                ? 'شفافیت کامل در عملکرد زیرساخت، نتایج ارزیابی خودکار گیت‌های کنترل کیفیت ۶گانه، نقشه راه ۱۲ هفته‌ای و بهینه‌سازی هزینه‌های ماهانه نگهداری ابری در سرورهای مستقل اروپایی.'
-                : isFr
-                ? 'Transparence totale de l’infrastructure, validation automatisée des 6 portes de qualité QA, feuille de route sur 12 semaines et optimisation des coûts cloud sur serveurs européens souverains.'
-                : 'Complete transparency of system infrastructure, automated validation of all 6 pre-launch QA gates, 12-week implementation roadmap, and European cloud cost optimization.'}
+              {tx(
+                'شفافیت کامل در عملکرد زیرساخت، نتایج ارزیابی خودکار گیت‌های کنترل کیفیت ۶گانه، نقشه راه ۱۲ هفته‌ای و بهینه‌سازی هزینه‌های ماهانه نگهداری ابری در سرورهای مستقل اروپایی.',
+                'Transparence totale de l’infrastructure, validation automatisée des 6 portes de qualité QA, feuille de route sur 12 semaines et optimisation des coûts cloud sur serveurs européens souverains.',
+                'Complete transparency of system infrastructure, automated validation of all 6 pre-launch QA gates, 12-week implementation roadmap, and European cloud cost optimisation.'
+              )}
             </p>
           </header>
 
@@ -173,9 +178,11 @@ export default async function SystemStatusPage({ params }: PageProps) {
             <div className="flex items-center gap-2">
               <ShieldCheck className="text-emerald-500" size={16} />
               <span>
-                {isFa
-                  ? 'وب‌سایت رسمی و آرشیو جامع دیجیتال دکتر حسن مکارمی (پاریس، فرانسه)'
-                  : 'Site officiel et archives numériques du Dr Hassan Makaremi (Paris, France)'}
+                {tx(
+                  'وب‌سایت رسمی و آرشیو جامع دیجیتال دکتر حسن مکارمی (پاریس، فرانسه)',
+                  'Site officiel et archives numériques du Dr Hassan Makaremi (Paris, France)',
+                  'Official website and digital archive of Dr Hassan Makaremi (Paris, France)'
+                )}
               </span>
             </div>
             <div className="font-mono text-[11px]">

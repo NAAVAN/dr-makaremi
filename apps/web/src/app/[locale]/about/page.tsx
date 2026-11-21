@@ -58,7 +58,9 @@ export async function generateMetadata({
         : 'About Dr. Hassan Makaremi | Academic CV, 6 Universities, Interviews & References',
     description: isFa
       ? 'شرح حال علمی و هنری دکتر حسن مکارمی (متولد ۱۳۲۹ شیراز)، تحصیل و تدریس در ۶ دانشگاه ایران و فرانسه، ۷ اثر دائمی در موزه خوشنویسی مسکو، ۳۴+ مصاحبه و ۲۷+ سند حقوق بشری.'
-      : 'Biographie académique et artistique du Dr Hassan Makaremi : 6 universités, Musée de Moscou, entretiens et références des droits humains.',
+      : isFr
+        ? 'Biographie académique et artistique du Dr Hassan Makaremi : 6 universités, Musée de Moscou, entretiens et références des droits humains.'
+        : 'Academic and artistic biography of Dr Hassan Makaremi: 6 universities in Iran and France, 7 permanent works at the Moscow Museum of Calligraphy, 34+ interviews, and 27+ human rights references.',
   });
 }
 
@@ -72,6 +74,7 @@ export default async function AboutProfessorPage({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const bioDocumentary = VIDEO_SERIES_CATALOG.find(
     (s) => s.slug === 'morouri-bar-60-sal-zendegi'
@@ -104,11 +107,11 @@ export default async function AboutProfessorPage({
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--primary)] font-bold">
             <Award size={16} />
             <span>
-              {isFa
-                ? 'در مورد استاد • شرح حال، ۶ دانشگاه، مصاحبه‌ها، کنفرانس‌ها و منابع'
-                : isFr
-                  ? 'À Propos • Biographie, 6 Universités, Entretiens & Références'
-                  : 'About • Biography, 6 Universities, Interviews & References'}
+              {tx(
+                'در مورد استاد • شرح حال، ۶ دانشگاه، مصاحبه‌ها، کنفرانس‌ها و منابع',
+                'À Propos • Biographie, 6 Universités, Entretiens & Références',
+                'About • Biography, 6 Universities, Interviews & References'
+              )}
             </span>
           </div>
 
@@ -124,19 +127,19 @@ export default async function AboutProfessorPage({
         </div>
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--foreground)] tracking-tight leading-tight">
-          {isFa
-            ? 'دکتر حسن مکارمی؛ پنج دهه اندیشه، روانکاوی، هنر خوشنویسی و دادخواهی'
-            : isFr
-              ? 'Dr Hassan Makaremi : Parcours Académique, Psychanalytique et Artistique'
-              : 'Dr. Hassan Makaremi: Five Decades of Psychoanalysis, Art, Strategy & Human Rights'}
+          {tx(
+            'دکتر حسن مکارمی؛ پنج دهه اندیشه، روانکاوی، هنر خوشنویسی و دادخواهی',
+            'Dr Hassan Makaremi : Parcours Académique, Psychanalytique et Artistique',
+            'Dr Hassan Makaremi: Five Decades of Psychoanalysis, Art, Strategy & Human Rights'
+          )}
         </h1>
 
         <p className="text-sm sm:text-base text-[var(--foreground-muted)] max-w-4xl leading-relaxed">
-          {isFa
-            ? 'زاده ۱۳۲۹ خورشیدی (۱۹۵۰ میلادی) در شیراز. روانکاو بالینی و عضو هیئت مدیره انجمن روان‌پژوهان ایران در فرانسه، پژوهشگر دانشگاه سوربن پاریس، متخصص مشاوره راهبردی در بخش فرهنگی و نوسازی سازمانی، خزانه‌دار جامعه دفاع از حقوق بشر در ایران (LDDHI)، شاعر و هنرمند خوشنویس با ۲۷ نمایشگاه جهانی و ۷ اثر در گنجینه دائمی موزه مدرن خوشنویسی مسکو.'
-            : isFr
-              ? 'Né en 1950 à Chiraz. Psychanalyste clinicien à Paris, chercheur à la Sorbonne, consultant stratégique, trésorier de la LDDHI, poète et calligraphe avec 27 expositions internationales et 7 œuvres permanentes au Musée Contemporain de la Calligraphie de Moscou.'
-              : 'Born in 1950 in Shiraz. Clinical psychoanalyst in Paris, Sorbonne researcher, strategic consultant, Treasurer of LDDHI, poet, and contemporary calligrapher with 27 international exhibitions and 7 permanent works at the Moscow Museum of Calligraphy.'}
+          {tx(
+            'زاده ۱۳۲۹ خورشیدی (۱۹۵۰ میلادی) در شیراز. روانکاو بالینی و عضو هیئت مدیره انجمن روان‌پژوهان ایران در فرانسه، پژوهشگر دانشگاه سوربن پاریس، متخصص مشاوره راهبردی در بخش فرهنگی و نوسازی سازمانی، خزانه‌دار جامعه دفاع از حقوق بشر در ایران (LDDHI)، شاعر و هنرمند خوشنویس با ۲۷ نمایشگاه جهانی و ۷ اثر در گنجینه دائمی موزه مدرن خوشنویسی مسکو.',
+            'Né en 1950 à Chiraz. Psychanalyste clinicien à Paris, chercheur à la Sorbonne, consultant stratégique, trésorier de la LDDHI, poète et calligraphe avec 27 expositions internationales et 7 œuvres permanentes au Musée Contemporain de la Calligraphie de Moscou.',
+            'Born in 1950 in Shiraz. Clinical psychoanalyst in Paris, Sorbonne researcher, strategic consultant in cultural modernisation, Treasurer of LDDHI, poet, and contemporary calligrapher with 27 international exhibitions and 7 permanent works at the Moscow Museum of Modern Calligraphy.'
+          )}
         </p>
 
         {/* Interactive Tab Navigator synced with ?tab= query parameter */}
@@ -144,19 +147,19 @@ export default async function AboutProfessorPage({
       </header>
 
       {/* SECTION 1: 6 UNIVERSITIES & ACADEMIC TRAJECTORY */}
-      <section id="cv-universities" aria-label="کارنامه دانشگاهی" className="space-y-6 scroll-mt-28">
+      <section id="cv-universities" aria-label={tx('کارنامه دانشگاهی', 'Parcours universitaire', 'Academic Trajectory')} className="space-y-6 scroll-mt-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-teal-600 font-bold">
               <GraduationCap size={16} />
-              <span>{isFa ? 'مسیر دانشگاهی از تهران و شیراز تا پاریس و سوربن' : 'Parcours Universitaire'}</span>
+              <span>{tx('مسیر دانشگاهی از تهران و شیراز تا پاریس و سوربن', 'Parcours Universitaire', 'Academic Path: Tehran & Shiraz to Paris-Sorbonne')}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'تحصیل، پژوهش و تدریس در ۶ قطب دانشگاهی ایران و فرانسه'
-                : isFr
-                  ? 'Formation, Recherche et Enseignement dans 6 Grandes Universités'
-                  : 'Education, Research & Teaching Across 6 Major Universities'}
+              {tx(
+                'تحصیل، پژوهش و تدریس در ۶ قطب دانشگاهی ایران و فرانسه',
+                'Formation, Recherche et Enseignement dans 6 Grandes Universités',
+                'Education, Research & Teaching Across 6 Major Universities'
+              )}
             </h2>
           </div>
 
@@ -166,7 +169,7 @@ export default async function AboutProfessorPage({
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)]"
             >
               <FileText size={14} />
-              <span>{isFa ? 'متن کامل شرح حال (CV)' : 'Lire le CV complet'}</span>
+              <span>{tx('متن کامل شرح حال (CV)', 'Lire le CV complet', 'Read Full Curriculum Vitae')}</span>
             </Link>
             <a
               href="https://www.makaremi.com/wp-content/uploads/2015/02/cv-hassan-makaremi.pdf"
@@ -175,7 +178,7 @@ export default async function AboutProfessorPage({
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
             >
               <Download size={14} />
-              <span>{isFa ? 'دانلود PDF رسمی CV' : 'Télécharger CV (PDF)'}</span>
+              <span>{tx('دانلود PDF رسمی CV', 'Télécharger CV (PDF)', 'Download Official CV (PDF)')}</span>
             </a>
           </div>
         </div>
@@ -189,7 +192,7 @@ export default async function AboutProfessorPage({
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-800 dark:text-teal-300 border border-teal-500/25 font-bold">
-                    {inst.country === 'IR' ? (isFa ? 'ایران' : 'Iran') : isFa ? 'فرانسه (پاریس)' : 'France'}
+                    {inst.country === 'IR' ? tx('ایران', 'Iran', 'Iran') : tx('فرانسه (پاریس)', 'France (Paris)', 'France (Paris)')}
                   </span>
                   <span className="text-[var(--foreground-muted)]">{inst.period}</span>
                 </div>
@@ -210,18 +213,18 @@ export default async function AboutProfessorPage({
       </section>
 
       {/* SECTION 2: GLOBAL PRESENCE («حضور من در هستی») */}
-      <section id="global-presence" aria-label="حضور من در هستی" className="space-y-6 scroll-mt-28">
+      <section id="global-presence" aria-label={tx('حضور من در هستی', 'Présence internationale', 'International Presence')} className="space-y-6 scroll-mt-28">
         <div className="space-y-2 border-b border-[var(--border-subtle)] pb-4">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-amber-600 font-bold">
             <Globe size={16} />
-            <span>{isFa ? 'حضور من در هستی • نهادها و موزه‌های بین‌المللی' : 'Présence Internationale'}</span>
+            <span>{tx('حضور من در هستی • نهادها و موزه‌های بین‌المللی', 'Présence Internationale', 'International Museums & Institutions')}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'جایگاه بین‌المللی در موزه‌ها، مجامع علمی و نهادهای حقوق بشری'
-              : isFr
-                ? 'Reconnaissance Muséale, Scientifique et Civique'
-                : 'International Museum Collections, Academic & Civic Authorities'}
+            {tx(
+              'جایگاه بین‌المللی در موزه‌ها، مجامع علمی و نهادهای حقوق بشری',
+              'Reconnaissance Muséale, Scientifique et Civique',
+              'International Museum Collections, Academic & Civic Authorities'
+            )}
           </h2>
         </div>
 
@@ -252,7 +255,7 @@ export default async function AboutProfessorPage({
                     href={targetHref}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--primary)] hover:underline"
                   >
-                    <span>{isFa ? 'مشاهده جزئیات و مستندات' : 'Voir les détails'}</span>
+                    <span>{tx('مشاهده جزئیات و مستندات', 'Voir les détails', 'View details & records')}</span>
                     {isFa ? <ArrowLeft size={13} /> : <ArrowRight size={13} />}
                   </Link>
                   {badge.officialExternalUrl && (
@@ -262,7 +265,7 @@ export default async function AboutProfessorPage({
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-[11px] font-mono text-[var(--foreground-muted)] hover:text-[var(--primary)]"
                     >
-                      <span>{isFa ? 'سایت رسمی موزه' : 'Site officiel'}</span>
+                      <span>{tx('سایت رسمی موزه', 'Site officiel', 'Official museum site')}</span>
                       <ExternalLink size={11} />
                     </a>
                   )}
@@ -273,20 +276,20 @@ export default async function AboutProfessorPage({
         </div>
       </section>
 
-      {/* SECTION 3: MEDIA INTERVIEWS ARCHIVE (Linked to Real Migrated XML Pages!) */}
-      <section id="interviews-archive" aria-label="مصاحبه با استاد" className="space-y-6 scroll-mt-28">
+      {/* SECTION 3: MEDIA INTERVIEWS ARCHIVE */}
+      <section id="interviews-archive" aria-label={tx('مصاحبه با استاد', 'Entretiens médias', 'Media Interviews Archive')} className="space-y-6 scroll-mt-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-sky-600 font-bold">
               <Mic size={16} />
-              <span>{isFa ? 'آرشیو مصاحبه با استاد (۳۴+ گفتگوی رسانه‌ای)' : 'Entretiens Médias'}</span>
+              <span>{tx('آرشیو مصاحبه با استاد (۳۴+ گفتگوی رسانه‌ای)', 'Entretiens Médias', 'Media Interviews Archive (34+ Conversations)')}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'مصاحبه‌های رسانه‌ای (RFI، دویچه‌وله، رادیو فردا، پیک یونسکو و رادیو زمانه)'
-                : isFr
-                  ? 'Archives des Entretiens Médias (RFI, Courrier de l’UNESCO, DW...)'
-                  : 'Media Interviews Archive (RFI, UNESCO Courier, DW, Radio Zamaneh)'}
+              {tx(
+                'مصاحبه‌های رسانه‌ای (RFI، دویچه‌وله، رادیو فردا، پیک یونسکو و رادیو زمانه)',
+                'Archives des Entretiens Médias (RFI, Courrier de l’UNESCO, DW...)',
+                'Media Interviews Archive (RFI, UNESCO Courier, DW, Radio Zamaneh)'
+              )}
             </h2>
           </div>
 
@@ -294,7 +297,7 @@ export default async function AboutProfessorPage({
             href={`/${locale}/about/entretiens-fa`}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
           >
-            <span>{isFa ? 'مشاهده فهرست کامل ۳۴+ مصاحبه ←' : 'Voir la liste complète (34+) →'}</span>
+            <span>{tx('مشاهده فهرست کامل ۳۴+ مصاحبه ←', 'Voir la liste complète (34+) →', 'View complete list (34+) →')}</span>
           </Link>
         </div>
 
@@ -320,27 +323,27 @@ export default async function AboutProfessorPage({
                 </p>
               </div>
               <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-end text-xs font-bold text-[var(--primary)]">
-                <span>{isFa ? 'مطالعه متن کامل مصاحبه ←' : 'Lire l’entretien →'}</span>
+                <span>{tx('مطالعه متن کامل مصاحبه ←', 'Lire l’entretien →', 'Read full interview →')}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* SECTION 4: HUMAN RIGHTS REFERENCES (Linked to Real Migrated XML Documents!) */}
-      <section id="human-rights-references" aria-label="منابع و اسناد حقوق بشری" className="space-y-6 scroll-mt-28">
+      {/* SECTION 4: HUMAN RIGHTS REFERENCES */}
+      <section id="human-rights-references" aria-label={tx('منابع و اسناد حقوق بشری', 'Références et archives civiques', 'Human Rights References')} className="space-y-6 scroll-mt-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-rose-600 font-bold">
               <FileCheck2 size={16} />
-              <span>{isFa ? 'منابع و اسناد حقوق بشری (LDDHI / سازمان ملل)' : 'Références & Archives Civiques'}</span>
+              <span>{tx('منابع و اسناد حقوق بشری (LDDHI / سازمان ملل)', 'Références & Archives Civiques', 'Human Rights References (LDDHI / UN)')}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'منابع، نامه‌های سرگشاده به سازمان ملل و کارزارهای حقوق بشری (۲۷+ سند)'
-                : isFr
-                  ? 'Références, Lettres Ouvertes à l’ONU et Actions LDDHI / FIDH'
-                  : 'Human Rights References, UN Open Letters & LDDHI Statements'}
+              {tx(
+                'منابع، نامه‌های سرگشاده به سازمان ملل و کارزارهای حقوق بشری (۲۷+ سند)',
+                'Références, Lettres Ouvertes à l’ONU et Actions LDDHI / FIDH',
+                'Human Rights References, UN Open Letters & LDDHI Statements'
+              )}
             </h2>
           </div>
 
@@ -348,7 +351,7 @@ export default async function AboutProfessorPage({
             href={`/${locale}/about/references-fa`}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
           >
-            <span>{isFa ? 'مشاهده آرشیو کامل ۲۷+ سند ←' : 'Voir toutes les références →'}</span>
+            <span>{tx('مشاهده آرشیو کامل ۲۷+ سند ←', 'Voir toutes les références →', 'View all 27+ documents →')}</span>
           </Link>
         </div>
 
@@ -370,7 +373,7 @@ export default async function AboutProfessorPage({
                   {doc.title[locale]}
                 </h3>
                 <p className="text-[11px] font-semibold text-[var(--primary)]">
-                  {isFa ? 'مخاطب سند: ' : 'Destinataire : '}
+                  {tx('مخاطب سند: ', 'Destinataire : ', 'Addressed to: ')}
                   {doc.recipient[locale]}
                 </p>
                 <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
@@ -378,18 +381,18 @@ export default async function AboutProfessorPage({
                 </p>
               </div>
               <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-end text-xs font-bold text-[var(--primary)]">
-                <span>{isFa ? 'مشاهده سند کامل ←' : 'Consulter le document →'}</span>
+                <span>{tx('مشاهده سند کامل ←', 'Consulter le document →', 'View full document →')}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* SECTION 5: 4-PART BIOGRAPHICAL DOCUMENTARY (Connected Directly to Real YouTube Videos in Vault!) */}
+      {/* SECTION 5: 4-PART BIOGRAPHICAL DOCUMENTARY */}
       {bioDocumentary && (
         <section
           id="bio-documentary"
-          aria-label="مستند زندگی‌نامه"
+          aria-label={tx('مستند زندگی‌نامه', 'Documentaire biographique', 'Biographical Documentary')}
           className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 space-y-6 scroll-mt-28"
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -397,9 +400,11 @@ export default async function AboutProfessorPage({
               <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-purple-600 font-bold">
                 <Film size={16} />
                 <span>
-                  {isFa
-                    ? 'فیلم‌های درباره استاد • سفرهایی که زندگی را می‌سازند'
-                    : 'Documentaire Biographique en 4 Parties'}
+                  {tx(
+                    'فیلم‌های درباره استاد • سفرهایی که زندگی را می‌سازند',
+                    'Documentaire Biographique en 4 Parties',
+                    '4-Part Biographical Documentary'
+                  )}
                 </span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
@@ -414,7 +419,7 @@ export default async function AboutProfessorPage({
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
             >
               <Video size={14} />
-              <span>{isFa ? 'پخش در آرشیو ویدیو' : 'Voir la série'}</span>
+              <span>{tx('پخش در آرشیو ویدیو', 'Voir la série', 'Watch full series')}</span>
             </Link>
           </div>
 
@@ -444,14 +449,14 @@ export default async function AboutProfessorPage({
                     <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
                       <div className="space-y-1.5">
                         <span className="text-[11px] font-mono font-bold text-purple-700 dark:text-purple-400">
-                          {isFa ? `قسمت ${idx + 1} از ${bioDocVideos.length}` : `Partie ${idx + 1} / ${bioDocVideos.length}`}
+                          {tx(`قسمت ${idx + 1} از ${bioDocVideos.length}`, `Partie ${idx + 1} / ${bioDocVideos.length}`, `Part ${idx + 1} of ${bioDocVideos.length}`)}
                         </span>
                         <h3 className="text-xs font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] leading-snug line-clamp-2">
                           {tr?.title || vid.slug}
                         </h3>
                       </div>
                       <span className="text-[11px] font-bold text-[var(--primary)] pt-2">
-                        {isFa ? 'پخش ویدیو ←' : 'Regarder →'}
+                        {tx('پخش ویدیو ←', 'Regarder →', 'Watch video →')}
                       </span>
                     </div>
                   </Link>
@@ -464,7 +469,7 @@ export default async function AboutProfessorPage({
                   className="p-4 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] space-y-2"
                 >
                   <span className="text-[11px] font-mono font-bold text-purple-700 dark:text-purple-400">
-                    {isFa ? `بخش ${idx + 1} از ۴` : `Partie ${idx + 1} / 4`}
+                    {tx(`بخش ${idx + 1} از ۴`, `Partie ${idx + 1} / 4`, `Part ${idx + 1} of 4`)}
                   </span>
                   <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
                     {epTitle}
@@ -475,26 +480,30 @@ export default async function AboutProfessorPage({
         </section>
       )}
 
-      {/* SECTION 5.5: DEDICATED CONFERENCES & SYMPOSIA ARCHIVE (Synced with ?tab=conferences) */}
+      {/* SECTION 5.5: DEDICATED CONFERENCES & SYMPOSIA ARCHIVE */}
       {conferencePages.length > 0 && (
         <section
           id="conferences-archive"
-          aria-label="آرشیو کنفرانس‌ها و همایش‌ها"
+          aria-label={tx('آرشیو کنفرانس‌ها و همایش‌ها', 'Archives des conférences', 'Conferences & Symposia Archive')}
           className="space-y-6 scroll-mt-28"
         >
           <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
             <div className="inline-flex items-center gap-1.5 text-xs font-mono text-indigo-600 font-bold">
               <BookOpen size={15} />
               <span>
-                {isFa
-                  ? `کنفرانس‌ها و همایش‌های علمی و فرهنگی (${conferencePages.length} سند کامل)`
-                  : `Conférences & Colloques (${conferencePages.length})`}
+                {tx(
+                  `کنفرانس‌ها و همایش‌های علمی و فرهنگی (${conferencePages.length} سند کامل)`,
+                  `Conférences & Colloques (${conferencePages.length})`,
+                  `Academic & Cultural Conferences (${conferencePages.length} records)`
+                )}
               </span>
             </div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'کارنامه کنفرانس‌های روانکاوی، پژوهش و جامعه، حافظ و دادخواهی'
-                : 'Conférences en Psychanalyse, Recherche & Société'}
+              {tx(
+                'کارنامه کنفرانس‌های روانکاوی، پژوهش و جامعه، حافظ و دادخواهی',
+                'Conférences en Psychanalyse, Recherche & Société',
+                'Conferences on Psychoanalysis, Society, Hafez & Human Rights'
+              )}
             </h2>
           </div>
 
@@ -511,7 +520,7 @@ export default async function AboutProfessorPage({
                 >
                   <div className="space-y-2">
                     <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-bold">
-                      {isFa ? 'کنفرانس / همایش' : 'Conférence'}
+                      {tx('کنفرانس / همایش', 'Conférence', 'Conference')}
                     </span>
                     <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
                       <Link
@@ -530,7 +539,7 @@ export default async function AboutProfessorPage({
                       href={`/${locale}/about/${pg.slug}`}
                       className="font-bold text-[var(--primary)] hover:underline"
                     >
-                      {isFa ? 'مطالعه متن کامل ←' : 'Consulter →'}
+                      {tx('مطالعه متن کامل ←', 'Consulter →', 'Read full text →')}
                     </Link>
                   </div>
                 </article>
@@ -540,26 +549,30 @@ export default async function AboutProfessorPage({
         </section>
       )}
 
-      {/* SECTION 5.6: CLEAN MIGRATED ARCHIVAL REFERENCE PAGES (Zero WP Shells!) */}
+      {/* SECTION 5.6: CLEAN MIGRATED ARCHIVAL REFERENCE PAGES */}
       {otherReferencePages.length > 0 && (
         <section
           id="migrated-reference-pages"
-          aria-label="آرشیو صفحات و اسناد مستقل"
+          aria-label={tx('آرشیو صفحات و اسناد مستقل', 'Documents de référence', 'Archival Reference Pages')}
           className="space-y-6 scroll-mt-28"
         >
           <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
             <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--primary)] font-bold">
               <FileCheck2 size={15} />
               <span>
-                {isFa
-                  ? `اسناد، انتشارات و صفحات مرجع تکمیلی (${otherReferencePages.length} سند)`
-                  : `Documents de Référence (${otherReferencePages.length})`}
+                {tx(
+                  `اسناد، انتشارات و صفحات مرجع تکمیلی (${otherReferencePages.length} سند)`,
+                  `Documents de Référence (${otherReferencePages.length})`,
+                  `Supplementary Reference Documents (${otherReferencePages.length})`
+                )}
               </span>
             </div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'اسناد مرجع، نشریات، مصاحبه‌ها و یادداشت‌های مستقل'
-                : 'Publications, Entretiens & Archives Éditoriales'}
+              {tx(
+                'اسناد مرجع، نشریات، مصاحبه‌ها و یادداشت‌های مستقل',
+                'Publications, Entretiens & Archives Éditoriales',
+                'Reference Documents, Publications & Editorial Archives'
+              )}
             </h2>
           </div>
 
@@ -595,7 +608,7 @@ export default async function AboutProfessorPage({
                       href={`/${locale}/about/${pg.slug}`}
                       className="font-bold text-[var(--primary)] hover:underline"
                     >
-                      {isFa ? 'مشاهده متن کامل ←' : 'Consulter →'}
+                      {tx('مشاهده متن کامل ←', 'Consulter →', 'Read full text →')}
                     </Link>
                   </div>
                 </article>
@@ -608,35 +621,37 @@ export default async function AboutProfessorPage({
       {/* SECTION 6: CONTACT & ACADEMIC / ARTISTIC INVITATIONS */}
       <section
         id="contact-section"
-        aria-label="تماس با استاد"
+        aria-label={tx('تماس با استاد', 'Contact et mentions légales', 'Contact & Legal Notices')}
         className="rounded-3xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center scroll-mt-28"
       >
         <div className="lg:col-span-7 space-y-4">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-emerald-600 font-bold">
             <Mail size={16} />
-            <span>{isFa ? 'ارتباط مستقیم و دعوت‌های علمی و هنری' : 'Contact & Mentions Légales'}</span>
+            <span>{tx('ارتباط مستقیم و دعوت‌های علمی و هنری', 'Contact & Mentions Légales', 'Direct Contact & Academic Invitations')}</span>
           </div>
           <h2 className="text-2xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'تماس با دکتر حسن مکارمی (پاریس)'
-              : isFr
-                ? 'Contacter le Dr Hassan Makaremi (Paris)'
-                : 'Contact Dr. Hassan Makaremi (Paris)'}
+            {tx(
+              'تماس با دکتر حسن مکارمی (پاریس)',
+              'Contacter le Dr Hassan Makaremi (Paris)',
+              'Contact Dr Hassan Makaremi (Paris)'
+            )}
           </h2>
           <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
-            {isFa
-              ? 'جهت هماهنگی سخنرانی‌های دانشگاهی، سمینارهای روانکاوی، نمایشگاه‌های بین‌المللی خوشنویسی، سفارش کتاب‌ها یا ارتباط با دفتر مشاوره در پاریس می‌توانید از درگاه‌های رسمی زیر یا دستیار هوشمند سایت استفاده فرمایید.'
-              : 'Pour toute invitation académique, exposition calligraphique, commande d’ouvrages ou consultation à Paris.'}
+            {tx(
+              'جهت هماهنگی سخنرانی‌های دانشگاهی، سمینارهای روانکاوی، نمایشگاه‌های بین‌المللی خوشنویسی، سفارش کتاب‌ها یا ارتباط با دفتر مشاوره در پاریس می‌توانید از درگاه‌های رسمی زیر یا دستیار هوشمند سایت استفاده فرمایید.',
+              'Pour toute invitation académique, exposition calligraphique, commande d’ouvrages ou consultation à Paris.',
+              'For academic lectures, psychoanalytic seminars, international calligraphy exhibitions, book orders, or Paris consultations, please use the official contact channels below or our AI research assistant.'
+            )}
           </p>
         </div>
 
         <div className="lg:col-span-5 space-y-3 bg-[var(--surface-sunken)] p-6 rounded-2xl border border-[var(--border-subtle)] text-xs">
           <div className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)]">
-            <span className="text-[var(--foreground-muted)]">{isFa ? 'مکان فعالیت:' : 'Lieu :'}</span>
+            <span className="text-[var(--foreground-muted)]">{tx('مکان فعالیت:', 'Lieu :', 'Location:')}</span>
             <span className="font-bold text-[var(--foreground)]">Paris, France</span>
           </div>
           <div className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)]">
-            <span className="text-[var(--foreground-muted)]">{isFa ? 'پست الکترونیک رسمی:' : 'Email :'}</span>
+            <span className="text-[var(--foreground-muted)]">{tx('پست الکترونیک رسمی:', 'Email :', 'Official Email:')}</span>
             <a href="mailto:contact@makaremi.com" className="font-mono font-bold text-[var(--primary)] hover:underline">
               contact@makaremi.com
             </a>
@@ -647,13 +662,13 @@ export default async function AboutProfessorPage({
               className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl font-bold bg-[var(--primary)] text-[var(--primary-foreground)]"
             >
               <Sparkles size={14} />
-              <span>{isFa ? 'گفتگو با دستیار هوشمند آثار' : 'Assistant IA'}</span>
+              <span>{tx('گفتگو با دستیار هوشمند آثار', 'Assistant IA', 'Ask the Archive AI Assistant')}</span>
             </Link>
             <Link
               href={`/${locale}/about/contact-mention-fa`}
               className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
             >
-              <span>{isFa ? 'اطلاعات حقوقی' : 'Mentions légales'}</span>
+              <span>{tx('اطلاعات حقوقی', 'Mentions légales', 'Legal Notices')}</span>
             </Link>
           </div>
         </div>

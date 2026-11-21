@@ -13,6 +13,8 @@ interface ArtworksVaultShowcaseProps {
 
 function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseProps) {
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const searchParams = useSearchParams();
   const [query, setQuery] = useState('');
   const [selectedArtworkId, setSelectedArtworkId] = useState<string>(artworks[0]?.id || '');
@@ -89,7 +91,7 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
               </h3>
               <span className="text-xs font-mono tabular-nums text-[var(--foreground-muted)]">
                 {activeArtwork.year} • {activeImages.length}{' '}
-                {isFa ? 'تصویر در این مجموعه' : 'images dans cette série'}
+                {tx('تصویر در این مجموعه', 'images dans cette série', 'plates in this series')}
               </span>
             </div>
 
@@ -106,11 +108,10 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                     key={`${img.id}-${i}`}
                     type="button"
                     onClick={() => setSelectedImageUrl(img.url)}
-                    className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                      viewerImage === img.url
+                    className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${viewerImage === img.url
                         ? 'border-[var(--primary)] scale-105'
                         : 'border-transparent opacity-75 hover:opacity-100'
-                    }`}
+                      }`}
                   >
                     <img
                       src={img.url}
@@ -127,15 +128,17 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
         </div>
       )}
 
-      {/* Searchable Complete Catalog of All Canonical Bilingual Artwork Galleries */}
+      {/* Searchable Complete Catalogue of All Canonical Bilingual Artwork Galleries */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--primary)] font-bold">
             <Layers size={15} />
             <span>
-              {isFa
-                ? `گنجینه کامل ${artworks.length} مجموعه تابلو و نقاشی‌خط`
-                : `Catalogue complet (${artworks.length} séries de tableaux)`}
+              {tx(
+                `گنجینه کامل ${artworks.length} مجموعه تابلو و نقاشی‌خط`,
+                `Catalogue complet (${artworks.length} séries de tableaux)`,
+                `Complete Catalogue (${artworks.length} Calligraphic Series)`
+              )}
             </span>
           </div>
 
@@ -148,8 +151,8 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={isFa ? 'فیلتر عنوان تابلو یا مجموعه...' : 'Filtrer les tableaux...'}
-              aria-label={isFa ? 'فیلتر گالری آثار' : 'Filter artworks'}
+              placeholder={tx('فیلتر عنوان تابلو یا مجموعه...', 'Filtrer les tableaux...', 'Filter artworks or series...')}
+              aria-label={tx('فیلتر گالری آثار', 'Filtrer les œuvres', 'Filter artworks')}
               className="w-full ps-9 pe-3 py-1.5 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] text-xs text-[var(--foreground)] focus:outline-none focus:border-[var(--primary)]"
             />
           </div>
@@ -161,14 +164,14 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
             className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-3"
           >
             <p className="text-sm font-bold text-[var(--foreground)]">
-              {isFa ? 'تابلویی مطابق جستجوی شما یافت نشد.' : 'Aucune œuvre trouvée.'}
+              {tx('تابلویی مطابق جستجوی شما یافت نشد.', 'Aucune œuvre trouvée.', 'No artworks matched your filter.')}
             </p>
             <button
               type="button"
               onClick={() => setQuery('')}
               className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer"
             >
-              {isFa ? 'نمایش همه تابلوها' : 'Tout afficher'}
+              {tx('نمایش همه تابلوها', 'Tout afficher', 'Show all artworks')}
             </button>
           </div>
         ) : (
@@ -185,11 +188,10 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                   key={art.id}
                   type="button"
                   onClick={() => selectArtwork(art)}
-                  className={`text-start min-w-0 rounded-2xl overflow-hidden border transition-all cursor-pointer flex flex-col justify-between bg-[var(--surface-card)] ${
-                    isSelected
+                  className={`text-start min-w-0 rounded-2xl overflow-hidden border transition-all cursor-pointer flex flex-col justify-between bg-[var(--surface-card)] ${isSelected
                       ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20 shadow-lg'
                       : 'border-[var(--border-subtle)] hover:shadow-md'
-                  }`}
+                    }`}
                 >
                   <div className="aspect-[4/3] w-full bg-[var(--surface-sunken)] overflow-hidden relative">
                     {thumb ? (
@@ -217,7 +219,7 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                       {tr?.title || art.slug}
                     </h4>
                     <span className="text-[10px] font-mono tabular-nums text-[var(--foreground-muted)] block">
-                      {art.year} • {art.gallery_images?.length || 0} {isFa ? 'اثر' : 'œuvres'}
+                      {art.year} • {art.gallery_images?.length || 0} {tx('اثر', 'œuvres', 'works')}
                     </span>
                   </div>
                 </button>

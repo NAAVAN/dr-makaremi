@@ -18,6 +18,8 @@ import {
 } from '@/lib/schema-org';
 import { buildBookAcademicMeta } from '@/lib/academic-metadata';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
+import { resolveWorkTranslation } from '@/lib/work-language';
 
 export async function generateStaticParams() {
   const books = await getBooks('fa');
@@ -71,9 +73,14 @@ export default async function BookDetailPage({
   if (!book) notFound();
 
   const isFa = locale === 'fa';
-  const trans =
-    book.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-    book.translations?.[0];
+  const isFr = locale === 'fr';
+  const resolved = resolveWorkTranslation({
+    collection: 'books',
+    slug: book.slug,
+    translations: book.translations,
+    siteLocale: locale,
+  });
+  const trans = resolved.originalRecord || book.translations?.[0];
 
   const title = trans?.title || book.slug;
 
@@ -104,7 +111,7 @@ export default async function BookDetailPage({
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به کتاب‌خانه' : 'Retour aux livres'}</span>
+          <span>{isFa ? 'بازگشت به کتاب‌خانه' : isFr ? 'Retour aux livres' : 'Back to Library'}</span>
         </Link>
 
         <Link
@@ -143,9 +150,16 @@ export default async function BookDetailPage({
             )}
           </div>
 
-          <p className="text-sm text-[var(--foreground)] leading-relaxed font-serif">
-            {trans?.synopsis}
-          </p>
+          <BilingualWorkReader
+            originalLang={resolved.originalLang}
+            siteLocale={locale}
+            translated={resolved.translatedRecord}
+            originalContent={
+              <p className="text-sm text-[var(--foreground)] leading-relaxed font-serif">
+                {trans?.synopsis}
+              </p>
+            }
+          />
 
           {/* Author Commentary Audio Player */}
           <AuthorAudioPlayer bookTitle={title} locale={locale} />

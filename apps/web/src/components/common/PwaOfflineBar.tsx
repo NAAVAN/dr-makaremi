@@ -85,10 +85,22 @@ export function PwaOfflineBar({ locale }: PwaOfflineBarProps) {
               type="button"
               onClick={() => setMirrorOpen(true)}
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-sky-400 hover:text-sky-300 font-medium transition-colors border border-slate-700 cursor-pointer"
-              title={isFa ? 'نمایش مسیرهای دسترسی ضدسانسور' : 'Canaux anti-censure'}
+              title={
+                isFa
+                  ? 'نمایش مسیرهای دسترسی ضدسانسور'
+                  : isFr
+                    ? 'Canaux anti-censure'
+                    : 'Anti-censorship access mirrors'
+              }
             >
               <Radio size={12} />
-              <span>{isFa ? 'آینه‌های ضدسانسور' : 'Miroirs anti-censure'}</span>
+              <span>
+                {isFa
+                  ? 'آینه‌های ضدسانسور'
+                  : isFr
+                    ? 'Miroirs anti-censure'
+                    : 'Anti-Censorship Mirrors'}
+              </span>
             </button>
           </div>
 
@@ -96,7 +108,13 @@ export function PwaOfflineBar({ locale }: PwaOfflineBarProps) {
             type="button"
             onClick={handleSavePage}
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors border border-slate-700 cursor-pointer font-medium"
-            title={isFa ? 'ذخیره این صفحه در حافظه مرورگر' : 'Enregistrer hors-ligne'}
+            title={
+              isFa
+                ? 'ذخیره این صفحه در حافظه مرورگر'
+                : isFr
+                  ? 'Enregistrer hors-ligne'
+                  : 'Save this page in browser storage for offline reading'
+            }
           >
             {saved ? (
               <span className="flex items-center gap-1 text-emerald-400 font-medium">

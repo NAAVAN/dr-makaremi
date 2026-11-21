@@ -8,6 +8,8 @@ import { getBookStudioProfile, BOOK_GENRE_LABELS, type BookGenreKey } from '@/li
 import { Book3DShowcase } from './Book3DShowcase';
 import { BookSampleReader } from './BookSampleReader';
 import type { Book, Locale } from '@makaremi/shared';
+import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
+import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
 
 interface BooksInteractiveCatalogProps {
   books: Book[];
@@ -41,29 +43,49 @@ function resolveGenreFromParams(genreParam: string | null, pillarParam: string |
   return 'all';
 }
 
-function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalogProps) {
+function BooksUrlSync({
+  books,
+  onSync,
+}: {
+  books: Book[];
+  onSync: (genre: 'all' | BookGenreKey, spotlight?: string) => void;
+}) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const resolved = resolveGenreFromParams(searchParams.get('genre'), searchParams.get('pillar'));
+    let firstSlug: string | undefined;
+    if (resolved !== 'all') {
+      const firstMatch = books.find((b) => {
+        const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key);
+        return prof.genreKey === resolved;
+      });
+      if (firstMatch) firstSlug = firstMatch.slug;
+    }
+    onSync(resolved, firstSlug);
+  }, [searchParams, books, onSync]);
+  return null;
+}
+
+export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatalogProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
-  const searchParams = useSearchParams();
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const [selectedGenre, setSelectedGenre] = useState<'all' | BookGenreKey>('all');
   const [spotlightSlug, setSpotlightSlug] = useState<string>(
     books[0]?.slug || 'lacan-seminar-3-psychoses'
   );
   const [showInlineReader, setShowInlineReader] = useState<boolean>(false);
+  const [translatedIds, setTranslatedIds] = useState<Record<string, boolean>>({});
 
-  // Sync URL query parameters (?genre= and ?pillar=) into active genre filter & spotlight book
-  useEffect(() => {
-    const resolved = resolveGenreFromParams(searchParams.get('genre'), searchParams.get('pillar'));
-    setSelectedGenre(resolved);
-    if (resolved !== 'all') {
-      const firstMatch = books.find((b) => {
-        const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key);
-        return prof.genreKey === resolved;
-      });
-      if (firstMatch) setSpotlightSlug(firstMatch.slug);
-    }
-  }, [searchParams, books]);
+  const toggleBookTranslation = (id: string) => {
+    setTranslatedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleUrlSync = React.useCallback((genre: 'all' | BookGenreKey, spotlight?: string) => {
+    setSelectedGenre(genre);
+    if (spotlight) setSpotlightSlug(spotlight);
+  }, []);
 
   const genreCounts = useMemo(() => {
     const counts: Record<string, number> = { all: books.length };
@@ -98,6 +120,9 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
 
   return (
     <div className="space-y-12">
+      <Suspense fallback={null}>
+        <BooksUrlSync books={books} onSync={handleUrlSync} />
+      </Suspense>
       {/* 1. Interactive 3D Sanctuary Spotlight Stage */}
       {spotlightBook && spotlightProfile && (
         <section
@@ -122,7 +147,7 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                   {spotlightBook.publication_year} • {spotlightTrans?.publisher_name}
                 </span>
                 <span className="px-2.5 py-1 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] font-mono text-[var(--foreground-muted)] tabular-nums">
-                  {spotlightBook.page_count || 240} {isFa ? 'صفحه' : 'p.'} ({spotlightProfile.spineWidthMm} mm)
+                  {spotlightBook.page_count || 240} {tx('صفحه', 'p.', 'pp.')} ({spotlightProfile.spineWidthMm} mm)
                 </span>
               </div>
 
@@ -144,7 +169,7 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="p-3 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)]">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
-                    {isFa ? 'قطع و ابعاد' : 'Format'}
+                    {tx('قطع و ابعاد', 'Format', 'Format & Dimensions')}
                   </span>
                   <span className="text-xs font-bold text-[var(--foreground)]">
                     {spotlightProfile.trimSizeLabel[locale]}
@@ -152,7 +177,7 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                 </div>
                 <div className="p-3 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)]">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
-                    {isFa ? 'قطر عطف و وزن' : 'Dos & Poids'}
+                    {tx('قطر عطف و وزن', 'Dos & Poids', 'Spine & Weight')}
                   </span>
                   <span className="text-xs font-bold font-mono text-[var(--foreground)] tabular-nums">
                     {spotlightProfile.spineWidthMm}mm • {spotlightProfile.weightGrams}g
@@ -160,26 +185,24 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                 </div>
                 <div className="p-3 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)]">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
-                    {isFa ? 'جهت صحافی' : 'Reliure'}
+                    {tx('جهت صحافی', 'Reliure', 'Binding Direction')}
                   </span>
                   <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
                     {spotlightProfile.direction === 'rtl'
-                      ? isFa
-                        ? 'راست‌به‌چپ (فارسی)'
-                        : 'RTL (Persan)'
-                      : isFa
-                        ? 'چپ‌به‌راست (فرانسوی)'
-                        : 'LTR (Français)'}
+                      ? tx('راست‌به‌چپ (فارسی)', 'RTL (Persan)', 'RTL (Persian)')
+                      : tx('چپ‌به‌راست (فرانسوی)', 'LTR (Français)', 'LTR (French)')}
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)]">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
-                    {isFa ? 'بازه مطالعه مجاز' : 'Extrait autorisé'}
+                    {tx('بازه مطالعه مجاز', 'Extrait autorisé', 'Preview Range')}
                   </span>
                   <span className="text-xs font-bold font-mono text-[var(--foreground)] tabular-nums">
-                    {isFa
-                      ? `ص ۱ + ص ${spotlightProfile.previewStartPage}–${spotlightProfile.previewEndPage}`
-                      : `p. 1 + p. ${spotlightProfile.previewStartPage}–${spotlightProfile.previewEndPage}`}
+                    {tx(
+                      `ص ۱ + ص ${spotlightProfile.previewStartPage}–${spotlightProfile.previewEndPage}`,
+                      `p. 1 + p. ${spotlightProfile.previewStartPage}–${spotlightProfile.previewEndPage}`,
+                      `p. 1 + pp. ${spotlightProfile.previewStartPage}–${spotlightProfile.previewEndPage}`
+                    )}
                   </span>
                 </div>
               </div>
@@ -193,12 +216,8 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                   <BookOpen size={15} />
                   <span>
                     {showInlineReader
-                      ? isFa
-                        ? 'بستن کتاب‌خوان ورق‌خور'
-                        : 'Fermer le lecteur'
-                      : isFa
-                        ? 'گشودن و تورق سه‌بعدی کتاب (شروع از صفحه ۱)'
-                        : 'Ouvrir et feuilleter en 3D (Page 1)'}
+                      ? tx('بستن کتاب‌خوان ورق‌خور', 'Fermer le lecteur', 'Close 3D Reader')
+                      : tx('گشودن و تورق سه‌بعدی کتاب (شروع از صفحه ۱)', 'Ouvrir et feuilleter en 3D (Page 1)', 'Open & Browse 3D Reader (Page 1)')}
                   </span>
                 </button>
 
@@ -207,7 +226,7 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:border-amber-600/50 transition-all"
                 >
                   <Eye size={15} />
-                  <span>{isFa ? 'صفحه اختصاصی و شناسنامه کامل اثر' : 'Fiche complète du livre'}</span>
+                  <span>{tx('صفحه اختصاصی و شناسنامه کامل اثر', 'Fiche complète du livre', 'Full Book Details & Citations')}</span>
                 </Link>
 
                 <Link
@@ -215,7 +234,7 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                   className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-teal-800 dark:text-teal-300 bg-teal-500/10 border border-teal-500/25 hover:bg-teal-500/20 transition-all"
                 >
                   <Sliders size={14} />
-                  <span>{isFa ? 'تنظیم در استودیو کتاب (مدیر)' : 'Studio 3D (Admin)'}</span>
+                  <span>{tx('تنظیم در استودیو کتاب (مدیر)', 'Studio 3D (Admin)', '3D Book Studio')}</span>
                 </Link>
               </div>
             </div>
@@ -288,22 +307,43 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
           className="p-10 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-3"
         >
           <p className="text-sm font-bold text-[var(--foreground)]">
-            {isFa ? 'کتابی در این ژانر یافت نشد.' : 'Aucun livre dans ce genre.'}
+            {tx('کتابی در این ژانر یافت نشد.', 'Aucun livre dans ce genre.', 'No books found in this genre.')}
           </p>
           <button
             type="button"
             onClick={() => setSelectedGenre('all')}
             className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer"
           >
-            {isFa ? 'نمایش همه کتاب‌ها' : 'Afficher tous les livres'}
+            {tx('نمایش همه کتاب‌ها', 'Afficher tous les livres', 'Show All Books')}
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBooks.map((b) => {
-            const trans =
-              b.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-              b.translations?.[0];
+            const resolved = resolveWorkTranslation({
+              collection: 'books',
+              slug: b.slug,
+              translations: b.translations,
+              siteLocale: locale,
+            });
+            const isShowingTranslated = Boolean(translatedIds[b.id]);
+            const origTrans = resolved.originalRecord;
+            const displayTitle =
+              isShowingTranslated && resolved.translatedRecord?.title
+                ? resolved.translatedRecord.title
+                : origTrans?.title || b.slug;
+            const displaySubtitle =
+              isShowingTranslated && resolved.translatedRecord?.subtitle
+                ? resolved.translatedRecord.subtitle
+                : origTrans?.subtitle;
+            const displaySynopsis =
+              isShowingTranslated && resolved.translatedRecord?.summary
+                ? resolved.translatedRecord.summary
+                : origTrans?.synopsis;
+            const activeDir = isShowingTranslated && resolved.hasTranslation
+              ? getLanguageDir(locale)
+              : getLanguageDir(resolved.originalLang);
+
             const prof = getBookStudioProfile(b.slug, b.page_count || 240, b.pillar, b.genre_key);
             const isSpotlight = b.slug === spotlightBook?.slug;
 
@@ -316,6 +356,15 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                   }`}
               >
                 <div className="space-y-4 min-w-0">
+                  <WorkLanguageBar
+                    originalLang={resolved.originalLang}
+                    siteLocale={locale}
+                    isTranslated={isShowingTranslated}
+                    hasTranslation={resolved.hasTranslation}
+                    onToggle={() => toggleBookTranslation(b.id)}
+                    compact
+                  />
+
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--primary)]">
                       {prof.genreLabel[locale]}
@@ -328,29 +377,32 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <h2 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug break-words">
+                  <div dir={activeDir} className="space-y-2">
+                    <h2 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors break-words">
                       <Link href={`/${locale}/books/${b.slug}`}>
-                        {trans?.title || b.slug}
+                        {displayTitle}
                       </Link>
                     </h2>
-                    {trans?.subtitle && (
+                    {displaySubtitle && (
                       <p className="text-xs text-[var(--foreground-muted)] font-medium break-words">
-                        {trans.subtitle}
+                        {displaySubtitle}
                       </p>
                     )}
+                    <p className="text-xs text-[var(--foreground-muted)] line-clamp-3 leading-relaxed break-words">
+                      {displaySynopsis}
+                    </p>
                   </div>
-
-                  <p className="text-xs text-[var(--foreground-muted)] line-clamp-3 leading-relaxed break-words">
-                    {trans?.synopsis}
-                  </p>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] space-y-3">
                   <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono tabular-nums">
-                    <span className="truncate max-w-[160px]">{trans?.publisher_name}</span>
+                    <span className="truncate max-w-[160px]">{origTrans?.publisher_name}</span>
                     <span>
-                      {b.page_count || 240} ص • عطف {prof.spineWidthMm}mm
+                      {isFa
+                        ? `${b.page_count || 240} ص · عطف ${prof.spineWidthMm}mm`
+                        : isFr
+                          ? `${b.page_count || 240} p. · dos ${prof.spineWidthMm}mm`
+                          : `${b.page_count || 240} pp. · spine ${prof.spineWidthMm}mm`}
                     </span>
                   </div>
 
@@ -365,14 +417,14 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
                       className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 dark:text-amber-400 hover:underline cursor-pointer"
                     >
                       <Sparkles size={13} />
-                      <span>{isFa ? 'بارگذاری در ویترین 3D بالا' : 'Voir en 3D'}</span>
+                      <span>{isFa ? 'بارگذاری در ویترین 3D بالا' : isFr ? 'Voir en 3D' : 'Open in 3D Stage'}</span>
                     </button>
 
                     <Link
                       href={`/${locale}/books/${b.slug}`}
                       className="text-xs font-bold text-[var(--primary)] hover:underline whitespace-nowrap"
                     >
-                      {isFa ? 'مشاهده و مطالعه ←' : 'Découvrir →'}
+                      {isFa ? 'مشاهده و مطالعه ←' : isFr ? 'Découvrir →' : 'View & Read →'}
                     </Link>
                   </div>
                 </div>
@@ -382,19 +434,5 @@ function BooksInteractiveCatalogInner({ books, locale }: BooksInteractiveCatalog
         </div>
       )}
     </div>
-  );
-}
-
-export function BooksInteractiveCatalog(props: BooksInteractiveCatalogProps) {
-  return (
-    <Suspense
-      fallback={
-        <div className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center text-xs text-[var(--foreground-muted)]">
-          Loading 3D Library...
-        </div>
-      }
-    >
-      <BooksInteractiveCatalogInner {...props} />
-    </Suspense>
   );
 }

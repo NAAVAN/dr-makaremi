@@ -29,7 +29,7 @@ export async function generateMetadata({
       ? 'دفتر ۳۰۰ شعر و بخش شعر و تصویر | دکتر حسن مکارمی'
       : isFr
         ? 'Recueil de 300 Poèmes & Poésie-Image | Dr Hassan Makaremi'
-        : '300 Poems Archive & Synchronized Poetry-Art | Dr. Hassan Makaremi',
+        : '300 Poems Archive & Synchronised Poetry-Art | Dr Hassan Makaremi',
     description: isFa
       ? 'دفتر کامل ۳۰۰ سروده دوزبانه فارسی و فرانسوی دکتر حسن مکارمی همراه با پیش‌گفتار «شعرواره‌ها» و ۲۹۴ تابلوی نقاشی‌خط اختصاصی.'
       : isFr
@@ -48,6 +48,8 @@ export default async function PoetryOverviewPage({
   if (!isValidLocale(locale)) notFound();
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const [rawPoems, artworks, prefacePage] = await Promise.all([
     getPoems(locale),
     getArtworks(locale),
@@ -72,17 +74,21 @@ export default async function PoetryOverviewPage({
       <header className="space-y-4 border-b border-[var(--border-subtle)] pb-6">
         <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--primary)] font-bold">
           <Music size={16} />
-          <span>{isFa ? 'شعر، دکلمه و هنر تجسمی' : 'Poésie & Musique'}</span>
+          <span>{tx('شعر، دکلمه و هنر تجسمی', 'Poésie & Musique', 'Poetry, Recitation & Visual Art')}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
-          {isFa
-            ? 'شعر و تصویر؛ تجلی دکلمه صوتی و خوشنویسی نوگرا'
-            : 'Poésie & Image : Récitation et Calligraphie Synchronisée'}
+          {tx(
+            'شعر و تصویر؛ تجلی دکلمه صوتی و خوشنویسی نوگرا',
+            'Poésie & Image : Récitation et Calligraphie Synchronisée',
+            'Poetry & Image: Audio Recitation and Synchronised Calligraphy'
+          )}
         </h1>
         <p className="text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
-          {isFa
-            ? 'طنین واژگان و رقص قلم‌مو؛ سروده‌های دوزبانه فارسی-فرانسوی دکتر حسن مکارمی همراه با تابلوهای اختصاصی و بخش شعر و تصویر.'
-            : 'Dialogue poétique et visuel entre la parole déclamée et la matière calligraphique.'}
+          {tx(
+            'طنین واژگان و رقص قلم‌مو؛ سروده‌های دوزبانه فارسی-فرانسوی دکتر حسن مکارمی همراه با تابلوهای اختصاصی و بخش شعر و تصویر.',
+            'Dialogue poétique et visuel entre la parole déclamée et la matière calligraphique.',
+            'Poetic and visual dialogue between recited verse and contemporary Persian calligraphy by Dr Hassan Makaremi.'
+          )}
         </p>
 
         {isFa && prefaceText && (
@@ -97,23 +103,27 @@ export default async function PoetryOverviewPage({
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
           >
             <Video size={14} />
-            <span>{isFa ? 'بخش ویدیویی «شعر و تصویر»' : 'Vidéos Poésie & Image'}</span>
+            <span>{tx('بخش ویدیویی «شعر و تصویر»', 'Vidéos Poésie & Image', '“Poetry & Image” Video Series')}</span>
           </Link>
           <Link
             href={`/${locale}/books?genre=poetry`}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)]"
           >
             <BookOpen size={14} />
-            <span>{isFa ? 'کتاب‌های شعر دوزبانه' : 'Livres de poésie bilingue'}</span>
+            <span>{tx('کتاب‌های شعر دوزبانه', 'Livres de poésie bilingue', 'Bilingual Poetry Books')}</span>
           </Link>
         </div>
       </header>
 
-      {/* 1. Synchronized Poetry & Artwork Showcase (شعر و تصویر) */}
+      {/* 1. Synchronised Poetry & Artwork Showcase (شعر و تصویر) */}
       {featuredPoem && (
-        <section aria-label="شعر و تصویر همگام" className="space-y-4">
+        <section aria-label={tx('شعر و تصویر همگام', 'Poésie et image synchronisées', 'Synchronised Poetry & Artwork')} className="space-y-4">
           <h2 className="text-xl font-bold text-[var(--foreground)]">
-            {isFa ? '۱. بخش شعر و تصویر (همگام‌سازی صوت و نقاشی‌خط)' : '1. Poésie & Image Synchronisées'}
+            {tx(
+              '۱. بخش شعر و تصویر (همگام‌سازی صوت و نقاشی‌خط)',
+              '1. Poésie & Image Synchronisées',
+              '1. Poetry & Image (Synchronised Voice & Calligraphy)'
+            )}
           </h2>
           <PoetryArtworkSync
             poem={featuredPoem}
@@ -124,17 +134,19 @@ export default async function PoetryOverviewPage({
       )}
 
       {/* 2. Complete Archive of Poems (زیرمنوی اشعار /poems-persan/) */}
-      <section id="poems-archive" aria-label="دفتر اشعار" className="space-y-6">
+      <section id="poems-archive" aria-label={tx('دفتر اشعار', 'Recueil de poèmes', 'Poems Archive')} className="space-y-6">
         <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 text-xs font-mono text-amber-600 font-bold">
               <Feather size={14} />
-              <span>{isFa ? 'زیرمنوی اشعار (/poems-persan/)' : 'Recueil de Poèmes'}</span>
+              <span>{tx('زیرمنوی اشعار (/poems-persan/)', 'Recueil de Poèmes', 'Complete Poems Collection')}</span>
             </div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
-              {isFa
-                ? `۲. دفتر کامل اشعار و سروده‌های دکتر حسن مکارمی (${poems.length} شعر)`
-                : `2. Archive Complète des Poèmes (${poems.length})`}
+              {tx(
+                `۲. دفتر کامل اشعار و سروده‌های دکتر حسن مکارمی (${poems.length} شعر)`,
+                `2. Archive Complète des Poèmes (${poems.length})`,
+                `2. Complete Archive of Poems (${poems.length})`
+              )}
             </h2>
           </div>
 
@@ -143,7 +155,7 @@ export default async function PoetryOverviewPage({
             className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--primary)] hover:underline"
           >
             <BookOpen size={14} />
-            <span>{isFa ? 'کتاب‌های شعر دوزبانه ←' : 'Livres de poésie →'}</span>
+            <span>{tx('کتاب‌های شعر دوزبانه ←', 'Livres de poésie →', 'Bilingual Poetry Books →')}</span>
           </Link>
         </div>
 

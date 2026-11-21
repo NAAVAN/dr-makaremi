@@ -147,6 +147,7 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -224,7 +225,7 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="جستجوی سریع در آرشیو"
+      aria-label={tx('جستجوی سریع در آرشیو', 'Recherche rapide dans les archives', 'Quick archive search')}
       className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 md:p-20 bg-black/60 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
@@ -243,19 +244,17 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={
-              isFa
-                ? 'جستجو در ۴۰۴ مقاله، ۲۵ کتاب، ۳۰۰ شعر، ۲۶۱ ویدیو و ۲۷ نمایشگاه...'
-                : isFr
-                  ? 'Rechercher parmi 404 articles, 25 livres, 300 poèmes, 261 vidéos...'
-                  : 'Search across 404 articles, 25 books, 300 poems, 261 videos...'
-            }
+            placeholder={tx(
+              'جستجو در ۴۰۴ مقاله، ۲۵ کتاب، ۳۰۰ شعر، ۲۶۱ ویدیو و ۲۷ نمایشگاه...',
+              'Rechercher parmi 404 articles, 25 livres, 300 poèmes, 261 vidéos...',
+              'Search across 404 articles, 25 books, 300 poems, 261 videos...'
+            )}
             className="w-full bg-transparent border-none text-base outline-none text-[var(--foreground)] placeholder:text-[var(--foreground-muted)]"
           />
           <button
             type="button"
             onClick={onClose}
-            aria-label="بستن پنجره جستجو"
+            aria-label={tx('بستن پنجره جستجو', 'Fermer la recherche', 'Close search dialog')}
             className="p-1 rounded-lg text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
           >
             <X size={18} />
@@ -267,9 +266,11 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
           <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
             <Sparkles size={16} className="shrink-0" />
             <span>
-              {isFa
-                ? 'جستجوی زنده روی ۲٬۷۴۸ سند واقعی آرشیو — برای تحلیل عمیق‌تر:'
-                : 'Recherche directe sur 2 748 documents — pour une synthèse approfondie :'}
+              {tx(
+                'جستجوی زنده روی ۲٬۷۴۸ سند واقعی آرشیو — برای تحلیل عمیق‌تر:',
+                'Recherche directe sur 2 748 documents — pour une synthèse approfondie :',
+                'Live search across 2,748 indexed documents — for deeper synthesis:'
+              )}
             </span>
           </div>
           <Link
@@ -277,14 +278,18 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
             onClick={onClose}
             className="px-2.5 py-1 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-semibold text-[11px] transition-all shrink-0"
           >
-            {isFa ? 'دستیار هوشمند پژوهشگر' : 'Assistant IA'}
+            {tx('دستیار هوشمند پژوهشگر', 'Assistant IA', 'AI Research Assistant')}
           </Link>
         </div>
 
         <div className="max-h-96 overflow-y-auto p-2 divide-y divide-[var(--border-subtle)]">
           {trimmedQuery.length < 2 && (
             <div className="px-3 py-1.5 text-[11px] font-mono text-[var(--foreground-muted)]">
-              {isFa ? 'میانبرهای برگزیده (حداقل ۲ حرف برای جستجوی کل آرشیو تایپ کنید):' : 'Accès rapides (tapez au moins 2 lettres) :'}
+              {tx(
+                'میانبرهای برگزیده (حداقل ۲ حرف برای جستجوی کل آرشیو تایپ کنید):',
+                'Accès rapides (tapez au moins 2 lettres) :',
+                'Featured shortcuts (type at least 2 characters to search the full archive):'
+              )}
             </div>
           )}
 
@@ -316,17 +321,17 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
             ))
           ) : loading ? (
             <div className="p-8 text-center text-sm text-[var(--foreground-muted)]">
-              {isFa ? 'در حال جستجو در آرشیو کامل...' : 'Recherche en cours...'}
+              {tx('در حال جستجو در آرشیو کامل...', 'Recherche en cours...', 'Searching complete archive...')}
             </div>
           ) : (
             <div className="p-8 text-center space-y-3 text-sm text-[var(--foreground-muted)]">
-              <p>{isFa ? 'موردی مطابق جستجوی شما یافت نشد.' : 'Aucun résultat trouvé.'}</p>
+              <p>{tx('موردی مطابق جستجوی شما یافت نشد.', 'Aucun résultat trouvé.', 'No matching entries found.')}</p>
               <Link
                 href={`/${locale}/articles?q=${encodeURIComponent(trimmedQuery)}`}
                 onClick={onClose}
                 className="inline-block px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)]"
               >
-                {isFa ? 'جستجو در آرشیو کامل مقالات ←' : 'Chercher dans tous les articles →'}
+                {tx('جستجو در آرشیو کامل مقالات ←', 'Chercher dans tous les articles →', 'Search full articles archive →')}
               </Link>
             </div>
           )}

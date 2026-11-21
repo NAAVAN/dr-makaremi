@@ -151,7 +151,7 @@ export function MuseumHeroSection({
                     Dr. Hassan Makaremi — clinical Lacanian psychoanalyst, painter, modern Persian calligrapher, and human rights defender — was born in Shiraz, Iran, in 1950 and has lived and worked in France since 1983.
                   </p>
                   <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
-                    Explore his four fields of inquiry: Art and Literature (calligraphy, painting, poetry, and Hafez), Iran and Human Rights, Strategic Modernization (Sorbonne), and Clinical Lacanian Psychoanalysis.
+                    Explore his four fields of enquiry: Art and Literature (calligraphy, painting, poetry, and Hafez), Iran and Human Rights, Strategic Modernisation (Sorbonne), and Clinical Lacanian Psychoanalysis.
                   </p>
                 </>
               )}

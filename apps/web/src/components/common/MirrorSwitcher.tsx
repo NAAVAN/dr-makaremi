@@ -14,6 +14,7 @@ interface MirrorSwitcherProps {
 export function MirrorSwitcher({ isOpen, onClose, locale }: MirrorSwitcherProps) {
   const [mirrors, setMirrors] = useState<MirrorChannel[]>(VERIFIED_MIRROR_CHANNELS);
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
 
   useEffect(() => {
     if (!isOpen) return;
@@ -50,17 +51,25 @@ export function MirrorSwitcher({ isOpen, onClose, locale }: MirrorSwitcherProps)
             </div>
             <div>
               <h3 id="mirror-modal-title" className="font-bold text-base md:text-lg">
-                {isFa ? 'مسیرهای دسترسی آزاد و آینه‌های ضدسانسور' : 'Miroirs et Canaux Anti-Censure'}
+                {isFa
+                  ? 'مسیرهای دسترسی آزاد و آینه‌های ضدسانسور'
+                  : isFr
+                    ? 'Miroirs et Canaux Anti-Censure'
+                    : 'Anti-Censorship Mirrors & Resilient Access'}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {isFa ? 'راه‌های جایگزین برای دسترسی بدون فیلترشکن از داخل ایران' : 'Accès résilient en cas de censure'}
+                {isFa
+                  ? 'راه‌های جایگزین برای دسترسی بدون فیلترشکن از داخل ایران'
+                  : isFr
+                    ? 'Accès résilient en cas de censure'
+                    : 'Alternative access routes in restricted network environments'}
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="بستن پنجره"
+            aria-label={isFa ? 'بستن پنجره' : isFr ? 'Fermer' : 'Close dialog'}
             className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X size={20} />
@@ -89,7 +98,7 @@ export function MirrorSwitcher({ isOpen, onClose, locale }: MirrorSwitcherProps)
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium transition-colors shrink-0 shadow-sm"
               >
-                <span>{isFa ? 'ورود' : 'Accéder'}</span>
+                <span>{isFa ? 'ورود' : isFr ? 'Accéder' : 'Open'}</span>
                 <ExternalLink size={13} />
               </a>
             </div>
@@ -99,12 +108,20 @@ export function MirrorSwitcher({ isOpen, onClose, locale }: MirrorSwitcherProps)
           <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs leading-relaxed space-y-2">
             <div className="flex items-center gap-2 font-bold text-amber-800 dark:text-amber-300">
               <ShieldCheck size={16} />
-              <span>{isFa ? 'راهکار شرایط قطعی کامل اینترنت' : 'Mode coupure totale d’Internet'}</span>
+              <span>
+                {isFa
+                  ? 'راهکار شرایط قطعی کامل اینترنت'
+                  : isFr
+                    ? 'Mode coupure totale d’Internet'
+                    : 'Total Internet Blackout Survival'}
+              </span>
             </div>
             <p>
               {isFa
                 ? 'در زمان قطع کامل دسترسی، دکمه «دانلود بسته آفلاین» در انتهای هر مقاله را بزنید. فایل دانلودشده با تمام استایل‌ها و فونت‌ها به صورت محلی باز شده و بدون نیاز به اینترنت قابل مطالعه و ارسال در پیام‌رسان‌هاست.'
-                : 'En cas de coupure du réseau, téléchargez les bundles hors-ligne disponibles sur chaque article pour une consultation locale complète.'}
+                : isFr
+                  ? 'En cas de coupure du réseau, téléchargez les bundles hors-ligne disponibles sur chaque article pour une consultation locale complète.'
+                  : 'During network blackouts, download the self-contained offline bundle on any article page to read and share it locally without internet access.'}
             </p>
           </div>
         </div>
@@ -114,9 +131,9 @@ export function MirrorSwitcher({ isOpen, onClose, locale }: MirrorSwitcherProps)
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-xs font-medium rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
+            className="px-4 py-2 text-xs font-medium rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
           >
-            {isFa ? 'بستن' : 'Fermer'}
+            {isFa ? 'بستن' : isFr ? 'Fermer' : 'Close'}
           </button>
         </div>
       </div>

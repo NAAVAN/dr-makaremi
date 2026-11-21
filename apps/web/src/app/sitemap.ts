@@ -63,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           languages: {
             'fa-IR': `${baseUrl}/fa${section.path}`,
             'fr-FR': `${baseUrl}/fr${frPath}`,
-            'en-US': `${baseUrl}/en${section.path}`,
+            'en-GB': `${baseUrl}/en${section.path}`,
             'x-default': `${baseUrl}/fa${section.path}`,
           },
         },
@@ -83,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           languages: {
             'fa-IR': `${baseUrl}/fa/books/${b.slug}`,
             'fr-FR': `${baseUrl}/fr/books/${b.slug}`,
-            'en-US': `${baseUrl}/en/books/${b.slug}`,
+            'en-GB': `${baseUrl}/en/books/${b.slug}`,
             'x-default': `${baseUrl}/fa/books/${b.slug}`,
           },
         },
@@ -114,7 +114,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           languages: {
             'fa-IR': `${baseUrl}/fa/${faPillar}/articles/${art.slug}`,
             'fr-FR': `${baseUrl}/fr/${frPillar}/articles/${art.slug}`,
-            'en-US': `${baseUrl}/en/${faPillar}/articles/${art.slug}`,
+            'en-GB': `${baseUrl}/en/${faPillar}/articles/${art.slug}`,
             'x-default': `${baseUrl}/fa/${faPillar}/articles/${art.slug}`,
           },
         },
@@ -139,7 +139,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           languages: {
             'fa-IR': `${baseUrl}/fa/${subPath}`,
             'fr-FR': `${baseUrl}/fr/${subPath}`,
-            'en-US': `${baseUrl}/en/${subPath}`,
+            'en-GB': `${baseUrl}/en/${subPath}`,
             'x-default': `${baseUrl}/fa/${subPath}`,
           },
         },
@@ -159,7 +159,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           languages: {
             'fa-IR': `${baseUrl}/fa/art/exhibitions/${ex.slug}`,
             'fr-FR': `${baseUrl}/fr/art/exhibitions/${ex.slug}`,
-            'en-US': `${baseUrl}/en/art/exhibitions/${ex.slug}`,
+            'en-GB': `${baseUrl}/en/art/exhibitions/${ex.slug}`,
             'x-default': `${baseUrl}/fa/art/exhibitions/${ex.slug}`,
           },
         },
@@ -179,7 +179,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           languages: {
             'fa-IR': `${baseUrl}/fa/poetry/poems/${p.slug}`,
             'fr-FR': `${baseUrl}/fr/poetry/poems/${p.slug}`,
-            'en-US': `${baseUrl}/en/poetry/poems/${p.slug}`,
+            'en-GB': `${baseUrl}/en/poetry/poems/${p.slug}`,
             'x-default': `${baseUrl}/fa/poetry/poems/${p.slug}`,
           },
         },
@@ -199,7 +199,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           languages: {
             'fa-IR': `${baseUrl}/fa/about/${pg.slug}`,
             'fr-FR': `${baseUrl}/fr/about/${pg.slug}`,
-            'en-US': `${baseUrl}/en/about/${pg.slug}`,
+            'en-GB': `${baseUrl}/en/about/${pg.slug}`,
             'x-default': `${baseUrl}/fa/about/${pg.slug}`,
           },
         },

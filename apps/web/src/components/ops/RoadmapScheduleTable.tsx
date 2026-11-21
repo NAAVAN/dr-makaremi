@@ -11,6 +11,7 @@ interface RoadmapScheduleTableProps {
 export function RoadmapScheduleTable({ locale }: RoadmapScheduleTableProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const roadmapMilestones = [
     {
@@ -60,7 +61,7 @@ export function RoadmapScheduleTable({ locale }: RoadmapScheduleTableProps) {
         ? 'نرمال‌ساز فنی فارسی، وکتورهای ۳۸۴ بعدی متراکم + BM25، ارزیابی RRF k=60 و سرور رسمی JSON-RPC 2.0 در /api/mcp'
         : isFr
         ? 'Normaliseur persan, vecteurs denses 384d + BM25, fusion RRF k=60 et serveur officiel JSON-RPC 2.0 à /api/mcp'
-        : 'Persian normalizer, 384d dense vectors + BM25, RRF k=60 fusion, and official JSON-RPC 2.0 server at /api/mcp',
+        : 'Persian normaliser, 384d dense vectors + BM25, RRF k=60 fusion, and official JSON-RPC 2.0 server at /api/mcp',
       status: 'completed',
     },
     {
@@ -77,7 +78,7 @@ export function RoadmapScheduleTable({ locale }: RoadmapScheduleTableProps) {
 
   return (
     <section
-      aria-label={isFa ? 'نقشه راه اجرایی ۱۲ هفته‌ای' : '12-Week Implementation Roadmap'}
+      aria-label={tx('نقشه راه اجرایی ۱۲ هفته‌ای', 'Feuille de route 12 semaines', '12-Week Implementation Roadmap')}
       className="bg-[var(--surface-overlay)] border border-[var(--border-subtle)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm"
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -85,43 +86,43 @@ export function RoadmapScheduleTable({ locale }: RoadmapScheduleTableProps) {
           <h2 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] flex items-center gap-2.5">
             <Calendar className="text-amber-500" size={24} />
             <span>
-              {isFa
-                ? 'نقشه راه اجرایی ۱۲ هفته‌ای پروژه (Implementation Roadmap)'
-                : isFr
-                ? 'Feuille de Route d’Exécution sur 12 Semaines'
-                : '12-Week Project Implementation Roadmap'}
+              {tx(
+                'نقشه راه اجرایی ۱۲ هفته‌ای پروژه (Implementation Roadmap)',
+                'Feuille de Route d’Exécution sur 12 Semaines',
+                '12-Week Project Implementation Roadmap'
+              )}
             </span>
           </h2>
           <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-1">
-            {isFa
-              ? 'برنامه زمان‌بندی مهندسی فازهای ۷گانه مطابق بخش ۷.۱ سند مرجع معماری با تحقق ۱۰۰٪ اهداف.'
-              : isFr
-              ? 'Calendrier d’ingénierie des 7 phases conforme à la section 7.1 du plan architectural.'
-              : 'Engineering timeline across all 7 phases with 100% completion rate.'}
+            {tx(
+              'برنامه زمان‌بندی مهندسی فازهای ۷گانه مطابق بخش ۷.۱ سند مرجع معماری با تحقق ۱۰۰٪ اهداف.',
+              'Calendrier d’ingénierie des 7 phases conforme à la section 7.1 du plan architectural.',
+              'Engineering timeline across all 7 phases with a 100% completion rate.'
+            )}
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-emerald-400 text-xs font-semibold">
           <CheckCircle2 size={16} />
-          <span>{isFa ? 'پیشرفت کلی: ۱۰۰٪ (تکمیل‌شده)' : 'Progression Globale: 100% (Terminé)'}</span>
+          <span>{tx('پیشرفت کلی: ۱۰۰٪ (تکمیل‌شده)', 'Progression Globale : 100% (Terminé)', 'Overall Progress: 100% (Completed)')}</span>
         </div>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-right text-xs sm:text-sm border-collapse">
+        <table className="w-full text-start text-xs sm:text-sm border-collapse">
           <thead>
             <tr className="border-b border-[var(--border-subtle)] text-[var(--foreground-muted)]">
               <th className="py-3 px-4 text-center font-bold w-28">
-                {isFa ? 'بازه زمانی' : 'Période'}
+                {tx('بازه زمانی', 'Période', 'Period')}
               </th>
               <th className="py-3 px-4 font-bold w-48">
-                {isFa ? 'فاز اجرایی' : 'Phase'}
+                {tx('فاز اجرایی', 'Phase', 'Phase')}
               </th>
               <th className="py-3 px-4 font-bold">
-                {isFa ? 'خروجی‌ها و دستاوردهای کلیدی' : 'Livrables Clés'}
+                {tx('خروجی‌ها و دستاوردهای کلیدی', 'Livrables Clés', 'Key Deliverables')}
               </th>
               <th className="py-3 px-4 text-center font-bold w-28">
-                {isFa ? 'وضعیت' : 'Statut'}
+                {tx('وضعیت', 'Statut', 'Status')}
               </th>
             </tr>
           </thead>

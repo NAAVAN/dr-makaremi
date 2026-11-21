@@ -23,56 +23,85 @@ interface SystemStatusDashboardProps {
 export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const phaseCards = [
     {
       phase: 1,
-      title: isFa ? 'فاز ۱: زیرساخت لبه و امنیت' : isFr ? 'Phase 1: Infrastructure Edge & Sécurité' : 'Phase 1: Edge Infra & Security',
+      title: tx('فاز ۱: زیرساخت لبه و امنیت', 'Phase 1: Infrastructure Edge & Sécurité', 'Phase 1: Edge Infra & Security'),
       tests: 39,
       status: 'passed',
-      desc: isFa ? 'ریدایرکت‌های ۳۰۱ سئو، ایزولاسیون دامنه‌ها و هدرهای امنیتی' : 'Redirections 301, isolation des domaines et en-têtes sécurisés',
+      desc: tx(
+        'ریدایرکت‌های ۳۰۱ سئو، ایزولاسیون دامنه‌ها و هدرهای امنیتی',
+        'Redirections 301, isolation des domaines et en-têtes sécurisés',
+        '301 SEO redirects, domain isolation, and hardened security headers'
+      ),
     },
     {
       phase: 2,
-      title: isFa ? 'فاز ۲: هسته فرانت‌اند و واژه‌نامه' : isFr ? 'Phase 2: Cœur Frontend & Glossaire' : 'Phase 2: Core Frontend & Glossary',
+      title: tx('فاز ۲: هسته فرانت‌اند و واژه‌نامه', 'Phase 2: Cœur Frontend & Glossaire', 'Phase 2: Core Frontend & Glossary'),
       tests: 51,
       status: 'passed',
-      desc: isFa ? 'کره سه‌بعدی تعاملی، تایپوگرافی ۳زبانه و دوقلوی مارک‌داون' : 'Globe 3D interactif, typographie trilingue et jumeau Markdown',
+      desc: tx(
+        'کره سه‌بعدی تعاملی، تایپوگرافی ۳زبانه و دوقلوی مارک‌داون',
+        'Globe 3D interactif, typographie trilingue et jumeau Markdown',
+        'Interactive 3D showcase, trilingual typography, and Markdown twins'
+      ),
     },
     {
       phase: 3,
-      title: isFa ? 'فاز ۳: رمزنگاری Ed25519 و بقای آفلاین' : isFr ? 'Phase 3: Cryptographie Ed25519 & Survie' : 'Phase 3: Ed25519 Crypto & Offline',
+      title: tx('فاز ۳: رمزنگاری Ed25519 و بقای آفلاین', 'Phase 3: Cryptographie Ed25519 & Survie', 'Phase 3: Ed25519 Crypto & Offline'),
       tests: 53,
       status: 'passed',
-      desc: isFa ? 'اسنپ‌شات‌های تغییرناپذیر، سلف‌هیلینگ و بسته‌های بقای آفلاین' : 'Instantanés immuables, auto-guérison et paquets hors-ligne',
+      desc: tx(
+        'اسنپ‌شات‌های تغییرناپذیر، سلف‌هیلینگ و بسته‌های بقای آفلاین',
+        'Instantanés immuables, auto-guérison et paquets hors-ligne',
+        'Immutable snapshots, self-healing mirrors, and offline survival packs'
+      ),
     },
     {
       phase: 4,
-      title: isFa ? 'فاز ۴: سئو معنایی و گراف دانش' : isFr ? 'Phase 4: SEO Sémantique & Knowledge Graph' : 'Phase 4: Semantic SEO & Graph',
+      title: tx('فاز ۴: سئو معنایی و گراف دانش', 'Phase 4: SEO Sémantique & Knowledge Graph', 'Phase 4: Semantic SEO & Graph'),
       tests: 84,
       status: 'passed',
-      desc: isFa ? 'متادیتای آکادمیک HighWire، گراف Schema.org و کشف هوش مصنوعی' : 'Métadonnées HighWire, graphe Schema.org et découverte IA',
+      desc: tx(
+        'متادیتای آکادمیک HighWire، گراف Schema.org و کشف هوش مصنوعی',
+        'Métadonnées HighWire, graphe Schema.org et découverte IA',
+        'HighWire academic metadata, Schema.org graph, and AI discovery'
+      ),
     },
     {
       phase: 5,
-      title: isFa ? 'فاز ۵: پایپ‌لاین ETL، سرچ هیبریدی و MCP' : isFr ? 'Phase 5: Pipeline ETL, Recherche & MCP' : 'Phase 5: ETL, Hybrid RAG & MCP',
+      title: tx('فاز ۵: پایپ‌لاین ETL، سرچ هیبریدی و MCP', 'Phase 5: Pipeline ETL, Recherche & MCP', 'Phase 5: ETL, Hybrid RAG & MCP'),
       tests: 124,
       status: 'passed',
-      desc: isFa ? 'نرمال‌ساز فارسی، جستجوی برداری ۳۸۴ بعدی و سرور رسمی MCP' : 'Normaliseur persan, recherche dense 384d et serveur MCP officiel',
+      desc: tx(
+        'نرمال‌ساز فارسی، جستجوی برداری ۳۸۴ بعدی و سرور رسمی MCP',
+        'Normaliseur persan, recherche dense 384d et serveur MCP officiel',
+        'Persian normaliser, 384d dense vector retrieval, and official MCP server'
+      ),
     },
     {
       phase: 6,
-      title: isFa ? 'فاز ۶: ایجنت‌های صوتی شخصی و انتشار ۵کاناله' : isFr ? 'Phase 6: Agents Vocaux & Distribution 5-Canaux' : 'Phase 6: Voice Agents & 5-Channel',
+      title: tx('فاز ۶: ایجنت‌های صوتی شخصی و انتشار ۵کاناله', 'Phase 6: Agents Vocaux & Distribution 5-Canaux', 'Phase 6: Voice Agents & 5-Channel'),
       tests: 107,
       status: 'passed',
-      desc: isFa ? 'بات تلگرام/واتس‌اپ، واژه‌نامه لکانی و انتشار همزمان' : 'Bot Telegram/WhatsApp, glossaire lacanien et publication 5 canaux',
+      desc: tx(
+        'بات تلگرام/واتس‌اپ، واژه‌نامه لکانی و انتشار همزمان',
+        'Bot Telegram/WhatsApp, glossaire lacanien et publication 5 canaux',
+        'Telegram/WhatsApp voice bots, Lacanian glossary, and 5-channel distribution'
+      ),
     },
     {
       phase: 7,
-      title: isFa ? 'فاز ۷: استقرار ابری و ممیزی نهایی پروداکشن' : isFr ? 'Phase 7: Déploiement Cloud & Audit Final' : 'Phase 7: Production Launch & QA',
+      title: tx('فاز ۷: استقرار ابری و ممیزی نهایی پروداکشن', 'Phase 7: Déploiement Cloud & Audit Final', 'Phase 7: Production Launch & QA'),
       tests: 65,
       status: 'passed',
-      desc: isFa ? 'بکاپ AES-256-GCM، تله‌متری سلامت و گیت ۶گانه Pre-Launch' : 'Sauvegarde AES-256-GCM, télémétrie de santé et porte QA 6-points',
+      desc: tx(
+        'بکاپ AES-256-GCM، تله‌متری سلامت و گیت ۶گانه Pre-Launch',
+        'Sauvegarde AES-256-GCM, télémétrie de santé et porte QA 6-points',
+        'AES-256-GCM encrypted backup, health telemetry, and 6-point Pre-Launch QA gate'
+      ),
     },
   ];
 
@@ -81,44 +110,68 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
   const qaGates = [
     {
       id: 'g1',
-      title: isFa ? 'گیت ۱: یکپارچگی تک‌گامی دامنه‌ها' : isFr ? 'Porte 1: Canonicalisation Domaine' : 'Gate 1: Single-Hop Domain Canonicalization',
+      title: tx('گیت ۱: یکپارچگی تک‌گامی دامنه‌ها', 'Porte 1: Canonicalisation Domaine', 'Gate 1: Single-Hop Domain Canonicalisation'),
       status: '100% Passed',
-      desc: isFa ? 'انتقال ۳۰۱ یک‌گامی دامنه‌های makaremi.net و com به https://makaremi.com' : '301 single-hop redirect from all legacy domains to https://makaremi.com',
+      desc: tx(
+        'انتقال ۳۰۱ یک‌گامی دامنه‌های makaremi.net و com به https://makaremi.com',
+        'Redirection 301 directe des domaines historiques vers https://makaremi.com',
+        '301 single-hop redirect from all legacy domains to https://makaremi.com'
+      ),
       icon: Radio,
     },
     {
       id: 'g2',
-      title: isFa ? 'گیت ۲: انطباق دقیق تک-<h1> در صفحات' : isFr ? 'Porte 2: Conformité Unique <h1>' : 'Gate 2: Strict Single-<h1> Semantic Architecture',
+      title: tx('گیت ۲: انطباق دقیق تک-<h1> در صفحات', 'Porte 2: Conformité Unique <h1>', 'Gate 2: Strict Single-<h1> Semantic Architecture'),
       status: '100% Passed',
-      desc: isFa ? 'تضمین وجود دقیقاً یک تگ <h1> در هر صفحه و حفظ سلسله‌مراتب تیترها' : 'Strict enforcement of exactly one <h1> per template; no duplicate h1 in widgets',
+      desc: tx(
+        'تضمین وجود دقیقاً یک تگ <h1> در هر صفحه و حفظ سلسله‌مراتب تیترها',
+        'Garantie stricte d’un seul <h1> par modèle sans doublon dans les widgets',
+        'Strict enforcement of exactly one <h1> per template; no duplicate h1 in widgets'
+      ),
       icon: FileCheck,
     },
     {
       id: 'g3',
-      title: isFa ? 'گیت ۳: کشف هوش مصنوعی و دوقلوی مارک‌داون' : isFr ? 'Porte 3: Découverte GEO & /llms.txt' : 'Gate 3: GEO /llms.txt & Markdown Twins',
+      title: tx('گیت ۳: کشف هوش مصنوعی و دوقلوی مارک‌داون', 'Porte 3: Découverte GEO & /llms.txt', 'Gate 3: GEO /llms.txt & Markdown Twins'),
       status: '100% Passed',
-      desc: isFa ? 'هدرهای استاندارد، ساختار خلاصه‌بندی شده و اتصال تمام دوقلوهای .md' : 'text/plain; charset=utf-8 headers, structured headings, working .md endpoints',
+      desc: tx(
+        'هدرهای استاندارد، ساختار خلاصه‌بندی شده و اتصال تمام دوقلوهای .md',
+        'En-têtes text/plain; charset=utf-8, titres structurés et terminaux .md actifs',
+        'text/plain; charset=utf-8 headers, structured headings, working .md endpoints'
+      ),
       icon: Cpu,
     },
     {
       id: 'g4',
-      title: isFa ? 'گیت ۴: امنیت Zero-Trust و پنهان‌سازی پورت‌ها' : isFr ? 'Porte 4: Sécurité Zero-Trust & Ports' : 'Gate 4: Zero-Trust Security & Port Cloaking',
+      title: tx('گیت ۴: امنیت Zero-Trust و پنهان‌سازی پورت‌ها', 'Porte 4: Sécurité Zero-Trust & Ports', 'Gate 4: Zero-Trust Security & Port Cloaking'),
       status: '100% Passed',
-      desc: isFa ? 'مسدود بودن پورت‌های ۲۲، ۸۰، ۴۴۳، ۵۴۳۲، ۶۳۷۹، ۸۰۵۵، ۸۱۸۲ و عبور از تونل کلادفلیر' : 'All public inbound ports cloaked; routed exclusively via Cloudflare Tunnel',
+      desc: tx(
+        'مسدود بودن پورت‌های ۲۲، ۸۰، ۴۴۳، ۵۴۳۲، ۶۳۷۹، ۸۰۵۵، ۸۱۸۲ و عبور از تونل کلادفلیر',
+        'Tous les ports entrants masqués ; routage exclusif par Cloudflare Tunnel',
+        'All public inbound ports cloaked; routed exclusively via Cloudflare Tunnel'
+      ),
       icon: Lock,
     },
     {
       id: 'g5',
-      title: isFa ? 'گیت ۵: سرعت در ایران و مقاومت در برابر فیلترینگ' : isFr ? 'Porte 5: Résistance Censure & Vitesse' : 'Gate 5: Censorship Resistance & Iran CWV',
+      title: tx('گیت ۵: سرعت در ایران و مقاومت در برابر فیلترینگ', 'Porte 5: Résistance Censure & Vitesse', 'Gate 5: Censorship Resistance & Iran CWV'),
       status: '100% Passed',
-      desc: isFa ? 'لود زیر ۲ ثانیه، فونت‌های محلی، سرویس‌ورکر PWA و قالب‌های تلگرام IV 2.1' : 'LCP < 2s, local fonts, offline PWA survival pack, Telegram Instant View 2.1',
+      desc: tx(
+        'لود زیر ۲ ثانیه، فونت‌های محلی، سرویس‌ورکر PWA و قالب‌های تلگرام IV 2.1',
+        'LCP < 2s, polices locales, pack de survie hors-ligne PWA, Telegram Instant View 2.1',
+        'LCP < 2s, local fonts, offline PWA survival pack, Telegram Instant View 2.1'
+      ),
       icon: Activity,
     },
     {
       id: 'g6',
-      title: isFa ? 'گیت ۶: انطباق ۱۰۰٪ اصطلاحات لکانی در ایجنت و RAG' : isFr ? 'Porte 6: Terminologie Lacanienne' : 'Gate 6: 100% Lacanian Controlled Vocabulary',
+      title: tx('گیت ۶: انطباق ۱۰۰٪ اصطلاحات لکانی در ایجنت و RAG', 'Porte 6: Terminologie Lacanienne', 'Gate 6: 100% Lacanian Controlled Vocabulary'),
       status: '100% Passed',
-      desc: isFa ? 'پایش اصطلاحات تخصصی («دگرشنیدن»، «نام‌پدر»، «روان‌پریشی»، «حالت مرزی»)' : 'Guaranteed precision for psychoanalytic terms in Persian, French, and English',
+      desc: tx(
+        'پایش اصطلاحات تخصصی («دگرشنیدن»، «نام‌پدر»، «روان‌پریشی»، «حالت مرزی»)',
+        'Précision garantie des concepts psychanalytiques en persan, français et anglais',
+        'Guaranteed precision for psychoanalytic terms in Persian, French, and British English'
+      ),
       icon: ShieldCheck,
     },
   ];
@@ -169,10 +222,10 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
             <div className="h-8 w-px bg-emerald-500/30" />
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-black text-amber-300 font-mono">
-                ۱۰۰٪
+                {isFa ? '۱۰۰٪' : '100%'}
               </div>
               <div className="text-[11px] text-amber-200/70 font-medium">
-                {isFa ? 'امتیاز ممیزی' : isFr ? 'Score QA' : 'QA Score'}
+                {tx('امتیاز ممیزی', 'Score QA', 'QA Score')}
               </div>
             </div>
           </div>
@@ -180,12 +233,12 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
       </div>
 
       {/* 7 Phases Card Grid */}
-      <section aria-label={isFa ? 'کارنامه ۷ فاز معماری' : '7 Architectural Phases Scorecard'} className="space-y-4">
+      <section aria-label={tx('کارنامه ۷ فاز معماری', 'Bilan des 7 phases', '7 Architectural Phases Scorecard')} className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg sm:text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
             <Layers className="text-amber-500" size={20} />
             <span>
-              {isFa ? 'کارنامه تحویل ۷ فاز معماری سامانه' : isFr ? 'Bilan des 7 Phases de l’Architecture' : '7 Architectural Phases Scorecard'}
+              {tx('کارنامه تحویل ۷ فاز معماری سامانه', 'Bilan des 7 Phases de l’Architecture', '7 Architectural Phases Scorecard')}
             </span>
           </h2>
           <span className="text-xs font-mono text-[var(--foreground-muted)] bg-[var(--surface-sunken)] px-3 py-1 rounded-full border border-[var(--border-subtle)]">
@@ -218,9 +271,9 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
               </div>
 
               <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--foreground-muted)]">
-                <span>{isFa ? 'وضعیت' : 'Statut'}</span>
+                <span>{tx('وضعیت', 'Statut', 'Status')}</span>
                 <span className="text-emerald-500 font-medium font-mono">
-                  {isFa ? 'تأیید نهایی (Pass)' : 'Validé 100%'}
+                  {tx('تأیید نهایی (Pass)', 'Validé 100%', 'Certified 100%')}
                 </span>
               </div>
             </div>
@@ -229,11 +282,11 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
       </section>
 
       {/* 6-Point Pre-Launch QA Gate Cards */}
-      <section aria-label={isFa ? 'گیت‌های ۶گانه کنترل کیفیت' : '6 Pre-Launch QA Gates'} className="space-y-4">
+      <section aria-label={tx('گیت‌های ۶گانه کنترل کیفیت', 'Les 6 portes QA', '6 Pre-Launch QA Gates')} className="space-y-4">
         <h2 className="text-lg sm:text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
           <CheckCircle2 className="text-emerald-500" size={20} />
           <span>
-            {isFa ? 'گیت‌های ۶گانه کنترل کیفیت پیش از راه‌اندازی (Pre-Launch QA Gates)' : isFr ? 'Les 6 Portes QA de Pré-Lancement' : '6 Pre-Launch QA Gates'}
+            {tx('گیت‌های ۶گانه کنترل کیفیت پیش از راه‌اندازی (Pre-Launch QA Gates)', 'Les 6 Portes QA de Pré-Lancement', '6 Pre-Launch QA Gates')}
           </span>
         </h2>
 
@@ -271,62 +324,62 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
 
       {/* Cryptography & Infrastructure Summary */}
       <section
-        aria-label={isFa ? 'مشخصات رمزنگاری و پایداری' : 'Cryptographic and System Resilience Specs'}
+        aria-label={tx('مشخصات رمزنگاری و پایداری', 'Spécifications cryptographiques', 'Cryptographic and System Resilience Specs')}
         className="bg-[var(--surface-overlay)] border border-[var(--border-subtle)] rounded-xl p-6 space-y-4"
       >
         <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
           <KeyRound className="text-amber-500" size={18} />
           <span>
-            {isFa ? 'مشخصات رمزنگاری و پایداری سامانه' : isFr ? 'Spécifications Cryptographiques & Résilience' : 'Cryptographic & System Resilience Specs'}
+            {tx('مشخصات رمزنگاری و پایداری سامانه', 'Spécifications Cryptographiques & Résilience', 'Cryptographic & System Resilience Specs')}
           </span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
             <div className="text-[var(--foreground-muted)] font-medium mb-1">
-              {isFa ? 'امضای دیجیتال مقالات' : 'Signature Numérique'}
+              {tx('امضای دیجیتال مقالات', 'Signature Numérique', 'Digital Article Signatures')}
             </div>
             <div className="font-mono font-bold text-[var(--foreground)] text-sm">
               Ed25519 (RFC 8032)
             </div>
             <div className="text-[10px] text-emerald-500 mt-1">
-              {isFa ? 'تأییدیه کلید عمومی رسمی' : 'Clé publique vérifiée'}
+              {tx('تأییدیه کلید عمومی رسمی', 'Clé publique vérifiée', 'Verified official public key')}
             </div>
           </div>
 
           <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
             <div className="text-[var(--foreground-muted)] font-medium mb-1">
-              {isFa ? 'رمزنگاری بکاپ خارج از سرور' : 'Chiffrement Sauvegarde'}
+              {tx('رمزنگاری بکاپ خارج از سرور', 'Chiffrement Sauvegarde', 'Offsite Backup Encryption')}
             </div>
             <div className="font-mono font-bold text-[var(--foreground)] text-sm">
               AES-256-GCM + AuthTag
             </div>
             <div className="text-[10px] text-emerald-500 mt-1">
-              {isFa ? 'تگ احراز اصالت ۱۶ بایتی' : 'AuthTag 16 octets'}
+              {tx('تگ احراز اصالت ۱۶ بایتی', 'AuthTag 16 octets', '16-byte authentication tag')}
             </div>
           </div>
 
           <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
             <div className="text-[var(--foreground-muted)] font-medium mb-1">
-              {isFa ? 'جستجوی هیبریدی RAG' : 'Recherche Hybride RAG'}
+              {tx('جستجوی هیبریدی RAG', 'Recherche Hybride RAG', 'Hybrid RAG Retrieval')}
             </div>
             <div className="font-mono font-bold text-[var(--foreground)] text-sm">
               BM25 + 384d Dense Vector
             </div>
             <div className="text-[10px] text-emerald-500 mt-1">
-              {isFa ? 'ادغام رتبه‌بندی RRF k=60' : 'Fusion RRF k=60'}
+              {tx('ادغام رتبه‌بندی RRF k=60', 'Fusion RRF k=60', 'RRF k=60 rank fusion')}
             </div>
           </div>
 
           <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
             <div className="text-[var(--foreground-muted)] font-medium mb-1">
-              {isFa ? 'درگاه پروتکل زمینه مدل' : 'Protocole de Contexte (MCP)'}
+              {tx('درگاه پروتکل زمینه مدل', 'Protocole de Contexte (MCP)', 'Model Context Protocol (MCP)')}
             </div>
             <div className="font-mono font-bold text-[var(--foreground)] text-sm">
               JSON-RPC 2.0 (/api/mcp)
             </div>
             <div className="text-[10px] text-emerald-500 mt-1">
-              {isFa ? 'آماده اتصال کلاود و کورسر' : 'Compatible Claude & Cursor'}
+              {tx('آماده اتصال کلاود و کورسر', 'Compatible Claude & Cursor', 'Claude & Cursor compatible')}
             </div>
           </div>
         </div>

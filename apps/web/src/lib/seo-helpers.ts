@@ -9,7 +9,7 @@ const DEFAULT_OG_IMAGE = `${BASE_URL}/opengraph-image`;
 const OG_LOCALE_MAP: Record<Locale, string> = {
   fa: 'fa_IR',
   fr: 'fr_FR',
-  en: 'en_US',
+  en: 'en_GB',
 };
 
 export interface TrilingualMetadataOptions {
@@ -71,7 +71,7 @@ export function buildTrilingualMetadata(opts: TrilingualMetadataOptions): Metada
       languages: {
         'fa-IR': faUrl,
         'fr-FR': frUrl,
-        'en-US': enUrl,
+        'en-GB': enUrl,
         'x-default': faUrl,
       },
       ...(includeMarkdownTwin

@@ -145,8 +145,16 @@ export function GlossaryExplorer({ terms, locale }: GlossaryExplorerProps) {
                   <BookOpen size={13} className="text-[var(--primary)]" />
                   <span>
                     {term.pillar === 'psychoanalysis'
-                      ? isFa ? 'ارجاع: سمینار ۳ لکان و دگرشنیدن' : 'Réf : Séminaire III de Lacan'
-                      : isFa ? 'ارجاع: نگاهی راهبردی به دوران گذار' : 'Réf : Regard stratégique'}
+                      ? isFa
+                        ? 'ارجاع: سمینار ۳ لکان و دگرشنیدن'
+                        : isFr
+                          ? 'Réf : Séminaire III de Lacan'
+                          : 'Ref: Lacan Seminar III & Listening Differently'
+                      : isFa
+                        ? 'ارجاع: نگاهی راهبردی به دوران گذار'
+                        : isFr
+                          ? 'Réf : Regard stratégique'
+                          : 'Ref: Strategic Look at the Transition Period'}
                   </span>
                 </span>
 
@@ -154,7 +162,13 @@ export function GlossaryExplorer({ terms, locale }: GlossaryExplorerProps) {
                   href={`/${locale}/${term.pillar === 'psychoanalysis' ? (locale === 'fr' ? 'psychanalyse' : 'psychoanalysis') : 'strategy'}/articles`}
                   className="inline-flex items-center gap-1 text-[var(--primary)] hover:underline font-medium"
                 >
-                  <span>{isFa ? 'مطالعه مقالات مرتبط' : 'Voir les articles'}</span>
+                  <span>
+                    {isFa
+                      ? 'مطالعه مقالات مرتبط'
+                      : isFr
+                        ? 'Voir les articles'
+                        : 'Read related articles'}
+                  </span>
                   <ExternalLink size={12} />
                 </Link>
               </div>
@@ -165,7 +179,13 @@ export function GlossaryExplorer({ terms, locale }: GlossaryExplorerProps) {
 
       {filteredTerms.length === 0 && (
         <div className="text-center py-12 text-[var(--foreground-muted)]">
-          <p>{isFa ? 'مفهومی منطبق با جستجوی شما یافت نشد.' : 'Aucun terme ne correspond à votre recherche.'}</p>
+          <p>
+            {isFa
+              ? 'مفهومی منطبق با جستجوی شما یافت نشد.'
+              : isFr
+                ? 'Aucun terme ne correspond à votre recherche.'
+                : 'No glossary term matched your search.'}
+          </p>
         </div>
       )}
     </div>

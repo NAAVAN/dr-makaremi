@@ -48,6 +48,7 @@ export default async function MediaCatalogPage({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const rawVideos = await getVideoSpeeches(locale);
   const videos = rawVideos.map((v) => ({
@@ -73,35 +74,37 @@ export default async function MediaCatalogPage({
       <header className="space-y-4 border-b border-[var(--border-subtle)] pb-6">
         <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--color-strategy)] font-bold">
           <Video size={16} />
-          <span>{isFa ? 'آرشیو فیلم‌ها، مجموعه‌های تلویزیونی و کنفرانس‌ها' : 'Médias & Conférences'}</span>
+          <span>{tx('آرشیو فیلم‌ها، مجموعه‌های تلویزیونی و کنفرانس‌ها', 'Médias & Conférences', 'Video Lectures, Broadcasts & Conferences')}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
-          {isFa
-            ? 'مرکز چندرسانه‌ای، سخنرانی‌ها و پادکست‌های دکتر حسن مکارمی'
-            : isFr
-              ? 'Archives Multimédias & Conférences'
-              : 'Multimedia Hub, Speeches & Podcasts'}
+          {tx(
+            'مرکز چندرسانه‌ای، سخنرانی‌ها و پادکست‌های دکتر حسن مکارمی',
+            'Archives Multimédias & Conférences',
+            'Multimedia Hub, Speeches & Podcasts'
+          )}
         </h1>
         <p className="text-sm text-[var(--foreground-muted)] max-w-3xl leading-relaxed">
-          {isFa
-            ? `آرشیو کامل ${videos.length} برنامه تلویزیونی، سخنرانی و مستند شامل مجموعه‌های «در روان‌‌پژوهی»، «نگاه روانکاو»، «صدای سخن عشق (حافظ)»، جشنواره یونسکو ۲۰۰۹ و مستند ۶۰ سال زندگی با پخش‌کننده مقاوم در برابر فیلترینگ.`
-            : `Archive complète de ${videos.length} émissions éducatives, conférences académiques et documentaires résilients.`}
+          {tx(
+            `آرشیو کامل ${videos.length} برنامه تلویزیونی، سخنرانی و مستند شامل مجموعه‌های «در روان‌‌پژوهی»، «نگاه روانکاو»، «صدای سخن عشق (حافظ)»، جشنواره یونسکو ۲۰۰۹ و مستند ۶۰ سال زندگی با پخش‌کننده مقاوم در برابر فیلترینگ.`,
+            `Archive complète de ${videos.length} émissions éducatives, conférences académiques et documentaires résilients.`,
+            `Complete resilient archive of ${videos.length} educational broadcasts, university conferences, Hafez seminars, UNESCO lectures, and biographical documentaries.`
+          )}
         </p>
       </header>
 
       {/* SECTION 1: MAJOR VIDEO & TV SERIES (Live Clickable Series Filters!) */}
-      <section aria-label="مجموعه‌های بزرگ ویدیویی" className="space-y-6">
+      <section aria-label={tx('مجموعه‌های بزرگ ویدیویی', 'Grandes séries audiovisuelles', 'Major Video Series')} className="space-y-6">
         <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
           <div className="inline-flex items-center gap-1.5 text-xs font-mono text-amber-600 font-bold">
             <Film size={15} />
-            <span>{isFa ? 'مجموعه‌های چندقسمتی ویدیویی (کلیک جهت فیلتر قسمت‌ها)' : 'Séries Audiovisuelles'}</span>
+            <span>{tx('مجموعه‌های چندقسمتی ویدیویی (کلیک جهت فیلتر قسمت‌ها)', 'Séries Audiovisuelles', 'Multi-Part Broadcast Series (Click to Filter)')}</span>
           </div>
           <h2 className="text-2xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'مجموعه‌های تلویزیونی، سمینارها و مستندهای موضوعی'
-              : isFr
-                ? 'Grandes Séries Télévisées et Documentaires Thématiques'
-                : 'Major Broadcast Series & Thematic Documentaries'}
+            {tx(
+              'مجموعه‌های تلویزیونی، سمینارها و مستندهای موضوعی',
+              'Grandes Séries Télévisées et Documentaires Thématiques',
+              'Major Broadcast Series & Thematic Documentaries'
+            )}
           </h2>
         </div>
 
@@ -117,7 +120,7 @@ export default async function MediaCatalogPage({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 font-bold font-mono tabular-nums shrink-0">
-                      {realCount} {isFa ? 'ویدیو' : 'vidéos'}
+                      {realCount} {tx('ویدیو', 'vidéos', 'videos')}
                     </span>
                     <span className="text-[var(--foreground-muted)] font-medium truncate">
                       {series.broadcaster[locale]}
@@ -144,9 +147,11 @@ export default async function MediaCatalogPage({
 
                 <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-bold text-[var(--primary)]">
                   <span>
-                    {isFa
-                      ? `مشاهده ${realCount} ویدیوی این مجموعه`
-                      : `Voir les ${realCount} vidéos de cette série`}
+                    {tx(
+                      `مشاهده ${realCount} ویدیوی این مجموعه`,
+                      `Voir les ${realCount} vidéos de cette série`,
+                      `View all ${realCount} videos in this series`
+                    )}
                   </span>
                   {isFa ? <ArrowLeft size={14} /> : <ArrowRight size={14} />}
                 </div>
@@ -157,11 +162,13 @@ export default async function MediaCatalogPage({
       </section>
 
       {/* SECTION 2: COMPLETE ARCHIVE OF ALL 261 MIGRATED VIDEOS & SPEECHES */}
-      <section id="videos-archive" aria-label="آرشیو کامل فیلم‌ها و سخنرانی‌ها" className="space-y-6 scroll-mt-28">
+      <section id="videos-archive" aria-label={tx('آرشیو کامل فیلم‌ها و سخنرانی‌ها', 'Archive complète des vidéos', 'Complete Video Archive')} className="space-y-6 scroll-mt-28">
         <h2 className="text-2xl font-black text-[var(--foreground)] border-b border-[var(--border-subtle)] pb-3">
-          {isFa
-            ? `آرشیو کامل فیلم‌ها، برنامه‌ها و سخنرانی‌ها (${videos.length} ویدیو)`
-            : `Archive Complète des Vidéos & Conférences (${videos.length})`}
+          {tx(
+            `آرشیو کامل فیلم‌ها، برنامه‌ها و سخنرانی‌ها (${videos.length} ویدیو)`,
+            `Archive Complète des Vidéos & Conférences (${videos.length})`,
+            `Complete Archive of Broadcasts, Films & Speeches (${videos.length})`
+          )}
         </h2>
 
         <PaginatedVideosGrid videos={videos} locale={locale} />

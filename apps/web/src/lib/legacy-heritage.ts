@@ -86,7 +86,7 @@ export const ACADEMIC_INSTITUTIONS: AcademicInstitution[] = [
     role: {
       fa: 'دکتری مهندسی و مدرنیزاسیون سیستم‌ها',
       fr: 'Doctorat & Recherche en modernisation des organisations',
-      en: 'Doctorate & Organizational Modernization Research',
+      en: 'Doctorate & Organisational Modernisation Research',
     },
     field: {
       fa: 'مهندسی سیستم‌ها و مدیریت استراتژیک',

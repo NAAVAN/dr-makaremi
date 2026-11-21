@@ -7,6 +7,8 @@ import { getArchivePages, getArchivePageBySlug } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { renderSafeMarkdown } from '@/lib/markdown';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
+import { resolveWorkTranslation } from '@/lib/work-language';
 
 export async function generateStaticParams() {
   const pages = await getArchivePages('fa');
@@ -55,9 +57,14 @@ export default async function ArchiveReferencePageDetail({
   if (!page) notFound();
 
   const isFa = locale === 'fa';
-  const trans =
-    page.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-    page.translations?.[0];
+  const isFr = locale === 'fr';
+  const resolved = resolveWorkTranslation({
+    collection: 'pages',
+    slug: page.slug,
+    translations: page.translations,
+    siteLocale: locale,
+  });
+  const trans = resolved.originalRecord || page.translations?.[0];
 
   return (
     <article className="max-w-4xl mx-auto space-y-10">
@@ -68,13 +75,22 @@ export default async function ArchiveReferencePageDetail({
         title="Markdown Twin"
       />
 
-      <nav aria-label="راهنمای مسیر" className="flex items-center justify-between text-xs text-[var(--foreground-muted)]">
+      <nav
+        aria-label={isFa ? 'راهنمای مسیر' : isFr ? 'Fil d’Ariane' : 'Breadcrumb'}
+        className="flex items-center justify-between text-xs text-[var(--foreground-muted)]"
+      >
         <Link
           href={`/${locale}/about`}
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به درباره دکتر مکارمی و اسناد' : 'Retour à À Propos'}</span>
+          <span>
+            {isFa
+              ? 'بازگشت به درباره دکتر مکارمی و اسناد'
+              : isFr
+                ? 'Retour à À Propos'
+                : 'Back to About & Archives'}
+          </span>
         </Link>
 
         <Link
@@ -93,19 +109,36 @@ export default async function ArchiveReferencePageDetail({
           <span>{page.group}</span>
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
           {trans?.title || page.slug}
         </h1>
       </header>
 
-      <section aria-label="متن سند آرشیوی" className="text-base sm:text-lg leading-loose text-[var(--foreground)] font-serif space-y-5">
-        {renderSafeMarkdown(trans?.body_markdown || '')}
-      </section>
+      <BilingualWorkReader
+        originalLang={resolved.originalLang}
+        siteLocale={locale}
+        translated={resolved.translatedRecord}
+        originalContent={
+          <section
+            aria-label={isFa ? 'متن سند آرشیوی' : isFr ? 'Document d’archive' : 'Archival Document'}
+            className="text-base sm:text-lg leading-loose text-[var(--foreground)] font-serif space-y-5"
+          >
+            {renderSafeMarkdown(trans?.body_markdown || '')}
+          </section>
+        }
+      />
 
       {page.pdf_urls && page.pdf_urls.length > 0 && (
-        <section aria-label="اسناد PDF پیوست" className="p-6 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-3">
+        <section
+          aria-label={isFa ? 'اسناد PDF پیوست' : isFr ? 'Documents PDF associés' : 'Attached PDF Documents'}
+          className="p-6 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-3"
+        >
           <h2 className="text-sm font-bold text-[var(--foreground)]">
-            {isFa ? 'فایل‌های PDF پیوست این صفحه:' : 'Documents PDF associés :'}
+            {isFa
+              ? 'فایل‌های PDF پیوست این صفحه:'
+              : isFr
+                ? 'Documents PDF associés :'
+                : 'Attached PDF Documents:'}
           </h2>
           <div className="flex flex-wrap gap-2">
             {page.pdf_urls.map((pdfUrl, i) => (
@@ -125,9 +158,12 @@ export default async function ArchiveReferencePageDetail({
       )}
 
       {page.gallery_images && page.gallery_images.length > 0 && (
-        <section aria-label="تصاویر آرشیوی پیوست" className="space-y-4">
+        <section
+          aria-label={isFa ? 'تصاویر آرشیوی پیوست' : isFr ? 'Images d’archive' : 'Archival Photographs'}
+          className="space-y-4"
+        >
           <h2 className="text-lg font-bold text-[var(--foreground)]">
-            {isFa ? 'تصاویر آرشیوی پیوست' : 'Images d’archive'}
+            {isFa ? 'تصاویر آرشیوی پیوست' : isFr ? 'Images d’archive' : 'Archival Photographs'}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {page.gallery_images.map((img, i) => (

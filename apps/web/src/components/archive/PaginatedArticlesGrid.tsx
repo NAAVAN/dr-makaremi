@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Search, FileText, ChevronLeft, ChevronRight, FileDown } from 'lucide-react';
 import type { Article, ContentPillar, Locale } from '@makaremi/shared';
+import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
+import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
 
 interface PaginatedArticlesGridProps {
   articles: Article[];
@@ -30,6 +32,7 @@ function getPillarRouteSegment(pillar: ContentPillar, locale: Locale): string {
 function getPillarDisplayLabel(pillar: ContentPillar | 'all', locale: Locale): string {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   switch (pillar) {
     case 'all':
       return isFa ? 'همه ستون‌ها' : isFr ? 'Tous les domaines' : 'All Pillars';
@@ -54,41 +57,71 @@ function normalizePillarParam(raw: string | null): ContentPillar | 'all' {
   return 'all';
 }
 
-function PaginatedArticlesGridInner({
+function ArticlesUrlSync({
+  onSync,
+}: {
+  onSync: (params: {
+    pillar: ContentPillar | 'all';
+    category: string;
+    query: string | null;
+    lang: 'all' | 'fa' | 'fr' | 'en' | null;
+  }) => void;
+}) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const pParam = searchParams.get('pillar');
+    const cParam = searchParams.get('category');
+    const qParam = searchParams.get('q');
+    const lParam = searchParams.get('lang');
+    onSync({
+      pillar: pParam ? normalizePillarParam(pParam) : 'all',
+      category: cParam || 'all',
+      query: qParam,
+      lang:
+        lParam === 'fa' || lParam === 'fr' || lParam === 'en' || lParam === 'all'
+          ? lParam
+          : null,
+    });
+  }, [searchParams, onSync]);
+  return null;
+}
+
+export function PaginatedArticlesGrid({
   articles,
   locale,
   pillarSlug,
 }: PaginatedArticlesGridProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const isUnifiedMode = pillarSlug === 'all';
-  const searchParams = useSearchParams();
 
   const [query, setQuery] = useState('');
   const [langFilter, setLangFilter] = useState<'all' | 'fa' | 'fr' | 'en'>('all');
   const [pillarFilter, setPillarFilter] = useState<'all' | ContentPillar>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [page, setPage] = useState(1);
+  const [translatedIds, setTranslatedIds] = useState<Record<string, boolean>>({});
 
-  // Sync URL query params (?pillar=, ?category=, ?q=, ?lang=)
-  useEffect(() => {
-    const pParam = searchParams.get('pillar');
-    const cParam = searchParams.get('category');
-    const qParam = searchParams.get('q');
-    const lParam = searchParams.get('lang');
+  const toggleCardTranslation = (id: string) => {
+    setTranslatedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-    if (pParam) setPillarFilter(normalizePillarParam(pParam));
-    else setPillarFilter('all');
-
-    if (cParam) setCategoryFilter(cParam);
-    else setCategoryFilter('all');
-
-    if (qParam) setQuery(qParam);
-    if (lParam === 'fa' || lParam === 'fr' || lParam === 'en' || lParam === 'all') {
-      setLangFilter(lParam);
-    }
-    setPage(1);
-  }, [searchParams]);
+  const handleUrlSync = React.useCallback(
+    (p: {
+      pillar: ContentPillar | 'all';
+      category: string;
+      query: string | null;
+      lang: 'all' | 'fa' | 'fr' | 'en' | null;
+    }) => {
+      setPillarFilter(p.pillar);
+      setCategoryFilter(p.category);
+      if (p.query) setQuery(p.query);
+      if (p.lang) setLangFilter(p.lang);
+      setPage(1);
+    },
+    []
+  );
 
   const pillarCounts = useMemo(() => {
     const counts: Record<string, number> = {
@@ -148,6 +181,9 @@ function PaginatedArticlesGridInner({
 
   return (
     <div className="space-y-6">
+      <Suspense fallback={null}>
+        <ArticlesUrlSync onSync={handleUrlSync} />
+      </Suspense>
       {/* Unified Pillar Tabs (shown in /articles mode) */}
       {isUnifiedMode && (
         <div className="flex flex-wrap items-center gap-2">
@@ -199,7 +235,7 @@ function PaginatedArticlesGridInner({
                     ? `Rechercher parmi ${articles.length} articles...`
                     : `Search ${articles.length} articles...`
               }
-              aria-label={isFa ? 'جستجو در مقالات' : 'Search articles'}
+              aria-label={tx('جستجو در مقالات', 'Rechercher des articles', 'Search articles')}
               className="w-full ps-10 pe-4 py-2 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] text-xs text-[var(--foreground)] placeholder:text-[var(--foreground-muted)] focus:outline-none focus:border-[var(--primary)]"
             />
           </div>
@@ -219,7 +255,7 @@ function PaginatedArticlesGridInner({
                     : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
                 }`}
               >
-                {code === 'all' ? (isFa ? 'همه' : 'All') : code.toUpperCase()}
+                {code === 'all' ? tx('همه', 'Tous', 'All') : code.toUpperCase()}
               </button>
             ))}
           </div>
@@ -240,7 +276,7 @@ function PaginatedArticlesGridInner({
                   : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
               }`}
             >
-              {isFa ? 'همه دسته‌بندی‌ها' : isFr ? 'Toutes catégories' : 'All Categories'}
+              {tx('همه دسته‌بندی‌ها', 'Toutes catégories', 'All Categories')}
             </button>
             {topCategories.map(([cat, count]) => (
               <button
@@ -265,12 +301,14 @@ function PaginatedArticlesGridInner({
 
       <div className="flex items-center justify-between text-xs text-[var(--foreground-muted)] font-mono tabular-nums">
         <span>
-          {isFa
-            ? `نمایش ${pageItems.length} از ${filtered.length} مقاله`
-            : `Showing ${pageItems.length} of ${filtered.length} articles`}
+          {tx(
+            `نمایش ${pageItems.length} از ${filtered.length} مقاله`,
+            `Affichage de ${pageItems.length} sur ${filtered.length} articles`,
+            `Showing ${pageItems.length} of ${filtered.length} articles`
+          )}
         </span>
         <span>
-          {isFa ? `صفحه ${safePage} از ${totalPages}` : `Page ${safePage} / ${totalPages}`}
+          {tx(`صفحه ${safePage} از ${totalPages}`, `Page ${safePage} / ${totalPages}`, `Page ${safePage} of ${totalPages}`)}
         </span>
       </div>
 
@@ -304,9 +342,25 @@ function PaginatedArticlesGridInner({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {pageItems.map((art) => {
-            const trans =
-              art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-              art.translations?.[0];
+            const resolved = resolveWorkTranslation({
+              collection: 'articles',
+              slug: art.slug,
+              translations: art.translations,
+              siteLocale: locale,
+            });
+            const isShowingTranslated = Boolean(translatedIds[art.id]);
+            const displayTitle =
+              isShowingTranslated && resolved.translatedRecord?.title
+                ? resolved.translatedRecord.title
+                : resolved.originalRecord?.title || art.slug;
+            const displaySummary =
+              isShowingTranslated && resolved.translatedRecord?.summary
+                ? resolved.translatedRecord.summary
+                : resolved.originalRecord?.executive_summary;
+            const activeDir = isShowingTranslated && resolved.hasTranslation
+              ? getLanguageDir(locale)
+              : getLanguageDir(resolved.originalLang);
+
             const effectivePillarSlug = isUnifiedMode
               ? getPillarRouteSegment(art.pillar, locale)
               : pillarSlug;
@@ -318,6 +372,24 @@ function PaginatedArticlesGridInner({
                 className="archival-lift min-w-0 p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-lg transition-all space-y-3 flex flex-col justify-between"
               >
                 <div className="space-y-2.5 min-w-0">
+                  <WorkLanguageBar
+                    originalLang={resolved.originalLang}
+                    siteLocale={locale}
+                    isTranslated={isShowingTranslated}
+                    hasTranslation={resolved.hasTranslation}
+                    onToggle={() => toggleCardTranslation(art.id)}
+                  />
+
+                  {isShowingTranslated && !resolved.hasTranslation && (
+                    <p className="text-[11px] px-3 py-2 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground-muted)] leading-relaxed">
+                      {isFa
+                        ? 'ترجمه فارسی این اثر در موج بعدی آرشیو فعال می‌شود؛ اکنون متن اصلی قابل مطالعه است.'
+                        : isFr
+                          ? 'Traduction française planifiée ; le texte original est accessible ci-dessous.'
+                          : 'British English (en-GB) translation is scheduled in the next editorial wave; the original text is available below.'}
+                    </p>
+                  )}
+
                   <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono text-[var(--foreground-muted)] tabular-nums">
                     <span>{art.published_at?.slice(0, 10)}</span>
                     {isUnifiedMode && (
@@ -341,27 +413,29 @@ function PaginatedArticlesGridInner({
                     )}
                   </div>
 
-                  <h2 className="text-lg font-bold text-[var(--foreground)] leading-snug break-words">
-                    <Link href={href} className="hover:text-[var(--primary)] transition-colors">
-                      {trans?.title || art.slug}
-                    </Link>
-                  </h2>
+                  <div dir={activeDir} className="space-y-2">
+                    <h2 className="text-lg font-bold text-[var(--foreground)] break-words">
+                      <Link href={href} className="hover:text-[var(--primary)] transition-colors">
+                        {displayTitle}
+                      </Link>
+                    </h2>
 
-                  <p className="text-xs text-[var(--foreground-muted)] leading-relaxed line-clamp-3 break-words">
-                    {trans?.executive_summary}
-                  </p>
+                    <p className="text-xs text-[var(--foreground-muted)] leading-relaxed line-clamp-3 break-words">
+                      {displaySummary}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between gap-2 text-xs">
                   <span className="inline-flex items-center gap-1 text-[var(--foreground-muted)] font-mono text-[11px] shrink-0">
                     <FileText size={12} className="shrink-0" />
-                    {trans?.languages_code?.slice(0, 2).toUpperCase()}
+                    {resolved.originalLang.toUpperCase()}
                   </span>
                   <Link
                     href={href}
                     className="font-bold text-[var(--primary)] hover:underline whitespace-nowrap"
                   >
-                    {isFa ? 'مطالعه متن کامل ←' : 'Lire →'}
+                    {isFa ? 'مطالعه متن کامل ←' : isFr ? 'Lire l’article →' : 'Read full essay →'}
                   </Link>
                 </div>
               </article>
@@ -373,7 +447,7 @@ function PaginatedArticlesGridInner({
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <nav
-          aria-label={isFa ? 'صفحه‌بندی مقالات' : 'Pagination'}
+          aria-label={tx('صفحه‌بندی مقالات', 'Pagination des articles', 'Articles Pagination')}
           className="flex items-center justify-center gap-2 pt-4"
         >
           <button
@@ -383,7 +457,7 @@ function PaginatedArticlesGridInner({
             className="inline-flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
           >
             {isFa ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-            <span>{isFa ? 'صفحه قبل' : 'Prev'}</span>
+            <span>{tx('صفحه قبل', 'Préc.', 'Prev')}</span>
           </button>
 
           <span className="px-4 py-2 text-xs font-mono text-[var(--foreground-muted)] tabular-nums">
@@ -396,25 +470,11 @@ function PaginatedArticlesGridInner({
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             className="inline-flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
           >
-            <span>{isFa ? 'صفحه بعد' : 'Next'}</span>
+            <span>{tx('صفحه بعد', 'Suiv.', 'Next')}</span>
             {isFa ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
           </button>
         </nav>
       )}
     </div>
-  );
-}
-
-export function PaginatedArticlesGrid(props: PaginatedArticlesGridProps) {
-  return (
-    <Suspense
-      fallback={
-        <div className="p-8 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center text-xs text-[var(--foreground-muted)]">
-          Loading articles archive...
-        </div>
-      }
-    >
-      <PaginatedArticlesGridInner {...props} />
-    </Suspense>
   );
 }

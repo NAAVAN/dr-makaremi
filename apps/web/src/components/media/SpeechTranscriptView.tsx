@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Quote } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { renderSafeMarkdown } from '@/lib/markdown';
 import type { Locale } from '@makaremi/shared';
 
@@ -11,19 +11,23 @@ interface SpeechTranscriptViewProps {
 }
 
 export function SpeechTranscriptView({
-  title,
   transcriptMarkdown,
   description,
   locale,
 }: SpeechTranscriptViewProps) {
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
 
   return (
     <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 sm:p-8 space-y-6">
       <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-4">
         <FileText className="text-[var(--primary)]" size={20} />
         <h3 className="text-base font-bold text-[var(--foreground)]">
-          {isFa ? 'پیاده‌سازی متنی و بیانیه کامل گفتار' : 'Transcription Intégrale'}
+          {isFa
+            ? 'پیاده‌سازی متنی و بیانیه کامل گفتار'
+            : isFr
+              ? 'Transcription intégrale'
+              : 'Full Transcript & Statement'}
         </h3>
       </div>
 
@@ -39,7 +43,11 @@ export function SpeechTranscriptView({
         </div>
       ) : (
         <p className="text-xs text-[var(--foreground-muted)]">
-          {isFa ? 'متن پیاده‌سازی شده در دست بازبینی است.' : 'Transcription en cours.'}
+          {isFa
+            ? 'متن پیاده‌سازی‌شده در دست بازبینی است.'
+            : isFr
+              ? 'Transcription en cours de révision.'
+              : 'Transcript is currently under archival review.'}
         </p>
       )}
     </div>

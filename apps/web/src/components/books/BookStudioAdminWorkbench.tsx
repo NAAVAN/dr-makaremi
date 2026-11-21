@@ -25,20 +25,21 @@ interface BookStudioAdminWorkbenchProps {
 }
 
 const PAPER_TYPES = [
-  { id: 'bulky70', labelFa: 'بالکی نخودی ۷۰ گرم (ضریب پفکی ۱.۸)', labelFr: 'Bouffant Ivoire 70g (1.8)', gsm: 70, bulk: 1.8 },
-  { id: 'offset80', labelFa: 'تحریر سفید ۸۰ گرم (ضریب ۱.۳۵)', labelFr: 'Offset Blanc 80g (1.35)', gsm: 80, bulk: 1.35 },
-  { id: 'matte115', labelFa: 'گلاسه مات هنری ۱۱۵ گرم (ضریب ۱.۱)', labelFr: 'Couché Mat 115g (1.1)', gsm: 115, bulk: 1.1 },
+  { id: 'bulky70', labelFa: 'بالکی نخودی ۷۰ گرم (ضریب پفکی ۱.۸)', labelFr: 'Bouffant Ivoire 70g (1.8)', labelEn: 'Ivory Bulky 70gsm (Bulk 1.8)', gsm: 70, bulk: 1.8 },
+  { id: 'offset80', labelFa: 'تحریر سفید ۸۰ گرم (ضریب ۱.۳۵)', labelFr: 'Offset Blanc 80g (1.35)', labelEn: 'White Offset 80gsm (Bulk 1.35)', gsm: 80, bulk: 1.35 },
+  { id: 'matte115', labelFa: 'گلاسه مات هنری ۱۱۵ گرم (ضریب ۱.۱)', labelFr: 'Couché Mat 115g (1.1)', labelEn: 'Art Matte Coated 115gsm (Bulk 1.1)', gsm: 115, bulk: 1.1 },
 ];
 
 const TRIM_SIZES = [
-  { id: 'vaziri', labelFa: 'وزیری استاندارد (۱۷۰×۲۴۰ میلی‌متر)', labelFr: 'Royal 170×240 mm', w: 170, h: 240 },
-  { id: 'roghi', labelFa: 'رقعی (۱۴۵×۲۱۵ میلی‌متر)', labelFr: 'Octavo 145×215 mm', w: 145, h: 215 },
-  { id: 'rahli', labelFa: 'رحلی هنری (۲۱۰×۲۹۰ میلی‌متر)', labelFr: 'Art Quarto 210×290 mm', w: 210, h: 290 },
+  { id: 'vaziri', labelFa: 'وزیری استاندارد (۱۷۰×۲۴۰ میلی‌متر)', labelFr: 'Royal 170×240 mm', labelEn: 'Royal Octavo (170×240 mm)', w: 170, h: 240 },
+  { id: 'roghi', labelFa: 'رقعی (۱۴۵×۲۱۵ میلی‌متر)', labelFr: 'Octavo 145×215 mm', labelEn: 'Octavo (145×215 mm)', w: 145, h: 215 },
+  { id: 'rahli', labelFa: 'رحلی هنری (۲۱۰×۲۹۰ میلی‌متر)', labelFr: 'Art Quarto 210×290 mm', labelEn: 'Art Quarto (210×290 mm)', w: 210, h: 290 },
 ];
 
 function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkbenchProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const searchParams = useSearchParams();
 
   const [selectedSlug, setSelectedSlug] = useState<string>(
@@ -141,7 +142,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
         <div className="flex flex-wrap items-center gap-2">
           <label htmlFor="studio-book-select" className="text-xs font-bold text-[var(--foreground)]">
-            {isFa ? 'انتخاب کتاب در استودیو:' : 'Livre actif :'}
+            {tx('انتخاب کتاب در استودیو:', 'Livre actif :', 'Active Book:')}
           </label>
           <select
             id="studio-book-select"
@@ -168,36 +169,36 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
             type="button"
             onClick={() => setViewMode('studio')}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${viewMode === 'studio'
-                ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
             <Sliders size={14} />
-            <span>{isFa ? '۱. میز کار مهندسی مدیر' : '1. Console Admin'}</span>
+            <span>{tx('۱. میز کار مهندسی مدیر', '1. Console Admin', '1. Engineering Workbench')}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setViewMode('visitor')}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${viewMode === 'visitor'
-                ? 'bg-emerald-700 text-white'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-emerald-700 text-white'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
             <Eye size={14} />
-            <span>{isFa ? '۲. نمای خالص خواننده سایت (Sanctuary)' : '2. Vue Lecteur Pure'}</span>
+            <span>{tx('۲. نمای خالص خواننده سایت (Sanctuary)', '2. Vue Lecteur Pure', '2. Pure Reader View')}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setViewMode('reels')}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${viewMode === 'reels'
-                ? 'bg-amber-700 text-white'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-amber-700 text-white'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
             <Film size={14} />
-            <span>{isFa ? '۳. استودیو ریلز ۹:۱۶ (شبکه‌های اجتماعی)' : '3. Studio Reels 9:16'}</span>
+            <span>{tx('۳. استودیو ریلز ۹:۱۶ (شبکه‌های اجتماعی)', '3. Studio Reels 9:16', '3. 9:16 Social Reels Studio')}</span>
           </button>
         </div>
       </div>
@@ -213,9 +214,11 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                 <h2 className="text-base font-black text-[var(--foreground)] flex items-center gap-2">
                   <Layers size={16} className="text-amber-600" />
                   <span>
-                    {isFa
-                      ? '۱. جهت صحافی و موتور محاسبه حجم و قطر کتاب'
-                      : '1. Reliure & Calculateur Volumétrique'}
+                    {tx(
+                      '۱. جهت صحافی و موتور محاسبه حجم و قطر کتاب',
+                      '1. Reliure & Calculateur Volumétrique',
+                      '1. Binding Direction & Volumetric Spine Engine'
+                    )}
                   </span>
                 </h2>
               </div>
@@ -223,28 +226,28 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
               {/* RTL vs LTR Switcher */}
               <div className="space-y-2">
                 <span className="text-xs font-bold text-[var(--foreground)] block">
-                  {isFa ? 'جهت صحافی و باز شدن جلد کتاب:' : 'Sens de reliure :'}
+                  {tx('جهت صحافی و باز شدن جلد کتاب:', 'Sens de reliure :', 'Binding & Cover Opening Direction:')}
                 </span>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setDirection('rtl')}
                     className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${direction === 'rtl'
-                        ? 'bg-amber-700 text-white border-amber-700'
-                        : 'bg-[var(--surface-sunken)] text-[var(--foreground)] border-[var(--border-subtle)]'
+                      ? 'bg-amber-700 text-white border-amber-700'
+                      : 'bg-[var(--surface-sunken)] text-[var(--foreground)] border-[var(--border-subtle)]'
                       }`}
                   >
-                    {isFa ? 'راست‌به‌چپ (RTL فارسی)' : 'RTL (Persan)'}
+                    {tx('راست‌به‌چپ (RTL فارسی)', 'RTL (Persan)', 'RTL (Persian)')}
                   </button>
                   <button
                     type="button"
                     onClick={() => setDirection('ltr')}
                     className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${direction === 'ltr'
-                        ? 'bg-amber-700 text-white border-amber-700'
-                        : 'bg-[var(--surface-sunken)] text-[var(--foreground)] border-[var(--border-subtle)]'
+                      ? 'bg-amber-700 text-white border-amber-700'
+                      : 'bg-[var(--surface-sunken)] text-[var(--foreground)] border-[var(--border-subtle)]'
                       }`}
                   >
-                    {isFa ? 'چپ‌به‌راست (LTR فرانسوی)' : 'LTR (Français)'}
+                    {tx('چپ‌به‌راست (LTR فرانسوی)', 'LTR (Français)', 'LTR (French / English)')}
                   </button>
                 </div>
               </div>
@@ -253,10 +256,10 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <label htmlFor="page-count-input" className="font-bold text-[var(--foreground)]">
-                    {isFa ? 'تعداد کل صفحات کتاب:' : 'Nombre total de pages :'}
+                    {tx('تعداد کل صفحات کتاب:', 'Nombre total de pages :', 'Total Page Count:')}
                   </label>
                   <span className="font-mono font-bold text-amber-700 dark:text-amber-400">
-                    {pageCount} {isFa ? `صفحه (${printingForms} فرم چاپی)` : 'pages'}
+                    {pageCount} {tx(`صفحه (${printingForms} فرم چاپی)`, `pages (${printingForms} cahiers)`, `pages (${printingForms} signatures)`)}
                   </span>
                 </div>
                 <input
@@ -275,7 +278,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label htmlFor="paper-type-select" className="text-[11px] font-bold text-[var(--foreground-muted)] block">
-                    {isFa ? 'جنس کاغذ و ضریب پفکی:' : 'Papier :'}
+                    {tx('جنس کاغذ و ضریب پفکی:', 'Papier :', 'Paper Stock & Bulk:')}
                   </label>
                   <select
                     id="paper-type-select"
@@ -285,7 +288,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                   >
                     {PAPER_TYPES.map((p, i) => (
                       <option key={p.id} value={i}>
-                        {isFa ? p.labelFa : p.labelFr}
+                        {isFa ? p.labelFa : isFr ? p.labelFr : p.labelEn}
                       </option>
                     ))}
                   </select>
@@ -293,7 +296,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
 
                 <div className="space-y-1">
                   <label htmlFor="trim-size-select" className="text-[11px] font-bold text-[var(--foreground-muted)] block">
-                    {isFa ? 'قطع استاندارد کتاب:' : 'Format :'}
+                    {tx('قطع استاندارد کتاب:', 'Format :', 'Standard Trim Size:')}
                   </label>
                   <select
                     id="trim-size-select"
@@ -303,7 +306,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                   >
                     {TRIM_SIZES.map((t, i) => (
                       <option key={t.id} value={i}>
-                        {isFa ? t.labelFa : t.labelFr}
+                        {isFa ? t.labelFa : isFr ? t.labelFr : t.labelEn}
                       </option>
                     ))}
                   </select>
@@ -314,7 +317,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
               <div className="grid grid-cols-3 gap-2 pt-2">
                 <div className="p-3 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
-                    {isFa ? 'ضخامت بلوک کاغذ' : 'Bloc papier'}
+                    {tx('ضخامت بلوک کاغذ', 'Bloc papier', 'Paper Block')}
                   </span>
                   <span className="text-sm font-black font-mono text-teal-700 dark:text-teal-400">
                     {paperBlockMm} mm
@@ -322,7 +325,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                 </div>
                 <div className="p-3 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
-                    {isFa ? 'قطر کل عطف (Spine)' : 'Dos total'}
+                    {tx('قطر کل عطف (Spine)', 'Dos total', 'Total Spine')}
                   </span>
                   <span className="text-sm font-black font-mono text-amber-700 dark:text-amber-400">
                     {totalSpineMm} mm
@@ -330,7 +333,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                 </div>
                 <div className="p-3 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center">
                   <span className="text-[10px] text-[var(--foreground-muted)] block">
-                    {isFa ? 'وزن تقریبی' : 'Poids estimé'}
+                    {tx('وزن تقریبی', 'Poids estimé', 'Est. Weight')}
                   </span>
                   <span className="text-sm font-black font-mono text-[var(--foreground)]">
                     {estimatedWeightGrams} g
@@ -339,27 +342,31 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
               </div>
             </div>
 
-            {/* Control Card 2: Admin Authorized Page Range (مثلاً ۱۰۸ تا ۱۵۰) */}
+            {/* Control Card 2: Admin Authorised Page Range */}
             <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-4">
               <h2 className="text-base font-black text-[var(--foreground)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-3">
                 <BookOpen size={16} className="text-teal-600" />
                 <span>
-                  {isFa
-                    ? '۲. بازه صفحات مجاز نمایش به اختیار مدیر'
-                    : '2. Plage de Pages Autorisée (Extrait)'}
+                  {tx(
+                    '۲. بازه صفحات مجاز نمایش به اختیار مدیر',
+                    '2. Plage de Pages Autorisée (Extrait)',
+                    '2. Authorised Preview Page Range'
+                  )}
                 </span>
               </h2>
 
               <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                {isFa
-                  ? 'قانون طلایی نسخه v8.0: جلد کتاب همیشه ابتدا روی «صفحه ۱ (صفحه عنوان داخلی)» باز می‌شود و سپس خواننده با ورق زدن وارد بازه انتخابی شما (مثلاً صفحه ۱۰۸ تا ۱۵۰) می‌گردد.'
-                  : 'La couverture s’ouvre toujours sur la Page 1 (Titre) avant de passer à la plage sélectionnée.'}
+                {tx(
+                  'قانون طلایی نسخه v8.0: جلد کتاب همیشه ابتدا روی «صفحه ۱ (صفحه عنوان داخلی)» باز می‌شود و سپس خواننده با ورق زدن وارد بازه انتخابی شما (مثلاً صفحه ۱۰۸ تا ۱۵۰) می‌گردد.',
+                  'La couverture s’ouvre toujours sur la Page 1 (Titre) avant de passer à la plage sélectionnée.',
+                  'The cover always opens onto Page 1 (Title Page) before turning into your configured preview excerpt range.'
+                )}
               </p>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="preview-start-input" className="text-[11px] font-bold text-[var(--foreground)] block mb-1">
-                    {isFa ? 'از صفحه (شروع تورق):' : 'Page de début :'}
+                    {tx('از صفحه (شروع تورق):', 'Page de début :', 'Start Page:')}
                   </label>
                   <input
                     id="preview-start-input"
@@ -373,7 +380,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                 </div>
                 <div>
                   <label htmlFor="preview-end-input" className="text-[11px] font-bold text-[var(--foreground)] block mb-1">
-                    {isFa ? 'تا صفحه (پایان تورق):' : 'Page de fin :'}
+                    {tx('تا صفحه (پایان تورق):', 'Page de fin :', 'End Page:')}
                   </label>
                   <input
                     id="preview-end-input"
@@ -397,7 +404,7 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                   }}
                   className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] hover:border-amber-600/50 cursor-pointer"
                 >
-                  {isFa ? '۲۰ صفحه اول (۱ تا ۲۰)' : '20 premières pages'}
+                  {tx('۲۰ صفحه اول (۱ تا ۲۰)', '20 premières pages', 'First 20 pages (1–20)')}
                 </button>
                 <button
                   type="button"
@@ -407,12 +414,12 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                   }}
                   className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 cursor-pointer"
                 >
-                  {isFa ? 'فصل میانی (۱۰۸ تا ۱۵۰)' : 'Chapitre central (108–150)'}
+                  {tx('فصل میانی (۱۰۸ تا ۱۵۰)', 'Chapitre central (108–150)', 'Middle Chapter (108–150)')}
                 </button>
               </div>
 
               <div className="p-3 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[11px] font-mono flex items-center justify-between">
-                <span>{isFa ? `قطر پشته قبل از ص ${previewStart}:` : 'Épaisseur avant :'}</span>
+                <span>{tx(`قطر پشته قبل از ص ${previewStart}:`, `Épaisseur avant p. ${previewStart} :`, `Stack before p. ${previewStart}:`)}</span>
                 <span className="font-bold text-amber-700 dark:text-amber-400">
                   {stackBeforeMm} mm / {stackAfterMm} mm
                 </span>
@@ -424,31 +431,35 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
               <h2 className="text-base font-black text-[var(--foreground)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-3">
                 <Scissors size={16} className="text-rose-600" />
                 <span>
-                  {isFa
-                    ? '۳. برش خودکار شیت گسترده جلد چاپخانه'
-                    : '3. Découpe Automatique de la Couverture'}
+                  {tx(
+                    '۳. برش خودکار شیت گسترده جلد چاپخانه',
+                    '3. Découpe Automatique de la Couverture',
+                    '3. Print-Spread Automatic Cover Slicer'
+                  )}
                 </span>
               </h2>
               <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                {isFa
-                  ? `عرض کل شیت گسترده چاپخانه برای این کتاب برابر با ${totalSpreadWidthMm} میلی‌متر (پشت جلد ${trim.w}mm + عطف ${totalSpineMm}mm + روی جلد ${trim.w}mm) محاسبه شده است.`
-                  : `Largeur totale de la planche d'impression : ${totalSpreadWidthMm} mm.`}
+                {tx(
+                  `عرض کل شیت گسترده چاپخانه برای این کتاب برابر با ${totalSpreadWidthMm} میلی‌متر (پشت جلد ${trim.w}mm + عطف ${totalSpineMm}mm + روی جلد ${trim.w}mm) محاسبه شده است.`,
+                  `Largeur totale de la planche d'impression : ${totalSpreadWidthMm} mm.`,
+                  `Total print-spread cover sheet width: ${totalSpreadWidthMm} mm (Back ${trim.w} mm + Spine ${totalSpineMm} mm + Front ${trim.w} mm).`
+                )}
               </p>
 
               <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-mono">
                 <div className="p-2.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
                   <span className="block font-bold text-[var(--foreground)]">
-                    {direction === 'rtl' ? (isFa ? 'روی جلد (چپ)' : 'Face') : isFa ? 'پشت جلد' : 'Dos'}
+                    {direction === 'rtl' ? tx('روی جلد (چپ)', 'Face', 'Front Cover') : tx('پشت جلد', '4e couv', 'Back Cover')}
                   </span>
                   <span>{trim.w} mm</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-900 dark:text-amber-300">
-                  <span className="block font-bold">{isFa ? 'عطف مرکزی' : 'Dos central'}</span>
+                  <span className="block font-bold">{tx('عطف مرکزی', 'Dos central', 'Centre Spine')}</span>
                   <span>{totalSpineMm} mm</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
                   <span className="block font-bold text-[var(--foreground)]">
-                    {direction === 'rtl' ? (isFa ? 'پشت جلد (راست)' : '4e couv') : isFa ? 'روی جلد' : 'Face'}
+                    {direction === 'rtl' ? tx('پشت جلد (راست)', '4e couv', 'Back Cover') : tx('روی جلد', 'Face', 'Front Cover')}
                   </span>
                   <span>{trim.w} mm</span>
                 </div>
@@ -462,12 +473,8 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                 {copiedConfig ? <CheckCircle2 size={15} /> : <Copy size={15} />}
                 <span>
                   {copiedConfig
-                    ? isFa
-                      ? 'تنظیمات سه‌بعدی کتاب کپی شد!'
-                      : 'Configuration copiée !'
-                    : isFa
-                      ? 'ذخیره و کپی تنظیمات JSON برای فرانت‌اند'
-                      : 'Exporter la configuration JSON'}
+                    ? tx('تنظیمات سه‌بعدی کتاب کپی شد!', 'Configuration copiée !', '3D Book Configuration Copied!')
+                    : tx('ذخیره و کپی تنظیمات JSON برای فرانت‌اند', 'Exporter la configuration JSON', 'Copy JSON Configuration')}
                 </span>
               </button>
             </div>
@@ -480,16 +487,18 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
                 <span className="text-xs font-bold text-[var(--foreground)] flex items-center gap-1.5">
                   <Sparkles size={15} className="text-amber-600" />
                   <span>
-                    {isFa
-                      ? 'پیش‌نمایش زنده ویترین سه‌بعدی در فرانت‌اند سایت (نسخه آرامش‌بخش v8.0)'
-                      : 'Aperçu 3D en Direct (Édition Sanctuaire Culturel v8.0)'}
+                    {tx(
+                      'پیش‌نمایش زنده ویترین سه‌بعدی در فرانت‌اند سایت (نسخه آرامش‌بخش v8.0)',
+                      'Aperçu 3D en Direct (Édition Sanctuaire Culturel v8.0)',
+                      'Live 3D Frontend Preview (Cultural Sanctuary v8.0)'
+                    )}
                   </span>
                 </span>
                 <Link
                   href={`/${locale}/books/${selectedBook.slug}`}
                   className="text-xs font-bold text-[var(--primary)] hover:underline"
                 >
-                  {isFa ? 'مشاهده در صفحه عمومی کتاب ←' : 'Voir la page publique →'}
+                  {tx('مشاهده در صفحه عمومی کتاب ←', 'Voir la page publique →', 'View Public Book Page →')}
                 </Link>
               </div>
 
@@ -576,10 +585,10 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
 
               <div className="space-y-1.5 pb-2 z-10 border-t border-white/15 pt-3 w-full">
                 <p className="text-xs font-bold text-amber-400">
-                  {isFa ? 'دکتر حسن مکارمی' : 'Dr. Hassan Makaremi'}
+                  {tx('دکتر حسن مکارمی', 'Dr Hassan Makaremi', 'Dr Hassan Makaremi')}
                 </p>
                 <p className="text-[10px] opacity-75">
-                  {selectedTrans?.publisher_name} • {pageCount} ص
+                  {selectedTrans?.publisher_name} • {pageCount} {tx('ص', 'p.', 'pp.')}
                 </p>
               </div>
             </div>
@@ -587,14 +596,18 @@ function BookStudioAdminWorkbenchInner({ books, locale }: BookStudioAdminWorkben
 
           <div className="lg:col-span-7 space-y-4 p-6 rounded-3xl bg-[var(--surface-card)] border border-[var(--border-subtle)]">
             <h2 className="text-xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'استودیو تولید ریلز ۹:۱۶ (Instagram Reels / YouTube Shorts)'
-                : 'Studio Vidéo Vertical 9:16 (Reels & Shorts)'}
+              {tx(
+                'استودیو تولید ریلز ۹:۱۶ (Instagram Reels / YouTube Shorts)',
+                'Studio Vidéo Vertical 9:16 (Reels & Shorts)',
+                '9:16 Vertical Video Studio (Instagram Reels & YouTube Shorts)'
+              )}
             </h2>
             <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
-              {isFa
-                ? 'کادر عمودی ۹:۱۶ در سمت راست، کتاب انتخاب‌شده را با قطر واقعی عطف، طلاکوب جلد و انیمیشن باز شدن روی صفحه ۱ عنوان آماده ضبط و انتشار در شبکه‌های اجتماعی (اینستاگرام، تلگرام و یوتیوب) می‌کند.'
-                : 'Cadre vertical 9:16 prêt pour l’enregistrement et le partage sur Instagram Reels, YouTube Shorts et Telegram.'}
+              {tx(
+                'کادر عمودی ۹:۱۶ در سمت راست، کتاب انتخاب‌شده را با قطر واقعی عطف، طلاکوب جلد و انیمیشن باز شدن روی صفحه ۱ عنوان آماده ضبط و انتشار در شبکه‌های اجتماعی (اینستاگرام، تلگرام و یوتیوب) می‌کند.',
+                'Cadre vertical 9:16 prêt pour l’enregistrement et le partage sur Instagram Reels, YouTube Shorts et Telegram.',
+                'The 9:16 vertical stage renders your selected book with authentic spine thickness, gold foil accents, and Page 1 cover reveal ready for Instagram Reels, YouTube Shorts, and Telegram.'
+              )}
             </p>
           </div>
         </div>

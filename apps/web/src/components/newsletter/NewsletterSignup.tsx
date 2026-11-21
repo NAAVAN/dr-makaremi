@@ -15,6 +15,7 @@ export function NewsletterSignup({ locale }: NewsletterSignupProps) {
   const [message, setMessage] = useState('');
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,32 +42,49 @@ export function NewsletterSignup({ locale }: NewsletterSignupProps) {
         setMessage(
           isFa
             ? 'اشتراک شما با موفقیت ثبت شد. متن کامل مقالات جدید مستقیماً به ایمیل شما ارسال خواهد شد.'
-            : 'Inscription réussie. Les textes intégraux vous seront adressés par courriel.'
+            : isFr
+              ? 'Inscription réussie. Les textes intégraux vous seront adressés par courriel.'
+              : 'Subscription confirmed. Full-text publications will be delivered directly to your inbox.'
         );
         setEmail('');
       } else {
         setStatus('error');
-        setMessage(data.error || (isFa ? 'خطا در ثبت ایمیل. لطفاً مجدداً تلاش کنید.' : 'Erreur d’inscription.'));
+        setMessage(
+          data.error ||
+            (isFa
+              ? 'خطا در ثبت ایمیل. لطفاً مجدداً تلاش کنید.'
+              : isFr
+                ? 'Erreur d’inscription. Veuillez réessayer.'
+                : 'Subscription failed. Please try again.')
+        );
       }
     } catch {
       setStatus('error');
-      setMessage(isFa ? 'خطای ارتباط با سرور.' : 'Erreur de connexion.');
+      setMessage(
+        isFa ? 'خطای ارتباط با سرور.' : isFr ? 'Erreur de connexion.' : 'Server connection error.'
+      );
     }
   };
 
   return (
-    <div className="rounded-2xl border border-sky-500/20 bg-gradient-to-br from-sky-500/5 to-slate-500/5 dark:from-sky-950/20 dark:to-slate-900/40 p-6 md:p-8 text-slate-800 dark:text-slate-200">
+    <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 md:p-8 text-[var(--foreground)] shadow-[var(--shadow-sm)]">
       <div className="max-w-xl mx-auto space-y-4 text-center">
-        <div className="inline-flex p-3 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 mb-1">
+        <div className="inline-flex p-3 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--primary)] mb-1">
           <Mail size={24} />
         </div>
-        <h3 className="text-xl md:text-2xl font-bold font-serif">
-          {isFa ? 'خبرنامه تمام‌متن ضدسانسور' : 'Lettre d’information intégrale anti-censure'}
+        <h3 className="font-display text-xl md:text-2xl font-bold">
+          {isFa
+            ? 'خبرنامه تمام‌متن ضدسانسور'
+            : isFr
+              ? 'Lettre d’information intégrale anti-censure'
+              : 'Censorship-Resistant Full-Text Dispatch'}
         </h3>
-        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+        <p className="text-sm text-[var(--foreground-muted)] leading-relaxed">
           {isFa
             ? 'در صورت مسدودسازی وب‌سایت در ایران، متن کامل مقالات، یادداشت‌ها و بیانیه‌های دکتر حسن مکارمی (بدون نیاز به کلیک روی لینک یا فیلترشکن) مستقیماً به صندوق ایمیل شما ارسال می‌شود.'
-            : 'Recevez le texte intégral des publications et déclarations du Dr Makaremi directement dans votre boîte de réception, sans dépendance aux liens Web.'}
+            : isFr
+              ? 'Recevez le texte intégral des publications et déclarations du Dr Makaremi directement dans votre boîte de réception, sans dépendance aux liens Web.'
+              : 'Receive the full text of Dr Hassan Makaremi’s essays and public statements directly by email, ensuring uninterrupted reading without relying on external web links.'}
         </p>
 
         {status === 'success' ? (
@@ -82,8 +100,15 @@ export function NewsletterSignup({ locale }: NewsletterSignupProps) {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={isFa ? 'آدرس ایمیل خود را وارد کنید...' : 'Votre adresse email...'}
-                className="flex-1 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm placeholder:text-slate-400"
+                placeholder={
+                  isFa
+                    ? 'آدرس ایمیل خود را وارد کنید...'
+                    : isFr
+                      ? 'Votre adresse courriel...'
+                      : 'Enter your email address...'
+                }
+                aria-label={isFa ? 'آدرس ایمیل' : isFr ? 'Adresse courriel' : 'Email address'}
+                className="flex-1 px-4 py-3 rounded-xl border border-[var(--border-medium)] bg-[var(--surface-canvas)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm text-[var(--foreground)] placeholder:text-[var(--foreground-muted)]"
               />
 
               {/* Honeypot field - invisible to humans, traps bots */}
@@ -101,10 +126,10 @@ export function NewsletterSignup({ locale }: NewsletterSignupProps) {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white font-medium text-sm transition-colors shadow-sm flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                className="px-6 py-3 rounded-xl bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 text-[var(--primary-foreground)] font-semibold text-sm transition-colors shadow-sm flex items-center justify-center gap-2 shrink-0 cursor-pointer"
               >
                 {status === 'loading' && <Loader2 size={16} className="animate-spin" />}
-                <span>{isFa ? 'عضویت آزاد' : 'S’inscrire'}</span>
+                <span>{isFa ? 'عضویت آزاد' : isFr ? 'S’inscrire' : 'Subscribe'}</span>
               </button>
             </div>
 
@@ -115,10 +140,14 @@ export function NewsletterSignup({ locale }: NewsletterSignupProps) {
               </div>
             )}
 
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
-              <ShieldCheck size={13} className="text-emerald-500" />
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-[var(--foreground-muted)]">
+              <ShieldCheck size={13} className="text-[var(--primary)]" />
               <span>
-                {isFa ? 'حریم خصوصی امن: ایمیل‌ها به صورت رمزنگاری‌شده نگهداری می‌شوند.' : 'Confidentialité garantie.'}
+                {isFa
+                  ? 'حریم خصوصی امن: ایمیل‌ها به صورت رمزنگاری‌شده نگهداری می‌شوند.'
+                  : isFr
+                    ? 'Confidentialité garantie : adresses chiffrées.'
+                    : 'Privacy protected: email addresses are stored encrypted.'}
               </span>
             </div>
           </form>

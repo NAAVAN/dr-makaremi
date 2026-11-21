@@ -26,7 +26,7 @@ export function Footer({ locale }: FooterProps) {
         {/* Column 1-2: Scholarly Colophon */}
         <div className="md:col-span-2 space-y-4">
           <span className="font-bold text-base text-[var(--foreground)] tracking-tight block">
-            {isFa ? 'دکتر حسن مکارمی' : 'Dr. Hassan Makaremi'}
+            {isFa ? 'دکتر حسن مکارمی' : isFr ? 'Dr Hassan Makaremi' : 'Dr Hassan Makaremi'}
           </span>
           <p className="text-xs leading-relaxed max-w-md">
             {isFa
@@ -132,7 +132,7 @@ export function Footer({ locale }: FooterProps) {
             </li>
             <li>
               <Link href={`/${locale}/poetry`} className="hover:text-[var(--primary)] transition-colors">
-                {isFa ? 'دفتر ۳۰۰ شعر و شعر و تصویر' : isFr ? '300 Poèmes & Image' : '300 Poems & Synchronized Art'}
+                {isFa ? 'دفتر ۳۰۰ شعر و شعر و تصویر' : isFr ? '300 Poèmes & Image' : '300 Poems & Synchronised Art'}
               </Link>
             </li>
             <li>
@@ -191,7 +191,9 @@ export function Footer({ locale }: FooterProps) {
         <p className="text-[11px] text-[var(--foreground-muted)]">
           {isFa
             ? 'طراحی اختصاصی بر اساس معماری ایمن و مقاوم در برابر فیلترینگ MAKAREMI-CORE-2026'
-            : 'Designed with Zero-Trust Jamstack Architecture (MAKAREMI-CORE-2026)'}
+            : isFr
+              ? 'Conçu sur l’architecture Jamstack Zero-Trust résiliente MAKAREMI-CORE-2026'
+              : 'Designed with Zero-Trust Resilient Jamstack Architecture (MAKAREMI-CORE-2026)'}
         </p>
       </div>
     </footer>

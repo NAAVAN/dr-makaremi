@@ -53,6 +53,7 @@ export function BookSampleReader({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const isRtlBook = profile.direction === 'rtl';
   const totalPages = book?.page_count || 240;
 
@@ -77,8 +78,15 @@ export function BookSampleReader({
     const p2 = profile.previewPages[i + 1] || {
       pageNumber: p1.pageNumber + 1,
       chapterTitle: p1.chapterTitle,
-      heading: isFa ? 'ادامه متن و یادداشت‌های تحلیلی' : 'Suite du texte',
-      bodyParagraphs: [sampleChapter || 'ادامه گفتار در نسخه چاپی و الکترونیک کتاب...'],
+      heading: tx('ادامه متن و یادداشت‌های تحلیلی', 'Suite du texte', 'Continuation & Analytical Notes'),
+      bodyParagraphs: [
+        sampleChapter ||
+          tx(
+            'ادامه گفتار در نسخه چاپی و الکترونیک کتاب...',
+            'Suite du texte disponible dans l’édition imprimée et numérique...',
+            'Text continues in the printed and digital edition...'
+          ),
+      ],
     };
     previewPairs.push({
       firstPageNum: p1.pageNumber,
@@ -144,8 +152,8 @@ export function BookSampleReader({
             dir={isRtlBook ? 'rtl' : 'ltr'}
           >
             <div className="flex items-center justify-between text-xs opacity-60 border-b border-current/10 pb-3 font-bold">
-              <span>{isFa ? 'صفحه عنوان داخلی (فرم اول)' : 'Page de faux-titre & titre'}</span>
-              <span>{isFa ? 'صفحه ۱' : 'Page 1'}</span>
+              <span>{tx('صفحه عنوان داخلی (فرم اول)', 'Page de faux-titre & titre', 'Interior Title Page')}</span>
+              <span>{tx('صفحه ۱', 'Page 1', 'Page 1')}</span>
             </div>
 
             <div className="my-auto text-center space-y-4 py-6 px-3">
@@ -153,7 +161,7 @@ export function BookSampleReader({
                 ✦
               </div>
               <p className="text-xs font-bold uppercase tracking-widest text-amber-800 dark:text-amber-400">
-                {isFa ? 'دکتر حسن مکارمی' : 'Dr. Hassan Makaremi'}
+                {tx('دکتر حسن مکارمی', 'Dr Hassan Makaremi', 'Dr Hassan Makaremi')}
               </p>
               <h3 className="text-xl sm:text-2xl font-black leading-snug">{title}</h3>
               {subtitle && (
@@ -169,7 +177,7 @@ export function BookSampleReader({
 
             <div className="border-t border-current/10 pt-3 flex items-center justify-between text-xs opacity-75">
               <span className="font-bold">
-                {publisherName || (isFa ? 'انتشارات آلیان • پاریس' : 'Éditions Alian • Paris')}
+                {publisherName || tx('انتشارات آلیان • پاریس', 'Éditions Alian • Paris', 'Éditions Alian • Paris')}
               </span>
               <span>{book?.publication_year || 2018}</span>
             </div>
@@ -188,7 +196,7 @@ export function BookSampleReader({
           <div className="flex items-center justify-between text-xs opacity-65 border-b border-current/10 pb-3">
             <span className="font-bold truncate max-w-[75%]">{pageData.chapterTitle}</span>
             <span className="font-bold">
-              {isFa ? `صفحه ${pageData.pageNumber}` : `Page ${pageData.pageNumber}`}
+              {tx(`صفحه ${pageData.pageNumber}`, `Page ${pageData.pageNumber}`, `Page ${pageData.pageNumber}`)}
             </span>
           </div>
 
@@ -227,8 +235,8 @@ export function BookSampleReader({
           dir={isRtlBook ? 'rtl' : 'ltr'}
         >
           <div className="flex items-center justify-between text-xs opacity-60 border-b border-current/10 pb-3 font-bold">
-            <span>{isFa ? 'شناسنامه نشر و فهرست گزیده' : 'Mentions d’édition & Sommaire'}</span>
-            <span>{isFa ? 'صفحه ۲' : 'Page 2'}</span>
+            <span>{tx('شناسنامه نشر و فهرست گزیده', 'Mentions d’édition & Sommaire', 'Colophon & Contents')}</span>
+            <span>{tx('صفحه ۲', 'Page 2', 'Page 2')}</span>
           </div>
 
           <div className="my-auto py-4 space-y-5 text-xs sm:text-sm leading-relaxed">
@@ -236,18 +244,22 @@ export function BookSampleReader({
               <p className="font-bold">{profile.colophonText[locale]}</p>
               <p className="opacity-75">
                 {profile.trimSizeLabel[locale]} • {profile.paperLabel[locale]} • {totalPages}{' '}
-                {isFa ? 'صفحه' : 'pages'}
+                {tx('صفحه', 'pages', 'pages')}
               </p>
             </div>
 
             <div className="space-y-2">
               <h4 className="font-bold text-sm border-b border-current/10 pb-1.5">
-                {isFa ? 'گزیده سرفصل‌های کتاب:' : 'Sommaire principal :'}
+                {tx('گزیده سرفصل‌های کتاب:', 'Sommaire principal :', 'Selected Contents:')}
               </h4>
               <div className="text-xs leading-loose opacity-90">
                 {renderSafeMarkdown(
                   tableOfContents ||
-                    '1. پیش‌گفتار مؤلف\n2. مبانی نظری و دگرشنیدن\n3. تحلیل موردی و کاربردی\n4. نتیجه‌گیری و افق‌های نو'
+                    tx(
+                      '1. پیش‌گفتار مؤلف\n2. مبانی نظری و دگرشنیدن\n3. تحلیل موردی و کاربردی\n4. نتیجه‌گیری و افق‌های نو',
+                      '1. Avant-propos de l’auteur\n2. Fondements théoriques\n3. Études cliniques et analyses\n4. Perspectives',
+                      '1. Author’s Preface\n2. Theoretical Foundations\n3. Clinical & Analytical Studies\n4. Conclusions & Perspectives'
+                    )
                 )}
               </div>
             </div>
@@ -259,9 +271,11 @@ export function BookSampleReader({
               onClick={() => triggerSpreadChange(1)}
               className="text-amber-800 dark:text-amber-400 font-bold hover:underline cursor-pointer"
             >
-              {isFa
-                ? `ورق بزنید: انتقال به صفحه ${profile.previewStartPage} (بخش انتخابی مدیر) ←`
-                : `Tourner la page : Extrait p. ${profile.previewStartPage} →`}
+              {tx(
+                `ورق بزنید: انتقال به صفحه ${profile.previewStartPage} (بخش انتخابی مدیر) ←`,
+                `Tourner la page : Extrait p. ${profile.previewStartPage} →`,
+                `Turn page: Jump to excerpt p. ${profile.previewStartPage} →`
+              )}
             </button>
             <span className="opacity-65">2 / {totalPages}</span>
           </div>
@@ -284,7 +298,7 @@ export function BookSampleReader({
           <span className="font-bold truncate max-w-[75%]">
             {secondPage?.chapterTitle || firstPage.chapterTitle}
           </span>
-          <span className="font-bold">{isFa ? `صفحه ${pNum}` : `Page ${pNum}`}</span>
+          <span className="font-bold">{tx(`صفحه ${pNum}`, `Page ${pNum}`, `Page ${pNum}`)}</span>
         </div>
 
         <div className="my-auto py-4 space-y-4 leading-loose">
@@ -400,9 +414,11 @@ export function BookSampleReader({
           <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/20 text-[11px] font-bold">
             <Sparkles size={12} />
             <span>
-              {isFa
-                ? `صفحه ۱ (عنوان) + صفحات برگزیده (${profile.previewStartPage} تا ${profile.previewEndPage})`
-                : `Page 1 (Titre) + Extrait (p. ${profile.previewStartPage}–${profile.previewEndPage})`}
+              {tx(
+                `صفحه ۱ (عنوان) + صفحات برگزیده (${profile.previewStartPage} تا ${profile.previewEndPage})`,
+                `Page 1 (Titre) + Extrait (p. ${profile.previewStartPage}–${profile.previewEndPage})`,
+                `Page 1 (Title) + Selected Excerpt (pp. ${profile.previewStartPage}–${profile.previewEndPage})`
+              )}
             </span>
           </span>
 
@@ -410,8 +426,8 @@ export function BookSampleReader({
             <button
               type="button"
               onClick={() => setTheme('paper')}
-              aria-label="تم کاغذی"
-              title="کاغذ نخودی گرم"
+              aria-label={tx('تم کاغذی', 'Thème papier', 'Paper theme')}
+              title={tx('کاغذ نخودی گرم', 'Papier chaud', 'Warm archival paper')}
               className={`p-1.5 rounded-md cursor-pointer ${
                 theme === 'paper'
                   ? 'bg-[#FBF9F4] text-stone-900 shadow-sm'
@@ -423,8 +439,8 @@ export function BookSampleReader({
             <button
               type="button"
               onClick={() => setTheme('sepia')}
-              aria-label="تم سپیا"
-              title="سپیا کلاسیک"
+              aria-label={tx('تم سپیا', 'Thème sépia', 'Sepia theme')}
+              title={tx('سپیا کلاسیک', 'Sépia classique', 'Classic sepia')}
               className={`p-1.5 rounded-md cursor-pointer ${
                 theme === 'sepia'
                   ? 'bg-[#F3E9D2] text-[#3B2E1E] shadow-sm'
@@ -436,8 +452,8 @@ export function BookSampleReader({
             <button
               type="button"
               onClick={() => setTheme('night')}
-              aria-label="تم تاریک"
-              title="مطالعه شبانه"
+              aria-label={tx('تم تاریک', 'Mode nuit', 'Night reading theme')}
+              title={tx('مطالعه شبانه', 'Lecture nocturne', 'Night reading')}
               className={`p-1.5 rounded-md cursor-pointer ${
                 theme === 'night'
                   ? 'bg-[#17181C] text-white shadow-sm'
@@ -452,7 +468,7 @@ export function BookSampleReader({
             <button
               type="button"
               onClick={() => setFontSize((s) => Math.max(13, s - 1))}
-              aria-label="کاهش سایز فونت"
+              aria-label={tx('کاهش سایز فونت', 'Réduire la taille du texte', 'Decrease font size')}
               className="p-1.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)] cursor-pointer"
             >
               <ZoomOut size={14} />
@@ -463,7 +479,7 @@ export function BookSampleReader({
             <button
               type="button"
               onClick={() => setFontSize((s) => Math.min(22, s + 1))}
-              aria-label="افزایش سایز فونت"
+              aria-label={tx('افزایش سایز فونت', 'Augmenter la taille du texte', 'Increase font size')}
               className="p-1.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)] cursor-pointer"
             >
               <ZoomIn size={14} />
@@ -487,7 +503,7 @@ export function BookSampleReader({
                     : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
                 }`}
               >
-                {isFa ? '۱. صفحه عنوان و شناسنامه (ص ۱ و ۲)' : '1. Page de titre & Colophon (p. 1–2)'}
+                {tx('۱. صفحه عنوان و شناسنامه (ص ۱ و ۲)', '1. Page de titre & Colophon (p. 1–2)', '1. Title Page & Colophon (pp. 1–2)')}
               </button>
 
               {previewPairs.map((pair, idx) => (
@@ -501,21 +517,19 @@ export function BookSampleReader({
                       : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
                   }`}
                 >
-                  {isFa
-                    ? `برگ برگزیده (ص ${pair.firstPageNum} و ${pair.secondPageNum})`
-                    : `Extrait (p. ${pair.firstPageNum}–${pair.secondPageNum})`}
+                  {tx(
+                    `برگ برگزیده (ص ${pair.firstPageNum} و ${pair.secondPageNum})`,
+                    `Extrait (p. ${pair.firstPageNum}–${pair.secondPageNum})`,
+                    `Excerpt (pp. ${pair.firstPageNum}–${pair.secondPageNum})`
+                  )}
                 </button>
               ))}
             </div>
 
             <div className="text-xs font-bold text-[var(--foreground-muted)]">
               {isRtlBook
-                ? isFa
-                  ? 'جهت تورق سه‌بعدی: راست‌به‌چپ (فارسی)'
-                  : 'Sens de lecture : Droite à Gauche (RTL)'
-                : isFa
-                ? 'جهت تورق سه‌بعدی: چپ‌به‌راست (فرانسوی/لاتین)'
-                : 'Sens de lecture : Gauche à Droite (LTR)'}
+                ? tx('جهت تورق سه‌بعدی: راست‌به‌چپ (فارسی)', 'Sens de lecture : Droite à Gauche (RTL)', 'Page-turn direction: Right-to-Left (Persian RTL)')
+                : tx('جهت تورق سه‌بعدی: چپ‌به‌راست (فرانسوی/لاتین)', 'Sens de lecture : Gauche à Droite (LTR)', 'Page-turn direction: Left-to-Right (LTR)')}
             </div>
           </div>
 
@@ -568,12 +582,8 @@ export function BookSampleReader({
                   }}
                   title={
                     isRtlBook
-                      ? isFa
-                        ? 'کلیک برای ورق زدن به برگ بعدی'
-                        : 'Tourner la page'
-                      : isFa
-                      ? 'کلیک برای برگ قبلی'
-                      : 'Page précédente'
+                      ? tx('کلیک برای ورق زدن به برگ بعدی', 'Tourner la page', 'Click to turn to next spread')
+                      : tx('کلیک برای برگ قبلی', 'Page précédente', 'Click for previous spread')
                   }
                   className="relative border-b md:border-b-0 md:border-r border-current/10 cursor-pointer"
                 >
@@ -592,12 +602,8 @@ export function BookSampleReader({
                   }}
                   title={
                     isRtlBook
-                      ? isFa
-                        ? 'کلیک برای برگ قبلی'
-                        : 'Page précédente'
-                      : isFa
-                      ? 'کلیک برای ورق زدن به برگ بعدی'
-                      : 'Tourner la page'
+                      ? tx('کلیک برای برگ قبلی', 'Page précédente', 'Click for previous spread')
+                      : tx('کلیک برای ورق زدن به برگ بعدی', 'Tourner la page', 'Click to turn to next spread')
                   }
                   className="relative cursor-pointer"
                 >
@@ -681,19 +687,23 @@ export function BookSampleReader({
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] disabled:opacity-40 hover:border-amber-600/60 transition-all cursor-pointer disabled:cursor-not-allowed shadow-sm"
             >
               {isFa ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
-              <span>{isFa ? 'ورق زدن به برگ قبلی' : 'Page précédente'}</span>
+              <span>{tx('ورق زدن به برگ قبلی', 'Page précédente', 'Previous Spread')}</span>
             </button>
 
             {/* Subtle Proportional Paper Stack Bar */}
             <div className="flex items-center gap-3 text-xs font-bold text-[var(--foreground-muted)] text-center">
               <span>
                 {activeVisibleSpread === 0
-                  ? isFa
-                    ? 'گشایش کتاب روی صفحه ۱ (عنوان داخلی) و صفحه ۲ (شناسنامه)'
-                    : 'Ouverture sur la Page 1 (Titre) et Page 2 (Colophon)'
-                  : isFa
-                  ? `مطالعه صفحات ${currentFirstPage} و ${currentSecondPage} از ${totalPages} صفحه (قطر پشته قبل: ${stackBeforePx}px | بعد: ${stackAfterPx}px)`
-                  : `Pages ${currentFirstPage}–${currentSecondPage} sur ${totalPages}`}
+                  ? tx(
+                      'گشایش کتاب روی صفحه ۱ (عنوان داخلی) و صفحه ۲ (شناسنامه)',
+                      'Ouverture sur la Page 1 (Titre) et Page 2 (Colophon)',
+                      'Opening at Page 1 (Title Page) and Page 2 (Colophon)'
+                    )
+                  : tx(
+                      `مطالعه صفحات ${currentFirstPage} و ${currentSecondPage} از ${totalPages} صفحه (قطر پشته قبل: ${stackBeforePx}px | بعد: ${stackAfterPx}px)`,
+                      `Pages ${currentFirstPage}–${currentSecondPage} sur ${totalPages}`,
+                      `Pages ${currentFirstPage}–${currentSecondPage} of ${totalPages}`
+                    )}
               </span>
             </div>
 
@@ -703,7 +713,7 @@ export function BookSampleReader({
               onClick={() => triggerSpreadChange(spreadIndex + 1)}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-700 text-white disabled:opacity-40 hover:bg-amber-800 transition-all cursor-pointer disabled:cursor-not-allowed shadow-sm"
             >
-              <span>{isFa ? 'ورق زدن به برگ بعدی' : 'Tourner la page'}</span>
+              <span>{tx('ورق زدن به برگ بعدی', 'Tourner la page', 'Turn to Next Spread')}</span>
               {isFa ? <ChevronLeft size={15} /> : <ChevronRight size={15} />}
             </button>
           </div>
@@ -721,19 +731,25 @@ export function BookSampleReader({
               <h3 className="text-xl font-black">{title}</h3>
               <span className="text-xs opacity-70">
                 {activeTab === 'sample'
-                  ? isFa
-                    ? 'پیش‌نمایش متن و فصل نمونه'
-                    : 'Extrait du chapitre'
-                  : isFa
-                  ? 'فهرست سرفصل‌ها'
-                  : 'Table des matières'}
+                  ? tx('پیش‌نمایش متن و فصل نمونه', 'Extrait du chapitre', 'Sample Chapter Preview')
+                  : tx('فهرست سرفصل‌ها', 'Table des matières', 'Table of Contents')}
               </span>
             </div>
 
             {renderSafeMarkdown(
               activeTab === 'sample'
-                ? sampleChapter || 'فصل نمونه در حال حاضر موجود نیست.'
-                : tableOfContents || 'فهرست مطالب در دست تکمیل است.'
+                ? sampleChapter ||
+                    tx(
+                      'فصل نمونه در حال حاضر موجود نیست.',
+                      'L’extrait de chapitre n’est pas encore disponible.',
+                      'Sample chapter preview is not yet available.'
+                    )
+                : tableOfContents ||
+                    tx(
+                      'فهرست مطالب در دست تکمیل است.',
+                      'La table des matières est en cours de finalisation.',
+                      'Table of contents is currently being prepared.'
+                    )
             )}
           </div>
         </div>

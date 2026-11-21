@@ -109,6 +109,8 @@ export default async function ArticleDetailPage({
   if (!article || article.pillar !== pillarKey) notFound();
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const glossaryTerms = await getLacanianGlossary();
   const trans =
     article.translations?.find((t) => t.languages_code.startsWith(locale)) ||
@@ -116,7 +118,7 @@ export default async function ArticleDetailPage({
 
   const articleNode = buildArticleNode(article, locale);
   const breadcrumbNode = buildBreadcrumbNode([
-    { name: isFa ? 'خانه' : 'Home', item: `https://makaremi.com/${locale}` },
+    { name: tx('خانه', 'Accueil', 'Home'), item: `https://makaremi.com/${locale}` },
     { name: article.pillar, item: `https://makaremi.com/${locale}/${pillar}/articles` },
     { name: trans?.title || slug, item: `https://makaremi.com/${locale}/${pillar}/articles/${slug}` },
   ]);
@@ -128,13 +130,13 @@ export default async function ArticleDetailPage({
   return (
     <div className="space-y-10">
       <JsonLdGraph data={jsonLdGraph} />
-      <nav aria-label="راهنمای مسیر" className="text-xs text-[var(--foreground-muted)]">
+      <nav aria-label={tx('راهنمای مسیر', 'Fil d’Ariane', 'Breadcrumb')} className="text-xs text-[var(--foreground-muted)]">
         <Link
           href={`/${locale}/${pillar}/articles`}
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به مقالات' : 'Retour aux articles'}</span>
+          <span>{tx('بازگشت به مقالات', 'Retour aux articles', 'Back to Articles')}</span>
         </Link>
       </nav>
 

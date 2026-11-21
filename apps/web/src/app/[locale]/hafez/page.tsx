@@ -48,7 +48,9 @@ export async function generateMetadata({
         : 'Hafezology & Listening Differently to Hafez | Dr. Hassan Makaremi',
     description: isFa
       ? 'قطب حافظ‌پژوهی دکتر حسن مکارمی: کتاب‌های «چند گفتار در دیگر شنیدن حافظ»، «نگرشی دیگر بر راز حافظ»، «Hafez par Hafez (لارماتان)» و مجموعه ویدیویی «صدای سخن عشق».'
-      : 'Travaux du Dr Hassan Makaremi sur Hafez de Chiraz : livres Hafez par Hafez, séminaires et calligraphies.',
+      : isFr
+        ? 'Travaux du Dr Hassan Makaremi sur Hafez de Chiraz : livres Hafez par Hafez, séminaires et calligraphies.'
+        : 'Dr Hassan Makaremi’s scholarship on Hafez of Shiraz: three monographs (including Hafez par Hafez, L’Harmattan), lectures, and calligraphic works.',
   });
 }
 
@@ -62,6 +64,7 @@ export default async function HafezologyHubPage({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const [allBooks, allVideos, allArticles, archivePages] = await Promise.all([
     getBooks(locale),
@@ -103,54 +106,62 @@ export default async function HafezologyHubPage({
   const hafezTreatises = [
     {
       id: 'del-in-persian-culture',
-      title: isFa
-        ? 'دیگرشنیدن حافظ: رند شیراز در برابر زاهد و محتسب'
-        : isFr
-          ? 'Écouter Hafez autrement : Le Rend face à l’hypocrisie'
-          : 'Listening Differently to Hafez: The Rend Against Hypocrisy',
-      summary: isFa
-        ? 'بازخوانی مفهوم «رند» و واژه «دل» در دیوان حافظ با ابزارهای روانکاوی لکانی؛ گذار از ریاکاری زاهدانه به اخلاق آزادی درونی.'
-        : 'Relecture lacanienne de la figure du Rend et du concept de « Del » dans le Divân.',
-      tag: isFa ? 'کتاب مرجع' : 'Monographie',
+      title: tx(
+        'دیگرشنیدن حافظ: رند شیراز در برابر زاهد و محتسب',
+        'Écouter Hafez autrement : Le Rend face à l’hypocrisie',
+        'Listening Differently to Hafez: The Rend Against Hypocrisy'
+      ),
+      summary: tx(
+        'بازخوانی مفهوم «رند» و واژه «دل» در دیوان حافظ با ابزارهای روانکاوی لکانی؛ گذار از ریاکاری زاهدانه به اخلاق آزادی درونی.',
+        'Relecture lacanienne de la figure du Rend et du concept de « Del » dans le Divân.',
+        'A Lacanian rereading of the figure of the Rend and the notion of “Del” in the Divan of Hafez, moving from ascetic hypocrisy towards an ethics of inner freedom.'
+      ),
+      tag: tx('کتاب مرجع', 'Monographie', 'Reference Monograph'),
       href: `/${locale}/books/listening-differently-to-hafez`,
     },
     {
       id: 'rend-and-divided-subject',
-      title: isFa
-        ? 'شعر حافظ و کارگاه هستی (گفتگوی مشروح با رادیو RFI)'
-        : isFr
-          ? 'Poésie de Hafez et l’atelier de l’être (Entretien RFI)'
-          : 'Hafez Poetry & Workshop of Being (RFI Interview)',
-      summary: isFa
-        ? 'متن کامل گفتگوی رادیویی درباره پیوند غزل حافظ با روانکاوی مدرن و چرایی ماندگاری حافظ در حافظه ایرانیان.'
-        : 'Texte intégral de l’entretien RFI sur la modernité radicale du Ghazal de Hafez.',
-      tag: isFa ? 'مصاحبه RFI' : 'Entretien RFI',
+      title: tx(
+        'شعر حافظ و کارگاه هستی (گفتگوی مشروح با رادیو RFI)',
+        'Poésie de Hafez et l’atelier de l’être (Entretien RFI)',
+        'Hafez’s Poetry & the Workshop of Being (RFI Interview)'
+      ),
+      summary: tx(
+        'متن کامل گفتگوی رادیویی درباره پیوند غزل حافظ با روانکاوی مدرن و چرایی ماندگاری حافظ در حافظه ایرانیان.',
+        'Texte intégral de l’entretien RFI sur la modernité radicale du Ghazal de Hafez.',
+        'Full transcript of the RFI interview exploring the bond between Hafez’s ghazal and modern psychoanalysis.'
+      ),
+      tag: tx('مصاحبه RFI', 'Entretien RFI', 'RFI Interview'),
       href: `/${locale}/about/rfi-hafez-ir`,
     },
     {
       id: 'ontology-of-hafez-love',
-      title: isFa
-        ? 'حافظ شیراز و دیدار / شب شعر حافظ و عشق دو جهان'
-        : isFr
-          ? 'Hafez de Chiraz : Rencontre et Amour des Deux Mondes'
-          : 'Hafez of Shiraz & Night of Two-World Love (Paris)',
-      summary: isFa
-        ? 'گزارش و اسناد کنفرانس‌ها و شب‌های شعر حافظ در پاریس و بررسی ساختار چندمعنایی (ایهام) در غزل حافظ.'
-        : 'Conférences et soirées poétiques consacrées à Hafez et à la polysémie du Ghazal à Paris.',
-      tag: isFa ? 'کنفرانس پاریس' : 'Conférence',
+      title: tx(
+        'حافظ شیراز و دیدار / شب شعر حافظ و عشق دو جهان',
+        'Hafez de Chiraz : Rencontre et Amour des Deux Mondes',
+        'Hafez of Shiraz & Night of Two-World Love (Paris)'
+      ),
+      summary: tx(
+        'گزارش و اسناد کنفرانس‌ها و شب‌های شعر حافظ در پاریس و بررسی ساختار چندمعنایی (ایهام) در غزل حافظ.',
+        'Conférences et soirées poétiques consacrées à Hafez et à la polysémie du Ghazal à Paris.',
+        'Proceedings of Paris conferences and poetry evenings devoted to Hafez and the polysemic structure (iham) of the ghazal.'
+      ),
+      tag: tx('کنفرانس پاریس', 'Conférence', 'Paris Conference'),
       href: `/${locale}/about/fa-conf-hafez-didar`,
     },
     {
       id: 'hafez-by-hafez-methodology',
-      title: isFa
-        ? 'جستجو در ده‌ها مقاله و جستار حافظ‌پژوهی پایگاه'
-        : isFr
-          ? 'Explorer tous les articles et essais sur Hafez'
-          : 'Explore All Articles & Essays on Hafez',
-      summary: isFa
-        ? 'دسترسی مستقیم به همه مقالات، یادداشت‌ها و جستارهای دکتر مکارمی که به رمزگشایی از دیوان حافظ پرداخته‌اند.'
-        : 'Accès direct à l’ensemble des articles consacrés à Hafez dans nos archives.',
-      tag: isFa ? 'آرشیو مقالات' : 'Archives',
+      title: tx(
+        'جستجو در ده‌ها مقاله و جستار حافظ‌پژوهی پایگاه',
+        'Explorer tous les articles et essais sur Hafez',
+        'Explore All Articles & Essays on Hafez'
+      ),
+      summary: tx(
+        'دسترسی مستقیم به همه مقالات، یادداشت‌ها و جستارهای دکتر مکارمی که به رمزگشایی از دیوان حافظ پرداخته‌اند.',
+        'Accès direct à l’ensemble des articles consacrés à Hafez dans nos archives.',
+        'Direct access to every essay and research article by Dr Makaremi dedicated to deciphering the Divan of Hafez.'
+      ),
+      tag: tx('آرشیو مقالات', 'Archives', 'Articles Archive'),
       href: `/${locale}/articles?q=${encodeURIComponent(isFa ? 'حافظ' : 'Hafez')}`,
     },
   ];
@@ -170,11 +181,11 @@ export default async function HafezologyHubPage({
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-amber-600 font-bold">
             <Feather size={16} />
             <span>
-              {isFa
-                ? 'قطب مستقل حافظ‌پژوهی • دیگرشنیدن حافظ شیرازی'
-                : isFr
-                  ? 'Pôle Hafez • Écouter autrement Hafez de Chiraz'
-                  : 'Hafezology Hub • Listening Differently to Hafez of Shiraz'}
+              {tx(
+                'قطب مستقل حافظ‌پژوهی • دیگرشنیدن حافظ شیرازی',
+                'Pôle Hafez • Écouter autrement Hafez de Chiraz',
+                'Hafezology Hub • Listening Differently to Hafez of Shiraz'
+              )}
             </span>
           </div>
 
@@ -189,44 +200,46 @@ export default async function HafezologyHubPage({
         </div>
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--foreground)] tracking-tight leading-tight">
-          {isFa
-            ? 'حافظ‌پژوهی و «دیگرشنیدن حافظ» در آثار دکتر حسن مکارمی'
-            : isFr
-              ? 'Hafez de Chiraz : Psychanalyse du Ghazal, Livres et Calligraphies'
-              : 'Hafez of Shiraz: Psychoanalytic Hermeneutics, Books & Calligraphic Art'}
+          {tx(
+            'حافظ‌پژوهی و «دیگرشنیدن حافظ» در آثار دکتر حسن مکارمی',
+            'Hafez de Chiraz : Psychanalyse du Ghazal, Livres et Calligraphies',
+            'Hafez of Shiraz: Psychoanalytic Hermeneutics, Books & Calligraphic Art'
+          )}
         </h1>
 
         <p className="text-sm sm:text-base text-[var(--foreground-muted)] max-w-4xl leading-relaxed">
-          {isFa
-            ? 'واکاوی راز ماندگاری خواجه شمس‌الدین محمد حافظ شیرازی از رهگذر زبان‌شناسی، روانکاوی لکانی و هنر خوشنویسی؛ مجموعه سه کتاب مرجع به فارسی و فرانسه، رساله‌های تحلیلی، مجموعه ویدیویی ۱۴ قسمتی «صدای سخن عشق» و تابلوهای نقاشی‌خط «ثبت اقدامات حافظ».'
-            : isFr
-              ? 'Exploration du Divân de Hafez à travers la psychanalyse lacanienne, trois ouvrages de référence en persan et en français (L’Harmattan), la série vidéo « La Voix de l’Amour » et des toiles calligraphiques.'
-              : 'Exploring the Divan of Hafez through Lacanian psychoanalysis, three reference books in Persian and French (L’Harmattan), the 14-part video series “The Voice of Love”, and calligraphic canvases.'}
+          {tx(
+            'واکاوی راز ماندگاری خواجه شمس‌الدین محمد حافظ شیرازی از رهگذر زبان‌شناسی، روانکاوی لکانی و هنر خوشنویسی؛ مجموعه سه کتاب مرجع به فارسی و فرانسه، رساله‌های تحلیلی، مجموعه ویدیویی ۱۴ قسمتی «صدای سخن عشق» و تابلوهای نقاشی‌خط «ثبت اقدامات حافظ».',
+            'Exploration du Divân de Hafez à travers la psychanalyse lacanienne, trois ouvrages de référence en persan et en français (L’Harmattan), la série vidéo « La Voix de l’Amour » et des toiles calligraphiques.',
+            'Exploring the Divan of Hafez through Lacanian psychoanalysis, three reference books in Persian and French (L’Harmattan), the 14-part video series “The Voice of Love”, and calligraphic canvases.'
+          )}
         </p>
       </header>
 
-      {/* SECTION 1: 3D HAFEZ BOOKS SHOWCASE (چند گفتار در دیگر شنیدن حافظ / نگرشی دیگر بر راز حافظ / Hafez par Hafez) */}
-      <section aria-label="کتاب‌های حافظ‌پژوهی" className="space-y-8">
+      {/* SECTION 1: 3D HAFEZ BOOKS SHOWCASE */}
+      <section aria-label={tx('کتاب‌های حافظ‌پژوهی', 'Ouvrages sur Hafez', 'Hafezology Books')} className="space-y-8">
         <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
           <div className="space-y-1">
             <h2 className="text-2xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'سه‌گانه کتاب‌های حافظ‌پژوهی (فارسی و فرانسه)'
-                : isFr
-                  ? 'Trilogie des Ouvrages sur Hafez (Persan & Français)'
-                  : 'Trilogy of Hafezology Books (Persian & French)'}
+              {tx(
+                'سه‌گانه کتاب‌های حافظ‌پژوهی (فارسی و فرانسه)',
+                'Trilogie des Ouvrages sur Hafez (Persan & Français)',
+                'Trilogy of Hafezology Books (Persian & French)'
+              )}
             </h2>
             <p className="text-xs text-[var(--foreground-muted)]">
-              {isFa
-                ? 'منتشرشده در پاریس (L’Harmattan و Alian)، کلن (فروغ) و لندن (H&S Media)'
-                : 'Publiés à Paris (L’Harmattan, Alian), Cologne et Londres'}
+              {tx(
+                'منتشرشده در پاریس (L’Harmattan و Alian)، کلن (فروغ) و لندن (H&S Media)',
+                'Publiés à Paris (L’Harmattan, Alian), Cologne et Londres',
+                'Published in Paris (L’Harmattan & Alian), Cologne (Forough), and London (H&S Media)'
+              )}
             </p>
           </div>
           <Link
             href={`/${locale}/books?genre=hafez`}
             className="text-xs font-bold text-amber-700 dark:text-amber-400 hover:underline"
           >
-            {isFa ? 'مشاهده در تالار کتاب‌خوان 3D ←' : 'Voir dans la bibliothèque 3D →'}
+            {tx('مشاهده در تالار کتاب‌خوان 3D ←', 'Voir dans la bibliothèque 3D →', 'View in 3D Library →')}
           </Link>
         </div>
 
@@ -256,15 +269,11 @@ export default async function HafezologyHubPage({
                   <div className="flex items-center justify-between text-xs">
                     <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 font-bold">
                       {isFrenchBook
-                        ? isFa
-                          ? 'نسخه فرانسوی (LTR) • انتشارات لارماتان پاریس'
-                          : 'Édition Française (LTR) • L’Harmattan'
-                        : isFa
-                          ? `نسخه فارسی (RTL) • ${t?.publisher_name}`
-                          : `Édition Persane • ${t?.publisher_name}`}
+                        ? tx('نسخه فرانسوی (LTR) • انتشارات لارماتان پاریس', 'Édition Française (LTR) • L’Harmattan', 'French Edition (LTR) • L’Harmattan Paris')
+                        : tx(`نسخه فارسی (RTL) • ${t?.publisher_name}`, `Édition Persane • ${t?.publisher_name}`, `Persian Edition (RTL) • ${t?.publisher_name}`)}
                     </span>
                     <span className="font-mono text-[var(--foreground-muted)]">
-                      {b.publication_year} • {b.page_count} ص
+                      {b.publication_year} • {b.page_count} {tx('ص', 'p.', 'pp.')}
                     </span>
                   </div>
 
@@ -289,7 +298,7 @@ export default async function HafezologyHubPage({
                       href={`/${locale}/books/${b.slug}`}
                       className="font-bold text-[var(--primary)] hover:underline inline-flex items-center gap-1"
                     >
-                      <span>{isFa ? 'تورق سه‌بعدی و مطالعه فصل نمونه' : 'Feuilleter en 3D'}</span>
+                      <span>{tx('تورق سه‌بعدی و مطالعه فصل نمونه', 'Feuilleter en 3D', 'Browse in 3D & Sample')}</span>
                       {isFa ? <ArrowLeft size={13} /> : <ArrowRight size={13} />}
                     </Link>
                   </div>
@@ -301,13 +310,13 @@ export default async function HafezologyHubPage({
       </section>
 
       {/* SECTION 2: HAFEZOLOGY TREATISES, CONFERENCES & REAL ARTICLES */}
-      <section aria-label="جستارها و مقالات حافظ‌پژوهی" className="space-y-6">
+      <section aria-label={tx('جستارها و مقالات حافظ‌پژوهی', 'Essais et articles sur Hafez', 'Hafezology Essays & Articles')} className="space-y-6">
         <h2 className="text-2xl font-black text-[var(--foreground)] border-b border-[var(--border-subtle)] pb-3">
-          {isFa
-            ? 'محورهای نظری، کنفرانس‌ها و جستارهای حافظ‌پژوهی'
-            : isFr
-              ? 'Axes Théoriques, Conférences et Essais sur Hafez'
-              : 'Key Theoretical Axes, Conferences & Hafezology Essays'}
+          {tx(
+            'محورهای نظری، کنفرانس‌ها و جستارهای حافظ‌پژوهی',
+            'Axes Théoriques, Conférences et Essais sur Hafez',
+            'Key Theoretical Axes, Conferences & Hafezology Essays'
+          )}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -329,7 +338,7 @@ export default async function HafezologyHubPage({
                 </p>
               </div>
               <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-end text-xs font-bold text-[var(--primary)]">
-                <span>{isFa ? 'مشاهده و مطالعه ←' : 'Consulter →'}</span>
+                <span>{tx('مشاهده و مطالعه ←', 'Consulter →', 'Read more →')}</span>
               </div>
             </Link>
           ))}
@@ -346,7 +355,7 @@ export default async function HafezologyHubPage({
                   className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] hover:border-[var(--primary)] transition-colors space-y-1.5"
                 >
                   <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400">
-                    {isFa ? 'سند / کنفرانس حافظ' : 'Conférence / Entretien'}
+                    {tx('سند / کنفرانس حافظ', 'Conférence / Entretien', 'Hafez Conference / Interview')}
                   </span>
                   <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug line-clamp-2">
                     {tr?.title || pg.slug}
@@ -373,7 +382,7 @@ export default async function HafezologyHubPage({
                   className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] hover:border-[var(--primary)] transition-colors space-y-1.5"
                 >
                   <span className="text-[10px] font-mono font-bold text-[var(--primary)]">
-                    {isFa ? 'مقاله حافظ‌پژوهی' : 'Article sur Hafez'}
+                    {tx('مقاله حافظ‌پژوهی', 'Article sur Hafez', 'Hafezology Article')}
                   </span>
                   <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug line-clamp-2">
                     {tr?.title || art.slug}
@@ -385,10 +394,10 @@ export default async function HafezologyHubPage({
         )}
       </section>
 
-      {/* SECTION 3: REAL MIGRATED HAFEZ VIDEO SERIES «صدای سخن عشق (حافظ)» */}
+      {/* SECTION 3: REAL MIGRATED HAFEZ VIDEO SERIES */}
       <section
         id="hafez-videos"
-        aria-label="مجموعه ویدیویی صدای سخن عشق"
+        aria-label={tx('مجموعه ویدیویی صدای سخن عشق', 'Série vidéo sur Hafez', 'The Voice of Love Video Series')}
         className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 space-y-6 scroll-mt-28"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
@@ -396,9 +405,11 @@ export default async function HafezologyHubPage({
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-amber-600 font-bold">
               <Video size={16} />
               <span>
-                {isFa
-                  ? `آرشیو دیداری حافظ‌پژوهی (${hafezVideos.length} ویدیوی واقعی)`
-                  : `Séminaires Vidéos sur Hafez (${hafezVideos.length})`}
+                {tx(
+                  `آرشیو دیداری حافظ‌پژوهی (${hafezVideos.length} ویدیوی واقعی)`,
+                  `Séminaires Vidéos sur Hafez (${hafezVideos.length})`,
+                  `Hafezology Video Seminars (${hafezVideos.length} recordings)`
+                )}
               </span>
             </div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
@@ -413,16 +424,14 @@ export default async function HafezologyHubPage({
             >
               <Video size={14} />
               <span>
-                {isFa
-                  ? 'کنفرانس پاریس درباره حافظ'
-                  : 'Conférence à Paris sur Hafez'}
+                {tx('کنفرانس پاریس درباره حافظ', 'Conférence à Paris sur Hafez', 'Paris Conference on Hafez')}
               </span>
             </Link>
             <Link
               href={`/${locale}/media?series=sedaye-sokhan-eshgh-hafez#videos-archive`}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
             >
-              <span>{isFa ? `همه ${hafezVideos.length} ویدیو ←` : `Toutes les ${hafezVideos.length} vidéos →`}</span>
+              <span>{tx(`همه ${hafezVideos.length} ویدیو ←`, `Toutes les ${hafezVideos.length} vidéos →`, `All ${hafezVideos.length} videos →`)}</span>
             </Link>
           </div>
         </div>
@@ -463,7 +472,7 @@ export default async function HafezologyHubPage({
                     </h3>
                   </div>
                   <span className="text-xs font-bold text-[var(--primary)] pt-2">
-                    {isFa ? 'مشاهده ویدیو ←' : 'Regarder →'}
+                    {tx('مشاهده ویدیو ←', 'Regarder →', 'Watch video →')}
                   </span>
                 </div>
               </Link>
@@ -472,16 +481,16 @@ export default async function HafezologyHubPage({
         </div>
       </section>
 
-      {/* SECTION 4: CALLIGRAPHIC GALLERY «آثار ۲۰۱۵ / حافظ» (Linked Directly to works-2015 in IIIF!) */}
+      {/* SECTION 4: CALLIGRAPHIC GALLERY */}
       {hafezGallery && (
         <section
-          aria-label="گالری نقاشی‌خط حافظ"
+          aria-label={tx('گالری نقاشی‌خط حافظ', 'Galerie calligraphique Hafez', 'Hafez Calligraphic Gallery')}
           className="rounded-3xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-8"
         >
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--color-art)] font-bold">
               <Palette size={16} />
-              <span>{isFa ? 'پیوند خط شکسته نستعلیق و غزل حافظ' : 'Calligraphie & Hafez'}</span>
+              <span>{tx('پیوند خط شکسته نستعلیق و غزل حافظ', 'Calligraphie & Hafez', 'Shekasteh Nasta‘liq & Hafez’s Ghazal')}</span>
             </div>
             <h2 className="text-2xl font-black text-[var(--foreground)]">
               {hafezGallery.title[locale]}
@@ -495,7 +504,7 @@ export default async function HafezologyHubPage({
               <span>{hafezGallery.medium[locale]}</span>
               <span>•</span>
               <span>
-                {hafezGallery.artworkCount} {isFa ? 'تابلو' : 'toiles'}
+                {hafezGallery.artworkCount} {tx('تابلو', 'toiles', 'canvases')}
               </span>
             </div>
           </div>
@@ -505,7 +514,7 @@ export default async function HafezologyHubPage({
             className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-bold bg-[var(--primary)] text-[var(--primary-foreground)] shrink-0"
           >
             <Sparkles size={15} />
-            <span>{isFa ? 'گشودن گالری حافظ در موزه زوم عمیق (IIIF)' : 'Ouvrir la Série Hafez (IIIF)'}</span>
+            <span>{tx('گشودن گالری حافظ در موزه زوم عمیق (IIIF)', 'Ouvrir la Série Hafez (IIIF)', 'Open Hafez Series in IIIF Viewer')}</span>
           </Link>
         </section>
       )}

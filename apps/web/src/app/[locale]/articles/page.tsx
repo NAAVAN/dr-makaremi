@@ -32,7 +32,9 @@ export async function generateMetadata({
         : 'Complete Articles, Essays & News Archive | Dr. Hassan Makaremi',
     description: isFa
       ? 'مجموعه کامل ۴۰۴ مقاله، یادداشت پژوهشی، اخبار و جستارهای دکتر حسن مکارمی در حوزه‌های روانکاوی لکانی، فرهنگ و راهبرد، هنر خوشنویسی و حقوق بشر.'
-      : 'Archive intégrale de plus de 400 articles, essais et actualités du Dr Hassan Makaremi.',
+      : isFr
+        ? 'Archive intégrale de plus de 400 articles, essais et actualités du Dr Hassan Makaremi.'
+        : 'Complete archive of over 400 essays, clinical articles, and news by Dr Hassan Makaremi across Lacanian psychoanalysis, cultural strategy, calligraphy, and human rights.',
   });
 }
 

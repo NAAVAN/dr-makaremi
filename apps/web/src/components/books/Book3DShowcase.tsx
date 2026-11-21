@@ -30,6 +30,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
   const isRtlBook = profile.direction === 'rtl';
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const [pose, setPose] = useState<CameraPose>('isometric');
   const [coverOpen, setCoverOpen] = useState(false);
@@ -40,7 +41,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
   const title = translation?.title || book.slug;
   const subtitle = translation?.subtitle || '';
   const publisher =
-    translation?.publisher_name || (isFa ? 'انتشارات آلیان، پاریس' : 'Éditions Alian, Paris');
+    translation?.publisher_name || tx('انتشارات آلیان، پاریس', 'Éditions Alian, Paris', 'Éditions Alian, Paris');
   const pageCount = book.page_count || 240;
 
   // Authentic physical spine width in pixels (scaled from mm)
@@ -123,15 +124,11 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
         </span>
         <span className="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-900 dark:text-amber-300 border border-amber-500/30 font-bold">
           {isRtlBook
-            ? isFa
-              ? 'صحافی فارسی (راست‌به‌چپ RTL)'
-              : 'Reliure Persane (RTL)'
-            : isFa
-              ? 'صحافی لاتین (چپ‌به‌راست LTR)'
-              : 'Reliure Française (LTR)'}
+            ? tx('صحافی فارسی (راست‌به‌چپ RTL)', 'Reliure Persane (RTL)', 'Persian Binding (RTL)')
+            : tx('صحافی لاتین (چپ‌به‌راست LTR)', 'Reliure Française (LTR)', 'European Binding (LTR)')}
         </span>
         <span className="px-2.5 py-1 rounded-full bg-stone-200/80 dark:bg-stone-800/90 font-bold">
-          {isFa ? `قطر عطف: ${profile.spineWidthMm} میلی‌متر` : `Dos : ${profile.spineWidthMm} mm`}
+          {tx(`قطر عطف: ${profile.spineWidthMm} میلی‌متر`, `Dos : ${profile.spineWidthMm} mm`, `Spine: ${profile.spineWidthMm} mm`)}
         </span>
       </div>
 
@@ -186,7 +183,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
               }}
             >
               <div className="border-b border-stone-300/80 pb-2 flex items-center justify-between text-[9px] text-stone-500 font-bold">
-                <span>{isFa ? 'صفحه ۱ (صفحه عنوان داخلی)' : 'Page 1 (Page de titre)'}</span>
+                <span>{tx('صفحه ۱ (صفحه عنوان داخلی)', 'Page 1 (Page de titre)', 'Page 1 (Title Page)')}</span>
                 <span>{book.publication_year}</span>
               </div>
 
@@ -195,7 +192,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                   ✦
                 </div>
                 <p className="text-[10px] font-bold text-amber-900 tracking-wide">
-                  {isFa ? 'دکتر حسن مکارمی' : 'Dr. Hassan Makaremi'}
+                  {tx('دکتر حسن مکارمی', 'Dr Hassan Makaremi', 'Dr Hassan Makaremi')}
                 </p>
                 <h3 className="text-sm sm:text-base font-black text-stone-900 leading-snug">
                   {title}
@@ -214,7 +211,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
               <div className="border-t border-stone-300/80 pt-2 text-[9px] text-stone-600 space-y-0.5">
                 <p className="font-bold">{publisher}</p>
                 <p className="text-[8px] opacity-75">
-                  {isFa ? `صفحه ۱ از ${pageCount}` : `Page 1 / ${pageCount}`}
+                  {tx(`صفحه ۱ از ${pageCount}`, `Page 1 / ${pageCount}`, `Page 1 of ${pageCount}`)}
                 </p>
               </div>
             </div>
@@ -288,7 +285,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                     className="text-xs font-bold"
                     style={{ color: profile.coverPalette.accentGold }}
                   >
-                    {isFa ? 'دکتر حسن مکارمی' : 'Dr. Hassan Makaremi'}
+                    {tx('دکتر حسن مکارمی', 'Dr Hassan Makaremi', 'Dr Hassan Makaremi')}
                   </p>
                   <p className="text-[10px] opacity-85 truncate">{publisher}</p>
                   <p className="text-[9px] opacity-65">{book.isbn_13}</p>
@@ -339,7 +336,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                   color: profile.coverPalette.accentGold,
                 }}
               >
-                {title} • {isFa ? 'دکتر حسن مکارمی' : 'Dr. H. Makaremi'}
+                {title} • {tx('دکتر حسن مکارمی', 'Dr H. Makaremi', 'Dr H. Makaremi')}
               </span>
             </div>
 
@@ -436,7 +433,12 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                         : 'Back Cover Synopsis'}
                   </span>
                   <p className="text-xs leading-relaxed opacity-90 line-clamp-8">
-                    {translation?.synopsis || 'توضیحات اثر در دست تکمیل است.'}
+                    {translation?.synopsis ||
+                      tx(
+                        'توضیحات اثر در دست تکمیل است.',
+                        'Présentation de l’ouvrage en cours de préparation.',
+                        'Synopsis currently in preparation.'
+                      )}
                   </p>
                 </div>
 
@@ -446,7 +448,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
                 >
                   <div className="flex items-center justify-between">
                     <span>{profile.trimSizeLabel[locale]}</span>
-                    <span>{pageCount} ص</span>
+                    <span>{pageCount} {tx('ص', 'p.', 'pp.')}</span>
                   </div>
                   <div className="flex items-center justify-between text-[9px]">
                     <span>{book.publication_year}</span>
@@ -470,19 +472,15 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
               setCoverOpen((prev) => !prev);
             }}
             className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${coverOpen
-                ? 'bg-amber-700 text-white border-amber-700 shadow-sm'
-                : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-amber-600/60'
+              ? 'bg-amber-700 text-white border-amber-700 shadow-sm'
+              : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-amber-600/60'
               }`}
           >
             <BookOpen size={14} />
             <span>
               {coverOpen
-                ? isFa
-                  ? 'بستن جلد کتاب'
-                  : 'Fermer la couverture'
-                : isFa
-                  ? 'باز کردن جلد (صفحه ۱)'
-                  : 'Ouvrir (Page 1)'}
+                ? tx('بستن جلد کتاب', 'Fermer la couverture', 'Close Front Cover')
+                : tx('باز کردن جلد (صفحه ۱)', 'Ouvrir (Page 1)', 'Open Cover (Page 1)')}
             </span>
           </button>
 
@@ -490,8 +488,8 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
             type="button"
             onClick={() => selectPose(pose === 'back' ? 'isometric' : 'back')}
             className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${pose === 'back'
-                ? 'bg-teal-800 text-white border-teal-800 shadow-sm'
-                : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-teal-600/60'
+              ? 'bg-teal-800 text-white border-teal-800 shadow-sm'
+              : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-teal-600/60'
               }`}
           >
             <RotateCw
@@ -500,12 +498,8 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
             />
             <span>
               {pose === 'back'
-                ? isFa
-                  ? 'نمای روی جلد'
-                  : 'Voir la couverture'
-                : isFa
-                  ? 'مشاهده پشت جلد'
-                  : 'Quatrième de couv.'}
+                ? tx('نمای روی جلد', 'Voir la couverture', 'View Front Cover')
+                : tx('مشاهده پشت جلد', 'Quatrième de couv.', 'View Back Cover')}
             </span>
           </button>
         </div>
@@ -516,36 +510,36 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
             type="button"
             onClick={() => setMotionMode('float')}
             className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-bold transition-all cursor-pointer ${motionMode === 'float'
-                ? 'bg-teal-800 text-white shadow-sm'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-teal-800 text-white shadow-sm'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
             <Play size={12} />
-            <span>{isFa ? 'شناور ۳بعدی' : 'Flottement 3D'}</span>
+            <span>{tx('شناور ۳بعدی', 'Flottement 3D', '3D Float')}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setMotionMode('turntable')}
             className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-bold transition-all cursor-pointer ${motionMode === 'turntable'
-                ? 'bg-amber-700 text-white shadow-sm'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-amber-700 text-white shadow-sm'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
             <RefreshCw size={12} className={motionMode === 'turntable' ? 'animate-spin' : ''} />
-            <span>{isFa ? 'چرخش ۳۶۰°' : 'Rotation 360°'}</span>
+            <span>{tx('چرخش ۳۶۰°', 'Rotation 360°', '360° Spin')}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setMotionMode('paused')}
             className={`flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer ${motionMode === 'paused'
-                ? 'bg-stone-800 text-white shadow-sm'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-stone-800 text-white shadow-sm'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
             <Pause size={12} />
-            <span>{isFa ? 'توقف' : 'Pause'}</span>
+            <span>{tx('توقف', 'Pause', 'Pause')}</span>
           </button>
         </div>
 
@@ -555,31 +549,31 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
             type="button"
             onClick={() => selectPose('isometric')}
             className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${pose === 'isometric' && manualOffset.rx === 0 && manualOffset.ry === 0
-                ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
-            {isFa ? 'سه‌رخ' : '3D Iso'}
+            {tx('سه‌رخ', '3D Iso', '3D Iso')}
           </button>
           <button
             type="button"
             onClick={() => selectPose('front')}
             className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${pose === 'front' && manualOffset.rx === 0 && manualOffset.ry === 0
-                ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
-            {isFa ? 'روبه‌رو' : 'Face'}
+            {tx('روبه‌رو', 'Face', 'Front')}
           </button>
           <button
             type="button"
             onClick={() => selectPose('spine')}
             className={`px-2.5 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${pose === 'spine' && manualOffset.rx === 0 && manualOffset.ry === 0
-                ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
               }`}
           >
-            {isFa ? 'عطف' : 'Dos'}
+            {tx('عطف', 'Dos', 'Spine')}
           </button>
 
           <div className="h-4 w-px bg-[var(--border-subtle)] mx-0.5" />
@@ -588,7 +582,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => nudgeRotation(0, -20)}
-            title={isFa ? 'چرخش به چپ' : 'Tourner à gauche'}
+            title={tx('چرخش به چپ', 'Tourner à gauche', 'Rotate left')}
             className="p-1.5 rounded-lg bg-[var(--surface-card)] text-[var(--foreground)] hover:bg-amber-500/15 transition-colors cursor-pointer"
           >
             <ArrowLeft size={13} />
@@ -596,7 +590,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => nudgeRotation(0, 20)}
-            title={isFa ? 'چرخش به راست' : 'Tourner à droite'}
+            title={tx('چرخش به راست', 'Tourner à droite', 'Rotate right')}
             className="p-1.5 rounded-lg bg-[var(--surface-card)] text-[var(--foreground)] hover:bg-amber-500/15 transition-colors cursor-pointer"
           >
             <ArrowRight size={13} />
@@ -604,7 +598,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => nudgeRotation(10, 0)}
-            title={isFa ? 'زاویه بالا' : 'Haut'}
+            title={tx('زاویه بالا', 'Haut', 'Tilt up')}
             className="p-1.5 rounded-lg bg-[var(--surface-card)] text-[var(--foreground)] hover:bg-amber-500/15 transition-colors cursor-pointer"
           >
             <ArrowUp size={13} />
@@ -612,7 +606,7 @@ export function Book3DShowcase({ book, translation, locale }: Book3DShowcaseProp
           <button
             type="button"
             onClick={() => nudgeRotation(-10, 0)}
-            title={isFa ? 'زاویه پایین' : 'Bas'}
+            title={tx('زاویه پایین', 'Bas', 'Tilt down')}
             className="p-1.5 rounded-lg bg-[var(--surface-card)] text-[var(--foreground)] hover:bg-amber-500/15 transition-colors cursor-pointer"
           >
             <ArrowDown size={13} />

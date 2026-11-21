@@ -117,6 +117,8 @@ export function IIIFDeepZoomViewer({
   };
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   return (
     <div
@@ -181,7 +183,7 @@ export function IIIFDeepZoomViewer({
           <button
             type="button"
             onClick={() => handleZoom(0.3)}
-            aria-label="بزرگنمایی"
+            aria-label={tx('بزرگنمایی', 'Zoom avant', 'Zoom in')}
             className="p-1.5 hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
           >
             <ZoomIn size={16} />
@@ -189,7 +191,7 @@ export function IIIFDeepZoomViewer({
           <button
             type="button"
             onClick={() => handleZoom(-0.3)}
-            aria-label="کوچک‌نمایی"
+            aria-label={tx('کوچک‌نمایی', 'Zoom arrière', 'Zoom out')}
             className="p-1.5 hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
           >
             <ZoomOut size={16} />
@@ -197,7 +199,7 @@ export function IIIFDeepZoomViewer({
           <button
             type="button"
             onClick={handleReset}
-            aria-label="بازنشانی زوم"
+            aria-label={tx('بازنشانی زوم', 'Réinitialiser le zoom', 'Reset zoom')}
             className="p-1.5 hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
           >
             <RotateCcw size={16} />
@@ -205,7 +207,7 @@ export function IIIFDeepZoomViewer({
           <button
             type="button"
             onClick={toggleFullscreen}
-            aria-label="تمام صفحه"
+            aria-label={tx('تمام صفحه', 'Plein écran', 'Toggle fullscreen')}
             className="p-1.5 hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
           >
             <Maximize size={16} />
@@ -218,7 +220,11 @@ export function IIIFDeepZoomViewer({
         <span className="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[10px] text-neutral-400 font-mono flex items-center gap-1.5">
           <Layers size={12} className="text-amber-400" />
           {isUsingFallback
-            ? (isFa ? 'نمایشگر کاشی‌های بافت بوم (حالت باکیفیت آفلاین)' : 'Mode Haute Résolution Hors-Ligne')
+            ? tx(
+                'نمایشگر کاشی‌های بافت بوم (حالت باکیفیت آفلاین)',
+                'Mode Haute Résolution Hors-Ligne',
+                'High-Resolution Offline Canvas Mode'
+              )
             : 'Cantaloupe IIIF v3 Protocol Connected'}
         </span>
       </div>

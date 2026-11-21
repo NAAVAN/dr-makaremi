@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { Calendar, User, FileText, Download } from 'lucide-react';
 import { ContentIntegrityBadge } from './ContentIntegrityBadge';
 import { AeoKeyTakeaways } from './AeoKeyTakeaways';
+import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
 import { renderSafeMarkdown } from '@/lib/markdown';
+import { resolveWorkTranslation } from '@/lib/work-language';
 import type { Article, ArticleTranslation, LacanianGlossaryTerm, Locale } from '@makaremi/shared';
 
 interface ArticleReaderProps {
@@ -20,10 +22,30 @@ export function ArticleReader({
   locale,
 }: ArticleReaderProps) {
   const isFa = locale === 'fa';
-  const title = translation?.title || article.slug;
-  const summary = translation?.executive_summary || '';
-  const body = translation?.body_markdown || '';
+  const isFr = locale === 'fr';
+
+  const resolved = resolveWorkTranslation({
+    collection: 'articles',
+    slug: article.slug,
+    translations: article.translations,
+    siteLocale: locale,
+  });
+
+  const orig = resolved.originalRecord || translation;
+  const title = orig?.title || article.slug;
+  const summary = orig?.executive_summary || '';
+  const body = orig?.body_markdown || '';
   const dateStr = article.published_at || article.created_at;
+  const pillarRoute =
+    article.pillar === 'psychoanalysis'
+      ? isFr
+        ? 'psychanalyse'
+        : 'psychoanalysis'
+      : article.pillar === 'art_calligraphy'
+        ? 'art'
+        : article.pillar === 'cultural_strategy'
+          ? 'strategy'
+          : 'human-rights';
 
   return (
     <article className="max-w-4xl mx-auto space-y-8">
@@ -31,7 +53,7 @@ export function ArticleReader({
       <link
         rel="alternate"
         type="text/markdown"
-        href={`/${locale}/${article.pillar === 'psychoanalysis' ? (locale === 'fr' ? 'psychanalyse' : 'psychoanalysis') : article.pillar === 'art_calligraphy' ? 'art' : article.pillar === 'cultural_strategy' ? 'strategy' : 'human-rights'}/articles/${article.slug}.md`}
+        href={`/${locale}/${pillarRoute}/articles/${article.slug}.md`}
         title="Markdown Twin"
       />
 
@@ -47,12 +69,12 @@ export function ArticleReader({
           </span>
           <address className="not-italic flex items-center gap-1">
             <User size={14} />
-            <span>{isFa ? 'دکتر حسن مکارمی' : 'Dr. Hassan Makaremi'}</span>
+            <span>{isFa ? 'دکتر حسن مکارمی' : isFr ? 'Dr Hassan Makaremi' : 'Dr Hassan Makaremi'}</span>
           </address>
         </div>
 
         {/* Single H1 Tag */}
-        <h1 className="text-2xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
           {title}
         </h1>
 
@@ -68,21 +90,27 @@ export function ArticleReader({
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 border border-[var(--primary)]/30 text-[var(--primary)] transition-colors"
               >
                 <Download size={13} />
-                <span>{isFa ? 'نسخه اصلی PDF مقاله' : 'PDF Original'}</span>
+                <span>{isFa ? 'نسخه اصلی PDF مقاله' : isFr ? 'PDF Original' : 'Original PDF'}</span>
               </a>
             )}
             <a
               href={`/api/censorship-bypass/bundle?slug=${encodeURIComponent(article.slug)}&locale=${locale}`}
               download
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-800 dark:text-amber-300 transition-colors"
-              title={isFa ? 'دانلود نسخه مستقل آفلاین ضدسانسور' : 'Télécharger le bundle hors-ligne anti-censure'}
+              title={
+                isFa
+                  ? 'دانلود نسخه مستقل آفلاین ضدسانسور'
+                  : isFr
+                    ? 'Télécharger le bundle hors-ligne anti-censure'
+                    : 'Download standalone offline bundle'
+              }
             >
               <Download size={13} />
-              <span>{isFa ? 'بسته آفلاین ضدسانسور' : 'Bundle Hors-Ligne'}</span>
+              <span>{isFa ? 'بسته آفلاین ضدسانسور' : isFr ? 'Bundle Hors-Ligne' : 'Offline Bundle'}</span>
             </a>
 
             <Link
-              href={`/${locale}/${article.pillar === 'psychoanalysis' ? (locale === 'fr' ? 'psychanalyse' : 'psychoanalysis') : article.pillar === 'art_calligraphy' ? 'art' : article.pillar === 'cultural_strategy' ? 'strategy' : 'human-rights'}/articles/${article.slug}.md`}
+              href={`/${locale}/${pillarRoute}/articles/${article.slug}.md`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] transition-colors"
               title="Clean Markdown Twin for AI Agents (AEO/GEO)"
@@ -94,18 +122,6 @@ export function ArticleReader({
         </div>
       </header>
 
-      {/* Executive Summary Blockquote for AEO / GEO & Telegram Instant View */}
-      {summary && (
-        <section aria-label="Executive Summary" className="aeo-summary-box">
-          <blockquote className="executive-summary p-6 rounded-2xl bg-[var(--surface-sunken)] border-s-4 border-[var(--primary)] shadow-sm text-base sm:text-lg italic leading-relaxed text-[var(--foreground)]">
-            <span className="block text-xs font-bold uppercase tracking-wider text-[var(--primary)] not-italic mb-2">
-              {isFa ? 'چکیده مدیریتی و یافته‌های کلیدی (Executive Summary):' : 'Résumé Analytique :'}
-            </span>
-            {summary}
-          </blockquote>
-        </section>
-      )}
-
       {/* AEO Key Takeaways Box (CNRS Empirical Research & Core Answers) */}
       <AeoKeyTakeaways
         slug={article.slug}
@@ -114,21 +130,48 @@ export function ArticleReader({
         executiveSummary={summary}
       />
 
-      {/* Main Body with Safe AST Markdown & Lacanian Glossary Popovers */}
-      <section
-        aria-label={isFa ? 'متن اصلی مقاله' : 'Article Body'}
-        className="article-body text-base sm:text-lg leading-loose text-[var(--foreground)] font-serif space-y-6 break-words"
-      >
-        {renderSafeMarkdown(body, { glossaryTerms })}
-      </section>
+      {/* 3-Mode Scholarly Bilingual Reader (Original Default / Site Translation / Side-by-Side) */}
+      <BilingualWorkReader
+        originalLang={resolved.originalLang}
+        siteLocale={locale}
+        translated={resolved.translatedRecord}
+        originalContent={
+          <div className="space-y-8">
+            {summary && (
+              <section
+                aria-label={isFa ? 'چکیده مدیریتی' : isFr ? 'Résumé analytique' : 'Executive Summary'}
+                className="aeo-summary-box"
+              >
+                <blockquote className="executive-summary p-6 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] shadow-sm text-base sm:text-lg italic leading-relaxed text-[var(--foreground)]">
+                  <span className="block text-xs font-bold uppercase tracking-wider text-[var(--primary)] not-italic mb-2">
+                    {isFa
+                      ? 'چکیده مدیریتی و یافته‌های کلیدی:'
+                      : isFr
+                        ? 'Résumé analytique :'
+                        : 'Executive Summary:'}
+                  </span>
+                  {summary}
+                </blockquote>
+              </section>
+            )}
+
+            <section
+              aria-label={isFa ? 'متن اصلی مقاله' : isFr ? 'Texte intégral de l’article' : 'Article Body'}
+              className="article-body text-base sm:text-lg leading-loose text-[var(--foreground)] font-serif space-y-6 break-words"
+            >
+              {renderSafeMarkdown(body, { glossaryTerms })}
+            </section>
+          </div>
+        }
+      />
 
       {/* Academic Citation Footer */}
       <footer className="mt-12 pt-6 border-t border-[var(--border-subtle)] rounded-2xl bg-[var(--surface-sunken)] p-6 text-xs text-[var(--foreground-muted)] space-y-2">
         <span className="font-bold text-[var(--foreground)] block">
-          {isFa ? 'ارجاع علمی پیشنهادی (Citation):' : 'Citation académique suggérée :'}
+          {isFa ? 'ارجاع علمی پیشنهادی (Citation):' : isFr ? 'Citation académique suggérée :' : 'Suggested Academic Citation:'}
         </span>
         <p className="font-mono text-[11px] leading-relaxed select-all bg-[var(--surface-card)] p-3 rounded-lg border border-[var(--border-subtle)]">
-          Makaremi, H. ({dateStr.slice(0, 4)}). &quot;{title}&quot;. Official Digital Archive, https://makaremi.com/{locale}/{article.pillar}/articles/{article.slug}
+          Makaremi, H. ({dateStr.slice(0, 4)}). &quot;{title}&quot;. Official Digital Archive, https://makaremi.com/{locale}/{pillarRoute}/articles/{article.slug}
         </p>
       </footer>
     </article>

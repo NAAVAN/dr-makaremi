@@ -99,6 +99,8 @@ export default async function PillarArticlesArchivePage({
   if (!pillarKey) notFound();
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const rawArticles = await getArticles(locale, pillarKey);
   // Strip heavy full-body markdown from listing RSC payload for fast Core Web Vitals
   const articles = rawArticles.map((art) => ({
@@ -111,25 +113,23 @@ export default async function PillarArticlesArchivePage({
 
   return (
     <div className="space-y-12">
-      <nav aria-label="راهنمای مسیر" className="text-xs text-[var(--foreground-muted)]">
+      <nav aria-label={tx('راهنمای مسیر', 'Fil d’Ariane', 'Breadcrumb')} className="text-xs text-[var(--foreground-muted)]">
         <Link
           href={`/${locale}/${pillar}`}
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به پورتال ستون' : 'Retour au portail'}</span>
+          <span>{tx('بازگشت به پورتال ستون', 'Retour au portail', 'Back to Pillar Portal')}</span>
         </Link>
       </nav>
 
       <header className="space-y-4 border-b border-[var(--border-subtle)] pb-6">
         <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--primary)] font-bold">
           <FileText size={16} />
-          <span>{isFa ? 'آرشیو مقالات' : 'Articles'}</span>
+          <span>{tx('آرشیو مقالات', 'Articles', 'Articles Archive')}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
-          {isFa
-            ? 'آرشیو مقالات و جستارهای پژوهشی'
-            : 'Articles et Essais Cliniques'}
+          {PILLAR_ARTICLES_META[pillarKey].title[locale]}
         </h1>
       </header>
 

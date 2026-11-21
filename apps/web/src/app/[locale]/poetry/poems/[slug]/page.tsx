@@ -106,7 +106,9 @@ export default async function SinglePoemPage({
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به آرشیو اشعار' : 'Retour aux poèmes'}</span>
+          <span>
+            {isFa ? 'بازگشت به آرشیو اشعار' : isFr ? 'Retour aux poèmes' : 'Back to Poems Archive'}
+          </span>
         </Link>
 
         <Link

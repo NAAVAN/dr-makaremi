@@ -28,6 +28,8 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
   const [loading, setLoading] = useState(false);
   const [copiedCmd, setCopiedCmd] = useState(false);
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -82,17 +84,17 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
             </div>
             <div>
               <h3 id="audit-modal-title" className="font-bold text-base md:text-lg">
-                {isFa ? 'راستی‌آزمایی رمزنگاری و امضای دیجیتال' : 'Vérification Cryptographique Ed25519'}
+                {tx('راستی‌آزمایی رمزنگاری و امضای دیجیتال', 'Vérification Cryptographique Ed25519', 'Ed25519 Cryptographic Verification')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {isFa ? 'اثبات ریاضی عدم تحریف و تغییرناپذیری سند' : 'Preuve mathématique d’intégrité immuable'}
+                {tx('اثبات ریاضی عدم تحریف و تغییرناپذیری سند', 'Preuve mathématique d’intégrité immuable', 'Mathematical proof of immutable archival authenticity')}
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="بستن پنجره"
+            aria-label={tx('بستن پنجره', 'Fermer la fenêtre', 'Close window')}
             className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X size={20} />
@@ -104,7 +106,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
           {loading ? (
             <div className="py-12 flex flex-col items-center justify-center gap-3 text-slate-500">
               <Loader2 size={28} className="animate-spin text-emerald-600" />
-              <span>{isFa ? 'در حال استعلام کلید عمومی و محاسبه امضا...' : 'Calcul de l’empreinte en cours...'}</span>
+              <span>{tx('در حال استعلام کلید عمومی و محاسبه امضا...', 'Calcul de l’empreinte en cours...', 'Verifying public key and computing digest...')}</span>
             </div>
           ) : data ? (
             <>
@@ -114,12 +116,16 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
                   <ShieldCheck size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <span className="font-semibold text-xs md:text-sm">
                     {data.verified
-                      ? isFa
-                        ? 'امضای دیجیتال معتبر است: سند ۱۰۰٪ اصیل و بدون تحریف'
-                        : 'Signature Ed25519 valide : document 100% authentique'
-                      : isFa
-                      ? 'هشدار: امضای دیجیتال تطابق ندارد'
-                      : 'Attention: Signature invalide'}
+                      ? tx(
+                          'امضای دیجیتال معتبر است: سند ۱۰۰٪ اصیل و بدون تحریف',
+                          'Signature Ed25519 valide : document 100% authentique',
+                          'Valid Ed25519 signature: document 100% authentic and unaltered'
+                        )
+                      : tx(
+                          'هشدار: امضای دیجیتال تطابق ندارد',
+                          'Attention : signature invalide',
+                          'Warning: cryptographic signature mismatch'
+                        )}
                   </span>
                 </div>
                 <span className="text-[11px] font-mono bg-emerald-500/20 px-2 py-0.5 rounded">
@@ -130,7 +136,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
               {/* SHA-256 Digest */}
               <div>
                 <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
-                  {isFa ? 'چکیده کانونیکال (SHA-256 Canonical Digest):' : 'Empreinte canonique SHA-256 :'}
+                  {tx('چکیده کانونیکال (SHA-256 Canonical Digest):', 'Empreinte canonique SHA-256 :', 'SHA-256 Canonical Digest:')}
                 </label>
                 <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-950 font-mono text-xs break-all border border-slate-200 dark:border-slate-800">
                   {data.canonical_sha256}
@@ -140,7 +146,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
               {/* Ed25519 Signature */}
               <div>
                 <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
-                  {isFa ? 'امضای نامتقارن (Ed25519 Asymmetric Signature):' : 'Signature asymétrique Ed25519 :'}
+                  {tx('امضای نامتقارن (Ed25519 Asymmetric Signature):', 'Signature asymétrique Ed25519 :', 'Ed25519 Asymmetric Signature:')}
                 </label>
                 <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-950 font-mono text-xs break-all border border-slate-200 dark:border-slate-800 max-h-24 overflow-y-auto">
                   {data.signature_ed25519}
@@ -152,7 +158,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
                 <div className="flex items-center gap-2">
                   <Key size={16} className="text-amber-500 shrink-0" />
                   <span>
-                    {isFa ? 'کلید عمومی رسمی دکتر حسن مکارمی:' : 'Clé publique officielle :'}
+                    {tx('کلید عمومی رسمی دکتر حسن مکارمی:', 'Clé publique officielle :', 'Official Public Key (Dr Hassan Makaremi):')}
                   </span>
                 </div>
                 <a
@@ -170,7 +176,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <Terminal size={14} />
-                    {isFa ? 'فرمان خط فرمان جهت راستی‌آزمایی مستقل:' : 'Commande CLI de vérification :'}
+                    {tx('فرمان خط فرمان جهت راستی‌آزمایی مستقل:', 'Commande CLI de vérification :', 'CLI Command for Independent Verification:')}
                   </label>
                   <button
                     type="button"
@@ -178,7 +184,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
                     className="inline-flex items-center gap-1 text-[11px] text-sky-600 dark:text-sky-400 hover:underline"
                   >
                     {copiedCmd ? <Check size={12} /> : <Copy size={12} />}
-                    {copiedCmd ? (isFa ? 'کپی شد' : 'Copié') : isFa ? 'کپی فرمان' : 'Copier'}
+                    {copiedCmd ? tx('کپی شد', 'Copié', 'Copied') : tx('کپی فرمان', 'Copier', 'Copy command')}
                   </button>
                 </div>
                 <pre className="p-2.5 rounded-lg bg-slate-900 text-slate-200 font-mono text-xs overflow-x-auto border border-slate-800">
@@ -188,7 +194,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
             </>
           ) : (
             <div className="py-6 text-center text-slate-500">
-              {isFa ? 'خطا در دریافت اطلاعات امضای دیجیتال' : 'Erreur lors de la récupération des données'}
+              {tx('خطا در دریافت اطلاعات امضای دیجیتال', 'Erreur lors de la récupération des données', 'Failed to retrieve cryptographic signature data')}
             </div>
           )}
         </div>
@@ -200,7 +206,7 @@ export function IntegrityAuditModal({ isOpen, onClose, slug, locale }: Integrity
             onClick={onClose}
             className="px-4 py-2 text-xs font-medium rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
           >
-            {isFa ? 'بستن' : 'Fermer'}
+            {tx('بستن', 'Fermer', 'Close')}
           </button>
         </div>
       </div>

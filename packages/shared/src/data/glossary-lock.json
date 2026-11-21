@@ -1,0 +1,110 @@
+{
+  "version": "1.0.0",
+  "locale_targets": {
+    "fa": "fa-IR",
+    "fr": "fr-FR",
+    "en": "en-GB"
+  },
+  "british_english_rules": {
+    "spelling_map": {
+      "modernization": "modernisation",
+      "modernize": "modernise",
+      "organization": "organisation",
+      "organizational": "organisational",
+      "defense": "defence",
+      "color": "colour",
+      "colors": "colours",
+      "center": "centre",
+      "program": "programme",
+      "catalog": "catalogue",
+      "behavior": "behaviour",
+      "honor": "honour",
+      "endeavor": "endeavour",
+      "endeavors": "endeavours",
+      "synchronized": "synchronised",
+      "psychoanalyze": "psychoanalyse",
+      "conceptualize": "conceptualise",
+      "symbolize": "symbolise",
+      "analyze": "analyse",
+      "traveling": "travelling",
+      "dialog": "dialogue"
+    }
+  },
+  "locked_terms": [
+    {
+      "fa": "دگرشنیدن",
+      "fr": "Écouter autrement",
+      "en": "Listening Differently"
+    },
+    {
+      "fa": "دیگرشنیدن",
+      "fr": "Écouter autrement",
+      "en": "Listening Differently"
+    },
+    {
+      "fa": "عملیات نام پدر",
+      "fr": "Opération Nom-du-Père",
+      "en": "Operation of the Name-of-the-Father"
+    },
+    {
+      "fa": "نام پدر",
+      "fr": "Nom-du-Père",
+      "en": "Name-of-the-Father"
+    },
+    {
+      "fa": "حالت مرزی",
+      "fr": "État limite",
+      "en": "Borderline State"
+    },
+    {
+      "fa": "سرزمین فرهنگی ایران",
+      "fr": "Terre culturelle de l'Iran",
+      "en": "Cultural Realm of Iran"
+    },
+    {
+      "fa": "دادخواهی",
+      "fr": "Quête de justice (Dadkhahi)",
+      "en": "Justice-seeking (Dadkhahi)"
+    },
+    {
+      "fa": "جامعه دفاع از حقوق بشر در ایران",
+      "fr": "Ligue de Défense des Droits de l'Homme en Iran (LDDHI)",
+      "en": "League for the Defence of Human Rights in Iran (LDDHI)"
+    },
+    {
+      "fa": "سمینار سوم ژاک لکان",
+      "fr": "Le Séminaire, Livre III de Jacques Lacan (Les Psychoses)",
+      "en": "Jacques Lacan’s Seminar III (The Psychoses)"
+    },
+    {
+      "fa": "گره بورومه‌ای",
+      "fr": "Nœud borroméen",
+      "en": "Borromean Knot"
+    },
+    {
+      "fa": "ساحت نمادین",
+      "fr": "Le Symbolique",
+      "en": "The Symbolic"
+    },
+    {
+      "fa": "ساحت خیالی",
+      "fr": "L'Imaginaire",
+      "en": "The Imaginary"
+    },
+    {
+      "fa": "ساحت واقعی",
+      "fr": "Le Réel",
+      "en": "The Real"
+    },
+    {
+      "fa": "موزه مدرن خوشنویسی مسکو",
+      "fr": "Musée Moderne de Calligraphie de Moscou",
+      "en": "Moscow Museum of Modern Calligraphy"
+    },
+    {
+      "fa": "دکتر حسن مکارمی",
+      "fr": "Dr Hassan Makaremi",
+      "en": "Dr Hassan Makaremi"
+    }
+  ]
+}

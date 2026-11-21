@@ -18,6 +18,8 @@ export function AuthorAudioPlayer({ bookTitle, audioSrc, locale }: AuthorAudioPl
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -25,7 +27,7 @@ export function AuthorAudioPlayer({ bookTitle, audioSrc, locale }: AuthorAudioPl
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => { });
     }
   };
 
@@ -69,10 +71,10 @@ export function AuthorAudioPlayer({ bookTitle, audioSrc, locale }: AuthorAudioPl
           </div>
           <div>
             <h4 className="text-sm font-bold text-[var(--foreground)]">
-              {isFa ? 'چکیده و انگیزه نگارش به صدای مؤلف' : "Commentaire audio de l'auteur"}
+              {tx('چکیده و انگیزه نگارش به صدای مؤلف', "Commentaire audio de l'auteur", 'Author’s Audio Commentary')}
             </h4>
             <p className="text-xs text-[var(--foreground-muted)]">
-              {isFa ? 'دکتر حسن مکارمی (پاریس)' : 'Dr. Hassan Makaremi'}
+              {tx('دکتر حسن مکارمی (پاریس)', 'Dr Hassan Makaremi (Paris)', 'Dr Hassan Makaremi (Paris)')}
             </p>
           </div>
         </div>
@@ -82,7 +84,7 @@ export function AuthorAudioPlayer({ bookTitle, audioSrc, locale }: AuthorAudioPl
           type="button"
           onClick={handleRateChange}
           className="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground)] hover:bg-[var(--surface-overlay)] transition-colors"
-          title="سرعت پخش"
+          title={tx('سرعت پخش', 'Vitesse de lecture', 'Playback speed')}
         >
           {playbackRate}x
         </button>
@@ -121,7 +123,7 @@ export function AuthorAudioPlayer({ bookTitle, audioSrc, locale }: AuthorAudioPl
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold shadow-md hover:opacity-90 transition-all cursor-pointer"
         >
           {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-          <span>{isPlaying ? (isFa ? 'توقف پخش' : 'Pause') : (isFa ? 'شنیدن صدای مؤلف' : 'Écouter')}</span>
+          <span>{isPlaying ? tx('توقف پخش', 'Pause', 'Pause') : tx('شنیدن صدای مؤلف', 'Écouter', 'Listen to Author')}</span>
         </button>
 
         <span className="text-[11px] text-[var(--foreground-muted)] font-mono">

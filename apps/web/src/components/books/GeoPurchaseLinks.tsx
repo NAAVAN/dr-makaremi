@@ -19,6 +19,8 @@ export function GeoPurchaseLinks({ geoLinks, locale }: GeoPurchaseLinksProps) {
   const [region, setRegion] = useState<'iran' | 'international'>('iran');
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
   const iranLinks = geoLinks?.iran || [];
   const intlLinks = geoLinks?.international || [];
 
@@ -35,7 +37,7 @@ export function GeoPurchaseLinks({ geoLinks, locale }: GeoPurchaseLinksProps) {
         <div className="flex items-center gap-2">
           <ShoppingCart className="text-[var(--primary)]" size={18} />
           <h3 className="text-sm font-bold text-[var(--foreground)]">
-            {isFa ? 'تهیه و دریافت نسخه کتاب' : 'Acquisition & Purchase'}
+            {tx('تهیه و دریافت نسخه کتاب', 'Acquisition & Commande', 'Acquisition & Purchase')}
           </h3>
         </div>
 
@@ -44,32 +46,38 @@ export function GeoPurchaseLinks({ geoLinks, locale }: GeoPurchaseLinksProps) {
           <button
             type="button"
             onClick={() => setRegion('iran')}
-            className={`px-3 py-1 rounded-lg font-bold transition-all ${
-              region === 'iran'
+            className={`px-3 py-1 rounded-lg font-bold transition-all ${region === 'iran'
                 ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-xs'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
-            {isFa ? 'داخل ایران' : 'Iran'}
+            {tx('داخل ایران', 'Iran', 'Iran')}
           </button>
           <button
             type="button"
             onClick={() => setRegion('international')}
-            className={`px-3 py-1 rounded-lg font-bold transition-all ${
-              region === 'international'
+            className={`px-3 py-1 rounded-lg font-bold transition-all ${region === 'international'
                 ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-xs'
                 : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
+              }`}
           >
-            {isFa ? 'خارج از ایران (بین‌المللی)' : 'International'}
+            {tx('خارج از ایران (بین‌المللی)', 'International', 'International')}
           </button>
         </div>
       </div>
 
       <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
         {region === 'iran'
-          ? (isFa ? 'پلتفرم‌های داخلی، نسخه الکترونیکی طاقچه و لینک‌های دانلود امن مستقیم برای دسترسی پایدار:' : 'Plateformes nationales et téléchargement direct résilient :')
-          : (isFa ? 'خرید نسخه فیزیکی و بین‌المللی از آمازون و ناشران اروپایی:' : 'Achat international via Amazon et éditeurs européens :')}
+          ? tx(
+            'پلتفرم‌های داخلی، نسخه الکترونیکی طاقچه و لینک‌های دانلود امن مستقیم برای دسترسی پایدار:',
+            'Plateformes nationales et téléchargement direct résilient :',
+            'Domestic platforms, digital editions, and resilient direct access links:'
+          )
+          : tx(
+            'خرید نسخه فیزیکی و بین‌المللی از آمازون و ناشران اروپایی:',
+            'Achat international via Amazon et éditeurs européens :',
+            'Order physical and international editions via Amazon and European publishers:'
+          )}
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">

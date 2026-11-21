@@ -124,6 +124,7 @@ export default async function PillarHubPage({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const [articles, allBooks, pillarVideos] = await Promise.all([
     getArticles(locale, pillarKey),
@@ -160,33 +161,33 @@ export default async function PillarHubPage({
   const quickLinks =
     pillarKey === 'psychoanalysis'
       ? [
-          { href: `/${locale}/${pillar}/articles`, label: isFa ? `همه ${articles.length} مقاله روانکاوی` : `${articles.length} Articles`, icon: Sparkles },
-          { href: `/${locale}/media?series=dar-ravanpajoohi-ba-makaremi#videos-archive`, label: isFa ? 'مجموعه «در روان‌پژوهی»' : 'Série Recherche Psy.', icon: Video },
-          { href: `/${locale}/media?series=negah-e-ravankav#videos-archive`, label: isFa ? 'مجموعه «نگاه روانکاو»' : 'Le Regard du Psy.', icon: Video },
-          { href: `/${locale}/glossary`, label: isFa ? 'واژه‌نامه تحلیلی لکانی' : 'Glossaire Lacanien', icon: BookOpen },
-          { href: `/${locale}/about/konferans-ravankavi-ir`, label: isFa ? 'کنفرانس‌های روانکاوی' : 'Conférences', icon: FileCheck2 },
-        ]
+        { href: `/${locale}/${pillar}/articles`, label: tx(`همه ${articles.length} مقاله روانکاوی`, `${articles.length} Articles`, `All ${articles.length} Articles`), icon: Sparkles },
+        { href: `/${locale}/media?series=dar-ravanpajoohi-ba-makaremi#videos-archive`, label: tx('مجموعه «در روان‌پژوهی»', 'Série Recherche Psy.', '“Psychological Research” Series'), icon: Video },
+        { href: `/${locale}/media?series=negah-e-ravankav#videos-archive`, label: tx('مجموعه «نگاه روانکاو»', 'Le Regard du Psy.', '“The Analyst’s Gaze” Series'), icon: Video },
+        { href: `/${locale}/glossary`, label: tx('واژه‌نامه تحلیلی لکانی', 'Glossaire Lacanien', 'Lacanian Glossary'), icon: BookOpen },
+        { href: `/${locale}/about/konferans-ravankavi-ir`, label: tx('کنفرانس‌های روانکاوی', 'Conférences', 'Psychoanalysis Conferences'), icon: FileCheck2 },
+      ]
       : pillarKey === 'art_calligraphy'
         ? [
-            { href: `/${locale}/gallery`, label: isFa ? 'گالری IIIF و ۲۹ مجموعه تابلو' : 'Galerie IIIF', icon: Palette },
-            { href: `/${locale}/gallery#exhibitions-hall`, label: isFa ? '۲۷ نمایشگاه بین‌المللی' : '27 Expositions', icon: Palette },
-            { href: `/${locale}/hafez`, label: isFa ? 'قطب حافظ‌پژوهی' : 'Pôle Hafez', icon: Feather },
-            { href: `/${locale}/poetry`, label: isFa ? 'دفتر ۳۰۰ شعر و تصویر' : '300 Poèmes', icon: Feather },
-            { href: `/${locale}/${pillar}/articles`, label: isFa ? `${articles.length} مقاله هنر` : `${articles.length} Articles Art`, icon: Sparkles },
-          ]
+          { href: `/${locale}/gallery`, label: tx('گالری IIIF و ۲۹ مجموعه تابلو', 'Galerie IIIF', 'IIIF Gallery & 29 Series'), icon: Palette },
+          { href: `/${locale}/gallery#exhibitions-hall`, label: tx('۲۷ نمایشگاه بین‌المللی', '27 Expositions', '27 International Exhibitions'), icon: Palette },
+          { href: `/${locale}/hafez`, label: tx('قطب حافظ‌پژوهی', 'Pôle Hafez', 'Hafezology Hub'), icon: Feather },
+          { href: `/${locale}/poetry`, label: tx('دفتر ۳۰۰ شعر و تصویر', '300 Poèmes', '300 Poems & Art'), icon: Feather },
+          { href: `/${locale}/${pillar}/articles`, label: tx(`${articles.length} مقاله هنر`, `${articles.length} Articles Art`, `${articles.length} Art Articles`), icon: Sparkles },
+        ]
         : pillarKey === 'cultural_strategy'
           ? [
-              { href: `/${locale}/${pillar}/articles`, label: isFa ? `همه ${articles.length} مقاله راهبرد و جامعه` : `${articles.length} Articles`, icon: Sparkles },
-              { href: `/${locale}/about?tab=conferences`, label: isFa ? 'کنفرانس‌های پژوهش و جامعه' : 'Conférences', icon: FileCheck2 },
-              { href: `/${locale}/books?genre=strategy`, label: isFa ? 'کتاب‌های راهبردی' : 'Livres Stratégie', icon: BookOpen },
-              { href: `/${locale}/books?genre=culture`, label: isFa ? 'کتاب‌های فرهنگ ایران' : 'Livres Culture', icon: BookOpen },
-            ]
+            { href: `/${locale}/${pillar}/articles`, label: tx(`همه ${articles.length} مقاله راهبرد و جامعه`, `${articles.length} Articles`, `All ${articles.length} Strategy Articles`), icon: Sparkles },
+            { href: `/${locale}/about?tab=conferences`, label: tx('کنفرانس‌های پژوهش و جامعه', 'Conférences', 'Research & Society Conferences'), icon: FileCheck2 },
+            { href: `/${locale}/books?genre=strategy`, label: tx('کتاب‌های راهبردی', 'Livres Stratégie', 'Strategy Books'), icon: BookOpen },
+            { href: `/${locale}/books?genre=culture`, label: tx('کتاب‌های فرهنگ ایران', 'Livres Culture', 'Iranian Culture Books'), icon: BookOpen },
+          ]
           : [
-              { href: `/${locale}/${pillar}/articles`, label: isFa ? `همه ${articles.length} مقاله و بیانیه` : `${articles.length} Articles`, icon: ShieldAlert },
-              { href: `/${locale}/about?tab=references`, label: isFa ? 'منابع و اسناد LDDHI / سازمان ملل' : 'Références LDDHI / ONU', icon: FileCheck2 },
-              { href: `/${locale}/media?pillar=human_rights_dadkhahi#videos-archive`, label: isFa ? `${pillarVideos.length} سخنرانی دادخواهی` : `${pillarVideos.length} Discours`, icon: Video },
-              { href: `/${locale}/about/conference-26-khavaran-matn-ir`, label: isFa ? 'سند دادخواهی خاوران ۶۷' : 'Mémoire Khavaran 1988', icon: FileCheck2 },
-            ];
+            { href: `/${locale}/${pillar}/articles`, label: tx(`همه ${articles.length} مقاله و بیانیه`, `${articles.length} Articles`, `All ${articles.length} Articles & Statements`), icon: ShieldAlert },
+            { href: `/${locale}/about?tab=references`, label: tx('منابع و اسناد LDDHI / سازمان ملل', 'Références LDDHI / ONU', 'LDDHI / UN References'), icon: FileCheck2 },
+            { href: `/${locale}/media?pillar=human_rights_dadkhahi#videos-archive`, label: tx(`${pillarVideos.length} سخنرانی دادخواهی`, `${pillarVideos.length} Discours`, `${pillarVideos.length} Speeches`), icon: Video },
+            { href: `/${locale}/about/conference-26-khavaran-matn-ir`, label: tx('سند دادخواهی خاوران ۶۷', 'Mémoire Khavaran 1988', 'Khavaran 1988 Memory'), icon: FileCheck2 },
+          ];
 
   return (
     <div className="space-y-12">
@@ -194,19 +195,21 @@ export default async function PillarHubPage({
       <header className="space-y-4 border-b border-[var(--border-subtle)] pb-6">
         <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--primary)] font-bold">
           <Sparkles size={16} />
-          <span>{isFa ? 'پورتال تخصصی ستون اندیشه' : 'Portail Thématique'}</span>
+          <span>{tx('پورتال تخصصی ستون اندیشه', 'Portail Thématique', 'Thematic Pillar Portal')}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
           {currentTitle}
         </h1>
         <p className="text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
-          {isFa
-            ? `آرشیو متمرکز ${articles.length} مقاله پژوهشی، ${pillarBooks.length} کتاب، ${pillarVideos.length} ویدیو و سخنرانی و اسناد مرتبط در این ستون محتوایی.`
-            : `Archives thématiques : ${articles.length} articles, ${pillarBooks.length} livres et ${pillarVideos.length} vidéos.`}
+          {tx(
+            `آرشیو متمرکز ${articles.length} مقاله پژوهشی، ${pillarBooks.length} کتاب، ${pillarVideos.length} ویدیو و سخنرانی و اسناد مرتبط در این ستون محتوایی.`,
+            `Archives thématiques : ${articles.length} articles, ${pillarBooks.length} livres et ${pillarVideos.length} vidéos.`,
+            `Curated thematic archive bringing together ${articles.length} research articles, ${pillarBooks.length} books, and ${pillarVideos.length} videos and lectures.`
+          )}
         </p>
 
         {/* Sub-hub Quick Access Links */}
-        <nav aria-label="دسترسی سریع این ستون" className="flex flex-wrap items-center gap-2 pt-2">
+        <nav aria-label={tx('دسترسی سریع این ستون', 'Accès rapide du pôle', 'Pillar Quick Access')} className="flex flex-wrap items-center gap-2 pt-2">
           {quickLinks.map((ql) => {
             const Icon = ql.icon;
             return (
@@ -224,18 +227,20 @@ export default async function PillarHubPage({
       </header>
 
       {/* Articles Section */}
-      <section aria-label="مقالات این ستون" className="space-y-6">
+      <section aria-label={tx('مقالات این ستون', 'Articles de ce pôle', 'Pillar Articles')} className="space-y-6">
         <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
           <h2 className="text-xl font-bold text-[var(--foreground)]">
-            {isFa
-              ? `مقالات و جستارهای پژوهشی (${articles.length} اثر)`
-              : `Articles & Essais (${articles.length})`}
+            {tx(
+              `مقالات و جستارهای پژوهشی (${articles.length} اثر)`,
+              `Articles & Essais (${articles.length})`,
+              `Research Articles & Essays (${articles.length})`
+            )}
           </h2>
           <Link
             href={`/${locale}/${pillar}/articles`}
             className="text-xs font-bold text-[var(--primary)] hover:underline"
           >
-            {isFa ? `مشاهده همه ${articles.length} مقاله ←` : `Tous les ${articles.length} articles →`}
+            {tx(`مشاهده همه ${articles.length} مقاله ←`, `Tous les ${articles.length} articles →`, `View all ${articles.length} articles →`)}
           </Link>
         </div>
 
@@ -272,7 +277,7 @@ export default async function PillarHubPage({
                     href={`/${locale}/${pillar}/articles/${art.slug}`}
                     className="font-bold text-[var(--primary)] hover:underline"
                   >
-                    {isFa ? 'مطالعه متن کامل ←' : 'Lire →'}
+                    {tx('مطالعه متن کامل ←', 'Lire →', 'Read full text →')}
                   </Link>
                 </div>
               </article>
@@ -283,18 +288,20 @@ export default async function PillarHubPage({
 
       {/* Pillar Videos & Speeches Section */}
       {pillarVideos.length > 0 && (
-        <section aria-label="ویدیوها و سخنرانی‌های این ستون" className="space-y-6 pt-4">
+        <section aria-label={tx('ویدیوها و سخنرانی‌های این ستون', 'Vidéos et conférences de ce pôle', 'Pillar Videos & Speeches')} className="space-y-6 pt-4">
           <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
             <h2 className="text-xl font-bold text-[var(--foreground)]">
-              {isFa
-                ? `ویدیوها و سخنرانی‌های این ستون (${pillarVideos.length} ویدیو)`
-                : `Vidéos & Conférences (${pillarVideos.length})`}
+              {tx(
+                `ویدیوها و سخنرانی‌های این ستون (${pillarVideos.length} ویدیو)`,
+                `Vidéos & Conférences (${pillarVideos.length})`,
+                `Videos & Speeches (${pillarVideos.length})`
+              )}
             </h2>
             <Link
               href={`/${locale}/media?pillar=${pillarKey}#videos-archive`}
               className="text-xs font-bold text-[var(--primary)] hover:underline"
             >
-              {isFa ? `مشاهده همه ${pillarVideos.length} ویدیو ←` : `Toutes les ${pillarVideos.length} vidéos →`}
+              {tx(`مشاهده همه ${pillarVideos.length} ویدیو ←`, `Toutes les ${pillarVideos.length} vidéos →`, `View all ${pillarVideos.length} videos →`)}
             </Link>
           </div>
 
@@ -334,7 +341,7 @@ export default async function PillarHubPage({
                       </h3>
                     </div>
                     <span className="text-xs font-bold text-[var(--primary)]">
-                      {isFa ? 'مشاهده ویدیو ←' : 'Regarder →'}
+                      {tx('مشاهده ویدیو ←', 'Regarder →', 'Watch video →')}
                     </span>
                   </div>
                 </Link>
@@ -346,16 +353,16 @@ export default async function PillarHubPage({
 
       {/* Pillar Books Section */}
       {pillarBooks.length > 0 && (
-        <section aria-label="کتاب‌های مرتبط با این ستون" className="space-y-6 pt-4">
+        <section aria-label={tx('کتاب‌های مرتبط با این ستون', 'Livres associés à ce pôle', 'Related Pillar Books')} className="space-y-6 pt-4">
           <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
             <h2 className="text-xl font-bold text-[var(--foreground)]">
-              {isFa ? `کتاب‌های مرتبط (${pillarBooks.length} عنوان)` : `Livres Associés (${pillarBooks.length})`}
+              {tx(`کتاب‌های مرتبط (${pillarBooks.length} عنوان)`, `Livres Associés (${pillarBooks.length})`, `Related Books (${pillarBooks.length})`)}
             </h2>
             <Link
               href={`/${locale}/books?pillar=${pillarKey}`}
               className="text-xs font-bold text-[var(--primary)] hover:underline"
             >
-              {isFa ? 'مشاهده در کتاب‌خانه 3D ←' : 'Bibliothèque 3D →'}
+              {tx('مشاهده در کتاب‌خانه 3D ←', 'Bibliothèque 3D →', 'Open 3D Library →')}
             </Link>
           </div>
 
@@ -385,7 +392,7 @@ export default async function PillarHubPage({
                     href={`/${locale}/books/${b.slug}`}
                     className="text-xs font-bold text-[var(--primary)] hover:underline"
                   >
-                    {isFa ? 'مشاهده کتاب ←' : 'Voir le livre →'}
+                    {tx('مشاهده کتاب ←', 'Voir le livre →', 'View book →')}
                   </Link>
                 </div>
               );

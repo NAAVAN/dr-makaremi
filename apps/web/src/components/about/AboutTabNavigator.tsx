@@ -30,6 +30,7 @@ const TAB_TO_SECTION: Record<string, string> = {
 
 function AboutTabNavigatorInner({ locale, conferenceCount }: AboutTabNavigatorProps) {
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>('cv');
 
@@ -53,49 +54,53 @@ function AboutTabNavigatorInner({ locale, conferenceCount }: AboutTabNavigatorPr
       sectionId: 'cv-universities',
       icon: GraduationCap,
       iconColor: 'text-teal-600',
-      label: isFa ? '۱. شرح حال و ۶ دانشگاه' : '1. CV & 6 Universités',
+      label: isFa ? '۱. شرح حال و ۶ دانشگاه' : isFr ? '1. CV & 6 Universités' : '1. Biography & 6 Universities',
     },
     {
       key: 'global',
       sectionId: 'global-presence',
       icon: Globe,
       iconColor: 'text-amber-600',
-      label: isFa ? '۲. حضور من در هستی' : '2. Présence Mondiale',
+      label: isFa ? '۲. حضور من در هستی' : isFr ? '2. Présence Mondiale' : '2. Global Presence',
     },
     {
       key: 'interviews',
       sectionId: 'interviews-archive',
       icon: Mic,
       iconColor: 'text-sky-600',
-      label: isFa ? '۳. مصاحبه با استاد (۳۴+ گفتگو)' : '3. Entretiens (34+)',
+      label: isFa ? '۳. مصاحبه با استاد (۳۴+ گفتگو)' : isFr ? '3. Entretiens (34+)' : '3. Interviews (34+)',
     },
     {
       key: 'references',
       sectionId: 'human-rights-references',
       icon: FileCheck2,
       iconColor: 'text-rose-600',
-      label: isFa ? '۴. منابع و اسناد حقوق بشری (۲۷+)' : '4. Références (27+)',
+      label: isFa ? '۴. منابع و اسناد حقوق بشری (۲۷+)' : isFr ? '4. Références (27+)' : '4. Human Rights References (27+)',
     },
     {
       key: 'documentary',
       sectionId: 'bio-documentary',
       icon: Film,
       iconColor: 'text-purple-600',
-      label: isFa ? '۵. مستند زندگی‌نامه (۴ قسمت)' : '5. Film Biographique',
+      label: isFa ? '۵. مستند زندگی‌نامه (۴ قسمت)' : isFr ? '5. Film Biographique' : '5. Biographical Documentary (4 Parts)',
     },
     {
       key: 'conferences',
       sectionId: 'conferences-archive',
       icon: BookOpen,
       iconColor: 'text-indigo-600',
-      label: isFa ? `۶. کنفرانس‌ها و همایش‌ها (${conferenceCount})` : `6. Conférences (${conferenceCount})`,
+      label: isFa
+        ? `۶. کنفرانس‌ها و همایش‌ها (${conferenceCount})`
+        : isFr
+          ? `6. Conférences (${conferenceCount})`
+          : `6. Conferences & Symposia (${conferenceCount})`,
     },
     {
       key: 'contact',
       sectionId: 'contact-section',
       icon: Mail,
       iconColor: 'text-emerald-600',
-      label: isFa ? '۷. تماس با استاد' : '7. Contact',
+      label: isFa ? '۷. تماس با استاد' : isFr ? '7. Contact' : '7. Contact',
     },
   ];
 

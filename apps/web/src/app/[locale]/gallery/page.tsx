@@ -48,6 +48,7 @@ export default async function GalleryOverviewPage({
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+  const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const exhibitions = await getExhibitions(locale);
   const artworks = await getArtworks(locale);
@@ -59,7 +60,7 @@ export default async function GalleryOverviewPage({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-[var(--color-art)] font-bold">
             <Palette size={16} />
-            <span>{isFa ? 'گالری‌های موضوعی، خوشنویسی و نمایشگاه‌های جهانی' : 'Galeries & Calligraphie'}</span>
+            <span>{tx('گالری‌های موضوعی، خوشنویسی و نمایشگاه‌های جهانی', 'Galeries & Calligraphie', 'Thematic Galleries, Calligraphy & Exhibitions')}</span>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <Link
@@ -67,45 +68,51 @@ export default async function GalleryOverviewPage({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] font-bold text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
             >
               <FileText size={13} />
-              <span>{isFa ? 'مقالات هنر و خوشنویسی' : 'Articles sur l’Art'}</span>
+              <span>{tx('مقالات هنر و خوشنویسی', 'Articles sur l’Art', 'Art & Calligraphy Articles')}</span>
             </Link>
             <a
               href="#exhibitions-hall"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] font-bold text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
             >
               <Award size={13} />
-              <span>{isFa ? `کارنامه ${exhibitions.length} نمایشگاه جهانی` : `${exhibitions.length} Expositions`}</span>
+              <span>{tx(`کارنامه ${exhibitions.length} نمایشگاه جهانی`, `${exhibitions.length} Expositions`, `${exhibitions.length} Exhibitions`)}</span>
             </a>
           </div>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
-          {isFa
-            ? 'گالری مجازی، مجموعه‌های نقاشی‌خط و موزه زوم عمیق آثار (IIIF)'
-            : isFr
-              ? 'Galerie Virtuelle, Séries Thématiques & Zoom Muséal IIIF'
-              : 'Virtual Museum, Thematic Series & IIIF Deep Zoom Gallery'}
+          {tx(
+            'گالری مجازی، مجموعه‌های نقاشی‌خط و موزه زوم عمیق آثار (IIIF)',
+            'Galerie Virtuelle, Séries Thématiques & Zoom Muséal IIIF',
+            'Virtual Museum, Thematic Series & IIIF Deep Zoom Gallery'
+          )}
         </h1>
         <p className="text-sm text-[var(--foreground-muted)] max-w-3xl leading-relaxed">
-          {isFa
-            ? `${exhibitions.length} نمایشگاه نقاشی و خط شکسته نستعلیق نوگرا در موزه‌ها و قصرهای تاریخی اروپا، روسیه، کوبا و مراکش و ${artworks.length} مجموعه تابلو (۸۵۰+ تصویر موزه‌ای)؛ همراه با ۷ اثر در گنجینه دائمی موزه مدرن خوشنویسی مسکو.`
-            : `${exhibitions.length} expositions internationales, ${artworks.length} séries calligraphiques et 7 œuvres permanentes au Musée Contemporain de la Calligraphie de Moscou.`}
+          {tx(
+            `${exhibitions.length} نمایشگاه نقاشی و خط شکسته نستعلیق نوگرا در موزه‌ها و قصرهای تاریخی اروپا، روسیه، کوبا و مراکش و ${artworks.length} مجموعه تابلو (۸۵۰+ تصویر موزه‌ای)؛ همراه با ۷ اثر در گنجینه دائمی موزه مدرن خوشنویسی مسکو.`,
+            `${exhibitions.length} expositions internationales, ${artworks.length} séries calligraphiques et 7 œuvres permanentes au Musée Contemporain de la Calligraphie de Moscou.`,
+            `${exhibitions.length} international exhibitions across Europe, Russia, Cuba, and Morocco, ${artworks.length} calligraphic series (850+ museum plates), and 7 permanent works at the Moscow Museum of Modern Calligraphy.`
+          )}
         </p>
       </header>
 
       {/* Interactive Museum Deep-Zoom Stage & Complete Bilingual Artworks Vault */}
       {artworks.length > 0 && (
-        <section aria-label="نمایشگر زوم عمیق و گنجینه تابلوها" className="space-y-4">
+        <section aria-label={tx('نمایشگر زوم عمیق و گنجینه تابلوها', 'Visionneuse IIIF et collection de tableaux', 'IIIF Deep-Zoom Viewer & Artworks Vault')} className="space-y-4">
           <div>
             <h2 className="text-xl font-bold text-[var(--foreground)]">
-              {isFa
-                ? `کاوش بافت بوم و گنجینه کامل ${artworks.length} مجموعه تابلو (استاندارد IIIF)`
-                : `Exploration Haute Définition IIIF & ${artworks.length} Séries`}
+              {tx(
+                `کاوش بافت بوم و گنجینه کامل ${artworks.length} مجموعه تابلو (استاندارد IIIF)`,
+                `Exploration Haute Définition IIIF & ${artworks.length} Séries`,
+                `IIIF High-Resolution Canvas Explorer & ${artworks.length} Series`
+              )}
             </h2>
             <p className="text-xs text-[var(--foreground-muted)]">
-              {isFa
-                ? 'هر مجموعه تابلو را انتخاب کنید و با دکمه‌های بزرگنمایی بافت مرکب و نقاشی‌خط را از نزدیک ببینید.'
-                : 'Sélectionnez une série pour explorer chaque tableau en haute définition.'}
+              {tx(
+                'هر مجموعه تابلو را انتخاب کنید و با دکمه‌های بزرگنمایی بافت مرکب و نقاشی‌خط را از نزدیک ببینید.',
+                'Sélectionnez une série pour explorer chaque tableau en haute définition.',
+                'Select any series to inspect ink textures and contemporary calligraphic brushstrokes in high resolution.'
+              )}
             </p>
           </div>
 
@@ -114,18 +121,18 @@ export default async function GalleryOverviewPage({
       )}
 
       {/* Thematic Galleries Series — Live Clickable Links into IIIF Deep Zoom! */}
-      <section id="thematic-galleries" aria-label="گالری‌های موضوعی" className="space-y-6 scroll-mt-28">
+      <section id="thematic-galleries" aria-label={tx('گالری‌های موضوعی', 'Galeries thématiques', 'Thematic Galleries')} className="space-y-6 scroll-mt-28">
         <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
           <div className="inline-flex items-center gap-1.5 text-xs font-mono text-amber-600 font-bold">
             <Layers size={15} />
-            <span>{isFa ? 'گالری‌های موضوعی برگزیده (کلیک برای گشودن در نمایشگر IIIF)' : 'Galeries Thématiques'}</span>
+            <span>{tx('گالری‌های موضوعی برگزیده (کلیک برای گشودن در نمایشگر IIIF)', 'Galeries Thématiques', 'Curated Thematic Galleries (Open in IIIF Viewer)')}</span>
           </div>
           <h2 className="text-2xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'گالری‌های موضوعی و داستان شکل‌گیری مجموعه‌ها'
-              : isFr
-                ? 'Séries Calligraphiques et Histoires des Collections'
-                : 'Thematic Calligraphic Series & Curatorial Stories'}
+            {tx(
+              'گالری‌های موضوعی و داستان شکل‌گیری مجموعه‌ها',
+              'Séries Calligraphiques et Histoires des Collections',
+              'Thematic Calligraphic Series & Curatorial Stories'
+            )}
           </h2>
         </div>
 
@@ -145,7 +152,7 @@ export default async function GalleryOverviewPage({
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[var(--foreground-muted)]">
                       <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 font-bold tabular-nums">
-                        {gal.year} • {realCount} {isFa ? 'تابلو' : 'œuvres'}
+                        {gal.year} • {realCount} {tx('تابلو', 'œuvres', 'works')}
                       </span>
                       <span>{gal.dimensions}</span>
                     </div>
@@ -180,7 +187,7 @@ export default async function GalleryOverviewPage({
                     {gal.critiqueAuthor ? gal.critiqueAuthor[locale] : gal.medium[locale]}
                   </span>
                   <span className="inline-flex items-center gap-1 font-bold text-[var(--primary)] shrink-0">
-                    <span>{isFa ? 'نمایش در زوم عمیق IIIF' : 'Ouvrir dans IIIF'}</span>
+                    <span>{tx('نمایش در زوم عمیق IIIF', 'Ouvrir dans IIIF', 'Open in IIIF Viewer')}</span>
                     {isFa ? <ArrowLeft size={13} /> : <ArrowRight size={13} />}
                   </span>
                 </div>
@@ -191,20 +198,24 @@ export default async function GalleryOverviewPage({
       </section>
 
       {/* Exhibitions Hall Archive (All 27 Canonical Bilingual Exhibitions with Real Photos) */}
-      <section id="exhibitions-hall" aria-label="تالارهای نمایشگاهی" className="space-y-6 scroll-mt-28">
+      <section id="exhibitions-hall" aria-label={tx('تالارهای نمایشگاهی', 'Salles d’expositions', 'International Exhibitions Hall')} className="space-y-6 scroll-mt-28">
         <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
           <div className="inline-flex items-center gap-1.5 text-xs font-mono text-teal-600 font-bold">
             <Award size={15} />
             <span>
-              {isFa
-                ? `کارنامه کامل نمایشگاه‌های بین‌المللی (${exhibitions.length} نمایشگاه)`
-                : `Historique des Expositions (${exhibitions.length})`}
+              {tx(
+                `کارنامه کامل نمایشگاه‌های بین‌المللی (${exhibitions.length} نمایشگاه)`,
+                `Historique des Expositions (${exhibitions.length})`,
+                `Complete International Exhibitions Archive (${exhibitions.length})`
+              )}
             </span>
           </div>
           <h2 className="text-2xl font-black text-[var(--foreground)]">
-            {isFa
-              ? 'کارنامه نمایشگاه‌های بین‌المللی (پاریس، پومپادور، لیموژ، مسکو، سنت‌پترزبورگ، هاوانا، فاس)'
-              : 'Expositions Majeures Internationales'}
+            {tx(
+              'کارنامه نمایشگاه‌های بین‌المللی (پاریس، پومپادور، لیموژ، مسکو، سنت‌پترزبورگ، هاوانا، فاس)',
+              'Expositions Majeures Internationales',
+              'Major International Exhibitions (Paris, Pompadour, Moscow, Havana, Fez)'
+            )}
           </h2>
         </div>
 
@@ -267,13 +278,13 @@ export default async function GalleryOverviewPage({
 
                   <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
                     <span className="text-[var(--foreground-muted)] font-mono text-[11px] tabular-nums">
-                      {expo.gallery_images?.length || 0} {isFa ? 'تصویر آرشیوی' : 'photos'}
+                      {expo.gallery_images?.length || 0} {tx('تصویر آرشیوی', 'photos', 'archival plates')}
                     </span>
                     <Link
                       href={`/${locale}/art/exhibitions/${expo.slug}`}
                       className="font-bold text-[var(--primary)] hover:underline whitespace-nowrap"
                     >
-                      {isFa ? 'ورود به تالار ←' : 'Visiter →'}
+                      {tx('ورود به تالار ←', 'Visiter →', 'Enter Hall →')}
                     </Link>
                   </div>
                 </div>

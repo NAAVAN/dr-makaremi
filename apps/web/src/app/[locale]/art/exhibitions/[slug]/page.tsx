@@ -10,6 +10,8 @@ import { renderSafeMarkdown } from '@/lib/markdown';
 import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import { buildExhibitionNode, buildBreadcrumbNode, buildFullGraph } from '@/lib/schema-org';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
+import { resolveWorkTranslation } from '@/lib/work-language';
 
 export async function generateStaticParams() {
   const exhibitions = await getExhibitions('fa');
@@ -34,9 +36,13 @@ export async function generateMetadata({
   const expo = await getExhibitionBySlug(slug, locale);
   if (!expo) return {};
 
-  const trans =
-    expo.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-    expo.translations?.[0];
+  const resolved = resolveWorkTranslation({
+    collection: 'exhibitions',
+    slug: expo.slug,
+    translations: expo.translations,
+    siteLocale: locale,
+  });
+  const trans = resolved.originalRecord || expo.translations?.[0];
 
   const title = trans?.title || expo.slug;
   const description =
@@ -68,9 +74,13 @@ export default async function ExhibitionDetailPage({
   const artworks = await getArtworks(locale);
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
-  const trans =
-    expo.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-    expo.translations?.[0];
+  const resolved = resolveWorkTranslation({
+    collection: 'exhibitions',
+    slug: expo.slug,
+    translations: expo.translations,
+    siteLocale: locale,
+  });
+  const trans = resolved.originalRecord || expo.translations?.[0];
 
   const title = trans?.title || expo.slug;
   const jsonLdGraph = buildFullGraph({
@@ -132,14 +142,28 @@ export default async function ExhibitionDetailPage({
         </h1>
       </header>
 
-      {/* Curatorial Statement & Critical Essays */}
-      <section aria-label="بیانیه نمایشگاه" className="space-y-4 max-w-3xl">
+      {/* Curatorial Statement & Critical Essays with Bilingual Reader */}
+      <section
+        aria-label={isFa ? 'بیانیه نمایشگاه' : isFr ? 'Déclaration curatoriale' : 'Curatorial Statement'}
+        className="space-y-4 max-w-4xl"
+      >
         <h2 className="text-xl font-bold text-[var(--foreground)]">
-          {isFa ? 'بیانیه کیوریتوری و نگاه منتقدان' : 'Déclaration Curatoriale & Critiques'}
+          {isFa
+            ? 'بیانیه کیوریتوری و نگاه منتقدان'
+            : isFr
+              ? 'Déclaration curatoriale & critiques'
+              : 'Curatorial Statement & Critical Reviews'}
         </h2>
-        <div className="text-base leading-relaxed text-[var(--foreground)] font-serif space-y-4">
-          {renderSafeMarkdown(trans?.curatorial_statement_markdown || '')}
-        </div>
+        <BilingualWorkReader
+          originalLang={resolved.originalLang}
+          siteLocale={locale}
+          translated={resolved.translatedRecord}
+          originalContent={
+            <div className="text-base leading-relaxed text-[var(--foreground)] font-serif space-y-4">
+              {renderSafeMarkdown(trans?.curatorial_statement_markdown || '')}
+            </div>
+          }
+        />
       </section>
 
       {/* Featured Exhibition Artwork / Real Gallery Photos with IIIF Deep Zoom */}
