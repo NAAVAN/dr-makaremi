@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -46,20 +46,54 @@ export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
+  const [openDesktopGroup, setOpenDesktopGroup] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mirrorOpen, setMirrorOpen] = useState(false);
 
-  // Global Cmd+K / Ctrl+K keyboard shortcut for live search modal
+  const navBarRef = useRef<HTMLElement>(null);
+  const suppressHoverGroupRef = useRef<string | null>(null);
+
+  const closeAllMenus = useCallback((suppressGroupHref?: string) => {
+    if (suppressGroupHref) {
+      suppressHoverGroupRef.current = suppressGroupHref;
+    }
+    setOpenDesktopGroup(null);
+    setMobileMenuOpen(false);
+    setOpenMobileGroup(null);
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }, []);
+
+  // Automatically close menus on route pathname changes
+  useEffect(() => {
+    setOpenDesktopGroup(null);
+    setMobileMenuOpen(false);
+    setOpenMobileGroup(null);
+  }, [pathname]);
+
+  // Global Cmd+K / Ctrl+K shortcut, Escape key, and outside click dismissal
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setSearchOpen((prev) => !prev);
+      } else if (e.key === 'Escape') {
+        closeAllMenus();
+      }
+    };
+    const onPointerDown = (e: PointerEvent) => {
+      if (navBarRef.current && !navBarRef.current.contains(e.target as Node)) {
+        setOpenDesktopGroup(null);
       }
     };
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+    window.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, [closeAllMenus]);
 
   if (pathname?.includes('/curation-studio')) {
     return null;
@@ -556,6 +590,7 @@ export function Header({ locale }: HeaderProps) {
       <div className="hidden lg:block border-t border-stone-200/80 dark:border-stone-800/80 bg-[#F4F2EC]/90 dark:bg-[#16181E]/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav
+            ref={navBarRef}
             className="flex items-center justify-center gap-1.5 xl:gap-3 py-2"
             aria-label="ناوبری اصلی"
           >
@@ -565,14 +600,33 @@ export function Header({ locale }: HeaderProps) {
                 ? pathname === group.href
                 : pathname.startsWith(group.href.split('?')[0]);
               const IconComp = group.icon;
+              const hasSubItems = Boolean(group.subItems && group.subItems.length > 0);
+              const isDropdownOpen = hasSubItems && openDesktopGroup === group.href;
 
               return (
-                <div key={group.href} className="relative group/nav">
+                <div
+                  key={group.href}
+                  className="relative"
+                  onMouseEnter={() => {
+                    if (hasSubItems && suppressHoverGroupRef.current !== group.href) {
+                      setOpenDesktopGroup(group.href);
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (suppressHoverGroupRef.current === group.href) {
+                      suppressHoverGroupRef.current = null;
+                    }
+                    setOpenDesktopGroup((prev) => (prev === group.href ? null : prev));
+                  }}
+                >
                   <Link
                     href={group.href}
+                    aria-haspopup={hasSubItems ? 'true' : undefined}
+                    aria-expanded={hasSubItems ? isDropdownOpen : undefined}
+                    onClick={() => closeAllMenus(group.href)}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs xl:text-[13px] font-bold whitespace-nowrap transition-all duration-200 ${isActive
-                        ? 'bg-white dark:bg-stone-800 text-teal-900 dark:text-teal-300 shadow-sm border border-stone-200/80 dark:border-stone-700'
-                        : 'text-stone-700 dark:text-stone-300 hover:text-stone-950 dark:hover:text-white hover:bg-white/70 dark:hover:bg-stone-800/60'
+                      ? 'bg-white dark:bg-stone-800 text-teal-900 dark:text-teal-300 shadow-sm border border-stone-200/80 dark:border-stone-700'
+                      : 'text-stone-700 dark:text-stone-300 hover:text-stone-950 dark:hover:text-white hover:bg-white/70 dark:hover:bg-stone-800/60'
                       }`}
                     style={{
                       borderBottom: isActive ? `2px solid ${group.accent}` : undefined,
@@ -580,18 +634,21 @@ export function Header({ locale }: HeaderProps) {
                   >
                     {IconComp && <IconComp size={14} className="opacity-75 shrink-0" />}
                     <span>{group.label}</span>
-                    {group.subItems && group.subItems.length > 0 && (
+                    {hasSubItems && (
                       <ChevronDown
                         size={13}
-                        className="opacity-60 group-hover/nav:rotate-180 transition-transform duration-200"
+                        className={`opacity-60 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
                       />
                     )}
                   </Link>
 
-                  {/* Dropdown Submenu */}
-                  {group.subItems && group.subItems.length > 0 && (
+                  {/* Controlled Dropdown Submenu (instantly closes on submenu click without hover-stickiness) */}
+                  {hasSubItems && group.subItems && (
                     <div
-                      className={`invisible opacity-0 translate-y-1 group-hover/nav:visible group-hover/nav:opacity-100 group-hover/nav:translate-y-0 focus-within:visible focus-within:opacity-100 transition-all duration-200 absolute top-full ${isFa ? 'right-0' : 'left-0'
+                      className={`${isDropdownOpen
+                          ? 'visible opacity-100 translate-y-0 pointer-events-auto'
+                          : 'invisible opacity-0 translate-y-1 pointer-events-none'
+                        } transition-all duration-150 absolute top-full ${isFa ? 'right-0' : 'left-0'
                         } pt-2 w-80 z-50`}
                     >
                       <div className="rounded-2xl bg-[#FBFBF9] dark:bg-[#18191D] border border-stone-200/90 dark:border-stone-700 shadow-2xl p-2.5 space-y-1">
@@ -601,13 +658,14 @@ export function Header({ locale }: HeaderProps) {
                         >
                           <span>{group.label}</span>
                           <span className="text-[10px] opacity-75 font-normal">
-                            {isFa ? 'بخش‌های زیرمجموعه' : 'Sous-rubriques'}
+                            {isFa ? 'بخش‌های زیرمجموعه' : isFr ? 'Sous-rubriques' : 'Sub-sections'}
                           </span>
                         </div>
                         {group.subItems.map((sub) => (
                           <Link
                             key={`${group.href}-${sub.href}`}
                             href={sub.href}
+                            onClick={() => closeAllMenus(group.href)}
                             className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-200/65 dark:hover:bg-stone-800 hover:text-stone-950 dark:hover:text-white transition-colors"
                           >
                             <span className="leading-relaxed">{sub.label}</span>
@@ -641,7 +699,7 @@ export function Header({ locale }: HeaderProps) {
                 <div className="flex items-center justify-between px-3.5 py-3">
                   <Link
                     href={group.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => closeAllMenus()}
                     className="flex items-center gap-2.5 text-sm font-bold text-[var(--foreground)]"
                   >
                     <span
@@ -671,7 +729,7 @@ export function Header({ locale }: HeaderProps) {
                       <Link
                         key={`mobile-${group.href}-${sub.href}`}
                         href={sub.href}
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={() => closeAllMenus()}
                         className="flex items-center justify-between py-2 px-2.5 rounded-lg text-xs font-medium text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors"
                       >
                         <span>{sub.label}</span>

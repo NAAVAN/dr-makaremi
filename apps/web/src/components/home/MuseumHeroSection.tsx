@@ -101,7 +101,7 @@ export function MuseumHeroSection({
               initial={prefersReduced ? false : { y: 10 }}
               animate={{ y: 0 }}
               transition={{ duration: 0.55, ease: easeEmil }}
-              className="font-display text-balance text-3xl sm:text-5xl lg:text-[3.35rem] font-black text-[var(--foreground)] leading-[1.2] tracking-tight"
+              className="font-display text-balance text-3xl sm:text-5xl lg:text-[3.25rem] font-black text-[var(--foreground)] tracking-tight"
             >
               {isFa
                 ? 'دکتر حسن مکارمی؛ افق تفکر، هنر و دادخواهی'
