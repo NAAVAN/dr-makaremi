@@ -233,6 +233,30 @@ button:active:not(:disabled),
   transform: translateY(-2.5px);
 }
 
+/* Museum Editorial Utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.archival-paper-weave {
+  background-image: radial-gradient(circle at 1px 1px, rgba(138, 126, 108, 0.09) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+@keyframes borromeanFloat {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(3deg) scale(1.015);
+  }
+}
+
+.borromean-breathe {
+  animation: borromeanFloat 18s ease-in-out infinite;
+  transform-origin: center center;
+}
+
 /* Motion Accessibility Gate */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -86,10 +86,28 @@ export default async function LocaleLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {locale !== 'fa' && (
+          <>
+            <link
+              rel="preload"
+              href="/fonts/cormorant/CormorantGaramond-Variable.woff2"
+              as="font"
+              type="font/woff2"
+              crossOrigin="anonymous"
+            />
+            <link
+              rel="preload"
+              href="/fonts/inter/Inter-Variable.woff2"
+              as="font"
+              type="font/woff2"
+              crossOrigin="anonymous"
+            />
+          </>
+        )}
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs Knowledge Index" />
         <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="anonymous" />
       </head>
-      <body className="min-h-screen flex flex-col bg-[var(--surface-canvas)] text-[var(--foreground)] font-vazirmatn antialiased transition-colors duration-200">
+      <body className="min-h-screen flex flex-col bg-[var(--surface-canvas)] text-[var(--foreground)] font-sans antialiased transition-colors duration-200">
         <JsonLdGraph data={rootGraph} />
         <PwaOfflineBar locale={locale} />
         <Header locale={locale} />

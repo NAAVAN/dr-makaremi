@@ -10,21 +10,23 @@ import {
   Sparkles,
   FileText,
   Video,
-  GraduationCap,
   Globe,
-  Feather,
 } from 'lucide-react';
 import {
   getArticles,
   getBooks,
   getVideoSpeeches,
   getExhibitions,
+  getArtworks,
   ACADEMIC_INSTITUTIONS,
   GLOBAL_AUTHORITY_BADGES,
   resolveBadgeHref,
 } from '@/lib/cms';
 import { Book3DShowcase } from '@/components/books/Book3DShowcase';
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup';
+import { MuseumHeroSection } from '@/components/home/MuseumHeroSection';
+import { BorromeanKnotWidget } from '@/components/home/BorromeanKnotWidget';
+import { EditorialReveal } from '@/components/home/EditorialReveal';
 import type { Locale } from '@makaremi/shared';
 
 export default async function HomePage({
@@ -36,11 +38,12 @@ export default async function HomePage({
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  const [articles, books, videos, exhibitions] = await Promise.all([
+  const [articles, books, videos, exhibitions, artworks] = await Promise.all([
     getArticles(locale),
     getBooks(locale),
     getVideoSpeeches(locale),
     getExhibitions(locale),
+    getArtworks(locale),
   ]);
 
   const featuredBook = books[0];
@@ -48,474 +51,778 @@ export default async function HomePage({
     featuredBook?.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     featuredBook?.translations?.[0];
 
-  const psychoSlug = isFr ? 'psychanalyse' : 'psychoanalysis';
+  const featuredArtwork = artworks.find((a) => a.image_url) || artworks[0];
+  const featuredArtworkTrans =
+    featuredArtwork?.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+    featuredArtwork?.translations?.[0];
 
-  // The 4 Iconic Top Portals from makaremi.com/home-persan/
+  const psychoSlug = isFr ? 'psychanalyse' : 'psychoanalysis';
+  const DirArrow = isFa ? ArrowLeft : ArrowRight;
+
+  // Section 2: 4 Editorial Archive Portals (Preserving all 4 iconic makaremi.com gateways)
   const fourHeroPortals = [
     {
+      index: '01',
       id: 'portal-publications',
       title: isFa ? 'انتشارات، خبر و مقالات' : isFr ? 'Articles & Actualités' : 'Publications & Essays',
       subtitle: isFa
-        ? 'آرشیو جامع مقالات روانکاوی، فرهنگ، پژوهش، هنر و جامعه'
+        ? 'جستارهای روانکاوی، فرهنگ، هنر و جامعه'
         : isFr
-          ? 'Tous les essais cliniques, culturels, artistiques et sociétaux'
-          : 'All psychoanalytic, cultural, art & social essays',
-      badge: isFa ? `${articles.length} مقاله` : `${articles.length} Articles`,
+          ? 'Essais cliniques, culturels, artistiques et sociétaux'
+          : 'Psychoanalytic, cultural, art & social essays',
+      count: articles.length,
+      unit: isFa ? 'مقاله' : isFr ? 'articles' : 'essays',
       href: `/${locale}/articles`,
       icon: FileText,
       accent: 'var(--color-psychoanalysis)',
     },
     {
+      index: '02',
       id: 'portal-films',
       title: isFa ? 'فیلم‌ها و سخنرانی‌ها' : isFr ? 'Vidéos & Conférences' : 'Films & Lectures',
       subtitle: isFa
-        ? 'مجموعه‌های در روان‌‌پژوهی، نگاه روانکاو، صدای سخن عشق حافظ و یونسکو'
+        ? 'در روان‌‌پژوهی، نگاه روانکاو، حافظ و نشست‌های یونسکو'
         : isFr
-          ? 'Séries télévisées, conférences UNESCO et séminaires Hafez'
-          : 'TV lecture series, UNESCO conferences & Hafez seminars',
-      badge: isFa ? `${videos.length} ویدیو` : `${videos.length} Vidéos`,
+          ? 'Séries télévisées, UNESCO et séminaires Hafez'
+          : 'TV lecture series, UNESCO & Hafez seminars',
+      count: videos.length,
+      unit: isFa ? 'ویدیو' : isFr ? 'vidéos' : 'videos',
       href: `/${locale}/media`,
       icon: Video,
       accent: 'var(--color-strategy)',
     },
     {
+      index: '03',
       id: 'portal-books',
-      title: isFa ? 'کتاب‌ها (ویترین 3D)' : isFr ? 'Livres (Vitrine 3D)' : 'Books (3D Library)',
+      title: isFa ? 'کتاب‌ها' : isFr ? 'Livres' : 'Books',
       subtitle: isFa
-        ? '۸ ژانر تخصصی همراه با کتاب‌خوان ورق‌خور سه‌بعدی'
+        ? '۸ حوزه تخصصی همراه با نمای سه‌بعدی و تورق نمونه'
         : isFr
-          ? '8 genres avec lecteur 3D interactif'
-          : '8 genres with 3D page-turning reader',
-      badge: isFa ? `${books.length} کتاب` : `${books.length} Livres`,
+          ? '8 genres avec vitrine 3D et extraits'
+          : '8 genres with 3D showcase and reader',
+      count: books.length,
+      unit: isFa ? 'کتاب' : isFr ? 'livres' : 'books',
       href: `/${locale}/books`,
       icon: BookOpen,
       accent: 'var(--primary)',
     },
     {
+      index: '04',
       id: 'portal-exhibitions',
       title: isFa ? 'نمایشگاه‌ها و گالری‌ها' : isFr ? 'Expositions & Galeries' : 'Exhibitions & Galleries',
       subtitle: isFa
-        ? `${exhibitions.length} نمایشگاه جهانی، ۲۹ مجموعه گالری و موزه مسکو`
+        ? `${exhibitions.length} نمایشگاه جهانی، ۲۹ مجموعه تابلو و موزه مسکو`
         : isFr
-          ? `${exhibitions.length} expositions mondiales, 29 séries & Musée de Moscou`
-          : `${exhibitions.length} international shows, 29 series & Moscow Museum`,
-      badge: isFa ? `${exhibitions.length} نمایشگاه` : `${exhibitions.length} Expos`,
+          ? `${exhibitions.length} expositions, 29 séries et Musée de Moscou`
+          : `${exhibitions.length} shows, 29 series & Moscow Museum`,
+      count: exhibitions.length,
+      unit: isFa ? 'نمایشگاه' : isFr ? 'expos' : 'shows',
       href: `/${locale}/gallery`,
       icon: Palette,
       accent: 'var(--color-art)',
     },
   ];
 
-  const pillars = [
-    {
-      id: 'psychoanalysis',
-      title: isFa ? 'روانکاوی لکانی' : isFr ? 'Psychanalyse Lacanienne' : 'Lacanian Psychoanalysis',
-      description: isFa
-        ? 'خوانش بالینی ناخودآگاه، ترجمه سمینار سوم لکان و مفهوم‌پردازی دگرشنیدن در بستر فرهنگ ایرانی.'
-        : isFr
-          ? "Pratique clinique du sujet, écoute de l'inconscient et séminaires de Jacques Lacan."
-          : 'Clinical reading of the unconscious, Jacques Lacan seminar translations, and listening differently.',
-      href: `/${locale}/${psychoSlug}`,
-      accent: 'var(--color-psychoanalysis)',
-      icon: Sparkles,
-    },
-    {
-      id: 'art_calligraphy',
-      title: isFa ? 'هنر، خوشنویسی و شعر' : isFr ? 'Art, Calligraphie & Poésie' : 'Modern Art, Calligraphy & Poetry',
-      description: isFa
-        ? 'بیش از ۲۷ نمایشگاه بین‌المللی در پاریس، قصر پومپادور، موزه خوشنویسی مسکو، هاوانا و فستیوال فاس.'
-        : isFr
-          ? 'Expositions internationales au Château de Pompadour, à l’UNESCO et au Musée de Moscou.'
-          : 'International exhibitions across Paris UNESCO, Pompadour, Moscow Museum of Calligraphy, and Fez.',
-      href: `/${locale}/gallery`,
-      accent: 'var(--color-art)',
-      icon: Palette,
-    },
-    {
-      id: 'cultural_strategy',
-      title: isFa ? 'مطالعات راهبردی و فرهنگ' : isFr ? 'Stratégie Culturelle & Politique' : 'Cultural Strategy',
-      description: isFa
-        ? 'تبیین افق‌های توسعه، مدرنیزاسیون سازمانی، دموکراسی سکولار و بازخوانی مفهوم «سرزمین فرهنگی ایران».'
-        : isFr
-          ? "Modèles de transition démocratique laïque et concept de la 'Terre culturelle de l'Iran'."
-          : 'Strategic blueprints for secular democratic transition and the civilizational concept of Cultural Iran.',
-      href: `/${locale}/strategy`,
-      accent: 'var(--color-strategy)',
-      icon: Compass,
-    },
-    {
-      id: 'human_rights_dadkhahi',
-      title: isFa ? 'حقوق بشر و دادخواهی' : isFr ? "Droits de l'Homme & Justice" : 'Human Rights & Dadkhahi',
-      description: isFa
-        ? 'خزانه‌داری جامعه دفاع از حقوق بشر در ایران (LDDHI)، نشست‌های ژنو و مستندسازی کشتار تابستان ۱۳۶۷.'
-        : isFr
-          ? 'Interventions au Conseil des droits de l’homme de l’ONU à Genève et justice pour le massacre de 1988.'
-          : 'Interventions at UN Human Rights Council Geneva sessions and documentation of the 1988 prison massacres.',
-      href: `/${locale}/human-rights`,
-      accent: 'var(--color-dadkhahi)',
-      icon: ShieldAlert,
-    },
-  ];
+  const iranInstitutions = ACADEMIC_INSTITUTIONS.filter((i) => i.country === 'IR');
+  const franceInstitutions = ACADEMIC_INSTITUTIONS.filter((i) => i.country === 'FR');
+
+  const leadArticle = articles[0];
+  const secondaryArticles = articles.slice(1, 4);
+
+  const getArticlePillarSlug = (pillar: string) =>
+    pillar === 'psychoanalysis'
+      ? isFr
+        ? 'psychanalyse'
+        : 'psychoanalysis'
+      : pillar === 'art_calligraphy'
+        ? 'art'
+        : pillar === 'cultural_strategy'
+          ? 'strategy'
+          : 'human-rights';
 
   return (
-    <div className="space-y-16 sm:space-y-20">
-      {/* Hero Section with strict single H1 & Anti-Slop Museum Architecture */}
-      <section
-        aria-label={isFa ? 'معرفی و افق فکری دکتر حسن مکارمی' : 'Introduction et horizon de pensée'}
-        className="relative rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-8 sm:p-12 lg:p-16 overflow-hidden shadow-sm"
-      >
-        {/* Subtle Archival Texture Hairline Accent */}
-        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[var(--pillar-psychoanalysis)] via-[var(--pillar-art)] to-[var(--pillar-strategy)] opacity-80" />
+    <div className="space-y-16 sm:space-y-24">
+      {/* =====================================================================
+          SECTION 1: ASYMMETRIC MUSEUM HERO WITH PORTRAIT & KINETIC INK STROKE
+          ===================================================================== */}
+      <MuseumHeroSection
+        locale={locale}
+        stats={{
+          articles: articles.length,
+          books: books.length,
+          exhibitions: exhibitions.length,
+          videos: videos.length,
+        }}
+        backdropArtworkUrl={featuredArtwork?.image_url}
+        backdropArtworkTitle={featuredArtworkTrans?.title || featuredArtwork?.slug}
+      />
 
-        <div className="relative max-w-4xl space-y-6">
-          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--foreground)] font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
-            <span className="font-serif tracking-wide">
-              {isFa
-                ? 'پایگاه رسمی آثار علمی، هنری و فرهنگی • روانکاو · هنرمند · پژوهشگر'
-                : 'Site officiel et archives de référence • Artiste · Psychanalyste · Chercheur'}
-            </span>
-          </div>
-
-          {/* EXACT SINGLE H1 PER PAGE */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[var(--foreground)] tracking-tight leading-[1.18]">
-            {isFa
-              ? 'دکتر حسن مکارمی؛ افق تفکر، هنر و دادخواهی'
-              : 'Dr. Hassan Makaremi : Psychanalyse, Art et Justice'}
-          </h1>
-
-          <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed font-serif max-w-3xl">
-            {isFa
-              ? 'به پایگاه من خوش آمدید. در این مجموعه از چهار دامنه فعالیت‌هایم با شما سخن می‌گویم: هنر و ادبیات (خوشنویسی، نقاشی و شعر و حافظ‌پژوهی)، ایران و حقوق بشر، خدمات راهبردی (مدرنیزاسیون و توسعه سازمانی در دانشگاه سوربن)، روانکاوی بالینی لکانی، و سفرهایی که زندگی را می‌سازند.'
-              : "Bienvenue. Ce portail rassemble mes travaux dans quatre domaines : l'Art et la Poésie (calligraphie, peinture, études sur Hafez), les Droits humains en Iran (LDDHI), le Conseil stratégique (Sorbonne), et la Psychanalyse clinique lacanienne."}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3.5 pt-2">
-            <Link
-              href={`/${locale}/books`}
-              className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors"
-            >
-              <BookOpen size={16} />
-              <span>{isFa ? `کتاب‌خانه (${books.length}+ کتاب)` : `Bibliothèque (${books.length}+ Livres)`}</span>
-            </Link>
-
-            <Link
-              href={`/${locale}/hafez`}
-              className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--surface-sunken)] hover:bg-[var(--surface-canvas)] border border-[var(--border-medium)] text-[var(--foreground)] font-semibold text-xs sm:text-sm transition-colors shadow-xs"
-            >
-              <Feather size={16} className="text-[var(--accent-gold)]" />
-              <span>{isFa ? 'قطب حافظ‌پژوهی و دگرشنیدن' : 'Pôle Hafez & Poésie'}</span>
-            </Link>
-
-            <Link
-              href={`/${locale}/about`}
-              className="flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-secondary)] font-medium text-xs sm:text-sm transition-colors"
-            >
-              <GraduationCap size={16} className="text-[var(--primary)]" />
-              <span>{isFa ? 'شرح حال، ۶ دانشگاه و مصاحبه‌ها' : 'Biographie, 6 Universités & Entretiens'}</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 4 Iconic Top Portals (چهار درگاه اصلی بالای صفحه اول به یادگار سایت وردپرسی) */}
-      <section aria-label="چهار درگاه اصلی" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {fourHeroPortals.map((portal) => {
-          const Icon = portal.icon;
-          return (
-            <Link
-              key={portal.id}
-              href={portal.href}
-              className="group p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] archival-lift flex flex-col justify-between space-y-4 shadow-xs"
-            >
-              <div className="flex items-center justify-between">
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center bg-[var(--surface-sunken)] group-hover:scale-105 transition-transform duration-200"
-                  style={{ color: portal.accent }}
-                >
-                  <Icon size={22} />
-                </div>
-                <span className="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)]">
-                  {portal.badge}
-                </span>
-              </div>
-
-              <div className="space-y-1.5">
-                <h2 className="text-lg font-black text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors duration-150">
-                  {portal.title}
-                </h2>
-                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                  {portal.subtitle}
-                </p>
-              </div>
-            </Link>
-          );
-        })}
-      </section>
-
-      {/* Featured 3D Book Showcase (v8.0 Cultural Sanctuary Edition) */}
-      {featuredBook && (
+      {/* =====================================================================
+          SECTION 2: EDITORIAL ARCHIVE INDEX STRIP (4 ICONIC PORTALS)
+          ===================================================================== */}
+      <EditorialReveal>
         <section
-          aria-label="ویترین سه‌بعدی کتاب برگزیده"
-          className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 sm:p-10 lg:p-12 overflow-hidden shadow-sm"
+          aria-label={isFa ? 'چهار درگاه اصلی آرشیو' : 'Quatre portails principaux des archives'}
+          className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden shadow-[var(--shadow-sm)]"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5 flex justify-center bg-[var(--surface-sunken)] rounded-2xl p-4 border border-[var(--border-subtle)]">
-              <Book3DShowcase book={featuredBook} translation={featuredBookTrans} locale={locale} />
-            </div>
-
-            <div className="lg:col-span-7 space-y-5">
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--primary)] font-bold">
-                {isFa
-                  ? 'ویترین سه‌بعدی و کتاب‌خوان ورق‌خور • اثر شاخص ترجمه و پژوهش'
-                  : 'Vitrine 3D Interactive • Publication Majeure'}
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-                {featuredBookTrans?.title || featuredBook.slug}
-              </h2>
-              {featuredBookTrans?.subtitle && (
-                <p className="text-sm font-bold text-[var(--foreground-muted)]">
-                  {featuredBookTrans.subtitle}
-                </p>
-              )}
-              <p className="text-sm text-[var(--foreground-muted)] leading-relaxed font-serif">
-                {featuredBookTrans?.synopsis}
-              </p>
-
-              <div className="flex flex-wrap gap-3.5 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x sm:divide-x-reverse divide-[var(--border-subtle)]">
+            {fourHeroPortals.map((portal) => {
+              const Icon = portal.icon;
+              return (
                 <Link
-                  href={`/${locale}/books/${featuredBook.slug}`}
-                  className="px-5 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold shadow-sm transition-colors"
+                  key={portal.id}
+                  href={portal.href}
+                  className="group p-6 sm:p-7 flex flex-col justify-between gap-5 hover:bg-[var(--surface-artifact)] transition-colors duration-200"
                 >
-                  {isFa
-                    ? 'گشودن کتاب و تورق سه‌بعدی (از صفحه ۱ عنوان)'
-                    : 'Ouvrir et feuilleter en 3D (Page 1)'}
-                </Link>
-                <Link
-                  href={`/${locale}/books`}
-                  className="px-5 py-2.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)] text-xs font-bold hover:bg-[var(--surface-overlay)] transition-colors"
-                >
-                  {isFa ? `مشاهده همه ${books.length} کتاب در ۸ ژانر` : `Tous les ${books.length} livres`}
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 4 Pillars Interactive Grid */}
-      <section aria-label="ستون‌های محتوایی" className="space-y-6">
-        <div className="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-4">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-stone-100 tracking-tight">
-              {isFa ? 'ستون‌های چهارگانه اندیشه و آفرینش' : 'Piliers Fondamentaux'}
-            </h2>
-            <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
-              {isFa
-                ? 'دسته‌بندی ساختاریافته مقالات، کتاب‌ها، آثار هنری و اسناد حقوق بشری'
-                : 'Domaines d’investigation clinique, artistique, stratégique et philosophique'}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pillars.map((p) => {
-            const Icon = p.icon;
-            return (
-              <Link
-                key={p.id}
-                href={p.href}
-                className="group p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-transparent hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
-              >
-                <div
-                  className="absolute top-0 start-0 end-0 h-1.5 transition-all duration-300 group-hover:h-2"
-                  style={{ backgroundColor: p.accent }}
-                />
-                <div className="space-y-4">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-stone-100 dark:bg-stone-800 transition-transform duration-300 group-hover:scale-110"
-                    style={{ color: p.accent }}
-                  >
-                    <Icon size={24} />
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs text-[var(--foreground-muted)] tracking-wider">
+                      {portal.index}
+                    </span>
+                    <div
+                      className="w-9 h-9 rounded-lg flex items-center justify-center bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-transform duration-200 group-hover:scale-105"
+                      style={{ color: portal.accent }}
+                    >
+                      <Icon size={18} />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors flex items-center justify-between">
-                      <span>{p.title}</span>
-                      {isFa ? (
-                        <ArrowLeft size={16} className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                      ) : (
-                        <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                      )}
-                    </h3>
-                    <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
-                      {p.description}
+
+                  <div className="space-y-1.5">
+                    <h2 className="font-display text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors flex items-center justify-between gap-2">
+                      <span>{portal.title}</span>
+                      <DirArrow
+                        size={15}
+                        className="opacity-40 group-hover:opacity-100 transition-opacity shrink-0"
+                      />
+                    </h2>
+                    <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                      {portal.subtitle}
                     </p>
                   </div>
-                </div>
 
-                <div
-                  className="pt-4 mt-4 border-t border-stone-100 dark:border-stone-800 text-[11px] font-semibold flex items-center justify-between"
-                  style={{ color: p.accent }}
-                >
-                  <span>{isFa ? 'ورود به بخش اختصاصی' : 'Consulter le pilier'}</span>
-                  <span>{isFa ? '←' : '→'}</span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Academic Credentials (6 Universities) & Global Presence («حضور من در هستی») */}
-      <section
-        aria-label="کارنامه دانشگاهی و حضور جهانی"
-        className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 space-y-8"
-      >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase text-teal-600 font-bold">
-              <Globe size={16} />
-              <span>{isFa ? 'حضور من در هستی • ۶ دانشگاه ایران و فرانسه' : 'Parcours Académique & Muséal'}</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[var(--foreground)]">
-              {isFa
-                ? 'کارنامه دانشگاهی، موزه مدرن خوشنویسی مسکو و نهادهای بین‌المللی'
-                : 'Universités (Iran & France), Musée de Moscou et Institutions'}
-            </h2>
+                  <div className="pt-3 border-t border-[var(--border-subtle)] flex items-baseline gap-1.5">
+                    <span className="font-mono text-lg font-bold text-[var(--foreground)]">
+                      {portal.count}
+                    </span>
+                    <span className="text-[11px] text-[var(--foreground-muted)]">
+                      {portal.unit}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
+        </section>
+      </EditorialReveal>
 
-          <Link
-            href={`/${locale}/about`}
-            className="text-xs font-bold text-[var(--primary)] hover:underline shrink-0"
+      {/* =====================================================================
+          SECTION 3: MUSEUM 3D BOOK PEDESTAL
+          ===================================================================== */}
+      {featuredBook && (
+        <EditorialReveal>
+          <section
+            aria-label={isFa ? 'ویترین سه‌بعدی کتاب برگزیده' : 'Vitrine 3D du livre sélectionné'}
+            className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-artifact)] p-6 sm:p-10 lg:p-12 overflow-hidden shadow-[var(--shadow-sm)]"
           >
-            {isFa ? 'مشاهده کامل شرح حال، ۳۴+ مصاحبه و منابع ←' : 'Voir la biographie complète →'}
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {ACADEMIC_INSTITUTIONS.map((inst) => (
-            <div
-              key={inst.id}
-              className="p-4 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-1.5"
-            >
-              <div className="flex items-center justify-between text-[11px] font-mono text-[var(--foreground-muted)]">
-                <span className="font-bold text-teal-700 dark:text-teal-400">
-                  {inst.country === 'IR' ? (isFa ? 'ایران' : 'Iran') : isFa ? 'فرانسه' : 'France'}
-                </span>
-                <span>{inst.period}</span>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              <div className="lg:col-span-5 flex justify-center bg-[var(--surface-card)] rounded-2xl p-5 border border-[var(--border-subtle)] shadow-[var(--shadow-sm)]">
+                <Book3DShowcase
+                  book={featuredBook}
+                  translation={featuredBookTrans}
+                  locale={locale}
+                />
               </div>
-              <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
-                {inst.name[locale]}
-              </h3>
-              <p className="text-xs text-[var(--foreground-muted)]">{inst.role[locale]}</p>
-            </div>
-          ))}
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
-          {GLOBAL_AUTHORITY_BADGES.map((badge) => {
-            const href = resolveBadgeHref(badge, locale);
-            return (
-              <Link
-                key={badge.id}
-                href={href}
-                className="group p-3.5 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all flex flex-col justify-between space-y-2"
-              >
-                <div className="space-y-1">
-                  <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 block">
-                    {badge.badgeText[locale]}
+              <div className="lg:col-span-7 space-y-5">
+                <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--primary)] font-semibold">
+                  <BookOpen size={14} />
+                  <span>
+                    {isFa
+                      ? 'کتاب برگزیده · نمای سه‌بعدی و تورق نمونه'
+                      : isFr
+                        ? 'Ouvrage à la une · Vitrine 3D & Feuilletage'
+                        : 'Featured Monograph · 3D Showcase'}
                   </span>
-                  <h3 className="text-xs font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug">
-                    {badge.title[locale]}
-                  </h3>
                 </div>
-                <span className="text-[10px] font-bold text-[var(--primary)] inline-flex items-center gap-1">
-                  <span>{isFa ? 'مشاهده ←' : 'Explorer →'}</span>
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
 
-      {/* Recent Scholarly Articles */}
-      <section aria-label="آخرین مقالات پژوهشی" className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
-          <div>
-            <h2 className="text-2xl font-black text-[var(--foreground)]">
-              {isFa ? 'گزیده مقالات و بیانیه‌های پژوهشی' : 'Articles & Essais Récents'}
-            </h2>
-            <p className="text-xs text-[var(--foreground-muted)] mt-1">
+                <h2 className="font-display text-2xl sm:text-4xl font-black text-[var(--foreground)] text-balance">
+                  {featuredBookTrans?.title || featuredBook.slug}
+                </h2>
+
+                {featuredBookTrans?.subtitle && (
+                  <p className="text-sm sm:text-base font-semibold text-[var(--foreground-muted)]">
+                    {featuredBookTrans.subtitle}
+                  </p>
+                )}
+
+                <p className="font-serif text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-2xl">
+                  {featuredBookTrans?.synopsis}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-3.5 pt-2">
+                  <Link
+                    href={`/${locale}/books/${featuredBook.slug}`}
+                    className="interactive-tap inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-[var(--primary-foreground)] text-xs sm:text-sm font-semibold shadow-[var(--shadow-sm)] transition-colors"
+                  >
+                    <span>
+                      {isFa
+                        ? 'گشودن کتاب و مطالعه نمونه'
+                        : isFr
+                          ? 'Ouvrir l’ouvrage en 3D'
+                          : 'Open 3D Edition'}
+                    </span>
+                    <DirArrow size={14} />
+                  </Link>
+
+                  <Link
+                    href={`/${locale}/books`}
+                    className="interactive-tap inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[var(--surface-card)] border border-[var(--border-medium)] text-[var(--foreground)] text-xs sm:text-sm font-semibold hover:border-[var(--primary)] transition-colors"
+                  >
+                    <span>
+                      {isFa
+                        ? `همه ${books.length} کتاب در ۸ ژانر`
+                        : isFr
+                          ? `Les ${books.length} ouvrages`
+                          : `All ${books.length} Books`}
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        </EditorialReveal>
+      )}
+
+      {/* =====================================================================
+          SECTION 4: ASYMMETRIC EDITORIAL BENTO (4 PILLARS + BORROMEAN KNOT)
+          ===================================================================== */}
+      <EditorialReveal>
+        <section
+          aria-label={isFa ? 'ستون‌های چهارگانه اندیشه و آفرینش' : 'Quatre piliers de pensée et de création'}
+          className="space-y-7"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
+            <div className="space-y-1">
+              <span className="font-mono text-xs text-[var(--primary)] font-semibold">
+                {isFa ? 'چهار دامنه آثار' : isFr ? 'Quatre domaines' : 'Four Pillars'}
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-black text-[var(--foreground)]">
+                {isFa
+                  ? 'ستون‌های چهارگانه اندیشه و آفرینش'
+                  : isFr
+                    ? 'Piliers de Pensée et de Création'
+                    : 'Four Pillars of Thought & Creation'}
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-[var(--foreground-muted)] max-w-md">
               {isFa
-                ? 'مجهز به ارجاع علمی، چکیده مدیریتی و واژه‌نامه لکانی'
-                : 'Études cliniques et stratégiques indexées'}
+                ? 'مرور ساختاریافته آثار بالینی، تابلوهای خوشنویسی، پژوهش‌های راهبردی و اسناد حقوق بشری'
+                : isFr
+                  ? 'Exploration structurée des textes cliniques, œuvres calligraphiques, travaux stratégiques et archives civiques'
+                  : 'Structured access to clinical essays, modern calligraphy, strategic research, and human rights archives'}
             </p>
           </div>
-          <Link
-            href={`/${locale}/articles`}
-            className="text-xs font-bold text-[var(--primary)] hover:underline shrink-0"
-          >
-            {isFa ? `مشاهده آرشیو کامل ${articles.length} مقاله ←` : `Voir tous les ${articles.length} articles →`}
-          </Link>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {articles.slice(0, 4).map((art) => {
-            const trans =
-              art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-              art.translations?.[0];
-            const pSlug =
-              art.pillar === 'psychoanalysis'
-                ? isFr
-                  ? 'psychanalyse'
-                  : 'psychoanalysis'
-                : art.pillar === 'art_calligraphy'
-                  ? 'art'
-                  : art.pillar === 'cultural_strategy'
-                    ? 'strategy'
-                    : 'human-rights';
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Pillar 1 (Lead — 7 cols): Lacanian Psychoanalysis + Interactive Borromean Knot */}
+            <div className="lg:col-span-7 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 sm:p-8 flex flex-col justify-between gap-6 shadow-[var(--shadow-sm)]">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-psychoanalysis)]">
+                    <Sparkles size={16} />
+                    <span>
+                      {isFa
+                        ? 'ستون نخست · روانکاوی بالینی'
+                        : isFr
+                          ? 'Pilier I · Clinique Lacanienne'
+                          : 'Pillar I · Clinical Psychoanalysis'}
+                    </span>
+                  </div>
+                  <Link
+                    href={`/${locale}/${psychoSlug}`}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-[var(--primary)] hover:underline"
+                  >
+                    <span>{isFa ? 'ورود به تالار' : isFr ? 'Ouvrir' : 'Explore'}</span>
+                    <DirArrow size={13} />
+                  </Link>
+                </div>
 
-            return (
-              <article
-                key={art.id}
-                className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-lg transition-all space-y-4 flex flex-col justify-between"
-              >
-                <div className="space-y-2">
-                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--primary)] font-bold">
-                    {art.pillar.replace('_', ' ')}
+                <h3 className="font-display text-xl sm:text-2xl font-black text-[var(--foreground)]">
+                  <Link
+                    href={`/${locale}/${psychoSlug}`}
+                    className="hover:text-[var(--primary)] transition-colors"
+                  >
+                    {isFa
+                      ? 'روانکاوی لکانی و مفهوم دگرشنیدن'
+                      : isFr
+                        ? 'Psychanalyse Lacanienne & Écouter Autrement'
+                        : 'Lacanian Psychoanalysis & Listening Differently'}
+                  </Link>
+                </h3>
+
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                  {isFa
+                    ? 'خوانش بالینی ناخودآگاه، ترجمه سمینار سوم ژاک لکان (پسیکوزها) و صورت‌بندی دگرشنیدن در بستر زبان و فرهنگ ایرانی.'
+                    : isFr
+                      ? 'Pratique clinique du sujet, traduction persane du Séminaire III de Jacques Lacan et écoute analytique dans la culture iranienne.'
+                      : 'Clinical reading of the unconscious, translation of Jacques Lacan’s Seminar III, and conceptualizing Listening Differently.'}
+                </p>
+              </div>
+
+              {/* Bespoke Interactive Lacanian Borromean Knot */}
+              <BorromeanKnotWidget locale={locale} />
+            </div>
+
+            {/* Pillar 2 (Feature Visual — 5 cols): Art, Calligraphy & Poetry with Real Artwork Plate */}
+            <Link
+              href={`/${locale}/gallery`}
+              className="group lg:col-span-5 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--border-artifact)] overflow-hidden flex flex-col justify-between shadow-[var(--shadow-sm)] archival-lift"
+            >
+              {featuredArtwork?.image_url && (
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)]">
+                  <img
+                    src={featuredArtwork.image_url}
+                    alt={featuredArtworkTrans?.title || featuredArtwork.slug}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                  <span className="absolute bottom-3 start-3 px-2.5 py-1 rounded-md bg-[var(--surface-card)]/90 backdrop-blur-xs border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--foreground)]">
+                    {isFa ? '۲۹ مجموعه · ۸۵۶ اثر' : isFr ? '29 séries · 856 œuvres' : '29 series · 856 works'}
                   </span>
-                  <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)] leading-snug">
-                    <Link
-                      href={`/${locale}/${pSlug}/articles/${art.slug}`}
-                      className="hover:text-[var(--primary)] transition-colors"
-                    >
-                      {trans?.title || art.slug}
-                    </Link>
+                </div>
+              )}
+
+              <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between gap-4">
+                <div className="space-y-2.5">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-art)]">
+                    <Palette size={15} />
+                    <span>
+                      {isFa
+                        ? 'ستون دوم · نقاشی‌خط و شعر'
+                        : isFr
+                          ? 'Pilier II · Calligraphie & Poésie'
+                          : 'Pillar II · Art & Poetry'}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-xl font-black text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                    {isFa
+                      ? 'هنر، خوشنویسی مدرن و شعر'
+                      : isFr
+                        ? 'Art, Calligraphie Moderne & Poésie'
+                        : 'Modern Art, Calligraphy & Poetry'}
                   </h3>
-                  <p className="text-xs text-[var(--foreground-muted)] leading-relaxed line-clamp-3">
-                    {trans?.executive_summary}
+                  <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                    {isFa
+                      ? 'بیش از ۲۷ نمایشگاه بین‌المللی در پاریس، قصر پومپادور، موزه خوشنویسی مسکو، هاوانا و فستیوال فاس همراه با زوم عمیق IIIF.'
+                      : isFr
+                        ? 'Plus de 27 expositions internationales à Paris (UNESCO), Château de Pompadour, Musée de Moscou, La Havane et Fès.'
+                        : 'Over 27 international exhibitions across Paris UNESCO, Pompadour, Moscow Museum of Calligraphy, Havana, and Fez.'}
                   </p>
                 </div>
 
-                <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between text-[11px] text-[var(--foreground-muted)]">
-                  <span>{art.published_at?.slice(0, 10) || '2026'}</span>
-                  <Link
-                    href={`/${locale}/${pSlug}/articles/${art.slug}`}
-                    className="font-bold text-[var(--primary)] hover:underline"
-                  >
-                    {isFa ? 'مطالعه مقاله ←' : 'Lire la suite →'}
-                  </Link>
+                <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-bold text-[var(--color-art)]">
+                  <span>{isFa ? 'گشودن گالری و زوم عمیق' : isFr ? 'Visiter la galerie IIIF' : 'Open IIIF Gallery'}</span>
+                  <DirArrow size={14} />
                 </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
+              </div>
+            </Link>
 
-      {/* Censorship-Resistant Full-Text Newsletter */}
-      <section aria-label="خبرنامه تمام‌متن ضدسانسور" className="pt-4">
-        <NewsletterSignup locale={locale} />
-      </section>
+            {/* Pillar 3 (6 cols): Cultural Strategy */}
+            <Link
+              href={`/${locale}/strategy`}
+              className="group lg:col-span-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--border-artifact)] p-6 sm:p-7 flex flex-col justify-between gap-5 shadow-[var(--shadow-sm)] archival-lift"
+            >
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-strategy)]">
+                  <Compass size={16} />
+                  <span>
+                    {isFa
+                      ? 'ستون سوم · مطالعات راهبردی'
+                      : isFr
+                        ? 'Pilier III · Stratégie Culturelle'
+                        : 'Pillar III · Cultural Strategy'}
+                  </span>
+                </div>
+                <h3 className="font-display text-xl font-black text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                  {isFa
+                    ? 'مطالعات راهبردی و سرزمین فرهنگی ایران'
+                    : isFr
+                      ? 'Stratégie Culturelle & Modernisation'
+                      : 'Cultural Strategy & Modernization'}
+                </h3>
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                  {isFa
+                    ? 'مدرنیزاسیون سازمانی، دموکراسی سکولار، همکاری پژوهشی در دانشگاه سوربن و بازخوانی مفهوم «سرزمین فرهنگی ایران».'
+                    : isFr
+                      ? 'Modernisation organisationnelle, transition démocratique laïque, travaux à la Sorbonne et « Terre culturelle de l’Iran ».'
+                      : 'Organizational modernization, secular democratic transition, Sorbonne research, and the concept of Cultural Iran.'}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-bold text-[var(--color-strategy)]">
+                <span>{isFa ? 'مطالعه پژوهش‌های راهبردی' : isFr ? 'Lire les essais stratégiques' : 'Read Strategic Studies'}</span>
+                <DirArrow size={14} />
+              </div>
+            </Link>
+
+            {/* Pillar 4 (6 cols): Human Rights & Dadkhahi */}
+            <Link
+              href={`/${locale}/human-rights`}
+              className="group lg:col-span-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--border-artifact)] p-6 sm:p-7 flex flex-col justify-between gap-5 shadow-[var(--shadow-sm)] archival-lift"
+            >
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-dadkhahi)]">
+                  <ShieldAlert size={16} />
+                  <span>
+                    {isFa
+                      ? 'ستون چهارم · حقوق بشر و دادخواهی'
+                      : isFr
+                        ? 'Pilier IV · Droits Humains & Justice'
+                        : 'Pillar IV · Human Rights & Dadkhahi'}
+                  </span>
+                </div>
+                <h3 className="font-display text-xl font-black text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                  {isFa
+                    ? 'حقوق بشر، عدالت انتقالی و دادخواهی'
+                    : isFr
+                      ? 'Droits de l’Homme & Justice Transitionnelle'
+                      : 'Human Rights & Transitional Justice'}
+                </h3>
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                  {isFa
+                    ? 'خزانه‌داری جامعه دفاع از حقوق بشر در ایران (LDDHI)، گزارش‌ها و نشست‌های ژنو و مستندسازی دادخواهی کشتار تابستان ۱۳۶۷.'
+                    : isFr
+                      ? 'Trésorier de la LDDHI (FIDH), interventions au Conseil des droits de l’homme à Genève et mémoire du massacre de 1988.'
+                      : 'Treasurer of LDDHI (FIDH), UN Geneva interventions, and historical documentation of the 1988 prison massacres.'}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-bold text-[var(--color-dadkhahi)]">
+                <span>{isFa ? 'ورود به بایگانی حقوق بشر' : isFr ? 'Consulter les archives' : 'Explore Human Rights Archive'}</span>
+                <DirArrow size={14} />
+              </div>
+            </Link>
+          </div>
+        </section>
+      </EditorialReveal>
+
+      {/* =====================================================================
+          SECTION 5: GEOGRAPHIC LIFE TIMELINE & PARIS REFLECTION PORTRAIT
+          ===================================================================== */}
+      <EditorialReveal>
+        <section
+          aria-label={isFa ? 'کارنامه دانشگاهی و حضور جهانی' : 'Parcours académique et présence internationale'}
+          className="rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 sm:p-10 lg:p-12 space-y-10"
+        >
+          {/* Editorial Header Paired with Iconic Parisian Reflection Portrait (hassan-reflet.jpg) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center border-b border-[var(--border-subtle)] pb-8">
+            <div className="lg:col-span-7 space-y-4">
+              <div className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-[var(--primary)]">
+                <Globe size={15} />
+                <span>
+                  {isFa
+                    ? 'حضور من در هستی · ۶ دانشگاه در ایران و فرانسه'
+                    : isFr
+                      ? 'Présence dans le monde · 6 Universités (Iran & France)'
+                      : 'Academic Trajectory · 6 Universities (Iran & France)'}
+                </span>
+              </div>
+
+              <h2 className="font-display text-2xl sm:text-3xl font-black text-[var(--foreground)] text-balance">
+                {isFa
+                  ? 'مسیر دانشگاهی از شیراز و تهران تا سوربن، یونسکو و موزه مسکو'
+                  : isFr
+                    ? 'De Chiraz et Téhéran à la Sorbonne, l’UNESCO et Moscou'
+                    : 'From Shiraz and Tehran to the Sorbonne, UNESCO, and Moscow'}
+              </h2>
+
+              {/* EXACT VERBATIM BIOGRAPHY LINE FROM DR. MAKAREMI'S ORIGINAL SITE */}
+              {isFa ? (
+                <blockquote className="font-serif text-sm sm:text-base text-[var(--text-secondary)] leading-[1.95] space-y-2">
+                  <p>
+                    در شیراز به سال ۱۳۲۹ به دنیا آمدم . در ایران , از پلی تکنیک تهران،دانشگاه شیراز، دانشگاه بلوچستان ، ودر فرانسه از دانشگاه کامپین، مدرسه مهندسی سانترال پاریس، دانشکده پزشکی پاریس هفت ،ومرکز مطالعات استراژی و دیپلماسی پاریس ، چون آموزش گیرنده و یا آموزش دهنده،عبورکرده ام.
+                  </p>
+                  <p className="text-[var(--primary)] font-bold">
+                    و در این آرزو زندگی می کنم؛ ساختن ایران .
+                  </p>
+                </blockquote>
+              ) : (
+                <p className="font-serif text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+                  {isFr
+                    ? 'Sept de ses œuvres sont en exposition permanente au musée moderne de calligraphie du Moscou. Il a publié plus de 40 articles. Le nombre de ses conférences passe à 40 à ce jour.'
+                    : 'Seven of his calligraphic works are held in the permanent collection of the Moscow Museum of Modern Calligraphy alongside decades of clinical, academic, and human rights engagements in Paris.'}
+                </p>
+              )}
+
+              <Link
+                href={`/${locale}/about`}
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[var(--primary)] hover:underline pt-1"
+              >
+                <span>
+                  {isFa
+                    ? 'مطالعه کامل شرح حال، ۳۴+ مصاحبه و مستند زندگی'
+                    : isFr
+                      ? 'Lire la biographie complète et les entretiens'
+                      : 'Read full biography & interviews'}
+                </span>
+                <DirArrow size={14} />
+              </Link>
+            </div>
+
+            {/* Companion Portrait: Iconic Parisian Glass Reflection ("Hassan Reflet") */}
+            <figure className="lg:col-span-5 rounded-2xl bg-[var(--surface-passepartout)] border border-[var(--border-artifact)] p-2.5 shadow-[var(--shadow-md)]">
+              <div className="relative aspect-[1200/748] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)]">
+                <img
+                  src="/images/portrait/dr-makaremi-paris-reflet.jpg"
+                  alt={
+                    isFa
+                      ? 'دکتر حسن مکارمی و انعکاس تصویر او در آینه ساختمانی در پاریس'
+                      : isFr
+                        ? 'Dr Hassan Makaremi — reflet à Paris'
+                        : 'Dr. Hassan Makaremi reflected in Parisian architecture'
+                  }
+                  width={1200}
+                  height={748}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover object-top contrast-[1.03] saturate-[0.95]"
+                />
+              </div>
+              <figcaption className="mt-2 px-1 flex items-center justify-between text-[11px] font-mono text-[var(--foreground-muted)]">
+                <span>{isFa ? 'پاریس · انعکاس' : 'Paris · Reflet'}</span>
+                <span>1983 — 2026</span>
+              </figcaption>
+            </figure>
+          </div>
+
+          {/* 2-Column Geographic Academic Timeline (Iran -> France) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Iran Track */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono font-bold text-[var(--foreground-muted)] pb-2 border-b border-[var(--border-subtle)]">
+                <span>{isFa ? 'ایران · تحصیل و تدریس' : isFr ? 'Iran · Parcours universitaire' : 'Iran · Universities'}</span>
+                <span>1968 — 1983</span>
+              </div>
+              <ol className="space-y-3">
+                {iranInstitutions.map((inst) => (
+                  <li
+                    key={inst.id}
+                    className="p-4 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] flex items-start justify-between gap-4"
+                  >
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
+                        {inst.name[locale]}
+                      </h3>
+                      <p className="text-xs text-[var(--foreground-muted)]">{inst.role[locale]}</p>
+                    </div>
+                    <span className="font-mono text-[11px] text-[var(--primary)] shrink-0">
+                      {inst.period}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* France Track */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono font-bold text-[var(--foreground-muted)] pb-2 border-b border-[var(--border-subtle)]">
+                <span>{isFa ? 'فرانسه · پژوهش و روانکاوی' : isFr ? 'France · Recherche & Clinique' : 'France · Research & Clinical'}</span>
+                <span>1983 — 2026</span>
+              </div>
+              <ol className="space-y-3">
+                {franceInstitutions.map((inst) => (
+                  <li
+                    key={inst.id}
+                    className="p-4 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] flex items-start justify-between gap-4"
+                  >
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
+                        {inst.name[locale]}
+                      </h3>
+                      <p className="text-xs text-[var(--foreground-muted)]">{inst.role[locale]}</p>
+                    </div>
+                    <span className="font-mono text-[11px] text-[var(--primary)] shrink-0">
+                      {inst.period}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          {/* 5 Museum Plaque International Authority Badges */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 pt-2">
+            {GLOBAL_AUTHORITY_BADGES.map((badge) => {
+              const href = resolveBadgeHref(badge, locale);
+              return (
+                <Link
+                  key={badge.id}
+                  href={href}
+                  className="group p-4 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] transition-colors flex flex-col justify-between gap-2.5 archival-lift"
+                >
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-mono font-bold text-[var(--accent-gold)] block">
+                      {badge.badgeText[locale]}
+                    </span>
+                    <h3 className="text-xs font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors leading-snug">
+                      {badge.title[locale]}
+                    </h3>
+                  </div>
+                  <span className="text-[11px] font-semibold text-[var(--primary)] inline-flex items-center gap-1">
+                    <span>{isFa ? 'مشاهده' : isFr ? 'Explorer' : 'View'}</span>
+                    <DirArrow size={11} />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      </EditorialReveal>
+
+      {/* =====================================================================
+          SECTION 6: LITERARY JOURNAL INDEX (LEAD ESSAY + HAIRLINE LIST)
+          ===================================================================== */}
+      {leadArticle && (
+        <EditorialReveal>
+          <section
+            aria-label={isFa ? 'گزیده مقالات و بیانیه‌های پژوهشی' : 'Articles et essais récents'}
+            className="space-y-7"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
+              <div className="space-y-1">
+                <span className="font-mono text-xs text-[var(--primary)] font-semibold">
+                  {isFa ? 'نشریه و آرشیو مقالات' : isFr ? 'Cahiers & Essais' : 'Journal & Essays'}
+                </span>
+                <h2 className="font-display text-2xl sm:text-3xl font-black text-[var(--foreground)]">
+                  {isFa
+                    ? 'گزیده مقالات و بیانیه‌های پژوهشی'
+                    : isFr
+                      ? 'Articles et Essais Choisis'
+                      : 'Selected Scholarly Essays'}
+                </h2>
+              </div>
+
+              <Link
+                href={`/${locale}/articles`}
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[var(--primary)] hover:underline shrink-0"
+              >
+                <span>
+                  {isFa
+                    ? `آرشیو کامل ${articles.length} مقاله`
+                    : isFr
+                      ? `Tous les ${articles.length} articles`
+                      : `All ${articles.length} Articles`}
+                </span>
+                <DirArrow size={14} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              {/* Lead Essay Spotlight (6 cols) */}
+              {(() => {
+                const trans =
+                  leadArticle.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+                  leadArticle.translations?.[0];
+                const pSlug = getArticlePillarSlug(leadArticle.pillar);
+                const href = `/${locale}/${pSlug}/articles/${leadArticle.slug}`;
+                return (
+                  <article className="lg:col-span-6 p-7 sm:p-8 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-col justify-between gap-6 shadow-[var(--shadow-sm)] archival-lift">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between text-[11px] font-mono text-[var(--foreground-muted)]">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--primary)] font-semibold">
+                          {leadArticle.pillar.replace('_', ' ')}
+                        </span>
+                        <span>{leadArticle.published_at?.slice(0, 10) || '2026'}</span>
+                      </div>
+
+                      <h3 className="font-display text-xl sm:text-2xl font-black text-[var(--foreground)] leading-snug">
+                        <Link href={href} className="hover:text-[var(--primary)] transition-colors">
+                          {trans?.title || leadArticle.slug}
+                        </Link>
+                      </h3>
+
+                      <p className="font-serif text-sm sm:text-base text-[var(--foreground-muted)] leading-relaxed line-clamp-4">
+                        {trans?.executive_summary}
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
+                      <Link
+                        href={href}
+                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[var(--primary)] hover:underline"
+                      >
+                        <span>
+                          {isFa
+                            ? 'مطالعه متن کامل مقاله'
+                            : isFr
+                              ? 'Lire l’article complet'
+                              : 'Read Full Essay'}
+                        </span>
+                        <DirArrow size={14} />
+                      </Link>
+                      <Link
+                        href={`${href}.md`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-[11px] text-[var(--foreground-muted)] hover:text-[var(--primary)] transition-colors"
+                      >
+                        .md
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })()}
+
+              {/* Curated Journal Hairline Index (6 cols) */}
+              <div className="lg:col-span-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] shadow-[var(--shadow-sm)] flex flex-col justify-between">
+                {secondaryArticles.map((art) => {
+                  const trans =
+                    art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+                    art.translations?.[0];
+                  const pSlug = getArticlePillarSlug(art.pillar);
+                  const href = `/${locale}/${pSlug}/articles/${art.slug}`;
+
+                  return (
+                    <article
+                      key={art.id}
+                      className="p-5 sm:p-6 hover:bg-[var(--surface-artifact)] transition-colors flex flex-col justify-between gap-2.5"
+                    >
+                      <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[var(--foreground-muted)]">
+                        <span className="text-[var(--primary)] font-semibold">
+                          {art.pillar.replace('_', ' ')}
+                        </span>
+                        <span>{art.published_at?.slice(0, 10) || '2026'}</span>
+                      </div>
+
+                      <h3 className="font-display text-base sm:text-lg font-bold text-[var(--foreground)] leading-snug">
+                        <Link href={href} className="hover:text-[var(--primary)] transition-colors">
+                          {trans?.title || art.slug}
+                        </Link>
+                      </h3>
+
+                      <p className="text-xs text-[var(--foreground-muted)] leading-relaxed line-clamp-2">
+                        {trans?.executive_summary}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        </EditorialReveal>
+      )}
+
+      {/* =====================================================================
+          SECTION 7: CENSORSHIP-RESISTANT FULL-TEXT NEWSLETTER
+          ===================================================================== */}
+      <EditorialReveal>
+        <section
+          aria-label={isFa ? 'خبرنامه تمام‌متن ضدسانسور' : 'Infolettre intégrale anti-censure'}
+          className="pt-2"
+        >
+          <NewsletterSignup locale={locale} />
+        </section>
+      </EditorialReveal>
     </div>
   );
 }

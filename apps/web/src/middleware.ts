@@ -39,6 +39,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/.well-known') ||
     pathname.startsWith('/fonts') ||
     pathname.startsWith('/icons') ||
+    pathname.startsWith('/images') ||
     pathname === '/opengraph-image' ||
     pathname === '/twitter-image' ||
     pathname === '/favicon.ico' ||
