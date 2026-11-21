@@ -19,12 +19,17 @@ import {
 } from '@/lib/schema-org';
 import { buildArticleAcademicMeta } from '@/lib/academic-metadata';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   const articles = await getArticles('fa');
   const params: Array<{ locale: string; pillar: string; slug: string }> = [];
 
+  // Pre-render the top 40 canonical & newest articles statically; all 404 render dynamically on demand
+  const preRenderArticles = articles.slice(0, 40);
+
   for (const locale of SUPPORTED_LOCALES) {
-    for (const art of articles) {
+    for (const art of preRenderArticles) {
       if (art.pillar === 'psychoanalysis') {
         const pillarSlugs = locale === 'fr' ? ['psychanalyse', 'psychoanalysis'] : ['psychoanalysis'];
         for (const p of pillarSlugs) {

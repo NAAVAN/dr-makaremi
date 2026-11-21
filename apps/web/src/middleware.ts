@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { STATIC_LEGACY_REDIRECTS } from '@makaremi/shared';
+import VAULT_LEGACY_REDIRECTS_RAW from '../../../packages/shared/src/data/vault/legacy-redirects.json';
+
+const VAULT_LEGACY_REDIRECTS = VAULT_LEGACY_REDIRECTS_RAW as Record<string, string>;
 
 const SUPPORTED_LOCALES = ['fa', 'fr', 'en'] as const;
 type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -70,14 +73,14 @@ export async function middleware(request: NextRequest) {
     // Keep cleanPath if decoding fails
   }
 
-  if (STATIC_LEGACY_REDIRECTS[cleanPath]) {
-    const destination = STATIC_LEGACY_REDIRECTS[cleanPath];
-    return NextResponse.redirect(new URL(destination, `https://${CANONICAL_HOST}`), 301);
-  }
+  const redirectDestination =
+    STATIC_LEGACY_REDIRECTS[cleanPath] ||
+    STATIC_LEGACY_REDIRECTS[decodedPath] ||
+    VAULT_LEGACY_REDIRECTS[cleanPath] ||
+    VAULT_LEGACY_REDIRECTS[decodedPath];
 
-  if (STATIC_LEGACY_REDIRECTS[decodedPath]) {
-    const destination = STATIC_LEGACY_REDIRECTS[decodedPath];
-    return NextResponse.redirect(new URL(destination, `https://${CANONICAL_HOST}`), 301);
+  if (redirectDestination) {
+    return NextResponse.redirect(new URL(redirectDestination, `https://${CANONICAL_HOST}`), 301);
   }
 
   // 4. Multi-language locale routing (/fa, /fr, /en) and dir="rtl|ltr" header injection

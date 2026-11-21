@@ -1,0 +1,600 @@
+{
+  "excluded_content": [
+    {
+      "wp_id": 1,
+      "post_type": "post",
+      "status": "publish",
+      "title": "Page de test",
+      "slug": "bonjour-tout-le-monde",
+      "reason": "test_artifact"
+    },
+    {
+      "wp_id": 5831,
+      "post_type": "post",
+      "status": "draft",
+      "title": "test-english",
+      "slug": "",
+      "reason": "status_draft"
+    },
+    {
+      "wp_id": 7352,
+      "post_type": "post",
+      "status": "draft",
+      "title": "",
+      "slug": "",
+      "reason": "status_draft"
+    },
+    {
+      "wp_id": 7355,
+      "post_type": "post",
+      "status": "draft",
+      "title": "hello",
+      "slug": "",
+      "reason": "status_draft"
+    },
+    {
+      "wp_id": 7357,
+      "post_type": "post",
+      "status": "draft",
+      "title": "sssss",
+      "slug": "",
+      "reason": "status_draft"
+    },
+    {
+      "wp_id": 5927,
+      "post_type": "mk_poem",
+      "status": "draft",
+      "title": "دوستت دارم",
+      "slug": "dostat-darm",
+      "reason": "status_draft"
+    },
+    {
+      "wp_id": 5746,
+      "post_type": "mk_video",
+      "status": "draft",
+      "title": "Ma Va Ma 16-ما و ما -جایگاه‌ زنان در ادیان، قسمت اول",
+      "slug": "",
+      "reason": "status_draft"
+    },
+    {
+      "wp_id": 85,
+      "post_type": "mk_tabl",
+      "status": "publish",
+      "title": "one test picture in english",
+      "slug": "one-test-picture-in-english",
+      "reason": "test_artifact"
+    },
+    {
+      "wp_id": 29,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Blog",
+      "slug": "blog",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 47,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Galeries",
+      "slug": "galeries",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 51,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Poèmes",
+      "slug": "liste-poemes",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 87,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Pictures",
+      "slug": "pictures",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 96,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Poems",
+      "slug": "poems",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 4805,
+      "post_type": "page",
+      "status": "draft",
+      "title": "نمایشگاه بین المللی خوشنویسی روسیه",
+      "slug": "fa-expo-novogrod",
+      "reason": "status_draft"
+    },
+    {
+      "wp_id": 1358,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Liste des livres",
+      "slug": "liste-des-livres",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 1783,
+      "post_type": "page",
+      "status": "publish",
+      "title": "Vidéos",
+      "slug": "videos",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 1984,
+      "post_type": "page",
+      "status": "publish",
+      "title": "اشعارbw",
+      "slug": "poems-persan",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 2231,
+      "post_type": "page",
+      "status": "publish",
+      "title": "اخبار (news)",
+      "slug": "news-persan",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 2273,
+      "post_type": "page",
+      "status": "publish",
+      "title": "(vidéos) فیلم‌ها",
+      "slug": "videos-persan",
+      "reason": "wp_structural_stub"
+    },
+    {
+      "wp_id": 3405,
+      "post_type": "page",
+      "status": "publish",
+      "title": "convertisseur spécial galeries fr -> fa",
+      "slug": "convertisseur-special",
+      "reason": "test_artifact"
+    },
+    {
+      "wp_id": 4434,
+      "post_type": "page",
+      "status": "publish",
+      "title": "test mail",
+      "slug": "test-mail",
+      "reason": "test_artifact"
+    },
+    {
+      "wp_id": 5765,
+      "post_type": "page",
+      "status": "publish",
+      "title": "test -- fa -- lionel",
+      "slug": "test-fa",
+      "reason": "test_artifact"
+    },
+    {
+      "wp_id": 3348,
+      "post_type": "page",
+      "status": "publish",
+      "title": "More pictures...",
+      "slug": "more-pictures",
+      "reason": "empty_wp_shell"
+    },
+    {
+      "wp_id": 3352,
+      "post_type": "page",
+      "status": "publish",
+      "title": "لیست کتابهای فارسی",
+      "slug": "list-ketabhay-farsi-ir",
+      "reason": "empty_wp_shell"
+    }
+  ],
+  "wp_infra_items": [
+    {
+      "wp_id": 26,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Accueil"
+    },
+    {
+      "wp_id": 44,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Actualités/Blog"
+    },
+    {
+      "wp_id": 45,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Art"
+    },
+    {
+      "wp_id": 50,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Poésie"
+    },
+    {
+      "wp_id": 53,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": ""
+    },
+    {
+      "wp_id": 69,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Home"
+    },
+    {
+      "wp_id": 86,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Art"
+    },
+    {
+      "wp_id": 89,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Galleries"
+    },
+    {
+      "wp_id": 108,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Contact"
+    },
+    {
+      "wp_id": 109,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Contact"
+    },
+    {
+      "wp_id": 1363,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Bibliographie"
+    },
+    {
+      "wp_id": 1364,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Bibliographie"
+    },
+    {
+      "wp_id": 1365,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Recherche & Société"
+    },
+    {
+      "wp_id": 1366,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Livres Recherche"
+    },
+    {
+      "wp_id": 1367,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Livres Stratégie"
+    },
+    {
+      "wp_id": 1429,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Articles"
+    },
+    {
+      "wp_id": 1430,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Psychanalyse"
+    },
+    {
+      "wp_id": 1464,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": ""
+    },
+    {
+      "wp_id": 1790,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Vidéos"
+    },
+    {
+      "wp_id": 1791,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Vidéos"
+    },
+    {
+      "wp_id": 2007,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Articles Recherche"
+    },
+    {
+      "wp_id": 2012,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Articles Société"
+    },
+    {
+      "wp_id": 2036,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "à Propos"
+    },
+    {
+      "wp_id": 2040,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Vidéos"
+    },
+    {
+      "wp_id": 2068,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Entretiens"
+    },
+    {
+      "wp_id": 2069,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": ""
+    },
+    {
+      "wp_id": 2185,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "صفحه اول"
+    },
+    {
+      "wp_id": 2187,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "هنر"
+    },
+    {
+      "wp_id": 2188,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "شعر"
+    },
+    {
+      "wp_id": 2190,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "در مورد"
+    },
+    {
+      "wp_id": 2244,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "خبر و بلاگ"
+    },
+    {
+      "wp_id": 2248,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": ""
+    },
+    {
+      "wp_id": 2253,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "گالری‌ها"
+    },
+    {
+      "wp_id": 2257,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "اشعار"
+    },
+    {
+      "wp_id": 2598,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Conférences"
+    },
+    {
+      "wp_id": 2599,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Conférences"
+    },
+    {
+      "wp_id": 2600,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Conférences"
+    },
+    {
+      "wp_id": 2601,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Conférences"
+    },
+    {
+      "wp_id": 2807,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": ""
+    },
+    {
+      "wp_id": 3300,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "نمایشگاه‌ها"
+    },
+    {
+      "wp_id": 3357,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "روان‌کاوی"
+    },
+    {
+      "wp_id": 3358,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "مقالات"
+    },
+    {
+      "wp_id": 3359,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "فیلم‌ها"
+    },
+    {
+      "wp_id": 3362,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "کنفرانس‌ها"
+    },
+    {
+      "wp_id": 3425,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": ""
+    },
+    {
+      "wp_id": 4328,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "About"
+    },
+    {
+      "wp_id": 4329,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Research"
+    },
+    {
+      "wp_id": 4332,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Exhibitions"
+    },
+    {
+      "wp_id": 4336,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "تماس با"
+    },
+    {
+      "wp_id": 4350,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "مصاحبه با"
+    },
+    {
+      "wp_id": 4351,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "منابع"
+    },
+    {
+      "wp_id": 4352,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "فیلم‌ها"
+    },
+    {
+      "wp_id": 4432,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "حافظ"
+    },
+    {
+      "wp_id": 4436,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "پژوهش و جامعه"
+    },
+    {
+      "wp_id": 4437,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "مقالات پژوهش"
+    },
+    {
+      "wp_id": 4438,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "مقالات جامعه"
+    },
+    {
+      "wp_id": 4445,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "کنفرانس‌ها"
+    },
+    {
+      "wp_id": 4446,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "کتاب پژوهش"
+    },
+    {
+      "wp_id": 4447,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "کتاب راهبردی"
+    },
+    {
+      "wp_id": 5073,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Vidéos Société"
+    },
+    {
+      "wp_id": 5074,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Vidéos Recherche"
+    },
+    {
+      "wp_id": 5075,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "شعر و تصویر"
+    },
+    {
+      "wp_id": 5253,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "دیگر"
+    },
+    {
+      "wp_id": 5257,
+      "post_type": "nav_menu_item",
+      "status": "publish",
+      "title": "Divers"
+    },
+    {
+      "wp_id": 4433,
+      "post_type": "wpcf7_contact_form",
+      "status": "publish",
+      "title": "Formulaire de contact FR"
+    },
+    {
+      "wp_id": 4529,
+      "post_type": "wpcf7_contact_form",
+      "status": "publish",
+      "title": "Formulaire de Contact Persan"
+    },
+    {
+      "wp_id": 7353,
+      "post_type": "wp_global_styles",
+      "status": "publish",
+      "title": "Custom Styles"
+    }
+  ]
+}

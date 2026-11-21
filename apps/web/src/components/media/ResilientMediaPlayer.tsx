@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Play, Headphones, Video, ExternalLink, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Headphones, Video, ExternalLink, ShieldCheck, AlertCircle } from 'lucide-react';
 import type { Locale } from '@makaremi/shared';
 
 interface ResilientMediaPlayerProps {
   title: string;
   youtubeId?: string | null;
+  vimeoUrl?: string | null;
   selfHostedAudio?: string | null;
   selfHostedHls?: string | null;
   locale: Locale;
@@ -15,14 +16,19 @@ interface ResilientMediaPlayerProps {
 export function ResilientMediaPlayer({
   title,
   youtubeId,
+  vimeoUrl,
   selfHostedAudio,
   selfHostedHls,
   locale,
 }: ResilientMediaPlayerProps) {
-  const [activeMode, setActiveMode] = useState<'audio' | 'youtube' | 'hls'>('audio');
-  const [consentYouTube, setConsentYouTube] = useState<boolean>(false);
+  const defaultMode: 'audio' | 'youtube' | 'vimeo' =
+    youtubeId ? 'youtube' : vimeoUrl ? 'vimeo' : 'audio';
+
+  const [activeMode, setActiveMode] = useState<'audio' | 'youtube' | 'vimeo'>(defaultMode);
+  const [consentExternal, setConsentExternal] = useState<boolean>(false);
 
   const isFa = locale === 'fa';
+  const vimeoId = vimeoUrl?.match(/vimeo\.com\/(\d+)/)?.[1] || null;
 
   return (
     <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] overflow-hidden shadow-lg space-y-4">
@@ -34,24 +40,11 @@ export function ResilientMediaPlayer({
 
         {/* Stream mode tabs */}
         <div className="flex items-center gap-1 bg-[var(--surface-card)] p-1 rounded-xl border border-[var(--border-subtle)] text-xs">
-          <button
-            type="button"
-            onClick={() => setActiveMode('audio')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold transition-all ${
-              activeMode === 'audio'
-                ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
-                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-            }`}
-          >
-            <Headphones size={14} />
-            <span>{isFa ? 'پادکست صوتی (سبک)' : 'Audio Podcast'}</span>
-          </button>
-
           {youtubeId && (
             <button
               type="button"
               onClick={() => setActiveMode('youtube')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
                 activeMode === 'youtube'
                   ? 'bg-red-600 text-white shadow-xs'
                   : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
@@ -61,55 +54,81 @@ export function ResilientMediaPlayer({
               <span>YouTube</span>
             </button>
           )}
+
+          {vimeoId && (
+            <button
+              type="button"
+              onClick={() => setActiveMode('vimeo')}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                activeMode === 'vimeo'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              }`}
+            >
+              <Video size={14} />
+              <span>Vimeo</span>
+            </button>
+          )}
+
+          {(selfHostedAudio || selfHostedHls) && (
+            <button
+              type="button"
+              onClick={() => setActiveMode('audio')}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                activeMode === 'audio'
+                  ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
+                  : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              }`}
+            >
+              <Headphones size={14} />
+              <span>{isFa ? 'پادکست صوتی (سبک)' : 'Audio Podcast'}</span>
+            </button>
+          )}
         </div>
       </div>
 
       {/* Player Screen Display */}
       <div className="p-4 sm:p-6">
-        {activeMode === 'audio' && (
-          <div className="rounded-xl bg-gradient-to-r from-[var(--surface-sunken)] to-[var(--surface-card)] border border-[var(--border-subtle)] p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center shrink-0">
-                <Headphones size={24} />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-[var(--foreground)]">{title}</h4>
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
-                  <ShieldCheck size={13} />
-                  <span>{isFa ? 'پخش مستقیم سرور ابری (مقاوم در برابر فیلترینگ)' : 'Direct Resilient CDN Stream'}</span>
-                </p>
-              </div>
-            </div>
-
-            <audio
-              controls
-              className="w-full h-10 rounded-lg outline-none"
-              src={selfHostedAudio || 'https://makaremi.com/assets/audio/khavaran-speech.mp3'}
-              preload="metadata"
-            />
-          </div>
-        )}
-
         {activeMode === 'youtube' && youtubeId && (
           <div className="space-y-3">
-            {!consentYouTube ? (
-              <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-6 text-center space-y-3">
-                <AlertCircle size={28} className="text-amber-500 mx-auto" />
-                <h4 className="text-sm font-bold text-[var(--foreground)]">
-                  {isFa ? 'بارگذاری محتوای یوتیوب با رضایت شما' : 'Chargement YouTube'}
-                </h4>
-                <p className="text-xs text-[var(--foreground-muted)] max-w-md mx-auto leading-relaxed">
-                  {isFa
-                    ? 'جهت حفظ حریم خصوصی و جلوگیری از اختلال بارگذاری در ایران، ویدیوهای یوتیوب تنها با کلیک صریح شما از طریق سرورهای بدون کوکی (youtube-nocookie.com) لود می‌شوند.'
-                    : 'Pour protéger votre vie privée et optimiser le chargement, la vidéo sera lue via youtube-nocookie.com.'}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setConsentYouTube(true)}
-                  className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition-colors cursor-pointer"
-                >
-                  {isFa ? 'تأیید و بارگذاری پلیر ویدیویی' : 'Activer le lecteur vidéo'}
-                </button>
+            {!consentExternal ? (
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-6 text-center space-y-4">
+                <div className="relative mx-auto max-w-md aspect-video rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-neutral-900">
+                  <img
+                    src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+                    alt={title}
+                    className="w-full h-full object-cover opacity-85"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <h4 className="text-sm font-bold text-[var(--foreground)]">
+                    {isFa ? 'بارگذاری ویدیوی یوتیوب با رضایت شما' : 'Chargement YouTube (Sans Cookies)'}
+                  </h4>
+                  <p className="text-xs text-[var(--foreground-muted)] max-w-md mx-auto leading-relaxed">
+                    {isFa
+                      ? 'جهت حفظ حریم خصوصی و بهینه‌سازی بارگذاری، ویدیوها با کلیک صریح شما از طریق youtube-nocookie.com بارگذاری می‌شوند.'
+                      : 'Pour protéger votre vie privée, la vidéo est chargée via youtube-nocookie.com après votre clic.'}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setConsentExternal(true)}
+                    className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition-colors cursor-pointer"
+                  >
+                    {isFa ? 'تأیید و پخش ویدیو در صفحه' : 'Activer le lecteur vidéo'}
+                  </button>
+                  <a
+                    href={`https://www.youtube.com/watch?v=${youtubeId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
+                  >
+                    <ExternalLink size={13} />
+                    <span>{isFa ? 'باز کردن مستقیم در یوتیوب' : 'Ouvrir sur YouTube'}</span>
+                  </a>
+                </div>
               </div>
             ) : (
               <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-[var(--border-subtle)] shadow-xl">
@@ -122,6 +141,68 @@ export function ResilientMediaPlayer({
                 />
               </div>
             )}
+          </div>
+        )}
+
+        {activeMode === 'vimeo' && vimeoId && (
+          <div className="space-y-3">
+            {!consentExternal ? (
+              <div className="rounded-xl border border-sky-500/30 bg-sky-500/5 p-6 text-center space-y-3">
+                <AlertCircle size={28} className="text-sky-500 mx-auto" />
+                <h4 className="text-sm font-bold text-[var(--foreground)]">
+                  {isFa ? 'پخش ویدیو از سرور Vimeo' : 'Chargement Vimeo'}
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => setConsentExternal(true)}
+                  className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-md transition-colors cursor-pointer"
+                >
+                  {isFa ? 'تأیید و بارگذاری پلیر Vimeo' : 'Activer le lecteur Vimeo'}
+                </button>
+              </div>
+            ) : (
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-[var(--border-subtle)] shadow-xl">
+                <iframe
+                  src={`https://player.vimeo.com/video/${vimeoId}?dnt=1`}
+                  title={title}
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full border-none"
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeMode === 'audio' && (selfHostedAudio || selfHostedHls) && (
+          <div className="rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center shrink-0">
+                <Headphones size={24} />
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-[var(--foreground)]">{title}</h4>
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
+                  <ShieldCheck size={13} />
+                  <span>{isFa ? 'پخش مستقیم سرور ابری' : 'Direct Resilient Stream'}</span>
+                </p>
+              </div>
+            </div>
+
+            <audio
+              controls
+              className="w-full h-10 rounded-lg outline-none"
+              src={selfHostedAudio || selfHostedHls || undefined}
+              preload="metadata"
+            />
+          </div>
+        )}
+
+        {!youtubeId && !vimeoId && !selfHostedAudio && !selfHostedHls && (
+          <div className="rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-6 text-center text-xs text-[var(--foreground-muted)]">
+            {isFa
+              ? 'متن و توضیحات آرشیوی این نشست در بخش پایین در دسترس است.'
+              : 'La description et les notes d’archive de cette intervention figurent ci-dessous.'}
           </div>
         )}
       </div>

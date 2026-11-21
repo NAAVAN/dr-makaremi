@@ -164,10 +164,10 @@ export function buildCorpusChunks(): SemanticChunk[] {
         art.pillar === 'psychoanalysis'
           ? (loc === 'fr' ? 'psychanalyse' : 'psychoanalysis')
           : art.pillar === 'art_calligraphy'
-          ? 'art'
-          : art.pillar === 'cultural_strategy'
-          ? 'strategy'
-          : 'human-rights';
+            ? 'art'
+            : art.pillar === 'cultural_strategy'
+              ? 'strategy'
+              : 'human-rights';
 
       const chunks = chunkDocument({
         documentId: art.id,
@@ -204,14 +204,18 @@ export function buildCorpusChunks(): SemanticChunk[] {
   for (const sp of FALLBACK_VIDEOS) {
     for (const t of sp.translations || []) {
       const loc = (t.languages_code.slice(0, 2)) as Locale;
-      const content = `${t.title}\n\n${t.description}\n\n${t.transcript_markdown || ''}`;
+      const content = `${t.title}\n\n${t.description || ''}\n\n${t.transcript_markdown || ''}`;
+      const speechPath =
+        sp.pillar === 'human_rights_dadkhahi'
+          ? `human-rights/speeches/${sp.slug}`
+          : `media/videos/${sp.slug}`;
       const chunks = chunkDocument({
         documentId: sp.id,
         documentType: 'speech',
         pillar: sp.pillar,
         locale: loc,
         title: t.title,
-        url: `https://makaremi.com/${loc}/speeches/${sp.slug}`,
+        url: `https://makaremi.com/${loc}/${speechPath}`,
         content,
       });
       allChunks.push(...chunks);
@@ -230,7 +234,7 @@ export function buildCorpusChunks(): SemanticChunk[] {
         pillar: 'art_calligraphy',
         locale: loc,
         title: t.title,
-        url: `https://makaremi.com/${loc}/art/poems/${p.slug}`,
+        url: `https://makaremi.com/${loc}/poetry/poems/${p.slug}`,
         content,
       });
       allChunks.push(...chunks);
@@ -248,7 +252,7 @@ export function buildCorpusChunks(): SemanticChunk[] {
         pillar: 'art_calligraphy',
         locale: loc,
         title: t.title,
-        url: `https://makaremi.com/${loc}/exhibitions/${ex.slug}`,
+        url: `https://makaremi.com/${loc}/art/exhibitions/${ex.slug}`,
         content,
       });
       allChunks.push(...chunks);

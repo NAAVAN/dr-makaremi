@@ -4,25 +4,28 @@ import {
   getBooks,
   getVideoSpeeches,
   getExhibitions,
-  getArtworks,
+  getPoems,
+  getArchivePages,
 } from '@/lib/cms';
-import { SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
+import { SUPPORTED_LOCALES } from '@/lib/i18n';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://makaremi.com';
 
-  const [articles, books, speeches, exhibitions, artworks] = await Promise.all([
+  const [articles, books, speeches, exhibitions, poems, archivePages] = await Promise.all([
     getArticles('fa'),
     getBooks('fa'),
     getVideoSpeeches('fa'),
     getExhibitions('fa'),
-    getArtworks('fa'),
+    getPoems('fa'),
+    getArchivePages('fa'),
   ]);
 
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
   const staticSections = [
     { path: '', priority: 1.0, changeFrequency: 'daily' as const },
+    { path: '/about', priority: 0.9, changeFrequency: 'weekly' as const },
     { path: '/assistant', priority: 0.95, changeFrequency: 'daily' as const },
     { path: '/agent-console', priority: 0.95, changeFrequency: 'daily' as const },
     { path: '/system-status', priority: 0.9, changeFrequency: 'daily' as const },
@@ -33,8 +36,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/strategy', priority: 0.8, changeFrequency: 'weekly' as const },
     { path: '/human-rights', priority: 0.85, changeFrequency: 'weekly' as const },
     { path: '/gallery', priority: 0.8, changeFrequency: 'weekly' as const },
-    { path: '/poetry', priority: 0.7, changeFrequency: 'monthly' as const },
-    { path: '/media', priority: 0.75, changeFrequency: 'weekly' as const },
+    { path: '/poetry', priority: 0.75, changeFrequency: 'weekly' as const },
+    { path: '/hafez', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/media', priority: 0.8, changeFrequency: 'weekly' as const },
   ];
 
   // 1. Static Pages across locales
@@ -82,20 +86,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // 3. Articles
+  // 3. Articles (404 migrated scholarly & news articles)
   for (const art of articles) {
-    for (const locale of SUPPORTED_LOCALES) {
-      const pillarSegment =
-        art.pillar === 'psychoanalysis'
-          ? locale === 'fr'
-            ? 'psychanalyse'
-            : 'psychoanalysis'
-          : art.pillar === 'art_calligraphy'
-          ? 'art'
-          : art.pillar === 'cultural_strategy'
-          ? 'strategy'
-          : 'human-rights';
+    const faPillar =
+      art.pillar === 'psychoanalysis'
+        ? 'psychoanalysis'
+        : art.pillar === 'art_calligraphy'
+        ? 'art'
+        : art.pillar === 'cultural_strategy'
+        ? 'strategy'
+        : 'human-rights';
+    const frPillar = art.pillar === 'psychoanalysis' ? 'psychanalyse' : faPillar;
 
+    for (const locale of SUPPORTED_LOCALES) {
+      const pillarSegment = locale === 'fr' ? frPillar : faPillar;
       sitemapEntries.push({
         url: `${baseUrl}/${locale}/${pillarSegment}/articles/${art.slug}`,
         lastModified: new Date(art.published_at || art.created_at || Date.now()),
@@ -103,50 +107,95 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.85,
         alternates: {
           languages: {
-            'fa-IR': `${baseUrl}/fa/${art.pillar === 'psychoanalysis' ? 'psychoanalysis' : art.pillar === 'art_calligraphy' ? 'art' : art.pillar === 'cultural_strategy' ? 'strategy' : 'human-rights'}/articles/${art.slug}`,
-            'fr-FR': `${baseUrl}/fr/${art.pillar === 'psychoanalysis' ? 'psychanalyse' : art.pillar === 'art_calligraphy' ? 'art' : art.pillar === 'cultural_strategy' ? 'strategy' : 'human-rights'}/articles/${art.slug}`,
-            'en-US': `${baseUrl}/en/${art.pillar === 'psychoanalysis' ? 'psychoanalysis' : art.pillar === 'art_calligraphy' ? 'art' : art.pillar === 'cultural_strategy' ? 'strategy' : 'human-rights'}/articles/${art.slug}`,
-            'x-default': `${baseUrl}/fa/${art.pillar === 'psychoanalysis' ? 'psychoanalysis' : art.pillar === 'art_calligraphy' ? 'art' : art.pillar === 'cultural_strategy' ? 'strategy' : 'human-rights'}/articles/${art.slug}`,
+            'fa-IR': `${baseUrl}/fa/${faPillar}/articles/${art.slug}`,
+            'fr-FR': `${baseUrl}/fr/${frPillar}/articles/${art.slug}`,
+            'en-US': `${baseUrl}/en/${faPillar}/articles/${art.slug}`,
+            'x-default': `${baseUrl}/fa/${faPillar}/articles/${art.slug}`,
           },
         },
       });
     }
   }
 
-  // 4. Speeches
+  // 4. Videos & Human Rights Speeches (261 migrated videos)
   for (const sp of speeches) {
+    const subPath =
+      sp.pillar === 'human_rights_dadkhahi'
+        ? `human-rights/speeches/${sp.slug}`
+        : `media/videos/${sp.slug}`;
+
     for (const locale of SUPPORTED_LOCALES) {
       sitemapEntries.push({
-        url: `${baseUrl}/${locale}/speeches/${sp.slug}`,
+        url: `${baseUrl}/${locale}/${subPath}`,
         lastModified: new Date(sp.event_date || Date.now()),
         changeFrequency: 'monthly',
         priority: 0.75,
         alternates: {
           languages: {
-            'fa-IR': `${baseUrl}/fa/speeches/${sp.slug}`,
-            'fr-FR': `${baseUrl}/fr/speeches/${sp.slug}`,
-            'en-US': `${baseUrl}/en/speeches/${sp.slug}`,
-            'x-default': `${baseUrl}/fa/speeches/${sp.slug}`,
+            'fa-IR': `${baseUrl}/fa/${subPath}`,
+            'fr-FR': `${baseUrl}/fr/${subPath}`,
+            'en-US': `${baseUrl}/en/${subPath}`,
+            'x-default': `${baseUrl}/fa/${subPath}`,
           },
         },
       });
     }
   }
 
-  // 5. Exhibitions
+  // 5. Exhibitions (57 international exhibitions)
   for (const ex of exhibitions) {
     for (const locale of SUPPORTED_LOCALES) {
       sitemapEntries.push({
-        url: `${baseUrl}/${locale}/exhibitions/${ex.slug}`,
+        url: `${baseUrl}/${locale}/art/exhibitions/${ex.slug}`,
         lastModified: new Date(ex.start_date || Date.now()),
         changeFrequency: 'monthly',
         priority: 0.75,
         alternates: {
           languages: {
-            'fa-IR': `${baseUrl}/fa/exhibitions/${ex.slug}`,
-            'fr-FR': `${baseUrl}/fr/exhibitions/${ex.slug}`,
-            'en-US': `${baseUrl}/en/exhibitions/${ex.slug}`,
-            'x-default': `${baseUrl}/fa/exhibitions/${ex.slug}`,
+            'fa-IR': `${baseUrl}/fa/art/exhibitions/${ex.slug}`,
+            'fr-FR': `${baseUrl}/fr/art/exhibitions/${ex.slug}`,
+            'en-US': `${baseUrl}/en/art/exhibitions/${ex.slug}`,
+            'x-default': `${baseUrl}/fa/art/exhibitions/${ex.slug}`,
+          },
+        },
+      });
+    }
+  }
+
+  // 6. Poems (300 migrated poems)
+  for (const p of poems) {
+    for (const locale of SUPPORTED_LOCALES) {
+      sitemapEntries.push({
+        url: `${baseUrl}/${locale}/poetry/poems/${p.slug}`,
+        lastModified: new Date(p.created_at || Date.now()),
+        changeFrequency: 'monthly',
+        priority: 0.7,
+        alternates: {
+          languages: {
+            'fa-IR': `${baseUrl}/fa/poetry/poems/${p.slug}`,
+            'fr-FR': `${baseUrl}/fr/poetry/poems/${p.slug}`,
+            'en-US': `${baseUrl}/en/poetry/poems/${p.slug}`,
+            'x-default': `${baseUrl}/fa/poetry/poems/${p.slug}`,
+          },
+        },
+      });
+    }
+  }
+
+  // 7. Archival Reference Pages (47 migrated standalone pages)
+  for (const pg of archivePages) {
+    for (const locale of SUPPORTED_LOCALES) {
+      sitemapEntries.push({
+        url: `${baseUrl}/${locale}/about/${pg.slug}`,
+        lastModified: new Date(pg.created_at || Date.now()),
+        changeFrequency: 'monthly',
+        priority: 0.7,
+        alternates: {
+          languages: {
+            'fa-IR': `${baseUrl}/fa/about/${pg.slug}`,
+            'fr-FR': `${baseUrl}/fr/about/${pg.slug}`,
+            'en-US': `${baseUrl}/en/about/${pg.slug}`,
+            'x-default': `${baseUrl}/fa/about/${pg.slug}`,
           },
         },
       });

@@ -11,12 +11,39 @@ export interface ArticleTranslation {
     meta_description?: string | null;
     canonical_url?: string | null;
 }
+export interface GalleryImageAsset {
+    id: number;
+    url: string;
+    title: string;
+    alt?: string | null;
+    width?: number | null;
+    height?: number | null;
+}
+export interface MediaAsset {
+    id: number;
+    url: string;
+    title: string;
+    file?: string | null;
+    mime_type: string;
+    alt?: string | null;
+    parent_id?: number | null;
+    width?: number | null;
+    height?: number | null;
+    lang?: string | null;
+}
 export interface Article {
     id: string;
+    wp_id?: number;
     slug: string;
     pillar: ContentPillar;
     status: ContentStatus;
     cover_image_id?: string | null;
+    cover_image_url?: string | null;
+    pdf_url?: string | null;
+    youtube_video_id?: string | null;
+    categories?: string[];
+    tags?: string[];
+    legacy_wp_slug?: string | null;
     audio_summary_file_id?: string | null;
     content_sha256: string;
     signature_ed25519?: string | null;
@@ -55,6 +82,7 @@ export interface BookTranslation {
 }
 export interface Book {
     id: string;
+    wp_id?: number;
     slug: string;
     isbn_13?: string | null;
     publication_year: number;
@@ -63,6 +91,10 @@ export interface Book {
     cover_3d_front_id?: string | null;
     cover_3d_spine_id?: string | null;
     cover_3d_back_id?: string | null;
+    cover_image_url?: string | null;
+    pdf_urls?: string[];
+    genres?: string[];
+    legacy_wp_slug?: string | null;
     author_audio_commentary_id?: string | null;
     order_index: number;
     status: ContentStatus;
@@ -79,14 +111,18 @@ export interface ArtworkTranslation {
 }
 export interface Artwork {
     id: string;
+    wp_id?: number;
     slug: string;
     iiif_image_id: string;
+    image_url?: string | null;
+    gallery_images?: GalleryImageAsset[];
     year: number;
     dimensions?: string | null;
     medium: string;
     artform: 'calligraphy' | 'painting' | 'drawing';
     linked_poem_id?: string | null;
     audio_recitation_file_id?: string | null;
+    legacy_wp_slug?: string | null;
     status: ContentStatus;
     created_at: string;
     translations?: ArtworkTranslation[];
@@ -100,11 +136,15 @@ export interface ExhibitionTranslation {
 }
 export interface Exhibition {
     id: string;
+    wp_id?: number;
     slug: string;
     start_date: string;
     end_date?: string | null;
     venue_city: string;
     venue_name: string;
+    cover_image_url?: string | null;
+    gallery_images?: GalleryImageAsset[];
+    legacy_wp_slug?: string | null;
     status: ContentStatus;
     created_at: string;
     translations?: ExhibitionTranslation[];
@@ -126,10 +166,14 @@ export interface PoemTranslation {
 }
 export interface Poem {
     id: string;
+    wp_id?: number;
     slug: string;
     creation_year?: number | null;
     audio_recitation_file_id?: string | null;
     linked_artwork_id?: string | null;
+    artwork_image_url?: string | null;
+    signature?: string | null;
+    legacy_wp_slug?: string | null;
     status: ContentStatus;
     created_at: string;
     translations?: PoemTranslation[];
@@ -144,16 +188,44 @@ export interface VideoSpeechTranslation {
 }
 export interface VideoSpeech {
     id: string;
+    wp_id?: number;
     slug: string;
     event_date: string;
     event_location?: string | null;
     pillar: ContentPillar;
     youtube_video_id?: string | null;
+    vimeo_url?: string | null;
+    thumbnail_url?: string | null;
+    themes?: string[];
+    legacy_wp_slug?: string | null;
     self_hosted_hls_url?: string | null;
     self_hosted_audio_url?: string | null;
     duration_seconds?: number | null;
     status: ContentStatus;
     created_at: string;
     translations?: VideoSpeechTranslation[];
+}
+export type ArchivePageGroup = 'biography' | 'interviews' | 'references' | 'conferences' | 'publications' | 'contact' | 'general';
+export interface ArchivePageTranslation {
+    id: string;
+    pages_id: string;
+    languages_code: string;
+    title: string;
+    excerpt: string;
+    body_markdown: string;
+}
+export interface ArchivePage {
+    id: string;
+    wp_id?: number;
+    parent_wp_id?: number;
+    slug: string;
+    group: ArchivePageGroup;
+    cover_image_url?: string | null;
+    gallery_images?: GalleryImageAsset[];
+    pdf_urls?: string[];
+    legacy_wp_slug?: string | null;
+    status: ContentStatus;
+    created_at: string;
+    translations?: ArchivePageTranslation[];
 }
 //# sourceMappingURL=content.d.ts.map

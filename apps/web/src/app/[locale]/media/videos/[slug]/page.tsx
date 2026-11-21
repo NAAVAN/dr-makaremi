@@ -8,12 +8,14 @@ import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { ResilientMediaPlayer } from '@/components/media/ResilientMediaPlayer';
 import { SpeechTranscriptView } from '@/components/media/SpeechTranscriptView';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   const videos = await getVideoSpeeches('fa');
   const params: Array<{ locale: string; slug: string }> = [];
 
   for (const locale of SUPPORTED_LOCALES) {
-    for (const v of videos) {
+    for (const v of videos.slice(0, 35)) {
       params.push({ locale, slug: v.slug });
     }
   }
@@ -109,6 +111,7 @@ export default async function VideoDetailPage({
       <ResilientMediaPlayer
         title={title}
         youtubeId={vid.youtube_video_id}
+        vimeoUrl={vid.vimeo_url}
         selfHostedAudio={vid.self_hosted_audio_url}
         selfHostedHls={vid.self_hosted_hls_url}
         locale={locale}

@@ -25,8 +25,9 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
       {/* Visual Canvas Side */}
       <div className="space-y-4">
         <IIIFDeepZoomViewer
-          imageId={artwork?.iiif_image_id || 'makaremi-pompadour-01'}
-          title={artworkTrans?.title || 'میان نشان و نماد'}
+          imageId={artwork?.iiif_image_id || `poem-${poem.slug}`}
+          imageUrl={poem.artwork_image_url || artwork?.image_url || artwork?.gallery_images?.[0]?.url || null}
+          title={artworkTrans?.title || poemTrans?.title || 'میان نشان و نماد'}
           medium={artwork?.medium}
           dimensions={artwork?.dimensions}
           locale={locale}

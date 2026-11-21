@@ -7,6 +7,7 @@ import {
   getExhibitionBySlug,
   getPoemBySlug,
   getVideoSpeechBySlug,
+  getArchivePageBySlug,
   getBooks,
   getArticles,
   getLacanianGlossary,
@@ -131,8 +132,12 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // 5. Single Speech: /[locale]/human-rights/speeches/[slug]
-  if (segments.length === 4 && segments[1] === 'human-rights' && segments[2] === 'speeches') {
+  // 5. Single Speech or Video: /[locale]/human-rights/speeches/[slug] or /[locale]/media/videos/[slug]
+  if (
+    segments.length === 4 &&
+    ((segments[1] === 'human-rights' && segments[2] === 'speeches') ||
+      (segments[1] === 'media' && segments[2] === 'videos'))
+  ) {
     const slug = segments[3];
     const video = await getVideoSpeechBySlug(slug, locale);
     if (video) {
@@ -142,9 +147,29 @@ export async function GET(request: NextRequest) {
       markdown = `# ${trans?.title || video.slug}\n\n`;
       markdown += `**Speaker:** Dr. Hassan Makaremi\n`;
       markdown += `**Date:** ${video.event_date}\n`;
-      markdown += `**Location:** ${video.event_location || 'Geneva/Paris'}\n\n`;
-      markdown += `## Description\n${trans?.description || ''}\n\n`;
-      markdown += `## Full Transcript\n${trans?.transcript_markdown || ''}\n`;
+      markdown += `**Location:** ${video.event_location || 'Geneva/Paris'}\n`;
+      if (video.youtube_video_id) {
+        markdown += `**YouTube:** https://www.youtube.com/watch?v=${video.youtube_video_id}\n`;
+      }
+      markdown += `\n## Description\n${trans?.description || ''}\n\n`;
+      if (trans?.transcript_markdown) {
+        markdown += `## Full Transcript\n${trans.transcript_markdown}\n`;
+      }
+    }
+  }
+
+  // 5.5. Single Editorial Reference Page: /[locale]/about/[slug]
+  if (segments.length === 3 && segments[1] === 'about') {
+    const slug = segments[2];
+    const page = await getArchivePageBySlug(slug, locale);
+    if (page) {
+      const trans =
+        page.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+        page.translations?.[0];
+      markdown = `# ${trans?.title || page.slug}\n\n`;
+      markdown += `**Author:** Dr. Hassan Makaremi | دکتر حسن مکارمی\n`;
+      markdown += `**Archive Group:** ${page.group}\n\n`;
+      markdown += `---\n\n${trans?.body_markdown || ''}\n`;
     }
   }
 

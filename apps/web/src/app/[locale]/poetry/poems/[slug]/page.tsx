@@ -7,12 +7,14 @@ import { getPoems, getPoemBySlug, getArtworks } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { PoetryArtworkSync } from '@/components/gallery/PoetryArtworkSync';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   const poems = await getPoems('fa');
   const params: Array<{ locale: string; slug: string }> = [];
 
   for (const locale of SUPPORTED_LOCALES) {
-    for (const p of poems) {
+    for (const p of poems.slice(0, 35)) {
       params.push({ locale, slug: p.slug });
     }
   }

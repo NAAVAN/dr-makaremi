@@ -17,6 +17,8 @@ import {
 import {
   getArticles,
   getBooks,
+  getVideoSpeeches,
+  getExhibitions,
   ACADEMIC_INSTITUTIONS,
   GLOBAL_AUTHORITY_BADGES,
 } from '@/lib/cms';
@@ -33,8 +35,12 @@ export default async function HomePage({
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  const articles = await getArticles(locale);
-  const books = await getBooks(locale);
+  const [articles, books, videos, exhibitions] = await Promise.all([
+    getArticles(locale),
+    getBooks(locale),
+    getVideoSpeeches(locale),
+    getExhibitions(locale),
+  ]);
 
   const featuredBook = books[0];
   const featuredBookTrans =
@@ -53,7 +59,7 @@ export default async function HomePage({
         : isFr
           ? 'Essais cliniques, culturels et sociétaux'
           : 'Psychoanalytic, cultural & social essays',
-      badge: isFa ? '۱۵۰+ مقاله' : '150+ Articles',
+      badge: isFa ? `${articles.length} مقاله` : `${articles.length} Articles`,
       href: `/${locale}/${psychoSlug}/articles`,
       icon: FileText,
       accent: 'var(--color-psychoanalysis)',
@@ -66,7 +72,7 @@ export default async function HomePage({
         : isFr
           ? 'Séries télévisées (160+ épisodes) et conférences'
           : '160+ TV episodes & university lectures',
-      badge: isFa ? '۱۶۰+ ویدیو' : '160+ Vidéos',
+      badge: isFa ? `${videos.length} ویدیو` : `${videos.length} Vidéos`,
       href: `/${locale}/media`,
       icon: Video,
       accent: 'var(--color-strategy)',
@@ -79,7 +85,7 @@ export default async function HomePage({
         : isFr
           ? '8 genres avec lecteur 3D interactif'
           : '8 genres with 3D page-turning reader',
-      badge: isFa ? `${books.length}+ کتاب` : `${books.length}+ Livres`,
+      badge: isFa ? `${books.length} کتاب` : `${books.length} Livres`,
       href: `/${locale}/books`,
       icon: BookOpen,
       accent: 'var(--primary)',
@@ -92,7 +98,7 @@ export default async function HomePage({
         : isFr
           ? '27+ expositions mondiales & Musée de Moscou'
           : '27+ international shows & Moscow Museum',
-      badge: isFa ? '۲۷+ نمایشگاه' : '27+ Expos',
+      badge: isFa ? `${exhibitions.length} نمایشگاه` : `${exhibitions.length} Expos`,
       href: `/${locale}/gallery`,
       icon: Palette,
       accent: 'var(--color-art)',

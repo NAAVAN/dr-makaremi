@@ -112,34 +112,63 @@ export default async function ExhibitionDetailPage({
         </div>
       </section>
 
-      {/* Featured Exhibition Artwork with IIIF Deep Zoom */}
+      {/* Featured Exhibition Artwork / Real Gallery Photos with IIIF Deep Zoom */}
       <section aria-label="آثار به نمایش درآمده" className="space-y-6">
         <h2 className="text-xl font-bold text-[var(--foreground)] border-b border-[var(--border-subtle)] pb-3">
-          {isFa ? 'آثار به نمایش درآمده در این تالار (زوم عمیق بافت بوم)' : 'Œuvres Exposées'}
+          {isFa ? 'آثار و تصاویر آرشیوی این نمایشگاه (زوم عمیق بافت بوم)' : 'Œuvres & Archives Photographiques'}
         </h2>
 
-        {artworks.map((art) => {
-          const artTrans =
-            art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-            art.translations?.[0];
+        {expo.gallery_images && expo.gallery_images.length > 0 ? (
+          <div className="space-y-6">
+            <IIIFDeepZoomViewer
+              imageId={`expo-${expo.slug}`}
+              imageUrl={expo.cover_image_url || expo.gallery_images[0].url}
+              title={title}
+              locale={locale}
+            />
+            {expo.gallery_images.length > 1 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {expo.gallery_images.map((img, i) => (
+                  <figure
+                    key={`${img.id}-${i}`}
+                    className="rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)]"
+                  >
+                    <img
+                      src={img.url}
+                      alt={img.alt || img.title || title}
+                      loading="lazy"
+                      className="w-full aspect-[4/3] object-cover"
+                    />
+                  </figure>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          artworks.slice(0, 1).map((art) => {
+            const artTrans =
+              art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+              art.translations?.[0];
 
-          return (
-            <div key={art.id} className="space-y-4 p-6 rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
-              <IIIFDeepZoomViewer
-                imageId={art.iiif_image_id}
-                title={artTrans?.title || 'اثر خوشنویسی'}
-                medium={art.medium}
-                dimensions={art.dimensions}
-                locale={locale}
-              />
-              {artTrans?.curator_critique_markdown && (
-                <div className="p-4 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] italic leading-relaxed">
-                  {artTrans.curator_critique_markdown}
-                </div>
-              )}
-            </div>
-          );
-        })}
+            return (
+              <div key={art.id} className="space-y-4 p-6 rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                <IIIFDeepZoomViewer
+                  imageId={art.iiif_image_id}
+                  imageUrl={art.image_url}
+                  title={artTrans?.title || 'اثر خوشنویسی'}
+                  medium={art.medium}
+                  dimensions={art.dimensions}
+                  locale={locale}
+                />
+                {artTrans?.curator_critique_markdown && (
+                  <div className="p-4 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] italic leading-relaxed">
+                    {artTrans.curator_critique_markdown}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
       </section>
     </div>
   );

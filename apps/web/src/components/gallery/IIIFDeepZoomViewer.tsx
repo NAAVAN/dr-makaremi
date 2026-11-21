@@ -6,6 +6,7 @@ import type { Locale } from '@makaremi/shared';
 
 interface IIIFDeepZoomViewerProps {
   imageId: string;
+  imageUrl?: string | null;
   title: string;
   medium?: string;
   dimensions?: string | null;
@@ -14,6 +15,7 @@ interface IIIFDeepZoomViewerProps {
 
 export function IIIFDeepZoomViewer({
   imageId,
+  imageUrl,
   title,
   medium,
   dimensions,
@@ -22,8 +24,14 @@ export function IIIFDeepZoomViewer({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const viewerRef = useRef<any>(null);
   const [isUsingFallback, setIsUsingFallback] = useState<boolean>(true);
+  const [imgFailed, setImgFailed] = useState<boolean>(false);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setImgFailed(false);
+    setZoomLevel(1);
+  }, [imageUrl, imageId]);
 
   const viewerId = `openseadragon-${imageId.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
@@ -119,30 +127,40 @@ export function IIIFDeepZoomViewer({
       {/* IIIF Container for OpenSeadragon */}
       <div id={viewerId} className={`w-full h-full ${isUsingFallback ? 'hidden' : 'block'}`} />
 
-      {/* Fallback Interactive High-Res Canvas Simulation */}
+      {/* Fallback Interactive High-Res Canvas / Real Artwork Image */}
       {isUsingFallback && (
-        <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-neutral-900 select-none">
-          {/* Decorative Calligraphy Texture Simulation */}
+        <div
+          data-iiif-mode="MUSEUM CANVAS FALLBACK"
+          className="relative w-full h-full flex items-center justify-center overflow-hidden bg-neutral-900 select-none"
+        >
+          <span className="sr-only">MUSEUM CANVAS FALLBACK (IIIF READY)</span>
           <div
-            className="museum-canvas-smooth cursor-grab active:cursor-grabbing max-w-[85%] max-h-[85%] flex flex-col items-center justify-center p-6 text-center select-none"
+            className="museum-canvas-smooth cursor-grab active:cursor-grabbing max-w-[90%] max-h-[85%] flex flex-col items-center justify-center p-4 text-center select-none"
             style={{ transform: `scale(${zoomLevel})` }}
           >
-            <div className="w-80 sm:w-96 h-96 sm:h-[440px] rounded-xl bg-gradient-to-br from-[#1E3A8A]/30 via-neutral-900 to-[#0F766E]/20 border border-white/10 shadow-2xl flex flex-col items-center justify-center p-8 text-neutral-300 relative">
-              <span className="text-[10px] font-mono tracking-widest text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full mb-4">
-                MUSEUM CANVAS FALLBACK (IIIF READY)
-              </span>
-
-              {/* Decorative calligraphic stroke representation */}
-              <svg viewBox="0 0 200 120" className="w-48 h-32 text-amber-500/80 mb-4 stroke-current fill-none stroke-[2.5]">
-                <path d="M 20 60 C 50 10, 80 110, 110 50 C 140 10, 170 90, 190 60" />
-                <path d="M 30 80 Q 90 20, 170 80" strokeWidth="1.5" opacity="0.6" />
-                <circle cx="110" cy="50" r="4" fill="currentColor" />
-              </svg>
-
-              <h4 className="text-xl font-black text-white">{title}</h4>
-              {medium && <p className="text-xs text-neutral-400 mt-2">{medium}</p>}
-              {dimensions && <p className="text-[10px] text-neutral-500 font-mono mt-1">{dimensions}</p>}
-            </div>
+            {imageUrl && !imgFailed ? (
+              <img
+                src={imageUrl}
+                alt={title}
+                onError={() => setImgFailed(true)}
+                className="max-h-[420px] sm:max-h-[500px] w-auto object-contain rounded-lg shadow-2xl border border-white/10"
+                draggable={false}
+              />
+            ) : (
+              <div className="w-80 sm:w-96 h-96 sm:h-[440px] rounded-xl bg-gradient-to-br from-[#1E3A8A]/30 via-neutral-900 to-[#0F766E]/20 border border-white/10 shadow-2xl flex flex-col items-center justify-center p-8 text-neutral-300 relative">
+                <span className="text-[10px] font-mono tracking-widest text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full mb-4">
+                  MUSEUM CANVAS FALLBACK (IIIF READY)
+                </span>
+                <svg viewBox="0 0 200 120" className="w-48 h-32 text-amber-500/80 mb-4 stroke-current fill-none stroke-[2.5]">
+                  <path d="M 20 60 C 50 10, 80 110, 110 50 C 140 10, 170 90, 190 60" />
+                  <path d="M 30 80 Q 90 20, 170 80" strokeWidth="1.5" opacity="0.6" />
+                  <circle cx="110" cy="50" r="4" fill="currentColor" />
+                </svg>
+                <h4 className="text-xl font-black text-white">{title}</h4>
+                {medium && <p className="text-xs text-neutral-400 mt-2">{medium}</p>}
+                {dimensions && <p className="text-[10px] text-neutral-500 font-mono mt-1">{dimensions}</p>}
+              </div>
+            )}
           </div>
         </div>
       )}

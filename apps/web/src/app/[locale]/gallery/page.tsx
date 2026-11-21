@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Palette, MapPin, Calendar, Layers, Award } from 'lucide-react';
 import { getExhibitions, getArtworks, THEMATIC_GALLERIES } from '@/lib/cms';
 import { isValidLocale, type Locale } from '@/lib/i18n';
-import { IIIFDeepZoomViewer } from '@/components/gallery/IIIFDeepZoomViewer';
+import { ArtworksVaultShowcase } from '@/components/gallery/ArtworksVaultShowcase';
 
 export default async function GalleryOverviewPage({
   params,
@@ -19,10 +19,6 @@ export default async function GalleryOverviewPage({
 
   const exhibitions = await getExhibitions(locale);
   const artworks = await getArtworks(locale);
-  const featuredArtwork = artworks[0];
-  const featuredArtworkTrans =
-    featuredArtwork?.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-    featuredArtwork?.translations?.[0];
 
   return (
     <div className="space-y-16">
@@ -46,27 +42,25 @@ export default async function GalleryOverviewPage({
         </p>
       </header>
 
-      {/* Featured Artwork Deep Zoom */}
-      {featuredArtwork && (
-        <section aria-label="نمایشگر زوم عمیق اثر برگزیده" className="space-y-4">
+      {/* Interactive Museum Deep-Zoom Stage & Complete 54-Series Artworks Vault */}
+      {artworks.length > 0 && (
+        <section aria-label="نمایشگر زوم عمیق و گنجینه تابلوها" className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-[var(--foreground)]">
-                {isFa ? 'کاوش بافت بوم و حرکت قلم‌مو با استاندارد موزه‌ای IIIF' : 'Exploration Haute Définition IIIF'}
+                {isFa
+                  ? `کاوش بافت بوم و گنجینه کامل ${artworks.length} مجموعه تابلو (استاندارد IIIF)`
+                  : `Exploration Haute Définition IIIF & ${artworks.length} Séries`}
               </h2>
               <p className="text-xs text-[var(--foreground-muted)]">
-                {isFa ? 'از دکمه‌های بزرگنمایی برای بررسی بافت میکروسکوپی مرکب استفاده کنید.' : 'Utilisez les commandes pour zoomer au cœur de la matière.'}
+                {isFa
+                  ? 'هر مجموعه تابلو را انتخاب کنید و با دکمه‌های بزرگنمایی بافت مرکب و نقاشی‌خط را از نزدیک ببینید.'
+                  : 'Sélectionnez une série pour explorer chaque tableau en haute définition.'}
               </p>
             </div>
           </div>
 
-          <IIIFDeepZoomViewer
-            imageId={featuredArtwork.iiif_image_id}
-            title={featuredArtworkTrans?.title || 'میان نشان و نماد'}
-            medium={featuredArtwork.medium}
-            dimensions={featuredArtwork.dimensions}
-            locale={locale}
-          />
+          <ArtworksVaultShowcase artworks={artworks} locale={locale} />
         </section>
       )}
 

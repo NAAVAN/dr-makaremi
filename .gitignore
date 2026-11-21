@@ -42,3 +42,6 @@ studio-lab/
 # Raw WordPress export dumps
 *.WordPress.*.xml
 *.sql
+
+# Graphify local knowledge graph outputs (auto-rebuilt by git hooks)
+graphify-out/

@@ -13,7 +13,9 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "verify:all": "node infra/verify-all.mjs",
-    "verify:phase-7": "node infra/verify-phase-7.mjs"
+    "verify:phase-7": "node infra/verify-phase-7.mjs",
+    "graph:update": "graphify update .",
+    "graph:benchmark": "graphify benchmark"
   },
   "devDependencies": {
     "next": "15.1.0",

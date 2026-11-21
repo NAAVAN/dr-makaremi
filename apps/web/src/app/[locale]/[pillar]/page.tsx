@@ -87,18 +87,20 @@ export default async function PillarHubPage({
       <section aria-label="مقالات این ستون" className="space-y-6">
         <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
           <h2 className="text-xl font-bold text-[var(--foreground)]">
-            {isFa ? 'مقالات و جستارهای پژوهشی' : 'Articles & Essais Cliniques'}
+            {isFa
+              ? `مقالات و جستارهای پژوهشی (${articles.length} اثر)`
+              : `Articles & Essais (${articles.length})`}
           </h2>
           <Link
             href={`/${locale}/${pillar}/articles`}
             className="text-xs font-bold text-[var(--primary)] hover:underline"
           >
-            {isFa ? 'مشاهده همه مقالات ←' : 'Tous les articles →'}
+            {isFa ? `مشاهده همه ${articles.length} مقاله ←` : `Tous les ${articles.length} articles →`}
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {articles.map((art) => {
+          {articles.slice(0, 12).map((art) => {
             const trans =
               art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
               art.translations?.[0];

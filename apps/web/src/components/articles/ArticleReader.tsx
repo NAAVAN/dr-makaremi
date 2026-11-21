@@ -60,6 +60,17 @@ export function ArticleReader({
           <ContentIntegrityBadge hash={article.content_sha256} locale={locale} slug={article.slug} />
 
           <div className="flex flex-wrap items-center gap-2">
+            {article.pdf_url && (
+              <a
+                href={article.pdf_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 border border-[var(--primary)]/30 text-[var(--primary)] transition-colors"
+              >
+                <Download size={13} />
+                <span>{isFa ? 'نسخه اصلی PDF مقاله' : 'PDF Original'}</span>
+              </a>
+            )}
             <a
               href={`/api/censorship-bypass/bundle?slug=${encodeURIComponent(article.slug)}&locale=${locale}`}
               download

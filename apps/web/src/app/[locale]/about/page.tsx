@@ -20,6 +20,7 @@ import {
   MEDIA_INTERVIEWS_ARCHIVE,
   HUMAN_RIGHTS_REFERENCES_ARCHIVE,
   VIDEO_SERIES_CATALOG,
+  getArchivePages,
 } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 
@@ -68,6 +69,7 @@ export default async function AboutProfessorPage({
   const bioDocumentary = VIDEO_SERIES_CATALOG.find(
     (s) => s.slug === 'morouri-bar-60-sal-zendegi'
   );
+  const archivePages = await getArchivePages(locale);
 
   return (
     <div className="space-y-16">
@@ -383,6 +385,71 @@ export default async function AboutProfessorPage({
                 </h3>
               </div>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* SECTION 5.5: MIGRATED WORDPRESS ARCHIVAL REFERENCE PAGES */}
+      {archivePages.length > 0 && (
+        <section
+          id="migrated-reference-pages"
+          aria-label="آرشیو صفحات و اسناد مستقل"
+          className="space-y-6"
+        >
+          <div className="border-b border-[var(--border-subtle)] pb-3 space-y-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--primary)] font-bold">
+              <FileCheck2 size={15} />
+              <span>
+                {isFa
+                  ? `آرشیو کامل اسناد، کنفرانس‌ها و صفحات مرجع (${archivePages.length} سند)`
+                  : `Pages d’Archive & Conférences (${archivePages.length})`}
+              </span>
+            </div>
+            <h2 className="text-2xl font-black text-[var(--foreground)]">
+              {isFa
+                ? 'صفحات مرجع، کارنامه کنفرانس‌ها، مصاحبه‌ها و اسناد کامل'
+                : 'Documents de Référence, Conférences & Archives Éditoriales'}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {archivePages.map((pg) => {
+              const tr =
+                pg.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+                pg.translations?.[0];
+
+              return (
+                <article
+                  key={pg.id}
+                  className="archival-lift p-5 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-3"
+                >
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] text-[var(--primary)] font-bold">
+                      {pg.group}
+                    </span>
+                    <h3 className="text-sm font-bold text-[var(--foreground)] leading-snug">
+                      <Link
+                        href={`/${locale}/about/${pg.slug}`}
+                        className="hover:text-[var(--primary)] transition-colors"
+                      >
+                        {tr?.title || pg.slug}
+                      </Link>
+                    </h3>
+                    <p className="text-xs text-[var(--foreground-muted)] line-clamp-2 leading-relaxed">
+                      {tr?.excerpt}
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-[var(--border-subtle)] flex justify-end text-xs">
+                    <Link
+                      href={`/${locale}/about/${pg.slug}`}
+                      className="font-bold text-[var(--primary)] hover:underline"
+                    >
+                      {isFa ? 'مشاهده متن کامل ←' : 'Consulter →'}
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
       )}

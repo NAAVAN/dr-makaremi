@@ -8,12 +8,14 @@ import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { ResilientMediaPlayer } from '@/components/media/ResilientMediaPlayer';
 import { SpeechTranscriptView } from '@/components/media/SpeechTranscriptView';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   const speeches = await getVideoSpeeches('fa', 'human_rights_dadkhahi');
   const params: Array<{ locale: string; slug: string }> = [];
 
   for (const locale of SUPPORTED_LOCALES) {
-    for (const s of speeches) {
+    for (const s of speeches.slice(0, 35)) {
       params.push({ locale, slug: s.slug });
     }
   }
@@ -109,6 +111,7 @@ export default async function SpeechDetailPage({
       <ResilientMediaPlayer
         title={title}
         youtubeId={speech.youtube_video_id}
+        vimeoUrl={speech.vimeo_url}
         selfHostedAudio={speech.self_hosted_audio_url}
         selfHostedHls={speech.self_hosted_hls_url}
         locale={locale}

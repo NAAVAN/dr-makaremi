@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { FileText, ArrowRight, ArrowLeft } from 'lucide-react';
 import { getArticles, mapPillarSlugToPillar } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
+import { PaginatedArticlesGrid } from '@/components/archive/PaginatedArticlesGrid';
 
 const PILLAR_SLUGS: Record<Locale, string[]> = {
   fa: ['psychoanalysis', 'art', 'strategy', 'human-rights'],
@@ -33,7 +34,15 @@ export default async function PillarArticlesArchivePage({
   if (!pillarKey) notFound();
 
   const isFa = locale === 'fa';
-  const articles = await getArticles(locale, pillarKey);
+  const rawArticles = await getArticles(locale, pillarKey);
+  // Strip heavy full-body markdown from listing RSC payload for fast Core Web Vitals
+  const articles = rawArticles.map((art) => ({
+    ...art,
+    translations: art.translations?.map((t) => ({
+      ...t,
+      body_markdown: '',
+    })),
+  }));
 
   return (
     <div className="space-y-12">
@@ -59,46 +68,11 @@ export default async function PillarArticlesArchivePage({
         </h1>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {articles.map((art) => {
-          const trans =
-            art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-            art.translations?.[0];
-
-          return (
-            <article
-              key={art.id}
-              className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-lg transition-all space-y-3 flex flex-col justify-between"
-            >
-              <div className="space-y-2">
-                <h2 className="text-lg font-bold text-[var(--foreground)] leading-snug">
-                  <Link
-                    href={`/${locale}/${pillar}/articles/${art.slug}`}
-                    className="hover:text-[var(--primary)] transition-colors"
-                  >
-                    {trans?.title || art.slug}
-                  </Link>
-                </h2>
-                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed line-clamp-3">
-                  {trans?.executive_summary}
-                </p>
-              </div>
-
-              <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between text-xs">
-                <span className="text-[var(--foreground-muted)] font-mono text-[11px]">
-                  {art.published_at?.slice(0, 10)}
-                </span>
-                <Link
-                  href={`/${locale}/${pillar}/articles/${art.slug}`}
-                  className="font-bold text-[var(--primary)] hover:underline"
-                >
-                  {isFa ? 'مطالعه متن کامل ←' : 'Lire →'}
-                </Link>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+      <PaginatedArticlesGrid
+        articles={articles}
+        locale={locale}
+        pillarSlug={pillar}
+      />
     </div>
   );
 }

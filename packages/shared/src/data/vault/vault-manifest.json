@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-11-21T17:46:41.991Z",
+  "source_file": "hassanmakaremi.WordPress.2026-10-30.xml",
+  "llm_tokens_consumed": 0,
+  "elapsed_ms": 1123,
+  "reconciliation": {
+    "total_xml_items": 3172,
+    "live_migrated": {
+      "articles": 403,
+      "books_unique_canonical": 23,
+      "books_raw_wp_records": 26,
+      "poems": 300,
+      "videos": 261,
+      "artworks_galleries": 54,
+      "exhibitions_from_pages": 52,
+      "editorial_pages": 47,
+      "media_attachments": 1938
+    },
+    "excluded_drafts_tests_stubs": 24,
+    "wp_infra_menus_forms_styles": 67,
+    "accounted_total": 3172
+  },
+  "quality_metrics": {
+    "articles_by_pillar": {
+      "human_rights_dadkhahi": 28,
+      "art_calligraphy": 28,
+      "cultural_strategy": 227,
+      "psychoanalysis": 120
+    },
+    "videos_with_youtube_id": 255,
+    "videos_with_vimeo_url": 2,
+    "videos_with_transcript": 76,
+    "poems_with_artwork_thumbnail": 294,
+    "artworks_total_resolved_gallery_images": 1464,
+    "exhibitions_total_resolved_gallery_images": 648,
+    "legacy_redirect_rules_generated": 1692,
+    "all_slugs_ascii_safe": true
+  }
+}

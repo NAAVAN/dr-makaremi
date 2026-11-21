@@ -1,0 +1,22 @@
+# Graphify ignore rules for MAKAREMI-CORE-2026
+# Exclude non-codebase directories, raw dumps, and decoupled labs to keep graph focused and crisp
+node_modules/
+.next/
+.turbo/
+out/
+.git/
+graphify-out/
+studio-lab/
+scratch/
+.agents/
+skill-observations/
+infra/postgres/
+*.xml
+*.sql
+*.log
+*.lock
+pnpm-lock.yaml
+skills-lock.json
+apps/web/src/data/wp-full-catalog.json
+packages/shared/src/data/vault/
+
