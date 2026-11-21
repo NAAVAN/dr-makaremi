@@ -8,6 +8,7 @@ import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import { SystemStatusDashboard } from '@/components/ops/SystemStatusDashboard';
 import { RoadmapScheduleTable } from '@/components/ops/RoadmapScheduleTable';
 import { CostBreakdownTable } from '@/components/ops/CostBreakdownTable';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 interface PageProps {
   params: Promise<{
@@ -35,36 +36,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     en: 'Real-time telemetry and infrastructure health monitoring, Ed25519 immutable snapshots, 6-point pre-launch QA gate results, 12-week roadmap, and European cloud cost optimization.',
   };
 
-  const canonicalUrl = `https://makaremi.com/${locale}/system-status`;
-  const markdownTwinUrl = `https://makaremi.com/${locale}/system-status.md`;
-
-  return {
+  return buildTrilingualMetadata({
+    locale,
+    path: '/system-status',
     title: titles[locale],
     description: descriptions[locale],
-    alternates: {
-      canonical: canonicalUrl,
-      types: {
-        'text/markdown': markdownTwinUrl,
-      },
-      languages: {
-        'fa-IR': 'https://makaremi.com/fa/system-status',
-        'fr-FR': 'https://makaremi.com/fr/system-status',
-        'en-US': 'https://makaremi.com/en/system-status',
-      },
-    },
-    openGraph: {
-      title: titles[locale],
-      description: descriptions[locale],
-      url: canonicalUrl,
-      type: 'website',
-      siteName: 'Dr. Hassan Makaremi Official Archive',
-    },
     other: {
-      'citation_title': titles[locale],
+      citation_title: titles[locale],
       'DC.title': titles[locale],
       'DC.publisher': 'Dr. Hassan Makaremi Archive',
     },
-  };
+  });
 }
 
 export default async function SystemStatusPage({ params }: PageProps) {

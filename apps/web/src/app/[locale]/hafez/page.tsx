@@ -22,6 +22,7 @@ import {
 } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { Book3DShowcase } from '@/components/books/Book3DShowcase';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -33,25 +34,22 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  return {
+  return buildTrilingualMetadata({
+    locale,
+    path: '/hafez',
     title: isFa
       ? 'حافظ‌پژوهی و دیگرشنیدن حافظ | دکتر حسن مکارمی'
       : isFr
-      ? 'Études Haféziennes : Hafez par Hafez | Dr Hassan Makaremi'
-      : 'Hafezology & Listening Differently to Hafez | Dr. Hassan Makaremi',
+        ? 'Études Haféziennes : Hafez par Hafez | Dr Hassan Makaremi'
+        : 'Hafezology & Listening Differently to Hafez | Dr. Hassan Makaremi',
     description: isFa
       ? 'قطب حافظ‌پژوهی دکتر حسن مکارمی: کتاب‌های «چند گفتار در دیگر شنیدن حافظ»، «نگرشی دیگر بر راز حافظ»، «Hafez par Hafez (لارماتان)» و مجموعه ویدیویی «صدای سخن عشق».'
       : 'Travaux du Dr Hassan Makaremi sur Hafez de Chiraz : livres Hafez par Hafez, séminaires et calligraphies.',
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/hafez`,
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/hafez.md`,
-      },
-    },
-  };
+  });
 }
 
 export default async function HafezologyHubPage({
@@ -175,8 +173,8 @@ export default async function HafezologyHubPage({
               {isFa
                 ? 'قطب مستقل حافظ‌پژوهی • دیگرشنیدن حافظ شیرازی'
                 : isFr
-                ? 'Pôle Hafez • Écouter autrement Hafez de Chiraz'
-                : 'Hafezology Hub • Listening Differently to Hafez of Shiraz'}
+                  ? 'Pôle Hafez • Écouter autrement Hafez de Chiraz'
+                  : 'Hafezology Hub • Listening Differently to Hafez of Shiraz'}
             </span>
           </div>
 
@@ -194,16 +192,16 @@ export default async function HafezologyHubPage({
           {isFa
             ? 'حافظ‌پژوهی و «دیگرشنیدن حافظ» در آثار دکتر حسن مکارمی'
             : isFr
-            ? 'Hafez de Chiraz : Psychanalyse du Ghazal, Livres et Calligraphies'
-            : 'Hafez of Shiraz: Psychoanalytic Hermeneutics, Books & Calligraphic Art'}
+              ? 'Hafez de Chiraz : Psychanalyse du Ghazal, Livres et Calligraphies'
+              : 'Hafez of Shiraz: Psychoanalytic Hermeneutics, Books & Calligraphic Art'}
         </h1>
 
         <p className="text-sm sm:text-base text-[var(--foreground-muted)] max-w-4xl leading-relaxed">
           {isFa
             ? 'واکاوی راز ماندگاری خواجه شمس‌الدین محمد حافظ شیرازی از رهگذر زبان‌شناسی، روانکاوی لکانی و هنر خوشنویسی؛ مجموعه سه کتاب مرجع به فارسی و فرانسه، رساله‌های تحلیلی، مجموعه ویدیویی ۱۴ قسمتی «صدای سخن عشق» و تابلوهای نقاشی‌خط «ثبت اقدامات حافظ».'
             : isFr
-            ? 'Exploration du Divân de Hafez à travers la psychanalyse lacanienne, trois ouvrages de référence en persan et en français (L’Harmattan), la série vidéo « La Voix de l’Amour » et des toiles calligraphiques.'
-            : 'Exploring the Divan of Hafez through Lacanian psychoanalysis, three reference books in Persian and French (L’Harmattan), the 14-part video series “The Voice of Love”, and calligraphic canvases.'}
+              ? 'Exploration du Divân de Hafez à travers la psychanalyse lacanienne, trois ouvrages de référence en persan et en français (L’Harmattan), la série vidéo « La Voix de l’Amour » et des toiles calligraphiques.'
+              : 'Exploring the Divan of Hafez through Lacanian psychoanalysis, three reference books in Persian and French (L’Harmattan), the 14-part video series “The Voice of Love”, and calligraphic canvases.'}
         </p>
       </header>
 
@@ -215,8 +213,8 @@ export default async function HafezologyHubPage({
               {isFa
                 ? 'سه‌گانه کتاب‌های حافظ‌پژوهی (فارسی و فرانسه)'
                 : isFr
-                ? 'Trilogie des Ouvrages sur Hafez (Persan & Français)'
-                : 'Trilogy of Hafezology Books (Persian & French)'}
+                  ? 'Trilogie des Ouvrages sur Hafez (Persan & Français)'
+                  : 'Trilogy of Hafezology Books (Persian & French)'}
             </h2>
             <p className="text-xs text-[var(--foreground-muted)]">
               {isFa
@@ -262,8 +260,8 @@ export default async function HafezologyHubPage({
                           ? 'نسخه فرانسوی (LTR) • انتشارات لارماتان پاریس'
                           : 'Édition Française (LTR) • L’Harmattan'
                         : isFa
-                        ? `نسخه فارسی (RTL) • ${t?.publisher_name}`
-                        : `Édition Persane • ${t?.publisher_name}`}
+                          ? `نسخه فارسی (RTL) • ${t?.publisher_name}`
+                          : `Édition Persane • ${t?.publisher_name}`}
                     </span>
                     <span className="font-mono text-[var(--foreground-muted)]">
                       {b.publication_year} • {b.page_count} ص
@@ -450,6 +448,7 @@ export default async function HafezologyHubPage({
                       src={vid.thumbnail_url}
                       alt={vTrans?.title || vid.slug}
                       loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>

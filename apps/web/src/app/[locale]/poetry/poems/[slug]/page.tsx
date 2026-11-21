@@ -6,6 +6,9 @@ import { ArrowRight, ArrowLeft, Download } from 'lucide-react';
 import { getPoems, getPoemBySlug, getArtworks } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { PoetryArtworkSync } from '@/components/gallery/PoetryArtworkSync';
+import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
+import { buildPoemNode, buildBreadcrumbNode, buildFullGraph } from '@/lib/schema-org';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export const dynamicParams = true;
 
@@ -28,20 +31,31 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const poem = await getPoemBySlug(slug, locale as Locale);
+  if (!isValidLocale(locale)) return {};
+  const poem = await getPoemBySlug(slug, locale);
   if (!poem) return {};
 
   const trans =
     poem.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     poem.translations?.[0];
 
-  return {
-    title: trans?.title || poem.slug,
-    description: trans?.commentary_markdown?.slice(0, 160) || 'شعر و دکلمه صوتی دکتر حسن مکارمی',
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/poetry/poems/${slug}`,
-    },
-  };
+  const title = trans?.title || poem.slug;
+  const description =
+    trans?.commentary_markdown?.slice(0, 160) ||
+    (locale === 'fa'
+      ? 'شعر و دکلمه صوتی دکتر حسن مکارمی'
+      : locale === 'fr'
+        ? 'Poème et récitation audio du Dr Hassan Makaremi'
+        : 'Poem and audio recitation by Dr. Hassan Makaremi');
+
+  return buildTrilingualMetadata({
+    locale,
+    path: `/poetry/poems/${slug}`,
+    title,
+    description,
+    ogType: 'article',
+    imageUrl: poem.artwork_image_url,
+  });
 }
 
 export default async function SinglePoemPage({
@@ -59,12 +73,33 @@ export default async function SinglePoemPage({
   const linkedArtwork = artworks.find((a) => a.id === poem.linked_artwork_id) || artworks[0];
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
   const trans =
     poem.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     poem.translations?.[0];
+  const title = trans?.title || poem.slug;
+
+  const jsonLdGraph = buildFullGraph({
+    locale,
+    items: [
+      buildPoemNode(poem, locale),
+      buildBreadcrumbNode([
+        { name: isFa ? 'خانه' : isFr ? 'Accueil' : 'Home', item: `https://makaremi.com/${locale}` },
+        { name: isFa ? 'شعر و ادبیات' : isFr ? 'Poésie' : 'Poetry', item: `https://makaremi.com/${locale}/poetry` },
+        { name: title, item: `https://makaremi.com/${locale}/poetry/poems/${slug}` },
+      ]),
+    ],
+  });
 
   return (
     <div className="space-y-10">
+      <JsonLdGraph data={jsonLdGraph} />
+      <link
+        rel="alternate"
+        type="text/markdown"
+        href={`/${locale}/poetry/poems/${slug}.md`}
+        title="Markdown Twin"
+      />
       <nav aria-label="راهنمای مسیر" className="flex items-center justify-between text-xs text-[var(--foreground-muted)]">
         <Link
           href={`/${locale}/poetry`}

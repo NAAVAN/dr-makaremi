@@ -11,6 +11,7 @@ import { Footer } from '@/components/common/Footer';
 import { PwaOfflineBar } from '@/components/common/PwaOfflineBar';
 import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import { buildFullGraph } from '@/lib/schema-org';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import '../../styles/globals.css';
 import '../../styles/tokens.css';
 import '../../styles/typography.css';
@@ -39,22 +40,21 @@ export async function generateMetadata({
     en: 'Official archive of Dr. Hassan Makaremi: Clinical Lacanian Psychoanalyst, Sorbonne Researcher, Modern Calligrapher, and Human Rights Defender.',
   };
 
+  const baseMeta = buildTrilingualMetadata({
+    locale,
+    path: '',
+    title: titles[locale],
+    description: descriptions[locale],
+    includeMarkdownTwin: false,
+  });
+
   return {
+    ...baseMeta,
     title: {
       default: titles[locale],
       template: `%s | Dr. Hassan Makaremi`,
     },
-    description: descriptions[locale],
     metadataBase: new URL('https://makaremi.com'),
-    alternates: {
-      canonical: `https://makaremi.com/${locale}`,
-      languages: {
-        'fa-IR': 'https://makaremi.com/fa',
-        'fr-FR': 'https://makaremi.com/fr',
-        'en-US': 'https://makaremi.com/en',
-        'x-default': 'https://makaremi.com/fa',
-      },
-    },
   };
 }
 
@@ -78,17 +78,16 @@ export default async function LocaleLayout({
       <head>
         <meta name="theme-color" content="#0F766E" />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Self-Hosted Variable Font Preload — Zero Render-Blocking External CDNs (LCP & Iran Resilience) */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap"
-          rel="stylesheet"
+          rel="preload"
+          href="/fonts/vazirmatn/Vazirmatn-Variable.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
         />
-        <link
-          href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
-          rel="stylesheet"
-          type="text/css"
-        />
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs Knowledge Index" />
+        <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-screen flex flex-col bg-[var(--surface-canvas)] text-[var(--foreground)] font-vazirmatn antialiased transition-colors duration-200">
         <JsonLdGraph data={rootGraph} />

@@ -18,6 +18,7 @@ import {
   buildFullGraph,
 } from '@/lib/schema-org';
 import { buildArticleAcademicMeta } from '@/lib/academic-metadata';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export const dynamicParams = true;
 
@@ -74,25 +75,19 @@ export async function generateMetadata({
 
   const academicMeta = buildArticleAcademicMeta(article, locale as Locale);
 
-  return {
+  return buildTrilingualMetadata({
+    locale: locale as Locale,
+    path: `/${faPillar}/articles/${slug}`,
+    frPath: `/${frPillar}/articles/${slug}`,
     title: trans?.title || article.slug,
-    description: trans?.executive_summary?.slice(0, 160),
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/${pillarSegment}/articles/${slug}`,
-      languages: {
-        'fa-IR': `https://makaremi.com/fa/${faPillar}/articles/${slug}`,
-        'fr-FR': `https://makaremi.com/fr/${frPillar}/articles/${slug}`,
-        'en-US': `https://makaremi.com/en/${faPillar}/articles/${slug}`,
-        'x-default': `https://makaremi.com/fa/${faPillar}/articles/${slug}`,
-      },
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/${pillarSegment}/articles/${slug}.md`,
-      },
-    },
+    description: trans?.executive_summary?.slice(0, 160) || trans?.title || article.slug,
+    ogType: 'article',
+    publishedTime: article.published_at || article.created_at,
+    modifiedTime: article.updated_at || article.published_at || article.created_at,
     other: {
       ...academicMeta,
     },
-  };
+  });
 }
 
 export default async function ArticleDetailPage({

@@ -99,6 +99,7 @@ export function ResilientMediaPlayer({
                     alt={title}
                     className="w-full h-full object-cover opacity-85"
                     loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <div className="space-y-1.5">

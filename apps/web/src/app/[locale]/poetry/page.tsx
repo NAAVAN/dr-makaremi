@@ -1,11 +1,43 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { Music, Feather, BookOpen, Video } from 'lucide-react';
 import { getPoems, getArtworks, getArchivePageBySlug } from '@/lib/cms';
-import { isValidLocale, type Locale } from '@/lib/i18n';
+import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { PoetryArtworkSync } from '@/components/gallery/PoetryArtworkSync';
 import { PaginatedPoemsGrid } from '@/components/archive/PaginatedPoemsGrid';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+
+export async function generateStaticParams() {
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
+  const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  return buildTrilingualMetadata({
+    locale,
+    path: '/poetry',
+    title: isFa
+      ? 'دفتر ۳۰۰ شعر و بخش شعر و تصویر | دکتر حسن مکارمی'
+      : isFr
+        ? 'Recueil de 300 Poèmes & Poésie-Image | Dr Hassan Makaremi'
+        : '300 Poems Archive & Synchronized Poetry-Art | Dr. Hassan Makaremi',
+    description: isFa
+      ? 'دفتر کامل ۳۰۰ سروده دوزبانه فارسی و فرانسوی دکتر حسن مکارمی همراه با پیش‌گفتار «شعرواره‌ها» و ۲۹۴ تابلوی نقاشی‌خط اختصاصی.'
+      : isFr
+        ? 'Recueil complet de 300 poèmes bilingues persan-français accompagnés de 294 œuvres calligraphiques.'
+        : 'Complete archive of 300 bilingual Persian-French poems accompanied by 294 calligraphic artworks.',
+    includeMarkdownTwin: false,
+  });
+}
 
 export default async function PoetryOverviewPage({
   params,

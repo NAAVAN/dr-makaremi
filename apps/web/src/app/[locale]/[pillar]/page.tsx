@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { Sparkles, Video, BookOpen, Palette, Feather, ShieldAlert, FileCheck2 } from 'lucide-react';
 import {
   getArticles,
@@ -9,6 +10,7 @@ import {
   mapPillarSlugToPillar,
 } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import type { ContentPillar } from '@makaremi/shared';
 
 const PILLAR_SLUGS: Record<Locale, string[]> = {
@@ -16,6 +18,88 @@ const PILLAR_SLUGS: Record<Locale, string[]> = {
   fr: ['psychanalyse', 'psychoanalysis', 'art', 'strategy', 'human-rights'],
   en: ['psychoanalysis', 'art', 'strategy', 'human-rights'],
 };
+
+const PILLAR_META: Record<
+  ContentPillar,
+  { faSlug: string; frSlug: string; title: Record<Locale, string>; desc: Record<Locale, string> }
+> = {
+  psychoanalysis: {
+    faSlug: '/psychoanalysis',
+    frSlug: '/psychanalyse',
+    title: {
+      fa: 'روانکاوی لکانی و بالین (مقالات، کتاب‌ها و ۱۵۳ ویدیو)',
+      fr: 'Psychanalyse Lacanienne & Clinique (Articles, Livres & Vidéos)',
+      en: 'Lacanian Psychoanalysis & Clinical Practice',
+    },
+    desc: {
+      fa: 'پورتال تخصصی روانکاوی بالینی لکانی دکتر حسن مکارمی: ۱۴۰ مقاله، ترجمه سمینار سوم لکان، واژه‌نامه تخصصی و مجموعه‌های ویدیویی در روان‌پژوهی و نگاه روانکاو.',
+      fr: 'Portail de psychanalyse lacanienne du Dr Hassan Makaremi : articles cliniques, traductions de Lacan, glossaire et émissions.',
+      en: 'Lacanian psychoanalysis hub by Dr. Hassan Makaremi: 140 clinical articles, Lacan Seminar III translation, glossary, and video series.',
+    },
+  },
+  art_calligraphy: {
+    faSlug: '/art',
+    frSlug: '/art',
+    title: {
+      fa: 'هنر، خوشنویسی مدرن، شعر و حافظ',
+      fr: 'Art, Calligraphie Contemporaine & Poésie',
+      en: 'Modern Art, Persian Calligraphy & Poetry',
+    },
+    desc: {
+      fa: 'آرشیو مقالات هنر و زیبایی‌شناسی، ۲۹ مجموعه گالری نقاشی‌خط، ۲۷ نمایشگاه بین‌المللی و دفتر ۳۰۰ شعر دکتر حسن مکارمی.',
+      fr: 'Articles sur l’art, 29 galeries calligraphiques, 27 expositions internationales et 300 poèmes du Dr Hassan Makaremi.',
+      en: 'Art essays, 29 calligraphy galleries, 27 international exhibitions, and 300 poems by Dr. Hassan Makaremi.',
+    },
+  },
+  cultural_strategy: {
+    faSlug: '/strategy',
+    frSlug: '/strategy',
+    title: {
+      fa: 'مطالعات راهبردی، پژوهش و سرزمین فرهنگی ایران',
+      fr: 'Stratégie Culturelle, Recherche & Société',
+      en: 'Cultural Strategy, Research & Society',
+    },
+    desc: {
+      fa: 'آرشیو مقالات پژوهش، جامعه، دوران گذار، کتاب‌های راهبردی و کنفرانس‌های دانشگاه سوربن دکتر حسن مکارمی.',
+      fr: 'Essais stratégiques, modernisation des organisations, conférences et ouvrages sur la terre culturelle de l’Iran.',
+      en: 'Strategic studies, Sorbonne research monographs, societal essays, and conferences by Dr. Hassan Makaremi.',
+    },
+  },
+  human_rights_dadkhahi: {
+    faSlug: '/human-rights',
+    frSlug: '/human-rights',
+    title: {
+      fa: 'حقوق بشر، دادخواهی و عدالت انتقالی (LDDHI / خاوران)',
+      fr: "Droits de l'Homme, Justice Transitionnelle & LDDHI",
+      en: 'Human Rights, Dadkhahi & Transitional Justice (LDDHI)',
+    },
+    desc: {
+      fa: 'مقالات، سخنرانی‌های دادخواهی کشتار تابستان ۱۳۶۷ و اسناد جامعه دفاع از حقوق بشر در ایران (LDDHI / FIDH).',
+      fr: 'Interventions, lettres ouvertes à l’ONU, témoignages sur Khavaran 1988 et archives de la LDDHI.',
+      en: 'Human rights articles, 1988 Khavaran transitional justice speeches, and UN/LDDHI documentation.',
+    },
+  },
+};
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; pillar: string }>;
+}): Promise<Metadata> {
+  const { locale, pillar } = await params;
+  if (!isValidLocale(locale)) return {};
+  const pillarKey = mapPillarSlugToPillar(pillar);
+  if (!pillarKey) return {};
+  const info = PILLAR_META[pillarKey];
+  return buildTrilingualMetadata({
+    locale,
+    path: info.faSlug,
+    frPath: info.frSlug,
+    title: info.title[locale],
+    description: info.desc[locale],
+    includeMarkdownTwin: false,
+  });
+}
 
 export async function generateStaticParams() {
   const params: Array<{ locale: string; pillar: string }> = [];
@@ -235,6 +319,7 @@ export default async function PillarHubPage({
                         src={vid.thumbnail_url}
                         alt={vTrans?.title || vid.slug}
                         loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>

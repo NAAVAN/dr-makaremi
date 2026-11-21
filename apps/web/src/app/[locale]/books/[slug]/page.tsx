@@ -17,6 +17,7 @@ import {
   buildFullGraph,
 } from '@/lib/schema-org';
 import { buildBookAcademicMeta } from '@/lib/academic-metadata';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   const books = await getBooks('fa');
@@ -46,25 +47,16 @@ export async function generateMetadata({
 
   const academicMeta = buildBookAcademicMeta(book, locale as Locale);
 
-  return {
+  return buildTrilingualMetadata({
+    locale: locale as Locale,
+    path: `/books/${slug}`,
     title: trans?.title || book.slug,
-    description: trans?.synopsis?.slice(0, 160),
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/books/${slug}`,
-      languages: {
-        'fa-IR': `https://makaremi.com/fa/books/${slug}`,
-        'fr-FR': `https://makaremi.com/fr/books/${slug}`,
-        'en-US': `https://makaremi.com/en/books/${slug}`,
-        'x-default': `https://makaremi.com/fa/books/${slug}`,
-      },
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/books/${slug}.md`,
-      },
-    },
+    description: trans?.synopsis?.slice(0, 160) || trans?.title || book.slug,
+    ogType: 'book',
     other: {
       ...academicMeta,
     },
-  };
+  });
 }
 
 export default async function BookDetailPage({

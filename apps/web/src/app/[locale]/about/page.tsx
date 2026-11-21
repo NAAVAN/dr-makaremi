@@ -31,6 +31,7 @@ import {
 } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { AboutTabNavigator } from '@/components/about/AboutTabNavigator';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -42,10 +43,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  return {
+  return buildTrilingualMetadata({
+    locale,
+    path: '/about',
+    ogType: 'profile',
     title: isFa
       ? 'در مورد دکتر حسن مکارمی | کارنامه ۶ دانشگاه، مصاحبه‌ها و منابع'
       : isFr
@@ -54,13 +59,7 @@ export async function generateMetadata({
     description: isFa
       ? 'شرح حال علمی و هنری دکتر حسن مکارمی (متولد ۱۳۲۹ شیراز)، تحصیل و تدریس در ۶ دانشگاه ایران و فرانسه، ۷ اثر دائمی در موزه خوشنویسی مسکو، ۳۴+ مصاحبه و ۲۷+ سند حقوق بشری.'
       : 'Biographie académique et artistique du Dr Hassan Makaremi : 6 universités, Musée de Moscou, entretiens et références des droits humains.',
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/about`,
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/about.md`,
-      },
-    },
-  };
+  });
 }
 
 export default async function AboutProfessorPage({
@@ -437,6 +436,7 @@ export default async function AboutProfessorPage({
                           src={vid.thumbnail_url}
                           alt={tr?.title || vid.slug}
                           loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>

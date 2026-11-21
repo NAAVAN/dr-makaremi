@@ -1,10 +1,42 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { Palette, MapPin, Calendar, Layers, Award, ArrowLeft, ArrowRight, Images, FileText } from 'lucide-react';
 import { getExhibitions, getArtworks, THEMATIC_GALLERIES } from '@/lib/cms';
-import { isValidLocale, type Locale } from '@/lib/i18n';
+import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { ArtworksVaultShowcase } from '@/components/gallery/ArtworksVaultShowcase';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+
+export async function generateStaticParams() {
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
+  const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  return buildTrilingualMetadata({
+    locale,
+    path: '/gallery',
+    title: isFa
+      ? 'موزه نقاشی‌خط، ۲۹ مجموعه گالری و ۲۷ نمایشگاه بین‌المللی | دکتر حسن مکارمی'
+      : isFr
+        ? 'Galerie Calligraphique (29 Séries) & 27 Expositions Internationales'
+        : 'Calligraphy Museum, 29 Artwork Series & 27 International Exhibitions',
+    description: isFa
+      ? 'گنجینه ۸۵۶ تابلوی نقاشی‌خط و خط شکسته نستعلیق نوگرا با نمایشگر زوم عمیق IIIF و کارنامه ۲۷ نمایشگاه جهانی در پاریس، پومپادور، یونسکو، مسکو، هاوانا و فاس.'
+      : isFr
+        ? 'Musée virtuel IIIF de 29 séries (856 tableaux) et 27 expositions internationales à Paris, Pompadour, UNESCO, Moscou, La Havane et Fès.'
+        : 'IIIF deep-zoom virtual museum featuring 29 calligraphic series (856 artworks) and 27 international exhibitions including Moscow Museum & UNESCO Paris.',
+    includeMarkdownTwin: false,
+  });
+}
 
 export default async function GalleryOverviewPage({
   params,
@@ -122,6 +154,9 @@ export default async function GalleryOverviewPage({
                         src={thumb}
                         alt={gal.title[locale]}
                         loading="lazy"
+                        decoding="async"
+                        width={48}
+                        height={48}
                         className="w-12 h-12 rounded-xl object-cover border border-[var(--border-subtle)] shrink-0"
                       />
                     )}
@@ -194,6 +229,7 @@ export default async function GalleryOverviewPage({
                       src={thumb}
                       alt={trans?.title || expo.slug}
                       loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     {(expo.gallery_images?.length || 0) > 0 && (

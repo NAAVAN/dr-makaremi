@@ -1,3 +1,36 @@
+import type { Metadata } from 'next';
+import { isValidLocale, SUPPORTED_LOCALES } from '@/lib/i18n';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+
+export async function generateStaticParams() {
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) return { robots: { index: false, follow: false } };
+  return buildTrilingualMetadata({
+    locale,
+    path: '/offline',
+    title:
+      locale === 'fa'
+        ? 'حالت مطالعه آفلاین | دکتر حسن مکارمی'
+        : locale === 'fr'
+          ? 'Mode Lecture Hors-Ligne | Dr Hassan Makaremi'
+          : 'Offline Reading Mode | Dr. Hassan Makaremi',
+    description:
+      locale === 'fa'
+        ? 'حالت مطالعه آفلاین وب‌سایت رسمی دکتر حسن مکارمی برای دسترسی به اسناد ذخیره‌شده بدون اتصال به اینترنت.'
+        : 'Offline reading mode for the official archive of Dr. Hassan Makaremi.',
+    noIndex: true,
+    includeMarkdownTwin: false,
+  });
+}
+
 export default function OfflinePage() {
   return (
     <div className="container" style={{ padding: '4rem 1.25rem', textAlign: 'center' }}>

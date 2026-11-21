@@ -23,42 +23,46 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
+  const STATIC_LAST_MODIFIED = new Date('2026-11-21T00:00:00Z');
+
   const staticSections = [
     { path: '', priority: 1.0, changeFrequency: 'daily' as const },
     { path: '/articles', priority: 0.95, changeFrequency: 'daily' as const },
     { path: '/about', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/assistant', priority: 0.95, changeFrequency: 'daily' as const },
-    { path: '/agent-console', priority: 0.95, changeFrequency: 'daily' as const },
-    { path: '/system-status', priority: 0.9, changeFrequency: 'daily' as const },
+    { path: '/assistant', priority: 0.9, changeFrequency: 'weekly' as const },
+    { path: '/agent-console', priority: 0.7, changeFrequency: 'monthly' as const },
+    { path: '/system-status', priority: 0.75, changeFrequency: 'weekly' as const },
     { path: '/glossary', priority: 0.95, changeFrequency: 'weekly' as const },
     { path: '/books', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/psychoanalysis', priority: 0.85, changeFrequency: 'weekly' as const },
-    { path: '/art', priority: 0.8, changeFrequency: 'weekly' as const },
-    { path: '/strategy', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/psychoanalysis', priority: 0.9, changeFrequency: 'weekly' as const },
+    { path: '/psychoanalysis/articles', priority: 0.85, changeFrequency: 'weekly' as const },
+    { path: '/art', priority: 0.85, changeFrequency: 'weekly' as const },
+    { path: '/art/articles', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/strategy', priority: 0.85, changeFrequency: 'weekly' as const },
+    { path: '/strategy/articles', priority: 0.8, changeFrequency: 'weekly' as const },
     { path: '/human-rights', priority: 0.85, changeFrequency: 'weekly' as const },
-    { path: '/gallery', priority: 0.8, changeFrequency: 'weekly' as const },
-    { path: '/poetry', priority: 0.75, changeFrequency: 'weekly' as const },
-    { path: '/hafez', priority: 0.8, changeFrequency: 'weekly' as const },
-    { path: '/media', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/human-rights/articles', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/gallery', priority: 0.9, changeFrequency: 'weekly' as const },
+    { path: '/poetry', priority: 0.85, changeFrequency: 'weekly' as const },
+    { path: '/hafez', priority: 0.9, changeFrequency: 'weekly' as const },
+    { path: '/media', priority: 0.85, changeFrequency: 'weekly' as const },
   ];
 
-  // 1. Static Pages across locales
+  // 1. Static Pages across locales (with localized French /psychanalyse path mapping)
   for (const locale of SUPPORTED_LOCALES) {
     for (const section of staticSections) {
-      const sectionPath =
-        locale === 'fr' && section.path === '/psychoanalysis'
-          ? '/psychanalyse'
-          : section.path;
+      const frPath = section.path.replace(/^\/psychoanalysis/, '/psychanalyse');
+      const sectionPath = locale === 'fr' ? frPath : section.path;
 
       sitemapEntries.push({
         url: `${baseUrl}/${locale}${sectionPath}`,
-        lastModified: new Date(),
+        lastModified: STATIC_LAST_MODIFIED,
         changeFrequency: section.changeFrequency,
         priority: section.priority,
         alternates: {
           languages: {
             'fa-IR': `${baseUrl}/fa${section.path}`,
-            'fr-FR': `${baseUrl}/fr${section.path === '/psychoanalysis' ? '/psychanalyse' : section.path}`,
+            'fr-FR': `${baseUrl}/fr${frPath}`,
             'en-US': `${baseUrl}/en${section.path}`,
             'x-default': `${baseUrl}/fa${section.path}`,
           },
@@ -93,10 +97,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       art.pillar === 'psychoanalysis'
         ? 'psychoanalysis'
         : art.pillar === 'art_calligraphy'
-        ? 'art'
-        : art.pillar === 'cultural_strategy'
-        ? 'strategy'
-        : 'human-rights';
+          ? 'art'
+          : art.pillar === 'cultural_strategy'
+            ? 'strategy'
+            : 'human-rights';
     const frPillar = art.pillar === 'psychoanalysis' ? 'psychanalyse' : faPillar;
 
     for (const locale of SUPPORTED_LOCALES) {

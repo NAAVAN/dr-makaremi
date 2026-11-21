@@ -4,6 +4,7 @@ import type { Locale } from '@makaremi/shared';
 import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import { ResearchAssistantChat } from '@/components/assistant/ResearchAssistantChat';
 import { FacebookEtlStudio } from '@/components/assistant/FacebookEtlStudio';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 interface AssistantPageProps {
   params: Promise<{ locale: string }>;
@@ -26,27 +27,20 @@ export async function generateMetadata({ params }: AssistantPageProps): Promise<
   const pageTitle = titles[locale] || titles.fa;
   const pageDescription = descriptions[locale] || descriptions.fa;
 
-  return {
+  const validLocale = (['fa', 'fr', 'en'].includes(locale) ? locale : 'fa') as Locale;
+
+  return buildTrilingualMetadata({
+    locale: validLocale,
+    path: '/assistant',
     title: pageTitle,
     description: pageDescription,
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/assistant`,
-      languages: {
-        fa: 'https://makaremi.com/fa/assistant',
-        fr: 'https://makaremi.com/fr/assistant',
-        en: 'https://makaremi.com/en/assistant',
-      },
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/assistant.md`,
-      },
-    },
     other: {
       citation_title: pageTitle,
       citation_author: 'Dr. Hassan Makaremi',
       'DC.title': pageTitle,
       'DC.creator': 'Dr. Hassan Makaremi',
     },
-  };
+  });
 }
 
 export default async function AssistantPage({ params }: AssistantPageProps) {

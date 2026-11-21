@@ -7,6 +7,9 @@ import { getVideoSpeechBySlug, getVideoSpeeches } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { ResilientMediaPlayer } from '@/components/media/ResilientMediaPlayer';
 import { SpeechTranscriptView } from '@/components/media/SpeechTranscriptView';
+import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
+import { buildVideoObjectNode, buildBreadcrumbNode, buildFullGraph } from '@/lib/schema-org';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export const dynamicParams = true;
 
@@ -29,20 +32,26 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const vid = await getVideoSpeechBySlug(slug, locale as Locale);
+  if (!isValidLocale(locale)) return {};
+  const vid = await getVideoSpeechBySlug(slug, locale);
   if (!vid) return {};
 
   const trans =
     vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     vid.translations?.[0];
 
-  return {
-    title: trans?.title || vid.slug,
-    description: trans?.description?.slice(0, 160),
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/media/videos/${slug}`,
-    },
-  };
+  const title = trans?.title || vid.slug;
+  const description = trans?.description?.slice(0, 160) || title;
+
+  return buildTrilingualMetadata({
+    locale,
+    path: `/media/videos/${slug}`,
+    title,
+    description,
+    ogType: 'article',
+    imageUrl: vid.thumbnail_url,
+    publishedTime: vid.event_date,
+  });
 }
 
 export default async function VideoDetailPage({
@@ -57,14 +66,33 @@ export default async function VideoDetailPage({
   if (!vid) notFound();
 
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
   const trans =
     vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     vid.translations?.[0];
 
   const title = trans?.title || vid.slug;
+  const jsonLdGraph = buildFullGraph({
+    locale,
+    items: [
+      buildVideoObjectNode(vid, locale),
+      buildBreadcrumbNode([
+        { name: isFa ? 'خانه' : isFr ? 'Accueil' : 'Home', item: `https://makaremi.com/${locale}` },
+        { name: isFa ? 'رسانه و ویدیوها' : isFr ? 'Médias & Vidéos' : 'Media & Videos', item: `https://makaremi.com/${locale}/media` },
+        { name: title, item: `https://makaremi.com/${locale}/media/videos/${slug}` },
+      ]),
+    ],
+  });
 
   return (
     <div className="space-y-10 max-w-4xl mx-auto">
+      <JsonLdGraph data={jsonLdGraph} />
+      <link
+        rel="alternate"
+        type="text/markdown"
+        href={`/${locale}/media/videos/${slug}.md`}
+        title="Markdown Twin"
+      />
       <nav aria-label="راهنمای مسیر" className="flex items-center justify-between text-xs text-[var(--foreground-muted)]">
         <Link
           href={`/${locale}/media`}

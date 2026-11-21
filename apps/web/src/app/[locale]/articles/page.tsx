@@ -6,6 +6,7 @@ import { FileText, Download, ArrowRight, ArrowLeft } from 'lucide-react';
 import { getArticles } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { PaginatedArticlesGrid } from '@/components/archive/PaginatedArticlesGrid';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -17,10 +18,13 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  return {
+  return buildTrilingualMetadata({
+    locale,
+    path: '/articles',
     title: isFa
       ? 'آرشیو جامع مقالات، خبر و بلاگ | دکتر حسن مکارمی'
       : isFr
@@ -29,19 +33,7 @@ export async function generateMetadata({
     description: isFa
       ? 'مجموعه کامل ۴۰۴ مقاله، یادداشت پژوهشی، اخبار و جستارهای دکتر حسن مکارمی در حوزه‌های روانکاوی لکانی، فرهنگ و راهبرد، هنر خوشنویسی و حقوق بشر.'
       : 'Archive intégrale de plus de 400 articles, essais et actualités du Dr Hassan Makaremi.',
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/articles`,
-      languages: {
-        'fa-IR': 'https://makaremi.com/fa/articles',
-        'fr-FR': 'https://makaremi.com/fr/articles',
-        'en-US': 'https://makaremi.com/en/articles',
-        'x-default': 'https://makaremi.com/fa/articles',
-      },
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/articles.md`,
-      },
-    },
-  };
+  });
 }
 
 export default async function AllArticlesArchivePage({

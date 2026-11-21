@@ -133,6 +133,7 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
                       src={p.artwork_image_url}
                       alt={trans?.title || p.slug}
                       loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                   </div>

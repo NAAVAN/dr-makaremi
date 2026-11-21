@@ -361,6 +361,7 @@ function PaginatedVideosGridInner({ videos, locale }: PaginatedVideosGridProps) 
                       src={vid.thumbnail_url}
                       alt={trans?.title || vid.slug}
                       loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                     {trans?.transcript_markdown && (

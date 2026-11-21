@@ -1,10 +1,41 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { BookOpen, Sliders } from 'lucide-react';
 import { getBooks } from '@/lib/cms';
-import { isValidLocale, type Locale } from '@/lib/i18n';
+import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { BooksInteractiveCatalog } from '@/components/books/BooksInteractiveCatalog';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+
+export async function generateStaticParams() {
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
+  const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  return buildTrilingualMetadata({
+    locale,
+    path: '/books',
+    title: isFa
+      ? 'کتاب‌خانه دیجیتال و ۲۵ عنوان کتاب دکتر حسن مکارمی (ویترین 3D)'
+      : isFr
+        ? 'Bibliothèque 3D & 25 Livres du Dr Hassan Makaremi'
+        : '3D Digital Library & 25 Books by Dr. Hassan Makaremi',
+    description: isFa
+      ? 'مجموعه کامل ۲۵ عنوان کتاب تألیفی و ترجمه ژاک لکان در ۸ ژانر تخصصی همراه با کتاب‌خوان ورق‌خور سه‌بعدی و شناسنامه کتاب‌شناختی.'
+      : isFr
+        ? 'Collection complète de 25 ouvrages de psychanalyse lacanienne, études sur Hafez, stratégie culturelle, poésie et romans.'
+        : 'Complete catalog of 25 books on Lacanian psychoanalysis, Hafezology, cultural strategy, calligraphy, poetry, and memoirs.',
+  });
+}
 
 export default async function BooksCatalogPage({
   params,

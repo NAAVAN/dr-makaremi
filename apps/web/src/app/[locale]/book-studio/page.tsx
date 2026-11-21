@@ -6,6 +6,7 @@ import { Sliders, ArrowRight, ArrowLeft, Download } from 'lucide-react';
 import { getBooks } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { BookStudioAdminWorkbench } from '@/components/books/BookStudioAdminWorkbench';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -17,25 +18,24 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
 
-  return {
+  return buildTrilingualMetadata({
+    locale,
+    path: '/book-studio',
     title: isFa
       ? 'استودیوی مدیریت و مهندسی کتاب سه‌بعدی (پنل مدیر) | دکتر حسن مکارمی'
       : isFr
       ? 'Studio d’Édition 3D & Lecteur Interactif | Dr Hassan Makaremi'
       : '3D Book Publishing Studio & Flipbook Engine | Dr. Hassan Makaremi',
     description: isFa
-      ? 'استودیوی بک‌اند و دشبورد مدیریت کتاب‌های سه‌بعدی دکتر حسن مکارمی: تنظیم صحافی RTL/LTR، محاسبه قطر عطف، تعیین بازه صفحات مطالعه (مثلاً ۱۰۸ تا ۱۵۰) و برش خودکار جلد.'
-      : 'Console d’édition 3D pour la gestion des ouvrages, du calcul du dos et des extraits.',
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/book-studio`,
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/book-studio.md`,
-      },
-    },
-  };
+      ? 'استودیوی بک‌اند و دشبورد مدیریت کتاب‌های سه‌بعدی دکتر حسن مکارمی: تنظیم صحافی RTL/LTR، محاسبه قطر عطف، تعیین بازه صفحات مطالعه و برش خودکار جلد.'
+      : isFr
+      ? 'Console d’édition 3D pour la gestion des ouvrages, du calcul du dos et des extraits.'
+      : '3D book publishing studio for spine thickness, RTL/LTR binding, and sample flipbook management.',
+  });
 }
 
 export default async function BookStudioDashboardPage({

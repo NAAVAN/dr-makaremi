@@ -18,7 +18,7 @@ const CANONICAL_REDIRECT_HOSTS = new Set([
 
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  
+
   // Extract and normalize host (strip port and convert to lowercase)
   const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
   const host = rawHost.split(':')[0].toLowerCase();
@@ -39,6 +39,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/.well-known') ||
     pathname.startsWith('/fonts') ||
     pathname.startsWith('/icons') ||
+    pathname === '/opengraph-image' ||
+    pathname === '/twitter-image' ||
     pathname === '/favicon.ico' ||
     pathname === '/sw.js' ||
     pathname === '/manifest.webmanifest' ||
@@ -50,7 +52,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. Intercept Markdown Twin Requests (*.md) for AEO / GEO AI Agents
+  // 3. Intercept Markdown Twin Requests (*.md) OR HTTP `Accept: text/markdown` Agent Negotiation (GEO / is-agentic)
+  const acceptHeader = (request.headers.get('accept') || '').toLowerCase();
+  const prefersMarkdown =
+    acceptHeader.includes('text/markdown') && !acceptHeader.includes('text/html');
+
   if (pathname.endsWith('.md')) {
     const rewriteUrl = request.nextUrl.clone();
     rewriteUrl.pathname = '/api/markdown';
@@ -62,6 +68,23 @@ export async function middleware(request: NextRequest) {
         headers: requestHeaders,
       },
     });
+  }
+
+  if (prefersMarkdown && /^\/(fa|fr|en)(\/|$)/.test(pathname)) {
+    const cleanMdBase = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+    const syntheticMdPath = `${cleanMdBase}.md`;
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = '/api/markdown';
+    rewriteUrl.searchParams.set('path', syntheticMdPath);
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-markdown-path', syntheticMdPath);
+    const res = NextResponse.rewrite(rewriteUrl, {
+      request: {
+        headers: requestHeaders,
+      },
+    });
+    res.headers.set('Vary', 'Accept');
+    return res;
   }
 
   // 3. Match legacy WordPress URLs: Check raw cleanPath and decodedURIComponent cleanPath (Refinement 2)
@@ -92,7 +115,7 @@ export async function middleware(request: NextRequest) {
     // Sanitize path against multiple leading slashes (e.g. //evil.com -> /evil.com)
     const sanitizedPath = pathname.replace(/^\/+/, '/');
     const targetPath = sanitizedPath === '/' ? `/${DEFAULT_LOCALE}` : `/${DEFAULT_LOCALE}${sanitizedPath}`;
-    
+
     // Safely clone nextUrl to prevent open redirect via request.url header spoofing
     const localeUrl = request.nextUrl.clone();
     localeUrl.pathname = targetPath;
@@ -105,6 +128,11 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   response.headers.set('X-Content-Locale', currentLocale);
   response.headers.set('X-Content-Direction', direction);
+  response.headers.set('Vary', 'Accept');
+  response.headers.set(
+    'Link',
+    `<https://${CANONICAL_HOST}/llms.txt>; rel="describedby"; type="text/plain", <https://${CANONICAL_HOST}/.well-known/agent-card.json>; rel="service-desc"; type="application/json"`
+  );
 
   return response;
 }

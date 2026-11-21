@@ -22,8 +22,8 @@ const PathSchema = z
   .refine((p) => !p.includes('..'), 'Path traversal prohibited');
 
 export async function GET(request: NextRequest) {
-  // Rate limit: 100 requests per minute
-  const rl = checkRateLimit(request, { windowMs: 60000, maxRequests: 100 }, 'markdown');
+  // Rate limit: 1200 read-only Markdown twin requests per minute (supports full /llms.txt AI crawler ingestion)
+  const rl = checkRateLimit(request, { windowMs: 60000, maxRequests: 1200 }, 'markdown');
   if (!rl.allowed) return rl.response!;
 
   const urlObj = new URL(request.url);
@@ -184,8 +184,8 @@ export async function GET(request: NextRequest) {
         locale === 'fa'
           ? t.conceptual_definition_fa
           : locale === 'fr'
-          ? t.conceptual_definition_fr || t.conceptual_definition_fa
-          : t.conceptual_definition_en || t.conceptual_definition_fa;
+            ? t.conceptual_definition_fr || t.conceptual_definition_fa
+            : t.conceptual_definition_en || t.conceptual_definition_fa;
       markdown += `## ${primary}\n`;
       markdown += `- **Persian (FA):** ${t.term_fa}\n`;
       markdown += `- **French (FR):** ${t.term_fr}\n`;
@@ -201,8 +201,8 @@ export async function GET(request: NextRequest) {
       locale === 'fa'
         ? 'دستیار هوشمند پژوهشگر آثار دکتر حسن مکارمی | Grounded RAG & MCP Archive'
         : locale === 'fr'
-        ? 'Assistant de Recherche Intelligent - Dr Hassan Makaremi | Grounded RAG'
-        : 'Dr. Hassan Makaremi Research Assistant & MCP Knowledge Base';
+          ? 'Assistant de Recherche Intelligent - Dr Hassan Makaremi | Grounded RAG'
+          : 'Dr. Hassan Makaremi Research Assistant & MCP Knowledge Base';
     markdown = `# ${title}\n\n`;
     markdown += `> Authoritative Zero-Hallucination Grounded Research Assistant for the works, psychoanalytic papers, books, and strategic writings of Dr. Hassan Makaremi.\n\n`;
     markdown += `## System Capabilities\n`;
@@ -223,8 +223,8 @@ export async function GET(request: NextRequest) {
       locale === 'fa'
         ? 'پیشخوان ایجنت شخصی تلگرام و واتس‌اپ دکتر حسن مکارمی | Personal AI Agent Studio'
         : locale === 'fr'
-        ? 'Studio Agent Personnel IA - Dr Hassan Makaremi | Telegram & WhatsApp'
-        : 'Dr. Hassan Makaremi Personal AI Agent Studio | Telegram & WhatsApp Automation';
+          ? 'Studio Agent Personnel IA - Dr Hassan Makaremi | Telegram & WhatsApp'
+          : 'Dr. Hassan Makaremi Personal AI Agent Studio | Telegram & WhatsApp Automation';
     markdown = `# ${title}\n\n`;
     markdown += `> Zero-Trust Multi-Agent AI System enabling Dr. Hassan Makaremi to manage publications, academic essays, artwork, and community comments via Telegram and WhatsApp voice notes.\n\n`;
     markdown += `## Architecture & Key Capabilities\n`;
@@ -247,8 +247,8 @@ export async function GET(request: NextRequest) {
       locale === 'fa'
         ? 'مرکز پایش وضعیت سیستم و گواهی آمادگی پروداکشن | دکتر حسن مکارمی'
         : locale === 'fr'
-        ? 'État du Système et Certification de Production | Dr Hassan Makaremi'
-        : 'System Status & Production Readiness Certification | Dr. Hassan Makaremi';
+          ? 'État du Système et Certification de Production | Dr Hassan Makaremi'
+          : 'System Status & Production Readiness Certification | Dr. Hassan Makaremi';
     markdown = `# ${title}\n\n`;
     markdown += `> Real-time infrastructure telemetry, 6-point pre-launch QA gate certification, 12-week roadmap, and European sovereign cloud cost optimization for MAKAREMI-CORE-2026.\n\n`;
     markdown += `## System Architecture & Verification Status\n`;
@@ -317,10 +317,10 @@ export async function GET(request: NextRequest) {
             ? 'psychanalyse'
             : 'psychoanalysis'
           : a.pillar === 'art_calligraphy'
-          ? 'art'
-          : a.pillar === 'cultural_strategy'
-          ? 'strategy'
-          : 'human-rights';
+            ? 'art'
+            : a.pillar === 'cultural_strategy'
+              ? 'strategy'
+              : 'human-rights';
       markdown += `- [${tr?.title || a.slug}](https://makaremi.com/${locale}/${pSeg}/articles/${a.slug}) (${a.published_at?.slice(0, 10) || ''})\n`;
     }
   }

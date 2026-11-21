@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Download, FileText, FileDown } from 'lucide-reac
 import { getArchivePages, getArchivePageBySlug } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { renderSafeMarkdown } from '@/lib/markdown';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   const pages = await getArchivePages('fa');
@@ -24,23 +25,22 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const page = await getArchivePageBySlug(slug, locale as Locale);
+  if (!isValidLocale(locale)) return {};
+  const page = await getArchivePageBySlug(slug, locale);
   if (!page) return {};
 
   const trans =
     page.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     page.translations?.[0];
 
-  return {
+  return buildTrilingualMetadata({
+    locale,
+    path: `/about/${slug}`,
+    ogType: 'article',
     title: trans?.title || page.slug,
-    description: trans?.excerpt?.slice(0, 160),
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/about/${slug}`,
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/about/${slug}.md`,
-      },
-    },
-  };
+    description: trans?.excerpt || trans?.title || page.slug,
+    imageUrl: page.cover_image_url,
+  });
 }
 
 export default async function ArchiveReferencePageDetail({
@@ -136,6 +136,7 @@ export default async function ArchiveReferencePageDetail({
                   src={img.url}
                   alt={img.alt || img.title}
                   loading="lazy"
+                  decoding="async"
                   className="w-full aspect-[4/3] object-cover"
                 />
               </figure>

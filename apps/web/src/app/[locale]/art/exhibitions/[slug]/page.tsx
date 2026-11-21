@@ -7,6 +7,9 @@ import { getExhibitions, getExhibitionBySlug, getArtworks } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { IIIFDeepZoomViewer } from '@/components/gallery/IIIFDeepZoomViewer';
 import { renderSafeMarkdown } from '@/lib/markdown';
+import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
+import { buildExhibitionNode, buildBreadcrumbNode, buildFullGraph } from '@/lib/schema-org';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   const exhibitions = await getExhibitions('fa');
@@ -27,20 +30,28 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const expo = await getExhibitionBySlug(slug, locale as Locale);
+  if (!isValidLocale(locale)) return {};
+  const expo = await getExhibitionBySlug(slug, locale);
   if (!expo) return {};
 
   const trans =
     expo.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     expo.translations?.[0];
 
-  return {
-    title: trans?.title || expo.slug,
-    description: trans?.curatorial_statement_markdown?.slice(0, 160),
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/art/exhibitions/${slug}`,
-    },
-  };
+  const title = trans?.title || expo.slug;
+  const description =
+    trans?.curatorial_statement_markdown?.slice(0, 160) ||
+    `${title} — ${expo.venue_name} (${expo.venue_city})`;
+
+  return buildTrilingualMetadata({
+    locale,
+    path: `/art/exhibitions/${slug}`,
+    title,
+    description,
+    ogType: 'article',
+    imageUrl: expo.cover_image_url || expo.gallery_images?.[0]?.url,
+    publishedTime: expo.start_date,
+  });
 }
 
 export default async function ExhibitionDetailPage({
@@ -56,14 +67,33 @@ export default async function ExhibitionDetailPage({
 
   const artworks = await getArtworks(locale);
   const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
   const trans =
     expo.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     expo.translations?.[0];
 
   const title = trans?.title || expo.slug;
+  const jsonLdGraph = buildFullGraph({
+    locale,
+    items: [
+      buildExhibitionNode(expo, locale),
+      buildBreadcrumbNode([
+        { name: isFa ? 'خانه' : isFr ? 'Accueil' : 'Home', item: `https://makaremi.com/${locale}` },
+        { name: isFa ? 'گالری و نمایشگاه‌ها' : isFr ? 'Galerie & Expositions' : 'Gallery & Exhibitions', item: `https://makaremi.com/${locale}/gallery` },
+        { name: title, item: `https://makaremi.com/${locale}/art/exhibitions/${slug}` },
+      ]),
+    ],
+  });
 
   return (
     <div className="space-y-12">
+      <JsonLdGraph data={jsonLdGraph} />
+      <link
+        rel="alternate"
+        type="text/markdown"
+        href={`/${locale}/art/exhibitions/${slug}.md`}
+        title="Markdown Twin"
+      />
       {/* Navigation */}
       <nav aria-label="راهنمای مسیر" className="flex items-center justify-between text-xs text-[var(--foreground-muted)]">
         <Link
@@ -137,6 +167,7 @@ export default async function ExhibitionDetailPage({
                       src={img.url}
                       alt={img.alt || img.title || title}
                       loading="lazy"
+                      decoding="async"
                       className="w-full aspect-[4/3] object-cover"
                     />
                   </figure>

@@ -142,6 +142,8 @@ export function IIIFDeepZoomViewer({
               <img
                 src={imageUrl}
                 alt={title}
+                decoding="async"
+                fetchPriority="high"
                 onError={() => setImgFailed(true)}
                 className="max-h-[420px] sm:max-h-[500px] w-auto object-contain rounded-lg shadow-2xl border border-white/10"
                 draggable={false}

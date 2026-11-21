@@ -1,10 +1,42 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { Video, Film, ArrowLeft, ArrowRight } from 'lucide-react';
 import { getVideoSpeeches, VIDEO_SERIES_CATALOG } from '@/lib/cms';
-import { isValidLocale, type Locale } from '@/lib/i18n';
+import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { PaginatedVideosGrid } from '@/components/archive/PaginatedVideosGrid';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+
+export async function generateStaticParams() {
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) return {};
+  const isFa = locale === 'fa';
+  const isFr = locale === 'fr';
+  return buildTrilingualMetadata({
+    locale,
+    path: '/media',
+    title: isFa
+      ? 'آرشیو ۲۶۱ فیلم، سخنرانی و مجموعه تلویزیونی | دکتر حسن مکارمی'
+      : isFr
+        ? 'Archives Vidéos & Conférences (261 Émissions) | Dr Hassan Makaremi'
+        : '261 Video Lectures, Broadcast Series & Speeches Archive',
+    description: isFa
+      ? 'مجموعه‌های «در روان‌پژوهی» (۵۴ قسمت)، «نگاه روانکاو» (۵۷ قسمت)، «صدای سخن عشق حافظ» (۱۷ ویدیو)، جشنواره یونسکو ۲۰۰۹ و سخنرانی‌های دادخواهی.'
+      : isFr
+        ? '261 émissions éducatives, conférences universitaires, séries de psychanalyse et séminaires sur Hafez avec transcriptions.'
+        : 'Complete archive of 261 psychoanalytic broadcasts, Hafez seminars, UNESCO lectures, and human rights speeches.',
+    includeMarkdownTwin: false,
+  });
+}
 
 export default async function MediaCatalogPage({
   params,

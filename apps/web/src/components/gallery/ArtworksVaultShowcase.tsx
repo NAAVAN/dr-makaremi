@@ -116,6 +116,7 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                       src={img.url}
                       alt={img.alt || img.title}
                       loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                   </button>
@@ -196,6 +197,7 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                         src={thumb}
                         alt={tr?.title || art.slug}
                         loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                       />
                     ) : (

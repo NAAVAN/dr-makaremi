@@ -5,6 +5,7 @@ import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import VoiceAgentSimulator from '@/components/agent/VoiceAgentSimulator';
 import AssetIngestSimulator from '@/components/agent/AssetIngestSimulator';
 import CommentModerationSimulator from '@/components/agent/CommentModerationSimulator';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 interface AgentConsolePageProps {
   params: Promise<{ locale: string }>;
@@ -32,27 +33,20 @@ export async function generateMetadata({ params }: AgentConsolePageProps): Promi
   const pageTitle = titles[locale] || titles.fa!;
   const pageDescription = descriptions[locale] || descriptions.fa!;
 
-  return {
+  const validLocale = (['fa', 'fr', 'en'].includes(locale) ? locale : 'fa') as Locale;
+
+  return buildTrilingualMetadata({
+    locale: validLocale,
+    path: '/agent-console',
     title: pageTitle,
     description: pageDescription,
-    alternates: {
-      canonical: `https://makaremi.com/${locale}/agent-console`,
-      languages: {
-        fa: 'https://makaremi.com/fa/agent-console',
-        fr: 'https://makaremi.com/fr/agent-console',
-        en: 'https://makaremi.com/en/agent-console',
-      },
-      types: {
-        'text/markdown': `https://makaremi.com/${locale}/agent-console.md`,
-      },
-    },
     other: {
       citation_title: pageTitle,
       citation_author: 'Dr. Hassan Makaremi',
       'DC.title': pageTitle,
       'DC.creator': 'Dr. Hassan Makaremi',
     },
-  };
+  });
 }
 
 export default async function AgentConsolePage({ params }: AgentConsolePageProps) {

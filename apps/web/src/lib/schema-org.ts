@@ -97,7 +97,8 @@ export function buildPersonNode(locale: Locale = 'fa') {
     ],
     sameAs: [
       'https://fa.wikipedia.org/wiki/%D8%AD%D8%B3%D9%86_%D9%85%DA%A9%D8%A7%D8%B1%D9%85%DB%8C',
-      'http://www.makaremi.net',
+      'https://makaremi.com',
+      'https://www.calligraphy-museum.com/en/participants/hassan_makaremi',
       'https://www.flickr.com/photos/makaremi/',
       'https://t.me/hassan_makaremi',
       'https://booksandideas.net/_Makaremi-Chowra_',
@@ -121,7 +122,7 @@ export function buildWebSiteNode(locale: Locale = 'fa') {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `https://makaremi.com/${locale}/books?q={search_term_string}`,
+        urlTemplate: `https://makaremi.com/${locale}/articles?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -229,17 +230,77 @@ export function buildVisualArtworkNode(artwork: Artwork, locale: Locale = 'fa') 
     artwork.translations?.find((t) => t.languages_code.startsWith(locale)) ||
     artwork.translations?.[0];
 
-  const artUrl = `https://makaremi.com/${locale}/gallery/${artwork.slug}`;
+  const artUrl = `https://makaremi.com/${locale}/gallery?series=${artwork.slug}`;
 
   return {
     '@type': 'VisualArtwork',
     '@id': `${artUrl}#artwork`,
+    url: artUrl,
     name: trans?.title || artwork.slug,
     creator: { '@id': 'https://makaremi.com/#hassan-makaremi' },
     artMedium: artwork.medium || 'Ink and Acrylic on Canvas',
     artform: artwork.artform || 'Modern Persian Calligraphy',
     dateCreated: String(artwork.year || 2002),
+    image: artwork.image_url || undefined,
     description: trans?.description_markdown?.slice(0, 200) || undefined,
+    isPartOf: { '@id': 'https://makaremi.com/#website' },
+  };
+}
+
+// -----------------------------------------------------------------------------
+// VideoObject Node (Lectures, TV Series & Human Rights Speeches)
+// -----------------------------------------------------------------------------
+export function buildVideoObjectNode(video: VideoSpeech, locale: Locale = 'fa') {
+  const trans =
+    video.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+    video.translations?.[0];
+
+  const subPath =
+    video.pillar === 'human_rights_dadkhahi'
+      ? `human-rights/speeches/${video.slug}`
+      : `media/videos/${video.slug}`;
+  const videoUrl = `https://makaremi.com/${locale}/${subPath}`;
+
+  return {
+    '@type': 'VideoObject',
+    '@id': `${videoUrl}#video`,
+    url: videoUrl,
+    name: trans?.title || video.slug,
+    description: (trans?.description || trans?.title || video.slug).slice(0, 300),
+    thumbnailUrl: video.thumbnail_url || 'https://makaremi.com/opengraph-image',
+    uploadDate: video.event_date || video.created_at,
+    embedUrl: video.youtube_video_id
+      ? `https://www.youtube-nocookie.com/embed/${video.youtube_video_id}`
+      : video.vimeo_url || undefined,
+    author: { '@id': 'https://makaremi.com/#hassan-makaremi' },
+    inLanguage: locale,
+    isPartOf: { '@id': 'https://makaremi.com/#website' },
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Poem CreativeWork Node
+// -----------------------------------------------------------------------------
+export function buildPoemNode(poem: Poem, locale: Locale = 'fa') {
+  const trans =
+    poem.translations?.find((t) => t.languages_code.startsWith(locale)) ||
+    poem.translations?.[0];
+  const poemUrl = `https://makaremi.com/${locale}/poetry/poems/${poem.slug}`;
+  const firstVerse = trans?.verses?.[0]
+    ? `${trans.verses[0].hemistich_a} ${trans.verses[0].hemistich_b || ''}`.trim()
+    : undefined;
+
+  return {
+    '@type': 'CreativeWork',
+    '@id': `${poemUrl}#poem`,
+    url: poemUrl,
+    genre: 'Poetry',
+    name: trans?.title || poem.slug,
+    author: { '@id': 'https://makaremi.com/#hassan-makaremi' },
+    dateCreated: poem.creation_year ? String(poem.creation_year) : undefined,
+    image: poem.artwork_image_url || undefined,
+    text: firstVerse,
+    inLanguage: locale,
     isPartOf: { '@id': 'https://makaremi.com/#website' },
   };
 }

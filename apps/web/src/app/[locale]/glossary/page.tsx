@@ -7,6 +7,7 @@ import { GlossaryExplorer } from '@/components/glossary/GlossaryExplorer';
 import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import { buildFullGraph, buildDefinedTermSetNode, buildBreadcrumbNode } from '@/lib/schema-org';
 import { sanitizeMetaString } from '@/lib/academic-metadata';
+import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -38,21 +39,11 @@ export async function generateMetadata({
   const pageUrl = `${baseUrl}/${locale}/glossary`;
   const markdownUrl = `${pageUrl}.md`;
 
-  return {
+  return buildTrilingualMetadata({
+    locale: locale as Locale,
+    path: '/glossary',
     title,
     description,
-    alternates: {
-      canonical: pageUrl,
-      languages: {
-        'fa-IR': `${baseUrl}/fa/glossary`,
-        'fr-FR': `${baseUrl}/fr/glossary`,
-        'en-US': `${baseUrl}/en/glossary`,
-        'x-default': `${baseUrl}/fa/glossary`,
-      },
-      types: {
-        'text/markdown': markdownUrl,
-      },
-    },
     other: {
       citation_title: title,
       citation_author: 'Makaremi, Hassan',
@@ -67,7 +58,7 @@ export async function generateMetadata({
       'DC.identifier': pageUrl,
       'DC.language': locale,
     },
-  };
+  });
 }
 
 export default async function GlossaryPage({
