@@ -6,7 +6,7 @@ import { isStudioRequestAuthorized } from '@/lib/studio/auth';
 import {
   getAiRuntimeStatus,
   saveAiSettingsFile,
-  testAnthropicConnection,
+  testAiEngineConnection,
 } from '@/lib/ai/provider-adapter';
 import { loadManualTranslationQueue } from '@/lib/studio/overlays';
 
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (check.data.action === 'test') {
-    const testResult = await testAnthropicConnection();
+    const testResult = await testAiEngineConnection();
     return NextResponse.json(
       { ok: testResult.ok, testResult, status: getAiRuntimeStatus() },
       { status: 200, headers: HEADERS }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     {
       ok: true,
       status: getAiRuntimeStatus(),
-      message: 'تنظیمات موتور ترجمه و دستیار هوشمند Anthropic Claude به‌روزرسانی شد.',
+      message: 'تنظیمات موتور ترجمه و دستیار هوشمند به‌روزرسانی شد.',
     },
     { status: 200, headers: HEADERS }
   );

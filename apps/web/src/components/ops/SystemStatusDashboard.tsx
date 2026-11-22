@@ -379,7 +379,7 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
               JSON-RPC 2.0 (/api/mcp)
             </div>
             <div className="text-[10px] text-emerald-500 mt-1">
-              {tx('آماده اتصال کلاود و کورسر', 'Compatible Claude & Cursor', 'Claude & Cursor compatible')}
+              {tx('آماده اتصال استاندارد MCP', 'Compatible protocole standard MCP', 'Standard MCP compatible')}
             </div>
           </div>
         </div>

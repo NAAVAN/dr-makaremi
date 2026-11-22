@@ -213,11 +213,11 @@ export interface ManualTranslationQueueItem {
 }
 
 export interface AiProviderRuntimeStatus {
-  provider: 'anthropic' | 'disabled';
+  provider: 'cloud_ai' | 'disabled';
   model: string;
   hasApiKeyConfigured: boolean;
   autoTranslateOnPublish: boolean;
-  mode: 'manual_antigravity_queue' | 'anthropic_live_auto';
+  mode: 'manual_editorial_queue' | 'live_auto_translation';
   usingDefaultAuthSecret: boolean;
   lastCheckedAt: string;
 }

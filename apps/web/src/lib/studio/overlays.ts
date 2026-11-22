@@ -21,7 +21,7 @@ import {
   type TranslationCollectionName,
 } from '../vault-loader';
 import { buildCanonicalString, computeCanonicalSha256, signWithEd25519 } from '../crypto';
-import { getAiRuntimeStatus, translateWorkWithClaude } from '../ai/provider-adapter';
+import { getAiRuntimeStatus, translateWorkWithAiEngine } from '../ai/provider-adapter';
 import { normaliseExternalVideoUrl, normaliseStudioText } from './media-gatekeeper';
 
 export function loadWorkEnrichmentsMap(): Record<string, WorkEnrichmentOverlay> {
@@ -214,7 +214,7 @@ export async function publishOrQueueStudioDraft(draft: StudioWorkDraft): Promise
     }
 
     if (aiStatus.hasApiKeyConfigured && aiStatus.autoTranslateOnPublish) {
-      const aiRes = await translateWorkWithClaude({
+      const aiRes = await translateWorkWithAiEngine({
         workType: draft.workType,
         originalLocale: draft.originalLocale,
         targetLocale: targetLoc,

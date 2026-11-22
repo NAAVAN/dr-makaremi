@@ -1,6 +1,6 @@
 {
-  "provider": "anthropic",
-  "model": "claude-sonnet-4-5",
+  "provider": "cloud_ai",
+  "model": "literary_balanced",
   "autoTranslateOnPublish": false,
   "tone": "academic_literary",
   "preserveGlossaryLock": true,

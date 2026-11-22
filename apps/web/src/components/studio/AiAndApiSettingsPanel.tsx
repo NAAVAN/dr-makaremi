@@ -13,20 +13,20 @@ import {
 import type { AiProviderRuntimeStatus, ManualTranslationQueueItem } from '@makaremi/shared';
 import { AccessibleListbox, type ListboxOption } from './AccessibleListbox';
 
-const CLAUDE_MODELS: ListboxOption<string>[] = [
+const ENGINE_PROFILES: ListboxOption<string>[] = [
   {
-    value: 'claude-sonnet-4-5',
-    label: 'Claude Sonnet 4.5 (پیشنهادی برای ادب فارسی و ترجمه دقیق)',
-    badge: 'Balanced',
+    value: 'literary_balanced',
+    label: 'پروفایل متعادل و ادبی (پیشنهادی برای متون فارسی، فرانسوی و انگلیسی)',
+    badge: 'Standard',
   },
   {
-    value: 'claude-opus-4-1',
-    label: 'Claude Opus (حداکثر ژرفای ادبی و روانکاوی لکانی)',
-    badge: 'Flagship',
+    value: 'literary_deep',
+    label: 'پروفایل عمیق پژوهشی (حداکثر دقت در متون تخصصی و روانکاوی)',
+    badge: 'Deep',
   },
   {
-    value: 'claude-haiku-4-5',
-    label: 'Claude Haiku (سریع و اقتصادی برای چکیده و دستیار)',
+    value: 'concise_fast',
+    label: 'پروفایل سریع (مناسب برای چکیده و پاسخ‌های کوتاه)',
     badge: 'Fast',
   },
 ];
@@ -38,7 +38,7 @@ interface AiAndApiSettingsPanelProps {
 export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanelProps) {
   const [status, setStatus] = useState<AiProviderRuntimeStatus | null>(null);
   const [queue, setQueue] = useState<ManualTranslationQueueItem[]>([]);
-  const [selectedModel, setSelectedModel] = useState('claude-sonnet-4-5');
+  const [selectedProfile, setSelectedProfile] = useState('literary_balanced');
   const [autoTranslate, setAutoTranslate] = useState(false);
   const [testing, setTesting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -50,7 +50,7 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
       const data = await res.json();
       if (res.ok && data.ok) {
         setStatus(data.status);
-        setSelectedModel(data.status.model || 'claude-sonnet-4-5');
+        setSelectedProfile(data.status.model || 'literary_balanced');
         setAutoTranslate(Boolean(data.status.autoTranslateOnPublish));
         setQueue(data.manualQueue || []);
         onStatusUpdated(data.status);
@@ -74,7 +74,7 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'update',
-          model: selectedModel,
+          model: selectedProfile,
           autoTranslateOnPublish: autoTranslate,
         }),
       });
@@ -89,7 +89,7 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
     }
   };
 
-  const handleTestAnthropic = async () => {
+  const handleTestConnection = async () => {
     setTesting(true);
     setMessage(null);
     try {
@@ -101,7 +101,7 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
       const data = await res.json();
       setMessage({
         ok: Boolean(data.testResult?.ok),
-        text: data.testResult?.message || 'نتیجه آزمایش دریافت شد.',
+        text: data.testResult?.message || 'نتیجه بررسی دریافت شد.',
       });
     } finally {
       setTesting(false);
@@ -116,7 +116,7 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `makaremi-antigravity-translation-queue-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `makaremi-manual-translation-queue-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -125,7 +125,7 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
 
   return (
     <div className="space-y-6">
-      {/* Anthropic Claude Card */}
+      {/* Smart Engine Card */}
       <section className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 space-y-5">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
           <div className="flex items-start gap-3">
@@ -134,10 +134,10 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
             </div>
             <div>
               <h2 className="text-lg font-extrabold text-[var(--foreground)]">
-                موتور ترجمه ادبی و دستیار هوشمند (طراحی‌شده برای Anthropic Claude)
+                تنظیمات موتور ترجمه خودکار و دستیار هوشمند سایت
               </h2>
               <p className="text-xs text-[var(--foreground-muted)] mt-1 leading-relaxed">
-                در مرحله فعلی، آثار بدون نیاز به کلید API پولی وارد «صف ترجمه دستی / آنتی‌گرویتی» می‌شوند. پس از تحویل نهایی وب‌سایت به استاد، کافی است کلید `ANTHROPIC_API_KEY` در `.env` سرور قرار گیرد تا هم ترجمه لحظه‌ای (با قفل واژه‌نامه لکانی و املای بریتانیایی) و هم دستیار پژوهشی هوشمند به‌صورت کاملاً خودکار کار کنند.
+                در حال حاضر تمامی آثار فاقد ترجمه وارد «صف ترجمه دستی» می‌شوند تا بدون هیچ هزینه جانبی توسط تیم ویراستاری ترجمه و منتشر گردند. در آینده و پس از تحویل نهایی سایت به استاد، کافی است کلید `MAKAREMI_AI_API_KEY` در تنظیمات سرور ثبت شود تا ترجمه لحظه‌ای سه‌زبانه و دستیار هوشمند به‌طور خودکار فعال شوند.
               </p>
             </div>
           </div>
@@ -150,17 +150,17 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
             }`}
           >
             {status?.hasApiKeyConfigured
-              ? 'کلید Anthropic متصل است (خودکار)'
-              : 'حالت فعلی: صف ترجمه دستی آنتی‌گرویتی'}
+              ? 'کلید پردازش هوشمند متصل است (خودکار)'
+              : 'حالت فعلی: صف ترجمه دستی'}
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
           <AccessibleListbox
-            label="مدل منتخب Anthropic Claude (پس از تحویل)"
-            value={selectedModel}
-            options={CLAUDE_MODELS}
-            onChange={setSelectedModel}
+            label="پروفایل پردازش ادبی و پژوهشی"
+            value={selectedProfile}
+            options={ENGINE_PROFILES}
+            onChange={setSelectedProfile}
           />
 
           <div className="rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] px-4 py-3 flex items-center justify-between gap-3">
@@ -171,7 +171,7 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
               <div className="text-xs text-[var(--foreground-muted)]">
                 {status?.hasApiKeyConfigured
                   ? 'فعال به محض زدن تیک'
-                  : 'به محض قرار دادن کلید Anthropic فعال می‌شود'}
+                  : 'به محض ثبت کلید API در تنظیمات سرور فعال می‌شود'}
               </div>
             </div>
             <input
@@ -186,17 +186,17 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
         <div className="rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4 space-y-2 text-xs text-[var(--foreground-muted)]">
           <div className="flex items-center gap-1.5 font-extrabold text-[var(--foreground)]">
             <KeyRound size={14} className="text-[var(--accent-gold)]" />
-            <span>نحوه فعال‌سازی کلید پولی Anthropic در سرور پس از تحویل سایت:</span>
+            <span>نحوه فعال‌سازی کلید پولی API در سرور پس از تحویل سایت:</span>
           </div>
           <p className="leading-relaxed">
-            کلید پولی هرگز در مرورگر یا کد کلاینت ذخیره نمی‌شود. تنها کافی است در تنظیمات محیطی سرور (`.env`) مقادیر زیر را ثبت کنید:
+            کلید اختصاصی هرگز در مرورگر یا کد سمت کاربر ذخیره نمی‌شود. تنها کافی است در متغیرهای محیطی سرور (`.env` یا پنل میزبان) مقادیر زیر را قرار دهید:
           </p>
           <pre
             dir="ltr"
             className="rounded-lg bg-[var(--surface-card)] border border-[var(--border-subtle)] p-3 font-mono text-[11px] text-[var(--foreground)] overflow-x-auto"
-          >{`MAKAREMI_AI_PROVIDER=anthropic
-ANTHROPIC_API_KEY=sk-ant-api03-...
-MAKAREMI_AI_MODEL=${selectedModel}
+          >{`MAKAREMI_AI_PROVIDER=cloud_ai
+MAKAREMI_AI_API_KEY=your-secret-api-key-here
+MAKAREMI_AI_MODEL=${selectedProfile}
 MAKAREMI_AI_AUTO_TRANSLATE=true`}</pre>
         </div>
 
@@ -221,30 +221,30 @@ MAKAREMI_AI_AUTO_TRANSLATE=true`}</pre>
             className="min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-[var(--primary-foreground)] font-bold text-xs"
           >
             {saving ? <Loader2 size={15} className="animate-spin" /> : <ShieldCheck size={15} />}
-            <span>ذخیره تنظیمات موتور Claude</span>
+            <span>ذخیره تنظیمات موتور هوشمند</span>
           </button>
 
           <button
             type="button"
             disabled={testing}
-            onClick={handleTestAnthropic}
+            onClick={handleTestConnection}
             className="min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-medium)] hover:border-[var(--primary)] text-[var(--foreground)] font-bold text-xs"
           >
             {testing ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
-            <span>آزمایش اتصال زنده کلید Anthropic</span>
+            <span>بررسی وضعیت اتصال کلید API</span>
           </button>
         </div>
       </section>
 
-      {/* Manual Antigravity Translation Queue */}
+      {/* Manual Translation Queue */}
       <section className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
           <div>
             <h3 className="text-base font-extrabold text-[var(--foreground)]">
-              صف ترجمه دستی فعلی و خروجی آماده برای ایجنت‌های آنتی‌گرویتی ({pendingQueue.length.toLocaleString('fa-IR')} مورد)
+              صف ترجمه دستی فعلی و خروجی آماده ویراستاری ({pendingQueue.length.toLocaleString('fa-IR')} مورد)
             </h3>
             <p className="text-xs text-[var(--foreground-muted)] mt-0.5">
-              آثاری که استاد با یک زبان ثبت کرده‌اند اینجا فهرست می‌شوند تا در صورت تمایل خروجی JSON آن‌ها را دریافت کرده و با ایجنت‌های آنتی‌گرویتی ترجمه و ثبت فرمایید.
+              آثاری که استاد با یک زبان ثبت کرده‌اند اینجا فهرست می‌شوند تا در صورت نیاز فایل JSON آن‌ها دریافت و به‌صورت دستی ترجمه و در سایت ثبت شوند.
             </p>
           </div>
 

@@ -47,8 +47,8 @@ export function CostBreakdownTable({ locale }: CostBreakdownTableProps) {
       icon: Sparkles,
     },
     {
-      category: tx('هوش مصنوعی صوتی و پردازش متن (AI APIs)', 'APIs IA Vocale & Modèles (Whisper & LLM)', 'Voice AI & Processing APIs (Whisper & LLM)'),
-      provider: 'OpenAI (Whisper Large-v3 & Embeddings)',
+      category: tx('پردازش صوتی و جستجوی معنایی (API)', 'API Audio & Traitement Sémantique', 'Voice Processing & Semantic Search APIs'),
+      provider: tx('موتور اختصاصی تبدیل گفتار به متن و نمایه‌سازی برداری', 'Moteur dédié de transcription vocale et vectorisation', 'Dedicated Speech-to-Text & Vector Indexing Service'),
       specs: tx(
         'تبدیل ویس‌های تلگرام/واتس‌اپ به متن، واژه‌نامه لکانی و پاسخ‌های RAG',
         'Transcription vocale Telegram/WhatsApp, glossaire lacanien et RAG',

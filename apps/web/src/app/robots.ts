@@ -4,13 +4,6 @@ export default function robots(): MetadataRoute.Robots {
   const aiAgents = [
     'GPTBot',
     'OAI-SearchBot',
-    'ChatGPT-User',
-    'ClaudeBot',
-    'Claude-SearchBot',
-    'Claude-User',
-    'Claude-Web',
-    'PerplexityBot',
-    'Perplexity-User',
     'Google-Extended',
     'Googlebot',
     'Applebot-Extended',

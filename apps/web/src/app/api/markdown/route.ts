@@ -208,7 +208,7 @@ export async function GET(request: NextRequest) {
     markdown += `## System Capabilities\n`;
     markdown += `- **Hybrid Retrieval:** Dense Semantic Vector search (384d) + BM25 Lexical search combined with Reciprocal Rank Fusion (RRF k=60).\n`;
     markdown += `- **Cryptographic Verification:** Every retrieved citation is pinned with its authoritative SHA-256 fingerprint.\n`;
-    markdown += `- **Model Context Protocol (MCP):** Connect external LLMs (Claude Desktop, Cursor, Custom Agents) via JSON-RPC 2.0 at \`/api/mcp\`.\n`;
+    markdown += `- **Model Context Protocol (MCP):** Connect external research integrations via JSON-RPC 2.0 at \`/api/mcp\`.\n`;
     markdown += `- **Direct API Access:** Interrogate the grounded RAG assistant directly via \`POST /api/rag\`.\n\n`;
     markdown += `## Canonical Endpoints\n`;
     markdown += `- Interactive UI: https://makaremi.com/${locale}/assistant\n`;
@@ -228,7 +228,7 @@ export async function GET(request: NextRequest) {
     markdown = `# ${title}\n\n`;
     markdown += `> Zero-Trust Multi-Agent AI System enabling Dr. Hassan Makaremi to manage publications, academic essays, artwork, and community comments via Telegram and WhatsApp voice notes.\n\n`;
     markdown += `## Architecture & Key Capabilities\n`;
-    markdown += `- **Voice-to-Article ASR:** Transcribe Persian and French voice messages using Whisper Large-v3 with automated Lacanian psychoanalytic glossary enrichment (\`lacanian_glossary\`) and Persian typography normalization.\n`;
+    markdown += `- **Voice-to-Article ASR:** Transcribe Persian and French voice messages using the archival speech-to-text engine with automated Lacanian psychoanalytic glossary enrichment (\`lacanian_glossary\`) and Persian typography normalization.\n`;
     markdown += `- **Voice Revision Loop:** Multi-turn iterative revision of drafts driven by voice commands with live Ed25519 signature updates.\n`;
     markdown += `- **Two-Factor Publish Challenge (2FA):** 3-minute single-use PIN challenge with 3-attempt brute-force lockout before atomic publication.\n`;
     markdown += `- **Synchronised Omnichannel Distribution:** Atomic simultaneous release across Website CMS, Telegram Instant View 2.1, Facebook, LinkedIn, Instagram SVG Quote Cards, Anti-Censorship Email Newsletter, and AI \`/llms.txt\`.\n`;

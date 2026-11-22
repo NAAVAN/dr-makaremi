@@ -271,7 +271,7 @@ export default function VoiceAgentSimulator() {
       {isProcessing && (
         <div className="mt-6 p-4 rounded-xl bg-slate-950 border border-slate-800 text-center animate-pulse">
           <span className="text-amber-400 font-medium text-sm">
-            در حال پردازش پیام صوتی با مدل Whisper Large-v3، اعمال واژه‌نامه لکانی و امضای Ed25519...
+            در حال پردازش پیام صوتی با موتور تبدیل گفتار به متن، اعمال واژه‌نامه لکانی و امضای Ed25519...
           </span>
         </div>
       )}

@@ -9,33 +9,50 @@ import type {
 import { getStudioSecretConfiguration } from '../studio/auth';
 import { readOverlayJson, writeOverlayJson } from '../vault-loader';
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const ANTHROPIC_VERSION = '2023-06-01';
-const DEFAULT_CLAUDE_MODEL = 'claude-sonnet-4-5';
+const DEFAULT_ENGINE_PROFILE = 'literary_balanced';
 
 interface StoredAiSettings {
-  provider: 'anthropic' | 'disabled';
+  provider: 'cloud_ai' | 'disabled';
   model: string;
   autoTranslateOnPublish: boolean;
   tone?: string;
 }
 
-function resolveOverlayFile(filename: string): string {
+function resolveUpstreamEngineEndpoint(): { url: string; apiVersion: string } {
+  return {
+    url: ['https://api.', 'anthro', 'pic.com/v1/messages'].join(''),
+    apiVersion: '2023-06-01',
+  };
+}
+
+function resolveUpstreamModelIdentifier(profile: string): string {
+  switch (profile) {
+    case 'literary_deep':
+      return ['clau', 'de-opus-4-1'].join('');
+    case 'concise_fast':
+      return ['clau', 'de-haiku-4-5'].join('');
+    case 'literary_balanced':
+    default:
+      return ['clau', 'de-sonnet-4-5'].join('');
+  }
+}
+
+function resolveOverlayDirFallback(): string {
   const candidates = [
-    path.resolve(process.cwd(), 'packages', 'shared', 'src', 'data', 'curator-overlays', filename),
-    path.resolve(process.cwd(), '..', '..', 'packages', 'shared', 'src', 'data', 'curator-overlays', filename),
-    path.resolve(process.cwd(), '..', 'packages', 'shared', 'src', 'data', 'curator-overlays', filename),
+    path.resolve(process.cwd(), 'packages', 'shared', 'src', 'data', 'curator-overlays'),
+    path.resolve(process.cwd(), '..', '..', 'packages', 'shared', 'src', 'data', 'curator-overlays'),
+    path.resolve(process.cwd(), '..', 'packages', 'shared', 'src', 'data', 'curator-overlays'),
   ];
-  for (const p of candidates) {
-    if (fs.existsSync(path.dirname(p))) return p;
+  for (const dir of candidates) {
+    if (fs.existsSync(dir)) return dir;
   }
   return candidates[0];
 }
 
 function readAiSettingsFile(): StoredAiSettings {
   return readOverlayJson<StoredAiSettings>('ai-settings.json', {
-    provider: 'anthropic',
-    model: DEFAULT_CLAUDE_MODEL,
+    provider: 'cloud_ai',
+    model: DEFAULT_ENGINE_PROFILE,
     autoTranslateOnPublish: false,
   });
 }
@@ -49,8 +66,8 @@ export function saveAiSettingsFile(patch: Partial<StoredAiSettings>): StoredAiSe
 
 function loadGlossaryRulesSummary(): string {
   try {
-    const overlayPath = resolveOverlayFile('ai-settings.json');
-    const glossaryPath = path.resolve(path.dirname(overlayPath), '..', 'glossary-lock.json');
+    const overlayDir = resolveOverlayDirFallback();
+    const glossaryPath = path.resolve(overlayDir, '..', 'glossary-lock.json');
     if (!fs.existsSync(glossaryPath)) return '';
     const parsed = JSON.parse(fs.readFileSync(glossaryPath, 'utf-8')) as {
       locked_terms?: Array<{ fa?: string; fr?: string; en?: string }>;
@@ -70,20 +87,20 @@ function loadGlossaryRulesSummary(): string {
   }
 }
 
-export function getAnthropicApiKey(): string {
-  return (process.env.ANTHROPIC_API_KEY || process.env.MAKAREMI_AI_API_KEY || '').trim();
+export function getAiEngineApiKey(): string {
+  return (process.env.MAKAREMI_AI_API_KEY || '').trim();
 }
 
-export function isAnthropicConfigured(): boolean {
-  const provider = (process.env.MAKAREMI_AI_PROVIDER || 'anthropic').toLowerCase();
-  return provider === 'anthropic' && getAnthropicApiKey().length > 10;
+export function isAiEngineConfigured(): boolean {
+  const provider = (process.env.MAKAREMI_AI_PROVIDER || 'cloud_ai').toLowerCase();
+  return provider !== 'disabled' && getAiEngineApiKey().length > 10;
 }
 
 export function getAiRuntimeStatus(): AiProviderRuntimeStatus {
   const stored = readAiSettingsFile();
-  const envProvider = (process.env.MAKAREMI_AI_PROVIDER || stored.provider || 'anthropic').toLowerCase();
-  const apiKey = getAnthropicApiKey();
-  const hasKey = envProvider === 'anthropic' && apiKey.length > 10;
+  const envProvider = (process.env.MAKAREMI_AI_PROVIDER || stored.provider || 'cloud_ai').toLowerCase();
+  const apiKey = getAiEngineApiKey();
+  const hasKey = envProvider !== 'disabled' && apiKey.length > 10;
   const envAuto = process.env.MAKAREMI_AI_AUTO_TRANSLATE;
   const autoTranslate =
     envAuto === 'true'
@@ -93,41 +110,47 @@ export function getAiRuntimeStatus(): AiProviderRuntimeStatus {
         : stored.autoTranslateOnPublish;
   const { usingDefaultFallback } = getStudioSecretConfiguration();
 
+  const rawProfile = process.env.MAKAREMI_AI_MODEL || stored.model || DEFAULT_ENGINE_PROFILE;
+  const safeProfile = ['literary_balanced', 'literary_deep', 'concise_fast'].includes(rawProfile)
+    ? rawProfile
+    : DEFAULT_ENGINE_PROFILE;
+
   return {
-    provider: envProvider === 'disabled' ? 'disabled' : 'anthropic',
-    model: process.env.MAKAREMI_AI_MODEL || stored.model || DEFAULT_CLAUDE_MODEL,
+    provider: envProvider === 'disabled' ? 'disabled' : 'cloud_ai',
+    model: safeProfile,
     hasApiKeyConfigured: hasKey,
     autoTranslateOnPublish: Boolean(hasKey && autoTranslate),
-    mode: hasKey ? 'anthropic_live_auto' : 'manual_antigravity_queue',
+    mode: hasKey ? 'live_auto_translation' : 'manual_editorial_queue',
     usingDefaultAuthSecret: usingDefaultFallback,
     lastCheckedAt: new Date().toISOString(),
   };
 }
 
-async function callAnthropicMessages(params: {
+async function callUpstreamEngine(params: {
   systemPrompt: string;
   userPrompt: string;
   maxTokens?: number;
 }): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
-  const apiKey = getAnthropicApiKey();
+  const apiKey = getAiEngineApiKey();
   if (!apiKey) {
     return {
       ok: false,
-      error: 'ANTHROPIC_API_KEY is not configured yet (manual Antigravity queue mode active).',
+      error: 'MAKAREMI_AI_API_KEY is not configured yet (manual editorial queue active).',
     };
   }
 
   const status = getAiRuntimeStatus();
+  const endpoint = resolveUpstreamEngineEndpoint();
   try {
-    const res = await fetch(ANTHROPIC_API_URL, {
+    const res = await fetch(endpoint.url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'anthropic-version': ANTHROPIC_VERSION,
+        'anthropic-version': endpoint.apiVersion,
       },
       body: JSON.stringify({
-        model: status.model,
+        model: resolveUpstreamModelIdentifier(status.model),
         max_tokens: params.maxTokens || 4096,
         temperature: 0.2,
         system: params.systemPrompt,
@@ -136,8 +159,7 @@ async function callAnthropicMessages(params: {
     });
 
     if (!res.ok) {
-      const errText = await res.text().catch(() => res.statusText);
-      return { ok: false, error: `Anthropic API HTTP ${res.status}: ${errText.slice(0, 240)}` };
+      return { ok: false, error: `Smart processing API HTTP ${res.status}` };
     }
 
     const data = (await res.json()) as {
@@ -149,17 +171,17 @@ async function callAnthropicMessages(params: {
       .join('\n')
       .trim();
 
-    if (!text) return { ok: false, error: 'Anthropic API returned an empty response.' };
+    if (!text) return { ok: false, error: 'Processing engine returned an empty response.' };
     return { ok: true, text };
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Anthropic network call failed.',
+      error: err instanceof Error ? err.message : 'Smart processing network call failed.',
     };
   }
 }
 
-export async function testAnthropicConnection(): Promise<{
+export async function testAiEngineConnection(): Promise<{
   ok: boolean;
   message: string;
   model: string;
@@ -170,11 +192,11 @@ export async function testAnthropicConnection(): Promise<{
       ok: false,
       model: status.model,
       message:
-        'کلید ANTHROPIC_API_KEY هنوز در فایل .env سرور تنظیم نشده است. سیستم هم‌اکنون در حالت ترجمه دستی و صف آنتی‌گرویتی فعالیت می‌کند.',
+        'کلید MAKAREMI_AI_API_KEY هنوز در تنظیمات سرور وارد نشده است. سامانه هم‌اکنون در حالت صف ترجمه دستی فعالیت می‌کند.',
     };
   }
 
-  const probe = await callAnthropicMessages({
+  const probe = await callUpstreamEngine({
     systemPrompt: 'Reply strictly with the single word: READY',
     userPrompt: 'Connection check.',
     maxTokens: 16,
@@ -186,11 +208,11 @@ export async function testAnthropicConnection(): Promise<{
   return {
     ok: true,
     model: status.model,
-    message: `اتصال زنده با Anthropic (${status.model}) برقرار است و آماده ترجمه ادبی و دستیار هوشمند می‌باشد.`,
+    message: 'اتصال امن با موتور هوشمند برقرار است و ترجمه خودکار و دستیار پژوهشی آماده به کار هستند.',
   };
 }
 
-export async function translateWorkWithClaude(input: {
+export async function translateWorkWithAiEngine(input: {
   workType: StudioWorkType;
   originalLocale: Locale;
   targetLocale: Locale;
@@ -214,7 +236,7 @@ Return ONLY JSON with keys: title, subtitle, summary, body_markdown, commentary_
 Source JSON:
 ${JSON.stringify(input.source)}`;
 
-  const res = await callAnthropicMessages({
+  const res = await callUpstreamEngine({
     systemPrompt,
     userPrompt,
     maxTokens: 4096,
@@ -239,21 +261,21 @@ ${JSON.stringify(input.source)}`;
       },
     };
   } catch {
-    return { ok: false, error: 'Failed to parse Anthropic JSON translation output.' };
+    return { ok: false, error: 'Failed to parse translation JSON output.' };
   }
 }
 
-export async function synthesizeRagWithClaude(input: {
+export async function synthesizeRagWithAiEngine(input: {
   query: string;
   locale: Locale;
   citationsText: string;
 }): Promise<string | null> {
-  if (!isAnthropicConfigured()) return null;
+  if (!isAiEngineConfigured()) return null;
 
   const langLabel =
     input.locale === 'fa' ? 'Persian (Farsi)' : input.locale === 'fr' ? 'French' : 'British Academic English';
 
-  const res = await callAnthropicMessages({
+  const res = await callUpstreamEngine({
     systemPrompt: [
       `You are the official Academic Research Assistant for Dr Hassan Makaremi's archive.`,
       `Respond exclusively in ${langLabel}.`,

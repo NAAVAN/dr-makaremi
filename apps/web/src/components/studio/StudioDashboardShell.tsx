@@ -63,7 +63,7 @@ export function StudioDashboardShell({
   }, [refreshOverviewStats]);
 
   const handleLockWorkspace = async () => {
-    await fetch('/api/studio/auth', { method: 'DELETE' }).catch(() => {});
+    await fetch('/api/studio/auth', { method: 'DELETE' }).catch(() => { });
     router.refresh();
   };
 
@@ -72,12 +72,12 @@ export function StudioDashboardShell({
     label: string;
     icon: React.ComponentType<{ size?: number; className?: string }>;
   }> = [
-    { id: 'overview', label: 'خانه داشبورد', icon: LayoutDashboard },
-    { id: 'create', label: 'ثبت اثر جدید', icon: FilePlus2 },
-    { id: 'enrich', label: 'تکمیل آثار پیشین', icon: FolderPlus },
-    { id: 'translations', label: 'کنترل و ویرایش ترجمه‌ها', icon: Languages },
-    { id: 'ai_system', label: 'موتور Claude و صف ترجمه', icon: Bot },
-  ];
+      { id: 'overview', label: 'خانه داشبورد', icon: LayoutDashboard },
+      { id: 'create', label: 'ثبت اثر جدید', icon: FilePlus2 },
+      { id: 'enrich', label: 'تکمیل آثار پیشین', icon: FolderPlus },
+      { id: 'translations', label: 'کنترل و ویرایش ترجمه‌ها', icon: Languages },
+      { id: 'ai_system', label: 'موتور هوشمند و صف ترجمه', icon: Bot },
+    ];
 
   const baseFontPx = fontScale === 'xlarge' ? '18px' : fontScale === 'large' ? '16px' : '15px';
 
@@ -138,11 +138,10 @@ export function StudioDashboardShell({
                   key={f.id}
                   type="button"
                   onClick={() => setFontScale(f.id)}
-                  className={`px-2.5 py-1 rounded-lg transition-colors ${
-                    fontScale === f.id
+                  className={`px-2.5 py-1 rounded-lg transition-colors ${fontScale === f.id
                       ? 'bg-[var(--surface-card)] text-[var(--foreground)] shadow-sm'
                       : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-                  }`}
+                    }`}
                 >
                   {f.label}
                 </button>
@@ -181,11 +180,10 @@ export function StudioDashboardShell({
                 key={item.id}
                 type="button"
                 onClick={() => setActiveTab(item.id)}
-                className={`min-h-[42px] shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold border transition-colors ${
-                  active
+                className={`min-h-[42px] shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold border transition-colors ${active
                     ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)]'
                     : 'bg-[var(--surface-sunken)] border-[var(--border-subtle)] text-[var(--foreground)] hover:border-[var(--primary)]'
-                }`}
+                  }`}
               >
                 <Icon size={16} />
                 <span>{item.label}</span>

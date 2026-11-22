@@ -150,16 +150,16 @@ export function StudioOverview({
           className="text-right rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] p-5 transition-colors"
         >
           <div className="flex items-center justify-between text-xs font-bold text-[var(--foreground-muted)] mb-2">
-            <span>موتور ترجمه و دستیار Claude</span>
+            <span>موتور ترجمه و دستیار هوشمند</span>
             <Bot size={16} className="text-[var(--accent-gold)]" />
           </div>
           <div className="text-base font-extrabold text-[var(--foreground)] mt-1">
-            {aiStatus?.hasApiKeyConfigured ? 'Anthropic Claude فعال' : 'حالت دستی (صف آنتی‌گرویتی)'}
+            {aiStatus?.hasApiKeyConfigured ? 'اتصال هوشمند فعال' : 'حالت دستی (صف ترجمه)'}
           </div>
           <p className="text-xs text-[var(--foreground-muted)] mt-1.5">
             {manualQueueCount > 0
               ? `${manualQueueCount.toLocaleString('fa-IR')} اثر در صف ترجمه دستی`
-              : 'آماده ثبت یا ترجمه با کلید Anthropic در آینده'}
+              : 'آماده ترجمه دستی یا خودکار با کلید API در آینده'}
           </p>
         </button>
       </section>

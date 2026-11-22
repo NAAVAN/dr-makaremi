@@ -162,7 +162,7 @@ export function applyLacanianGlossary(text: string): { normalizedText: string; a
 }
 
 // -----------------------------------------------------------------------------
-// 3. Deterministic Voice Transcriber (Whisper Engine + Local Test Mock)
+// 3. Deterministic Voice Transcriber (Speech-to-Text Engine + Local Test Mock)
 // -----------------------------------------------------------------------------
 
 export interface VoiceTranscriptionResult {
@@ -201,7 +201,7 @@ const PRESET_TRANSCRIPTS: Record<
 };
 
 /**
- * Transcribes audio via Whisper or deterministic presets.
+ * Transcribes audio via archival speech-to-text engine or deterministic presets.
  * Applies Lacanian glossary and Persian typography normalization automatically.
  */
 export async function transcribeVoiceMessage(
@@ -222,8 +222,8 @@ export async function transcribeVoiceMessage(
     lang = preset.lang;
     duration = preset.duration;
   } else {
-    // If not a preset but valid external HTTPS URL, we provide a deterministic simulation
-    // In production with WHISPER_API_KEY, this would stream the audio buffer to OpenAI/Whisper
+    // If not a preset but valid external HTTPS URL, provide a deterministic simulation
+    // In production, streams the audio buffer to the configured Speech-to-Text endpoint
     raw =
       'در ادامه مباحث سمینار روانکاوی و خوانش ساختاری لکان، بررسی پدیده دگر شنیدن و جایگاه نام پتر در بازنمایی سوژه مورد ارزیابی قرار میگیرد.';
     lang = 'fa';

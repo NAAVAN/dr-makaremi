@@ -212,7 +212,7 @@ export function WorkCreatorWizard({
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(current),
-          }).catch(() => {});
+          }).catch(() => { });
         }
       } catch {
         // ignore storage errors
@@ -277,10 +277,10 @@ export function WorkCreatorWizard({
       } else if (id === activeDraftId) {
         setActiveDraftId(remaining[0].id);
       }
-      idbSet(IDB_DRAFTS_INDEX_KEY, copy).catch(() => {});
+      idbSet(IDB_DRAFTS_INDEX_KEY, copy).catch(() => { });
       return copy;
     });
-    fetch(`/api/studio/drafts?id=${encodeURIComponent(id)}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/studio/drafts?id=${encodeURIComponent(id)}`, { method: 'DELETE' }).catch(() => { });
   };
 
   const handlePublishBatch = async (publishAllNonEmpty: boolean) => {
@@ -338,11 +338,11 @@ export function WorkCreatorWizard({
 
       const summaryParts = [`${data.publishedCount} اثر با موفقیت در سایت ثبت شد.`];
       if (autoTotal > 0) {
-        summaryParts.push(`${autoTotal} اثر به‌طور خودکار توسط Anthropic Claude ترجمه شد.`);
+        summaryParts.push(`${autoTotal} اثر به‌طور خودکار توسط موتور هوشمند ترجمه شد.`);
       }
       if (queuedTotal > 0) {
         summaryParts.push(
-          `${queuedTotal} اثر برای ترجمه زبان‌های باقیمانده در «صف ترجمه دستی / آنتی‌گرویتی» ثبت گردید.`
+          `${queuedTotal} اثر برای ترجمه زبان‌های باقیمانده در «صف ترجمه دستی» ثبت گردید.`
         );
       }
 
@@ -415,7 +415,7 @@ export function WorkCreatorWizard({
             {isPublishing ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
             <span>
               ثبت نهایی و جمعی ({readyBatchCount.toLocaleString('fa-IR')} اثر){' '}
-              {aiStatus?.hasApiKeyConfigured ? '+ ترجمه خودکار Claude' : '+ صف ترجمه'}
+              {aiStatus?.hasApiKeyConfigured ? '+ ترجمه خودکار هوشمند' : '+ صف ترجمه'}
             </span>
           </button>
         </div>
@@ -438,11 +438,10 @@ export function WorkCreatorWizard({
               return (
                 <div
                   key={d.id}
-                  className={`rounded-xl border p-3 flex items-center justify-between gap-2 ${
-                    isCurrent
+                  className={`rounded-xl border p-3 flex items-center justify-between gap-2 ${isCurrent
                       ? 'border-[var(--primary)] bg-[var(--primary-light)]'
                       : 'border-[var(--border-subtle)] bg-[var(--surface-sunken)]'
-                  }`}
+                    }`}
                 >
                   <button
                     type="button"
@@ -477,11 +476,10 @@ export function WorkCreatorWizard({
 
       {publishFeedback && (
         <div
-          className={`rounded-2xl border p-4 text-sm font-bold flex items-center gap-2.5 ${
-            publishFeedback.ok
+          className={`rounded-2xl border p-4 text-sm font-bold flex items-center gap-2.5 ${publishFeedback.ok
               ? 'border-emerald-500/60 bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200'
               : 'border-red-500/60 bg-red-50/70 dark:bg-red-950/30 text-red-900 dark:text-red-200'
-          }`}
+            }`}
         >
           <CheckCircle2 size={18} className="shrink-0" />
           <span>{publishFeedback.message}</span>
@@ -557,11 +555,10 @@ export function WorkCreatorWizard({
                             },
                           }))
                         }
-                        className={`min-h-[44px] rounded-xl border px-2.5 py-2 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors ${
-                          selected
+                        className={`min-h-[44px] rounded-xl border px-2.5 py-2 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors ${selected
                             ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)]'
                             : 'bg-[var(--surface-sunken)] border-[var(--border-medium)] text-[var(--foreground)] hover:border-[var(--primary)]'
-                        }`}
+                          }`}
                       >
                         <span className="font-mono text-[11px]">{item.tag}</span>
                         <span>{item.label}</span>
@@ -842,11 +839,10 @@ export function WorkCreatorWizard({
                 onClick={() =>
                   patchActive((prev) => ({ ...prev, includeTranslations: !prev.includeTranslations }))
                 }
-                className={`min-h-[40px] px-4 py-2 rounded-xl text-xs font-bold border transition-colors ${
-                  activeDraft.includeTranslations
+                className={`min-h-[40px] px-4 py-2 rounded-xl text-xs font-bold border transition-colors ${activeDraft.includeTranslations
                     ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)]'
                     : 'bg-[var(--surface-sunken)] border-[var(--border-medium)] text-[var(--foreground)]'
-                }`}
+                  }`}
               >
                 {activeDraft.includeTranslations
                   ? 'دارای ترجمه آماده هستم (باز)'
@@ -865,11 +861,10 @@ export function WorkCreatorWizard({
                         key={loc}
                         type="button"
                         onClick={() => setActiveOptionalLocale(loc)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold border flex items-center gap-2 transition-colors ${
-                          activeOptionalLocale === loc
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border flex items-center gap-2 transition-colors ${activeOptionalLocale === loc
                             ? 'bg-[var(--primary-light)] border-[var(--primary)] text-[var(--primary)]'
                             : 'bg-[var(--surface-sunken)] border-[var(--border-subtle)] text-[var(--foreground-muted)]'
-                        }`}
+                          }`}
                       >
                         <span>{label}</span>
                         {hasData && <CheckCircle2 size={14} className="text-emerald-600" />}
@@ -959,8 +954,8 @@ export function WorkCreatorWizard({
             ) : (
               <p className="text-xs text-[var(--foreground-muted)] bg-[var(--surface-sunken)] rounded-xl p-3 border border-[var(--border-subtle)]">
                 {aiStatus?.hasApiKeyConfigured
-                  ? 'در صورت خالی ماندن فیلدهای ترجمه، به محض «ثبت نهایی» سیستم به‌طور خودکار ترجمه دو زبان دیگر را با موتور Anthropic Claude انجام می‌دهد.'
-                  : 'اگر فعلاً ترجمه‌ای وارد نفرمایید، هیچ ایرادی ندارد؛ پس از ثبت نهایی، اثر به‌صورت خودکار وارد «صف ترجمه دستی / آنتی‌گرویتی» می‌شود تا بدون وقفه ترجمه و منتشر گردد.'}
+                  ? 'در صورت خالی ماندن فیلدهای ترجمه، به محض «ثبت نهایی» سیستم به‌طور خودکار ترجمه دو زبان دیگر را با موتور هوشمند انجام می‌دهد.'
+                  : 'اگر فعلاً ترجمه‌ای وارد نفرمایید، هیچ ایرادی ندارد؛ پس از ثبت نهایی، اثر به‌صورت خودکار وارد «صف ترجمه دستی» می‌شود تا بدون وقفه ترجمه و منتشر گردد.'}
               </p>
             )}
           </section>

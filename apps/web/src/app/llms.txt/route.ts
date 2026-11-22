@@ -37,7 +37,7 @@ Corpus coverage: ${articlesFa.length} scholarly & news articles, ${books.length}
 - [Personal AI Agent Studio](https://makaremi.com/fa/agent-console.md): Zero-Trust multi-agent personal assistant allowing Dr. Makaremi to manage publications via Telegram and WhatsApp voice notes.
 - [System Status & Production Readiness](https://makaremi.com/fa/system-status.md): Real-time telemetry, 6-point pre-launch QA gate certification, 12-week roadmap, and European cloud cost optimization.
 - [Agent Discovery Card (JSON)](https://makaremi.com/.well-known/agent-card.json): Machine-readable manifest of MCP, RAG, search, and Ed25519 verification endpoints.
-- [Model Context Protocol (MCP) Server](https://makaremi.com/api/mcp): Official JSON-RPC 2.0 endpoint for external AI agents (Claude, Cursor, custom agents).
+- [Model Context Protocol (MCP) Server](https://makaremi.com/api/mcp): Official JSON-RPC 2.0 endpoint for automated archival research tools and integration clients.
 - [Live Infrastructure Health Telemetry](https://makaremi.com/api/health): Authoritative zero-leak health check for CMS, Ed25519 snapshots, hybrid RAG index, and AES-256-GCM backups.
 - [Grounded RAG Assistant API](https://makaremi.com/api/rag): Direct HTTP endpoint for grounded question answering with cryptographic citations.
 
