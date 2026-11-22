@@ -82,7 +82,7 @@ export default async function SystemStatusPage({ params }: PageProps) {
           name: 'Dr. Hassan Makaremi Official Archive',
           url: 'https://makaremi.com',
         },
-        inLanguage: locale === 'fa' ? 'fa-IR' : locale === 'fr' ? 'fr-FR' : 'en-GB',
+        inLanguage: locale === 'fa' ? 'fa-IR' : locale === 'fr' ? 'fr-FR' : 'en',
       },
       {
         '@type': 'AboutPage',

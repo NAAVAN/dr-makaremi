@@ -11,7 +11,7 @@ interface LanguageSwitcherProps {
 const LOCALES: Array<{ code: Locale; label: string; dir: 'rtl' | 'ltr' }> = [
   { code: 'fa', label: 'فارسی', dir: 'rtl' },
   { code: 'fr', label: 'Français', dir: 'ltr' },
-  { code: 'en', label: 'English (UK)', dir: 'ltr' },
+  { code: 'en', label: 'English', dir: 'ltr' },
 ];
 
 function LanguageSwitcherInner({ currentLocale }: LanguageSwitcherProps) {

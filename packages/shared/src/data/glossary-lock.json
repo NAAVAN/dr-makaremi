@@ -3,7 +3,8 @@
   "locale_targets": {
     "fa": "fa-IR",
     "fr": "fr-FR",
-    "en": "en-GB"
+    "en": "en",
+    "en_spelling": "British/UNESCO International Academic English"
   },
   "british_english_rules": {
     "spelling_map": {

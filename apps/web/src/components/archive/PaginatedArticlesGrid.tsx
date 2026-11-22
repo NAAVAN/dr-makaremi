@@ -386,7 +386,7 @@ export function PaginatedArticlesGrid({
                         ? 'ترجمه فارسی این اثر در موج بعدی آرشیو فعال می‌شود؛ اکنون متن اصلی قابل مطالعه است.'
                         : isFr
                           ? 'Traduction française planifiée ; le texte original est accessible ci-dessous.'
-                          : 'British English (en-GB) translation is scheduled in the next editorial wave; the original text is available below.'}
+                          : 'English translation (international academic style) is scheduled in the next editorial wave; the original text is available below.'}
                     </p>
                   )}
 

@@ -71,7 +71,7 @@ export function buildTrilingualMetadata(opts: TrilingualMetadataOptions): Metada
       languages: {
         'fa-IR': faUrl,
         'fr-FR': frUrl,
-        'en-GB': enUrl,
+        en: enUrl,
         'x-default': faUrl,
       },
       ...(includeMarkdownTwin

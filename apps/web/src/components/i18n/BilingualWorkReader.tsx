@@ -78,11 +78,11 @@ export function BilingualWorkReader({
       ? `ترجمه کامل این اثر به ${targetName} در برنامه ترجمه مرحله‌ای آرشیو (موج‌های ۳ تا ۵) ثبت شده است و به محض تأیید واژگانی، مستقیماً در همین کادر فعال خواهد شد. متن اصلی اثر در پایین بدون هیچ تغییری در دسترس شماست.`
       : isFr
         ? `La traduction intégrale en ${targetName} de cette œuvre est planifiée dans le programme d’édition trilingue (vagues 3–5). Le texte original authentique reste intégralement lisible ci-dessous.`
-        : `The full British English (en-GB) scholarly translation of this work is scheduled in our trilingual editorial pipeline (Waves 3–5). The untouched original text remains available below.`,
+        : `The full International English scholarly translation of this work (using consistent British/UNESCO spelling) is scheduled in our trilingual editorial pipeline (Waves 3–5). The untouched original text remains available below.`,
   };
 
   const renderDefaultTranslated = (tr: StoredWorkTranslation) => (
-    <div dir={targetDir} lang={siteLocale === 'en' ? 'en-GB' : siteLocale} className="space-y-5">
+    <div dir={targetDir} lang={siteLocale} className="space-y-5">
       {tr.title && (
         <h2 className="font-display text-xl sm:text-2xl font-black text-[var(--foreground)]">
           {tr.title}
@@ -192,7 +192,7 @@ export function BilingualWorkReader({
 
       {/* Mode 1: Untouched Original Work (Default — Native RTL/LTR Direction!) */}
       {mode === 'original' && (
-        <div dir={origDir} lang={originalLang === 'en' ? 'en-GB' : originalLang}>
+        <div dir={origDir} lang={originalLang}>
           {originalContent}
         </div>
       )}
@@ -212,7 +212,7 @@ export function BilingualWorkReader({
               <div className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-medium)] text-xs sm:text-sm text-[var(--foreground)] leading-relaxed">
                 {labels.queuedNotice}
               </div>
-              <div dir={origDir} lang={originalLang === 'en' ? 'en-GB' : originalLang}>
+              <div dir={origDir} lang={originalLang}>
                 {originalContent}
               </div>
             </div>
@@ -229,7 +229,7 @@ export function BilingualWorkReader({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <div
               dir={origDir}
-              lang={originalLang === 'en' ? 'en-GB' : originalLang}
+              lang={originalLang}
               className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 space-y-4"
             >
               <div className="pb-2 border-b border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--primary)]">
@@ -240,7 +240,7 @@ export function BilingualWorkReader({
 
             <div
               dir={targetDir}
-              lang={siteLocale === 'en' ? 'en-GB' : siteLocale}
+              lang={siteLocale}
               className="rounded-2xl bg-[var(--surface-artifact)] border border-[var(--border-artifact)] p-6 space-y-4"
             >
               <div className="pb-2 border-b border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--accent-gold)]">

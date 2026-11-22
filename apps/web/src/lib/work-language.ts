@@ -72,7 +72,7 @@ export function getLanguageLabel(lang: Locale, uiLocale: Locale): string {
   const labels: Record<Locale, Record<Locale, string>> = {
     fa: { fa: 'فارسی', fr: 'فرانسوی', en: 'انگلیسی' },
     fr: { fa: 'Persan', fr: 'Français', en: 'Anglais' },
-    en: { fa: 'Persian', fr: 'French', en: 'English (UK)' },
+    en: { fa: 'Persian', fr: 'French', en: 'English' },
   };
   return labels[uiLocale][lang];
 }

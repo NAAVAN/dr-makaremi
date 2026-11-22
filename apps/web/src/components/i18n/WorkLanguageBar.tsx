@@ -44,7 +44,7 @@ export function WorkLanguageBar({
     ? 'ترجمه به فارسی'
     : isFr
       ? 'Traduire en français'
-      : 'Translate to English (UK)';
+      : 'Translate to English';
 
   const showOriginalLabel = isFa
     ? 'نمایش اصل اثر'
@@ -56,7 +56,7 @@ export function WorkLanguageBar({
     ? 'در صف ترجمه فارسی'
     : isFr
       ? 'Traduction en cours'
-      : 'UK Translation Queued';
+      : 'Translation Queued';
 
   return (
     <div

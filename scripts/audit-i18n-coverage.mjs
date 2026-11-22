@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Automated Trilingual i18n & British English (en-GB) Coverage Auditor
+ * Automated Trilingual i18n & International English (hreflang="en", British/UNESCO Spelling) Coverage Auditor
  * Runs with 0 LLM tokens over apps/web/src (excluding admin-only curation-studio per user spec).
  */
 import fs from 'node:fs';
@@ -41,8 +41,8 @@ for (const f of files) {
     twoWayByFile.push({ rel, count: matches.length });
   }
 
-  // Extract string literals only so code identifiers (e.g. BooksInteractiveCatalog, behavior: 'smooth') aren't false positives
-  const stringLiterals = src.match(/(?:'[^'\n]{4,}'|"[^"\n]{4,}"|`[^`]{4,}`)/g) || [];
+  // Extract string literals only on a per-line basis so code identifiers and comments aren't false positives
+  const stringLiterals = src.match(/(?:'[^'\n]{4,}'|"[^"\n]{4,}"|`[^`\n]{4,}`)/g) || [];
   const prose = stringLiterals
     .filter(
       (s) =>
@@ -68,7 +68,7 @@ for (const f of files) {
 
 twoWayByFile.sort((a, b) => b.count - a.count);
 
-console.log('=== I18N & BRITISH ENGLISH (en-GB) COVERAGE REPORT ===');
+console.log('=== I18N & INTERNATIONAL ENGLISH (hreflang="en" / British-UNESCO Spelling) COVERAGE REPORT ===');
 console.log(`Public TSX/TS files scanned (excl. curation-studio): ${files.length}`);
 console.log(`Remaining 2-way ternaries: ${twoWayTernaries}`);
 if (twoWayByFile.length) {

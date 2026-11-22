@@ -24,6 +24,8 @@ import {
   loadVaultPages,
   loadVaultMediaManifest,
   loadVaultLegacyRedirects,
+  loadPackTranslations,
+  type TranslationCollectionName,
 } from './vault-loader';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
@@ -247,7 +249,57 @@ const EXHIBITION_ENRICHMENTS: Record<
 // Build Complete Vault-Backed Collections (100% Real WordPress XML Data)
 // -----------------------------------------------------------------------------
 
+/**
+ * Merges server-side Pack A-D translations (`packages/shared/src/data/translations/*.json`)
+ * onto immutable vault items AFTER existing native translations so `translations[0]`
+ * (the authentic original work) always stays primary and untouched.
+ */
+function mergePackTranslationsForItem<
+  TTr extends { languages_code: string },
+  TItem extends { id: string; slug: string; translations?: TTr[] }
+>(
+  item: TItem,
+  collection: TranslationCollectionName,
+  parentIdKey: string,
+  packMap: Record<string, Record<string, Record<string, unknown>>>
+): TItem {
+  const packEntry = packMap[item.slug];
+  if (!packEntry) return item;
+
+  const baseTranslations = [...(item.translations || [])];
+  const existingPrefixes = new Set(
+    baseTranslations.map((t) => (t.languages_code || '').slice(0, 2).toLowerCase())
+  );
+
+  for (const [lc, rawFields] of Object.entries(packEntry)) {
+    const prefix = lc.slice(0, 2).toLowerCase();
+    if (existingPrefixes.has(prefix)) continue;
+
+    const synthetic = {
+      ...rawFields,
+      id: `pack-${collection}-${item.slug}-${prefix}`,
+      [parentIdKey]: item.id,
+      languages_code:
+        typeof rawFields.languages_code === 'string'
+          ? rawFields.languages_code
+          : prefix === 'fa'
+            ? 'fa-IR'
+            : prefix === 'fr'
+              ? 'fr-FR'
+              : 'en',
+    } as unknown as TTr;
+    baseTranslations.push(synthetic);
+    existingPrefixes.add(prefix);
+  }
+
+  return {
+    ...item,
+    translations: baseTranslations,
+  };
+}
+
 function buildArticlesCollection(): Article[] {
+  const packArticles = loadPackTranslations('articles');
   const vaultArticles = loadVaultArticles().map((art) => {
     const extraTrs = CURATED_ARTICLE_TRANSLATIONS[art.slug];
     let translations = [...(art.translations || [])];
@@ -269,12 +321,28 @@ function buildArticlesCollection(): Article[] {
       });
     }
 
+    // Prefer complete Pack A translations over brief curated abstracts while keeping original at [0]
+    const nativePrefixes = new Set(
+      translations.map((t) => (t.languages_code || '').slice(0, 2).toLowerCase())
+    );
+    const mergedItem = mergePackTranslationsForItem(
+      { ...art, translations },
+      'articles',
+      'articles_id',
+      packArticles
+    );
+    translations = [...(mergedItem.translations || [])];
+
     if (extraTrs) {
-      const existingLangs = new Set(translations.map((t) => t.languages_code));
+      const existingPrefixes = new Set(
+        translations.map((t) => (t.languages_code || '').slice(0, 2).toLowerCase())
+      );
       translations = [
         ...translations,
-        ...extraTrs.filter((t) => !existingLangs.has(t.languages_code)),
+        ...extraTrs.filter((t) => !existingPrefixes.has((t.languages_code || '').slice(0, 2).toLowerCase())),
       ];
+      // Preserve verified curated CNBC/CNRS translation for native articles when Pack A didn't supply that language
+      void nativePrefixes;
     }
 
     return {
@@ -312,29 +380,32 @@ function buildArticlesCollection(): Article[] {
 }
 
 function buildBooksCollection(): Book[] {
+  const packBooks = loadPackTranslations('books');
   const vaultBooks = loadVaultBooks();
   const existingSlugs = new Set(vaultBooks.map((b) => b.slug));
   const merged = [
     ...SUPPLEMENTAL_BOOKS.filter((b) => !existingSlugs.has(b.slug)),
     ...vaultBooks,
-  ];
+  ].map((b) => mergePackTranslationsForItem(b, 'books', 'books_id', packBooks));
   return merged.map((b, i) => ({ ...b, order_index: i + 1 }));
 }
 
 function buildExhibitionsCollection(): Exhibition[] {
+  const packExhibitions = loadPackTranslations('exhibitions');
   const vaultExhibitions = loadVaultExhibitions().map((ex) => {
     const enrich = EXHIBITION_ENRICHMENTS[ex.slug];
-    if (!enrich) return ex;
-    const translations = (ex.translations || []).map((t) =>
-      enrich.fa_title && t.languages_code.startsWith('fa') ? { ...t, title: enrich.fa_title } : t
-    );
-    return {
-      ...ex,
-      start_date: enrich.start_date || ex.start_date,
-      venue_city: enrich.venue_city || ex.venue_city,
-      venue_name: enrich.venue_name || ex.venue_name,
-      translations,
-    };
+    const enriched = !enrich
+      ? ex
+      : {
+          ...ex,
+          start_date: enrich.start_date || ex.start_date,
+          venue_city: enrich.venue_city || ex.venue_city,
+          venue_name: enrich.venue_name || ex.venue_name,
+          translations: (ex.translations || []).map((t) =>
+            enrich.fa_title && t.languages_code.startsWith('fa') ? { ...t, title: enrich.fa_title } : t
+          ),
+        };
+    return mergePackTranslationsForItem(enriched, 'exhibitions', 'exhibitions_id', packExhibitions);
   });
 
   const featuredSlugs = [
@@ -352,8 +423,25 @@ function buildExhibitionsCollection(): Exhibition[] {
   return [...featured, ...rest];
 }
 
+function buildArtworksCollection(): Artwork[] {
+  const packArtworks = loadPackTranslations('artworks');
+  return loadVaultArtworks().map((art) =>
+    mergePackTranslationsForItem(art, 'artworks', 'artworks_id', packArtworks)
+  );
+}
+
+function buildArchivePagesCollection(): ArchivePage[] {
+  const packPages = loadPackTranslations('pages');
+  return loadVaultPages().map((pg) =>
+    mergePackTranslationsForItem(pg, 'pages', 'pages_id', packPages)
+  );
+}
+
 function buildPoemsCollection(): Poem[] {
-  const vaultPoems = loadVaultPoems();
+  const packPoems = loadPackTranslations('poems');
+  const vaultPoems = loadVaultPoems().map((p) =>
+    mergePackTranslationsForItem(p, 'poems', 'poems_id', packPoems)
+  );
   // Ensure caress-me is featured first for PoetryArtworkSync showcase
   const caress = vaultPoems.filter((p) => p.slug === 'caress-me');
   const rest = vaultPoems.filter((p) => p.slug !== 'caress-me');
@@ -361,7 +449,10 @@ function buildPoemsCollection(): Poem[] {
 }
 
 function buildVideosCollection(): VideoSpeech[] {
-  const vaultVideos = loadVaultVideos();
+  const packVideos = loadPackTranslations('videos');
+  const vaultVideos = loadVaultVideos().map((v) =>
+    mergePackTranslationsForItem(v, 'videos', 'videos_id', packVideos)
+  );
   const pinnedSlugs = ['khavaran-justice-session', 'hafez-de-chiraz'];
   const pinned = pinnedSlugs
     .map((s) => vaultVideos.find((v) => v.slug === s))
@@ -373,10 +464,10 @@ function buildVideosCollection(): VideoSpeech[] {
 export const FALLBACK_ARTICLES: Article[] = buildArticlesCollection();
 export const FALLBACK_BOOKS: Book[] = buildBooksCollection();
 export const FALLBACK_EXHIBITIONS: Exhibition[] = buildExhibitionsCollection();
-export const FALLBACK_ARTWORKS: Artwork[] = loadVaultArtworks();
+export const FALLBACK_ARTWORKS: Artwork[] = buildArtworksCollection();
 export const FALLBACK_POEMS: Poem[] = buildPoemsCollection();
 export const FALLBACK_VIDEOS: VideoSpeech[] = buildVideosCollection();
-export const FALLBACK_PAGES: ArchivePage[] = loadVaultPages();
+export const FALLBACK_PAGES: ArchivePage[] = buildArchivePagesCollection();
 
 export const FALLBACK_GLOSSARY: LacanianGlossaryTerm[] = [
   {

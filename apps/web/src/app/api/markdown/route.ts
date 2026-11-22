@@ -231,9 +231,9 @@ export async function GET(request: NextRequest) {
     markdown += `- **Voice-to-Article ASR:** Transcribe Persian and French voice messages using Whisper Large-v3 with automated Lacanian psychoanalytic glossary enrichment (\`lacanian_glossary\`) and Persian typography normalization.\n`;
     markdown += `- **Voice Revision Loop:** Multi-turn iterative revision of drafts driven by voice commands with live Ed25519 signature updates.\n`;
     markdown += `- **Two-Factor Publish Challenge (2FA):** 3-minute single-use PIN challenge with 3-attempt brute-force lockout before atomic publication.\n`;
-    markdown += `- **Synchronized Omnichannel Distribution:** Atomic simultaneous release across Website CMS, Telegram Instant View 2.1, Facebook, LinkedIn, Instagram SVG Quote Cards, Anti-Censorship Email Newsletter, and AI \`/llms.txt\`.\n`;
+    markdown += `- **Synchronised Omnichannel Distribution:** Atomic simultaneous release across Website CMS, Telegram Instant View 2.1, Facebook, LinkedIn, Instagram SVG Quote Cards, Anti-Censorship Email Newsletter, and AI \`/llms.txt\`.\n`;
     markdown += `- **IIIF & Deep-Zoom Assets:** Image intake for new books and artwork with automated 4096x4096px Deep-Zoom pyramids and AVIF compression.\n`;
-    markdown += `- **Zero-Trust Security & Cloudflare Defense:** Constant-time (\`timingSafeEqual\`) signature verification, strict user whitelist, anti-replay nonces, least privilege tokens (destructive operations blocked with 403 Forbidden), SSRF isolation, and indirect prompt injection defense.\n\n`;
+    markdown += `- **Zero-Trust Security & Cloudflare Defence:** Constant-time (\`timingSafeEqual\`) signature verification, strict user whitelist, anti-replay nonces, least privilege tokens (destructive operations blocked with 403 Forbidden), SSRF isolation, and indirect prompt injection defence.\n\n`;
     markdown += `## Canonical Endpoints & Interfaces\n`;
     markdown += `- Interactive Web Console: https://makaremi.com/${locale}/agent-console\n`;
     markdown += `- Telegram Webhook: https://makaremi.com/api/webhooks/telegram\n`;
@@ -250,7 +250,7 @@ export async function GET(request: NextRequest) {
           ? 'État du Système et Certification de Production | Dr Hassan Makaremi'
           : 'System Status & Production Readiness Certification | Dr. Hassan Makaremi';
     markdown = `# ${title}\n\n`;
-    markdown += `> Real-time infrastructure telemetry, 6-point pre-launch QA gate certification, 12-week roadmap, and European sovereign cloud cost optimization for MAKAREMI-CORE-2026.\n\n`;
+    markdown += `> Real-time infrastructure telemetry, 6-point pre-launch QA gate certification, 12-week roadmap, and European sovereign cloud cost optimisation for MAKAREMI-CORE-2026.\n\n`;
     markdown += `## System Architecture & Verification Status\n`;
     markdown += `- **Production Release:** v1.0.0-PROD\n`;
     markdown += `- **All 7 Phases Implemented:** 100% Certified\n`;
@@ -259,7 +259,7 @@ export async function GET(request: NextRequest) {
     markdown += `- **Offsite Encrypted Backup:** AES-256-GCM authenticated encryption with 16-byte authTag and Ed25519 manifest signature\n`;
     markdown += `- **Zero-Trust Network:** Cloudflare Zero-Trust Tunnel (cloudflared), all public server ports cloaked (22, 80, 443, 5432, 6379, 8055, 8182)\n\n`;
     markdown += `## 6-Point Pre-Launch QA Gate Certification\n`;
-    markdown += `1. **Domain Canonicalization:** Single-hop 301 redirects to https://makaremi.com (PASSED - 100%)\n`;
+    markdown += `1. **Domain Canonicalisation:** Single-hop 301 redirects to https://makaremi.com (PASSED - 100%)\n`;
     markdown += `2. **Single-<h1> Architecture:** Exactly one <h1> per page template; 0 duplicate h1 in widgets (PASSED - 100%)\n`;
     markdown += `3. **GEO & /llms.txt:** text/plain; charset=utf-8 headers and working .md twin endpoints (PASSED - 100%)\n`;
     markdown += `4. **Zero-Trust Port Cloaking:** All inbound ports cloaked; routed exclusively via Cloudflare Tunnel (PASSED - 100%)\n`;
@@ -325,7 +325,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // 7. Books Catalog fallback: /[locale]/books
+  // 7. Books Catalogue fallback: /[locale]/books
   if (!markdown && segments.length === 2 && segments[1] === 'books') {
     const books = await getBooks(locale);
     markdown = `# Books & Publications Archive | فهرست آثار و کتاب‌های دکتر حسن مکارمی\n\n`;
