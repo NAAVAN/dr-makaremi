@@ -31,7 +31,7 @@ export async function generateMetadata({
         ? 'Studio d’Édition 3D & Lecteur Interactif | Dr Hassan Makaremi'
         : '3D Book Publishing Studio & Flipbook Engine | Dr. Hassan Makaremi',
     description: isFa
-      ? 'استودیوی بک‌اند و دشبورد مدیریت کتاب‌های سه‌بعدی دکتر حسن مکارمی: تنظیم صحافی RTL/LTR، محاسبه قطر عطف، تعیین بازه صفحات مطالعه و برش خودکار جلد.'
+      ? 'استودیوی بک‌اند و پیشخوان مدیریت کتاب‌های سه‌بعدی دکتر حسن مکارمی: تنظیم صحافی RTL/LTR، محاسبه قطر عطف، تعیین بازه صفحات مطالعه و برش خودکار جلد.'
       : isFr
         ? 'Console d’édition 3D pour la gestion des ouvrages, du calcul du dos et des extraits.'
         : '3D book publishing studio for spine thickness, RTL/LTR binding, and sample flipbook management.',
@@ -86,7 +86,7 @@ export default async function BookStudioDashboardPage({
           <Sliders size={16} />
           <span>
             {tx(
-              'استودیوی بک‌اند و دشبورد مدیریت نشر • نسخه v8.0 Cultural Sanctuary',
+              'استودیوی بک‌اند و پیشخوان مدیریت نشر • نسخه v8.0 Cultural Sanctuary',
               'Console d’Édition 3D • v8.0 Cultural Sanctuary',
               '3D Publishing Studio Console • v8.0 Cultural Sanctuary'
             )}

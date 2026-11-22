@@ -9,6 +9,7 @@ import {
   Bot,
   FilePlus2,
   FolderPlus,
+  KeyRound,
   Languages,
   Save,
   ShieldCheck,
@@ -20,7 +21,8 @@ export type StudioTabId =
   | 'create'
   | 'enrich'
   | 'translations'
-  | 'ai_system';
+  | 'ai_system'
+  | 'security';
 
 interface StudioOverviewProps {
   locale: Locale;
@@ -57,7 +59,7 @@ export function StudioOverview({
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--primary)]">
               <ShieldCheck size={14} />
-              <span>داشبورد دائمی و آتلیه نشر دکتر حسن مکارمی</span>
+              <span>پیشخوان دائمی و آتلیه نشر دکتر حسن مکارمی</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--foreground)] leading-snug">
               انتشار آثار جدید، تکمیل آرشیو موجود و کنترل مستقیم ترجمه‌ها در یک فضای آرام
@@ -196,13 +198,24 @@ export function StudioOverview({
         <div className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-5 flex flex-col justify-between gap-4">
           <div className="space-y-2">
             <h3 className="text-sm font-extrabold text-[var(--foreground)]">
-              ابزارهای تخصصی متصل به داشبورد
+              ابزارهای تخصصی متصل به پیشخوان
             </h3>
             <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-              دسترسی سریع به استودیوی طراحی کتاب ۳بعدی و مرکز پایش فنی پلتفرم:
+              دسترسی سریع به تنظیمات پین و کلید ورود، استودیوی کتاب ۳بعدی و مرکز پایش فنی:
             </p>
           </div>
           <div className="space-y-2.5">
+            <button
+              type="button"
+              onClick={() => onNavigateTab('security')}
+              className="w-full min-h-[44px] flex items-center justify-between px-4 py-2.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] hover:border-[var(--primary)] text-xs font-bold text-[var(--foreground)] transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <KeyRound size={16} className="text-[var(--primary)]" />
+                <span>تغییر پین و کلید ورود پیشخوان</span>
+              </span>
+              <ArrowUpLeft size={15} />
+            </button>
             <Link
               href={`/${locale}/book-studio`}
               className="w-full min-h-[44px] flex items-center justify-between px-4 py-2.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] hover:border-[var(--primary)] text-xs font-bold text-[var(--foreground)] transition-colors"

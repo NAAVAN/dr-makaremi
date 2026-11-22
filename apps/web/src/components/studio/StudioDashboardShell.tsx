@@ -8,6 +8,7 @@ import {
   Bot,
   FilePlus2,
   FolderPlus,
+  KeyRound,
   Languages,
   LayoutDashboard,
   Lock,
@@ -19,6 +20,7 @@ import { WorkCreatorWizard } from './WorkCreatorWizard';
 import { ArchiveEnricherPanel } from './ArchiveEnricherPanel';
 import { TranslationControlRoom } from './TranslationControlRoom';
 import { AiAndApiSettingsPanel } from './AiAndApiSettingsPanel';
+import { StudioSecurityPanel } from './StudioSecurityPanel';
 
 interface StudioDashboardShellProps {
   locale: Locale;
@@ -72,11 +74,12 @@ export function StudioDashboardShell({
     label: string;
     icon: React.ComponentType<{ size?: number; className?: string }>;
   }> = [
-      { id: 'overview', label: 'خانه داشبورد', icon: LayoutDashboard },
+      { id: 'overview', label: 'خانه پیشخوان', icon: LayoutDashboard },
       { id: 'create', label: 'ثبت اثر جدید', icon: FilePlus2 },
       { id: 'enrich', label: 'تکمیل آثار پیشین', icon: FolderPlus },
       { id: 'translations', label: 'کنترل و ویرایش ترجمه‌ها', icon: Languages },
       { id: 'ai_system', label: 'موتور هوشمند و صف ترجمه', icon: Bot },
+      { id: 'security', label: 'تغییر پین و کلید', icon: KeyRound },
     ];
 
   const baseFontPx = fontScale === 'xlarge' ? '18px' : fontScale === 'large' ? '16px' : '15px';
@@ -111,12 +114,12 @@ export function StudioDashboardShell({
               <ShieldCheck size={14} />
               <span>
                 {routeMode === 'dashboard'
-                  ? 'داشبورد رسمی و دائمی استاد دکتر حسن مکارمی'
+                  ? 'پیشخوان رسمی و دائمی استاد دکتر حسن مکارمی'
                   : 'آتلیه نشر و بازنگری آثار استاد دکتر حسن مکارمی'}
               </span>
             </div>
             <h1 className="text-lg sm:text-xl font-black text-[var(--foreground)] tracking-tight">
-              میز کار هوشمند مدیریت محتوا، رسانه و کنترل ترجمه‌ها
+              پیشخوان هوشمند مدیریت محتوا، رسانه و کنترل ترجمه‌ها
             </h1>
           </div>
 
@@ -169,7 +172,7 @@ export function StudioDashboardShell({
 
         {/* Navigation Workspace Tabs */}
         <nav
-          aria-label="بخش‌های میز کار استاد"
+          aria-label="بخش‌های پیشخوان استاد"
           className="max-w-7xl mx-auto px-4 sm:px-6 pb-3 flex items-center gap-2 overflow-x-auto"
         >
           {navItems.map((item) => {
@@ -225,6 +228,8 @@ export function StudioDashboardShell({
         {activeTab === 'ai_system' && (
           <AiAndApiSettingsPanel onStatusUpdated={setAiStatus} />
         )}
+
+        {activeTab === 'security' && <StudioSecurityPanel />}
       </div>
     </div>
   );

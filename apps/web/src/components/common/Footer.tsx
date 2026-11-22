@@ -164,7 +164,7 @@ export function Footer({ locale }: FooterProps) {
                 href={`/${locale}/book-studio`}
                 className="hover:text-amber-600 transition-colors font-semibold"
               >
-                {isFa ? 'استودیوی مدیریت کتاب 3D (دشبورد)' : isFr ? 'Studio d’Édition 3D (Admin)' : '3D Book Studio (Dashboard)'}
+                {isFa ? 'استودیوی مدیریت کتاب 3D (پیشخوان)' : isFr ? 'Studio d’Édition 3D (Admin)' : '3D Book Studio (Dashboard)'}
               </Link>
             </li>
             <li>

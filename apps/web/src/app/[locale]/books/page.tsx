@@ -83,7 +83,7 @@ export default async function BooksCatalogPage({
           <Sliders size={14} className="text-amber-600" />
           <span>
             {isFa
-              ? 'ورود به استودیوی مدیریت کتاب 3D (دشبورد)'
+              ? 'ورود به استودیوی مدیریت کتاب 3D (پیشخوان)'
               : isFr
                 ? 'Studio d’Édition 3D (Admin)'
                 : '3D Book Publishing Studio'}

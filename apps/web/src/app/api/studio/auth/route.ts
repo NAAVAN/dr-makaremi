@@ -5,9 +5,9 @@ import { hasPrototypePollution } from '@/lib/etl/types';
 import {
   STUDIO_SESSION_COOKIE,
   createStudioSessionToken,
+  getStudioRequestAuthInfo,
   getStudioSecretConfiguration,
-  isStudioRequestAuthorized,
-  verifyStudioCredential,
+  verifyStudioCredentialWithRole,
 } from '@/lib/studio/auth';
 
 const AuthBodySchema = z.object({
@@ -21,12 +21,13 @@ const HEADERS = {
 };
 
 export async function GET(request: NextRequest) {
-  const authorized = isStudioRequestAuthorized(request);
+  const { authorized, role } = getStudioRequestAuthInfo(request);
   const { usingDefaultFallback } = getStudioSecretConfiguration();
   return NextResponse.json(
     {
       ok: true,
       authenticated: authorized,
+      role: role || null,
       usingDefaultFallback,
     },
     { status: 200, headers: HEADERS }
@@ -60,14 +61,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'لطفاً رمز یا پین ورود را وارد فرمایید.' }, { status: 400, headers: HEADERS });
   }
 
-  if (!verifyStudioCredential(check.data.secretOrPin)) {
+  const verification = verifyStudioCredentialWithRole(check.data.secretOrPin);
+  if (!verification.valid) {
     return NextResponse.json(
       { ok: false, error: 'پین اختصاصی استاد یا کلید مدیریت نادرست است.' },
       { status: 401, headers: HEADERS }
     );
   }
 
-  const token = createStudioSessionToken('professor');
+  const token = createStudioSessionToken(verification.role || 'professor');
   const isHttps =
     request.nextUrl.protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
 

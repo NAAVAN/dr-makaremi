@@ -78,8 +78,8 @@ export function StudioAuthGate({
           </p>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] leading-snug">
             {isDashboard
-              ? 'ورود به داشبورد اختصاصی استاد مکارمی'
-              : 'ورود به میز کار و آتلیه نشر استاد مکارمی'}
+              ? 'ورود به پیشخوان اختصاصی استاد مکارمی'
+              : 'ورود به پیشخوان و آتلیه نشر استاد مکارمی'}
           </h1>
           <p className="text-sm text-[var(--foreground-muted)] leading-relaxed">
             این بخش تنها با پین اختصاصی استاد دکتر حسن مکارمی یا کلید مدیریت (`CURATION_ADMIN_SECRET`) قابل گشودن است تا تغییرات محتوایی و ترجمه‌ها با امنیت کامل ثبت شوند.
@@ -135,7 +135,7 @@ export function StudioAuthGate({
             ) : (
               <>
                 <ShieldCheck size={18} />
-                <span>گشودن میز کار استاد</span>
+                <span>گشودن پیشخوان استاد</span>
               </>
             )}
           </button>
