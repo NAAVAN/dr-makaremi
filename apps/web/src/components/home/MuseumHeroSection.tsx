@@ -101,13 +101,22 @@ export function MuseumHeroSection({
               initial={prefersReduced ? false : { y: 10 }}
               animate={{ y: 0 }}
               transition={{ duration: 0.55, ease: easeEmil }}
-              className="font-display text-balance text-3xl sm:text-5xl lg:text-[3.25rem] font-black text-[var(--foreground)] tracking-tight"
+              className="font-display text-center font-black text-[var(--foreground)] tracking-tight flex flex-col items-center gap-2 sm:gap-3"
             >
-              {isFa
-                ? 'دکتر حسن مکارمی؛ افق تفکر، هنر و دادخواهی'
-                : isFr
-                  ? 'Dr Hassan Makaremi : Psychanalyse, Art et Justice'
-                  : 'Dr. Hassan Makaremi: Psychoanalysis, Art & Justice'}
+              <span className="block text-4xl sm:text-[3.4rem] lg:text-[3.9rem] leading-[1.2] sm:whitespace-nowrap">
+                {isFa
+                  ? 'دکتر حسن مکارمی'
+                  : isFr
+                    ? 'Dr Hassan Makaremi'
+                    : 'Dr. Hassan Makaremi'}
+              </span>
+              <span className="block text-3xl sm:text-5xl lg:text-[3.25rem] leading-[1.3] text-balance">
+                {isFa
+                  ? 'افق تفکر، هنر و دادخواهی'
+                  : isFr
+                    ? 'Psychanalyse, Art et Justice'
+                    : 'Psychoanalysis, Art & Justice'}
+              </span>
             </motion.h1>
 
             {/* EXACT VERBATIM AUTHOR GREETING (Zero words altered from Dr. Makaremi's original site) */}
