@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import type {
   Article,
@@ -29,6 +30,7 @@ function resolveVaultDir(): string {
 const VAULT_DIR = resolveVaultDir();
 const TRANSLATIONS_DIR = path.resolve(VAULT_DIR, '..', 'translations');
 const OVERLAYS_DIR = path.resolve(VAULT_DIR, '..', 'curator-overlays');
+const SERVERLESS_TMP_ROOT = path.join(os.tmpdir(), 'makaremi-studio');
 const cache = new Map<string, unknown>();
 
 export function getTranslationsDir(): string {
@@ -42,6 +44,7 @@ export function getOverlaysDir(): string {
 export function invalidateTranslationCache(collection?: TranslationCollectionName): void {
   if (collection) {
     cache.delete(`translations:${collection}.json`);
+    cache.delete(`translations:${collection}.json:repo`);
   } else {
     for (const key of Array.from(cache.keys())) {
       if (key.startsWith('translations:')) cache.delete(key);
@@ -102,12 +105,31 @@ export type TranslationCollectionName =
 export function loadPackTranslations(
   collection: TranslationCollectionName
 ): Record<string, Record<string, TranslationStoreRecord>> {
-  return readJsonFromDir<Record<string, Record<string, TranslationStoreRecord>>>(
+  const cacheKey = `translations:${collection}.json`;
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey) as Record<string, Record<string, TranslationStoreRecord>>;
+  }
+  const repoData = readJsonFromDir<Record<string, Record<string, TranslationStoreRecord>>>(
     TRANSLATIONS_DIR,
-    `translations:${collection}.json`,
+    `${cacheKey}:repo`,
     `${collection}.json`,
     {}
   );
+  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'translations', `${collection}.json`);
+  let merged = repoData;
+  try {
+    if (fs.existsSync(tmpFile)) {
+      const tmpData = JSON.parse(fs.readFileSync(tmpFile, 'utf8')) as Record<
+        string,
+        Record<string, TranslationStoreRecord>
+      >;
+      merged = { ...repoData, ...tmpData };
+    }
+  } catch {
+    // ignore tmp read failure
+  }
+  cache.set(cacheKey, merged);
+  return merged;
 }
 
 export function loadVaultArticles(): Article[] {
@@ -161,19 +183,57 @@ export function writePackTranslationEntry(
   };
   existingMap[slug] = currentEntry;
 
-  fs.mkdirSync(TRANSLATIONS_DIR, { recursive: true });
-  const fp = path.join(TRANSLATIONS_DIR, `${collection}.json`);
-  fs.writeFileSync(fp, JSON.stringify(existingMap, null, 2), 'utf8');
+  const serialized = JSON.stringify(existingMap, null, 2);
+  try {
+    fs.mkdirSync(TRANSLATIONS_DIR, { recursive: true });
+    fs.writeFileSync(path.join(TRANSLATIONS_DIR, `${collection}.json`), serialized, 'utf8');
+  } catch {
+    // Vercel serverless read-only filesystem fallback: store active runtime delta in /tmp
+    const tmpTranslationsDir = path.join(SERVERLESS_TMP_ROOT, 'translations');
+    fs.mkdirSync(tmpTranslationsDir, { recursive: true });
+    const tmpFile = path.join(tmpTranslationsDir, `${collection}.json`);
+    let tmpDelta: Record<string, Record<string, TranslationStoreRecord>> = {};
+    try {
+      if (fs.existsSync(tmpFile)) {
+        tmpDelta = JSON.parse(fs.readFileSync(tmpFile, 'utf8')) as typeof tmpDelta;
+      }
+    } catch {
+      tmpDelta = {};
+    }
+    tmpDelta[slug] = currentEntry;
+    fs.writeFileSync(tmpFile, JSON.stringify(tmpDelta, null, 2), 'utf8');
+  }
   invalidateTranslationCache(collection);
 }
 
 export function readOverlayJson<T>(filename: string, fallback: T): T {
-  return readJsonFromDir<T>(OVERLAYS_DIR, `overlay:${filename}`, filename, fallback);
+  const cacheKey = `overlay:${filename}`;
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey) as T;
+  }
+  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'curator-overlays', filename);
+  try {
+    if (fs.existsSync(tmpFile)) {
+      const parsedTmp = JSON.parse(fs.readFileSync(tmpFile, 'utf8')) as T;
+      cache.set(cacheKey, parsedTmp);
+      return parsedTmp;
+    }
+  } catch {
+    // fall through to repo overlay file
+  }
+  return readJsonFromDir<T>(OVERLAYS_DIR, cacheKey, filename, fallback);
 }
 
 export function writeOverlayJson<T>(filename: string, data: T): void {
-  fs.mkdirSync(OVERLAYS_DIR, { recursive: true });
-  const fp = path.join(OVERLAYS_DIR, filename);
-  fs.writeFileSync(fp, JSON.stringify(data, null, 2), 'utf8');
+  const serialized = JSON.stringify(data, null, 2);
+  try {
+    fs.mkdirSync(OVERLAYS_DIR, { recursive: true });
+    fs.writeFileSync(path.join(OVERLAYS_DIR, filename), serialized, 'utf8');
+  } catch {
+    // Vercel serverless read-only filesystem fallback
+    const tmpOverlayDir = path.join(SERVERLESS_TMP_ROOT, 'curator-overlays');
+    fs.mkdirSync(tmpOverlayDir, { recursive: true });
+    fs.writeFileSync(path.join(tmpOverlayDir, filename), serialized, 'utf8');
+  }
   invalidateOverlayCache(filename);
 }

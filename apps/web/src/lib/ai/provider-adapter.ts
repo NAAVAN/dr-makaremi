@@ -7,6 +7,7 @@ import type {
   StudioWorkType,
 } from '@makaremi/shared';
 import { getStudioSecretConfiguration } from '../studio/auth';
+import { readOverlayJson, writeOverlayJson } from '../vault-loader';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
@@ -32,27 +33,17 @@ function resolveOverlayFile(filename: string): string {
 }
 
 function readAiSettingsFile(): StoredAiSettings {
-  try {
-    const fp = resolveOverlayFile('ai-settings.json');
-    if (fs.existsSync(fp)) {
-      return JSON.parse(fs.readFileSync(fp, 'utf-8')) as StoredAiSettings;
-    }
-  } catch {
-    // ignore read error
-  }
-  return {
+  return readOverlayJson<StoredAiSettings>('ai-settings.json', {
     provider: 'anthropic',
     model: DEFAULT_CLAUDE_MODEL,
     autoTranslateOnPublish: false,
-  };
+  });
 }
 
 export function saveAiSettingsFile(patch: Partial<StoredAiSettings>): StoredAiSettings {
   const current = readAiSettingsFile();
   const next: StoredAiSettings = { ...current, ...patch };
-  const fp = resolveOverlayFile('ai-settings.json');
-  fs.mkdirSync(path.dirname(fp), { recursive: true });
-  fs.writeFileSync(fp, JSON.stringify(next, null, 2), 'utf-8');
+  writeOverlayJson('ai-settings.json', next);
   return next;
 }
 

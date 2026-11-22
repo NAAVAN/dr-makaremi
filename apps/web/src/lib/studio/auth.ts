@@ -6,7 +6,8 @@ import { timingSafeCompare } from '../crypto';
 export const STUDIO_SESSION_COOKIE = 'makaremi_studio_session';
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
-const DEV_FALLBACK_SECRET = 'makaremi-atelier-2026';
+const DEFAULT_PREVIEW_SECRET = 'makaremi_curator_admin_2026';
+const DEFAULT_PREVIEW_PIN = '19502026';
 
 export function getStudioSecretConfiguration(): {
   adminSecret: string;
@@ -25,8 +26,8 @@ export function getStudioSecretConfiguration(): {
   }
 
   return {
-    adminSecret: DEV_FALLBACK_SECRET,
-    professorPin: null,
+    adminSecret: DEFAULT_PREVIEW_SECRET,
+    professorPin: DEFAULT_PREVIEW_PIN,
     usingDefaultFallback: true,
   };
 }
