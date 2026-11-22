@@ -12,11 +12,13 @@ import type {
   MediaAsset,
 } from '@makaremi/shared';
 
-function resolveVaultDir(): string {
+function resolveDataSubdir(subdir: 'vault' | 'translations' | 'curator-overlays'): string {
   const candidates = [
-    path.resolve(process.cwd(), 'packages', 'shared', 'src', 'data', 'vault'),
-    path.resolve(process.cwd(), '..', '..', 'packages', 'shared', 'src', 'data', 'vault'),
-    path.resolve(process.cwd(), '..', 'packages', 'shared', 'src', 'data', 'vault'),
+    path.resolve(process.cwd(), 'packages', 'shared', 'src', 'data', subdir),
+    path.resolve(process.cwd(), '..', '..', 'packages', 'shared', 'src', 'data', subdir),
+    path.resolve(process.cwd(), '..', 'packages', 'shared', 'src', 'data', subdir),
+    path.resolve('/var/task', 'packages', 'shared', 'src', 'data', subdir),
+    path.resolve('/var/task', 'apps', 'web', 'packages', 'shared', 'src', 'data', subdir),
   ];
 
   for (const dir of candidates) {
@@ -27,9 +29,9 @@ function resolveVaultDir(): string {
   return candidates[0];
 }
 
-const VAULT_DIR = resolveVaultDir();
-const TRANSLATIONS_DIR = path.resolve(VAULT_DIR, '..', 'translations');
-const OVERLAYS_DIR = path.resolve(VAULT_DIR, '..', 'curator-overlays');
+const VAULT_DIR = resolveDataSubdir('vault');
+const TRANSLATIONS_DIR = resolveDataSubdir('translations');
+const OVERLAYS_DIR = resolveDataSubdir('curator-overlays');
 const SERVERLESS_TMP_ROOT = path.join(os.tmpdir(), 'makaremi-studio');
 const cache = new Map<string, unknown>();
 
@@ -102,20 +104,40 @@ export type TranslationCollectionName =
   | 'poems'
   | 'videos';
 
+function getStaticTranslationFilename(collection: TranslationCollectionName): string {
+  switch (collection) {
+    case 'articles':
+      return 'articles.json';
+    case 'books':
+      return 'books.json';
+    case 'poems':
+      return 'poems.json';
+    case 'videos':
+      return 'videos.json';
+    case 'artworks':
+      return 'artworks.json';
+    case 'exhibitions':
+      return 'exhibitions.json';
+    case 'pages':
+      return 'pages.json';
+  }
+}
+
 export function loadPackTranslations(
   collection: TranslationCollectionName
 ): Record<string, Record<string, TranslationStoreRecord>> {
-  const cacheKey = `translations:${collection}.json`;
+  const filename = getStaticTranslationFilename(collection);
+  const cacheKey = `translations:${filename}`;
   if (cache.has(cacheKey)) {
     return cache.get(cacheKey) as Record<string, Record<string, TranslationStoreRecord>>;
   }
   const repoData = readJsonFromDir<Record<string, Record<string, TranslationStoreRecord>>>(
     TRANSLATIONS_DIR,
     `${cacheKey}:repo`,
-    `${collection}.json`,
+    filename,
     {}
   );
-  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'translations', `${collection}.json`);
+  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'translations', filename);
   let merged = repoData;
   try {
     if (fs.existsSync(tmpFile)) {

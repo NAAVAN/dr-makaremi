@@ -16,6 +16,20 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  outputFileTracingIncludes: {
+    '/api/**': [
+      '../../packages/shared/src/data/vault/**/*',
+      '../../packages/shared/src/data/translations/**/*',
+      '../../packages/shared/src/data/curator-overlays/**/*',
+      '../../packages/shared/src/data/glossary-lock.json',
+    ],
+    '/[locale]/**': [
+      '../../packages/shared/src/data/vault/**/*',
+      '../../packages/shared/src/data/translations/**/*',
+      '../../packages/shared/src/data/curator-overlays/**/*',
+      '../../packages/shared/src/data/glossary-lock.json',
+    ],
+  },
 
   images: {
     formats: ['image/avif', 'image/webp'],

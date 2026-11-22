@@ -391,7 +391,9 @@ function buildArticlesCollection(): Article[] {
   const merged = [
     ...customArticles.filter((a) => !existingSlugs.has(a.slug)),
     ...vaultArticles,
-    ...SUPPLEMENTAL_ARTICLES.filter((a) => !existingSlugs.has(a.slug)),
+    ...SUPPLEMENTAL_ARTICLES.filter((a) => !existingSlugs.has(a.slug)).map((a) =>
+      mergePackTranslationsForItem(a, 'articles', 'articles_id', packArticles)
+    ),
   ];
 
   // Put canonical featured scholarly works first so homepage & pillar previews open with key essays
