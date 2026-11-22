@@ -16,21 +16,17 @@ interface MuseumHeroSectionProps {
     exhibitions: number;
     videos: number;
   };
-  backdropArtworkUrl?: string | null;
-  backdropArtworkTitle?: string;
 }
 
 /**
  * Asymmetric 12-Column Museum Hero Section.
  * - Strictly preserves Dr. Hassan Makaremi's exact authentic verbatim greeting (0 word changes).
  * - Guarantees immediate SSR paint for H1 & portrait (zero LCP delay).
- * - Pairs Kinetic Calligraphy Ink Stroke + 3-Layer Archival Portrait Passe-Partout.
+ * - Pairs Kinetic Calligraphy Ink Stroke + Single Archival Portrait Passe-Partout Frame.
  */
 export function MuseumHeroSection({
   locale,
   stats,
-  backdropArtworkUrl,
-  backdropArtworkTitle,
 }: MuseumHeroSectionProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
@@ -243,11 +239,7 @@ export function MuseumHeroSection({
 
           {/* Museum Portrait Column (5 cols on desktop) */}
           <div className="lg:col-span-5 order-1 lg:order-2 flex items-center justify-center">
-            <HeroPortraitFrame
-              locale={locale}
-              backdropArtworkUrl={backdropArtworkUrl}
-              backdropArtworkTitle={backdropArtworkTitle}
-            />
+            <HeroPortraitFrame locale={locale} />
           </div>
         </div>
       </section>

@@ -154,8 +154,6 @@ export default async function HomePage({
           exhibitions: exhibitions.length,
           videos: videos.length,
         }}
-        backdropArtworkUrl={featuredArtwork?.image_url}
-        backdropArtworkTitle={featuredArtworkTrans?.title || featuredArtwork?.slug}
       />
 
       {/* =====================================================================

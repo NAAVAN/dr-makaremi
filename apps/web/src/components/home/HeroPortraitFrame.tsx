@@ -8,21 +8,15 @@ import type { Locale } from '@makaremi/shared';
 
 interface HeroPortraitFrameProps {
   locale: Locale;
-  backdropArtworkUrl?: string | null;
-  backdropArtworkTitle?: string;
 }
 
 /**
- * 3-Layer Archival Museum Passe-Partout Frame for Dr. Hassan Makaremi's Portrait.
- * Layer 1: Muted authentic calligraphy canvas plate offset behind the frame.
- * Layer 2: Self-hosted high-res portrait (HM-12121.jpg) with fetchPriority="high" & zero CLS.
- * Layer 3: Parisian gallery curator plaque linking to full biography.
+ * Single Refined Museum Passe-Partout Frame for Dr. Hassan Makaremi's Portrait.
+ * - Self-hosted high-res studio portrait (dr-makaremi-hero.jpg) with fetchPriority="high" & zero CLS.
+ * - Clean double-mat archival passe-partout border with zero overlapping background image clutter.
+ * - Parisian gallery curator plaque linking to full biography.
  */
-export function HeroPortraitFrame({
-  locale,
-  backdropArtworkUrl,
-  backdropArtworkTitle,
-}: HeroPortraitFrameProps) {
+export function HeroPortraitFrame({ locale }: HeroPortraitFrameProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
   const prefersReduced = useReducedMotion();
@@ -33,11 +27,6 @@ export function HeroPortraitFrame({
   const rawY = useMotionValue(0);
   const smoothX = useSpring(rawX, { stiffness: 120, damping: 22, mass: 0.6 });
   const smoothY = useSpring(rawY, { stiffness: 120, damping: 22, mass: 0.6 });
-
-  const backRawX = useMotionValue(0);
-  const backRawY = useMotionValue(0);
-  const backSmoothX = useSpring(backRawX, { stiffness: 90, damping: 24, mass: 0.8 });
-  const backSmoothY = useSpring(backRawY, { stiffness: 90, damping: 24, mass: 0.8 });
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.matchMedia) {
@@ -52,15 +41,11 @@ export function HeroPortraitFrame({
     const ny = (e.clientY - rect.top) / rect.height - 0.5;
     rawX.set(nx * 6);
     rawY.set(ny * 6);
-    backRawX.set(nx * -8);
-    backRawY.set(ny * -8);
   };
 
   const handlePointerLeave = () => {
     rawX.set(0);
     rawY.set(0);
-    backRawX.set(0);
-    backRawY.set(0);
   };
 
   return (
@@ -68,34 +53,15 @@ export function HeroPortraitFrame({
       ref={containerRef}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className="relative mx-auto w-full max-w-[360px] sm:max-w-[400px] lg:max-w-[420px] pt-4 pb-6 px-3 sm:px-5"
+      className="relative mx-auto w-full max-w-[360px] sm:max-w-[400px] lg:max-w-[420px] py-2"
     >
-      {/* Layer 1: Subtle Offset Calligraphy Canvas Plate (Depth 1) */}
-      <motion.div
-        style={prefersReduced ? undefined : { x: backSmoothX, y: backSmoothY }}
-        aria-hidden="true"
-        className="absolute top-0 end-0 w-[72%] aspect-[4/5] rounded-2xl overflow-hidden border border-[var(--border-medium)] bg-[var(--surface-sunken)] opacity-55 dark:opacity-35 shadow-sm"
-      >
-        {backdropArtworkUrl ? (
-          <img
-            src={backdropArtworkUrl}
-            alt={backdropArtworkTitle || ''}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover opacity-65 saturate-75"
-          />
-        ) : (
-          <div className="w-full h-full archival-paper-weave" />
-        )}
-      </motion.div>
-
-      {/* Layer 2: Archival Passe-Partout Mat & Authentic Portrait (Depth 2 — Primary Hero Visual) */}
+      {/* Archival Passe-Partout Mat & Authentic Portrait (Single Authoritative Hero Visual) */}
       <motion.figure
         style={prefersReduced ? undefined : { x: smoothX, y: smoothY }}
         initial={prefersReduced ? false : { opacity: 0.92, scale: 0.985, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-        className="relative z-10 rounded-2xl bg-[var(--surface-passepartout)] border border-[var(--border-artifact)] p-3 sm:p-4 shadow-[var(--shadow-artifact)]"
+        className="relative z-10 rounded-2xl bg-[var(--surface-passepartout)] border border-[var(--border-artifact)] p-3.5 sm:p-4 shadow-[var(--shadow-artifact)] ring-1 ring-inset ring-[var(--border-subtle)]"
       >
         <div className="relative aspect-[825/935] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
           <img
