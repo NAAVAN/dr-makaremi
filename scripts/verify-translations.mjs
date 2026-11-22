@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * Zero-Token Deterministic Shard Merger & QA Verifier
- * 1. Reads translated JSON files from scratch/translation-shards/pack-a/out/*.json
+ * Zero-Token Deterministic Shard Merger & QA Verifier (Packs A & B)
+ * 1. Reads translated JSON files from scratch/translation-shards/pack-a/out/*.json and pack-b/out/*.json
  * 2. Reassembles multi-part chunks (`partIndex` / `totalParts`) in strict sequential order
  * 3. Restores <<I1>> / <<U1>> placeholders deterministically from url-maps/*.json
  * 4. Merges verified translations into packages/shared/src/data/translations/*.json
- * 5. Runs strict QA checks against glossary-lock.json + verifies vault/*.json are byte-for-byte untouched
+ * 5. Runs strict QA checks (including 1:1 poem verse & hemistich_a/hemistich_b structural parity)
+ *    + verifies vault/*.json are byte-for-byte untouched
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,12 +16,10 @@ const ROOT = process.cwd();
 const VAULT_DIR = path.join(ROOT, 'packages', 'shared', 'src', 'data', 'vault');
 const TRANS_DIR = path.join(ROOT, 'packages', 'shared', 'src', 'data', 'translations');
 const GLOSSARY_PATH = path.join(ROOT, 'packages', 'shared', 'src', 'data', 'glossary-lock.json');
-const SHARD_BASE =
-  'C:\\Users\\Acer\\.gemini\\antigravity\\brain\\dee33ca8-8211-48b8-b73d-9681c717f163\\scratch\\translation-shards\\pack-a';
-const SHARDS_OUT_DIR = path.join(SHARD_BASE, 'out');
-const URL_MAPS_DIR = path.join(SHARD_BASE, 'url-maps');
+const SHARD_ROOT =
+  'C:\\Users\\Acer\\.gemini\\antigravity\\brain\\dee33ca8-8211-48b8-b73d-9681c717f163\\scratch\\translation-shards';
 
-const COLLECTIONS = ['exhibitions', 'artworks', 'books', 'pages', 'articles'];
+const COLLECTIONS = ['exhibitions', 'artworks', 'books', 'pages', 'articles', 'poems'];
 
 function readJson(p, fb) {
   if (!fs.existsSync(p)) return fb;
@@ -33,37 +32,44 @@ function restoreUrls(value, urlMap = {}) {
 }
 
 function mergeOutputs() {
-  if (!fs.existsSync(SHARDS_OUT_DIR)) return 0;
-  const outFiles = fs.readdirSync(SHARDS_OUT_DIR).filter((f) => f.endsWith('.json')).sort();
-  if (outFiles.length === 0) return 0;
-
   const stores = {};
   const urlMaps = {};
   for (const col of COLLECTIONS) {
     stores[col] = readJson(path.join(TRANS_DIR, `${col}.json`), {});
-    urlMaps[col] = readJson(path.join(URL_MAPS_DIR, `${col}.json`), {});
+    urlMaps[col] = readJson(path.join(SHARD_ROOT, 'pack-a', 'url-maps', `${col}.json`), {});
   }
 
-  // Group records by (collection, slug, lang) so multi-part records reassemble in exact partIndex order
   const grouped = new Map();
-  for (const file of outFiles) {
-    const records = readJson(path.join(SHARDS_OUT_DIR, file), []);
-    for (const rec of records) {
-      const { collection, slug, translations, partIndex, splitField } = rec;
-      if (!collection || !slug || !translations || !stores[collection]) continue;
-      for (const [lang, fieldsObj] of Object.entries(translations)) {
-        const lc = lang.slice(0, 2).toLowerCase();
-        if (!['fa', 'fr', 'en'].includes(lc) || !fieldsObj || typeof fieldsObj !== 'object') continue;
-        const key = `${collection}::${slug}::${lc}`;
-        if (!grouped.has(key)) grouped.set(key, []);
-        grouped.get(key).push({
-          partIndex: typeof partIndex === 'number' ? partIndex : 1,
-          splitField: splitField || 'body_markdown',
-          fieldsObj,
-          collection,
-          slug,
-          lc,
-        });
+  for (const packName of ['pack-a', 'pack-b']) {
+    const outDir = path.join(SHARD_ROOT, packName, 'out');
+    if (!fs.existsSync(outDir)) continue;
+    const outFiles = fs.readdirSync(outDir).filter((f) => f.endsWith('.json')).sort();
+    for (const file of outFiles) {
+      let records;
+      try {
+        records = readJson(path.join(outDir, file), []);
+      } catch (e) {
+        console.error(`Invalid JSON in ${packName}/out/${file}: ${e.message}`);
+        continue;
+      }
+      if (!Array.isArray(records)) continue;
+      for (const rec of records) {
+        const { collection, slug, translations, partIndex, splitField } = rec;
+        if (!collection || !slug || !translations || !stores[collection]) continue;
+        for (const [lang, fieldsObj] of Object.entries(translations)) {
+          const lc = lang.slice(0, 2).toLowerCase();
+          if (!['fa', 'fr', 'en'].includes(lc) || !fieldsObj || typeof fieldsObj !== 'object') continue;
+          const key = `${collection}::${slug}::${lc}`;
+          if (!grouped.has(key)) grouped.set(key, []);
+          grouped.get(key).push({
+            partIndex: typeof partIndex === 'number' ? partIndex : 1,
+            splitField: splitField || 'body_markdown',
+            fieldsObj,
+            collection,
+            slug,
+            lc,
+          });
+        }
       }
     }
   }
@@ -80,7 +86,6 @@ function mergeOutputs() {
       provenance: 'glossary_locked_ai',
     };
 
-    // Part 1 carries title, subtitle, summary/excerpt, and part 1 of splitField
     for (const [k, v] of Object.entries(parts[0].fieldsObj)) {
       combined[k] = typeof v === 'string' ? restoreUrls(v, map) : v;
     }
@@ -101,6 +106,20 @@ function mergeOutputs() {
     fs.writeFileSync(path.join(TRANS_DIR, `${col}.json`), JSON.stringify(stores[col], null, 2), 'utf8');
   }
   return mergedCount;
+}
+
+function checkBritishSpelling(text, usWords, spellingMap, label, errors) {
+  if (typeof text !== 'string' || !text) return;
+  const cleaned = text
+    .replace(/https?:\/\/[^\s)]+/g, '')
+    .replace(/\bIran Human Rights Documentation Center\b/g, '')
+    .replace(/\bOMID,\s*A Memorial in Defense of Human Rights in Iran\b/g, '');
+  for (const usWord of usWords) {
+    const re = new RegExp(`\\b${usWord}\\b`, 'i');
+    if (re.test(cleaned)) {
+      errors.push(`${label}: US spelling "${usWord}" -> should be "${spellingMap[usWord]}"`);
+    }
+  }
 }
 
 function verifyAll() {
@@ -124,42 +143,83 @@ function verifyAll() {
     for (const [slug, langMap] of Object.entries(store)) {
       itemCount++;
       const vaultItem = vaultBySlug.get(slug);
+      const srcTrans = vaultItem?.translations?.[0];
+
       for (const [lc, entry] of Object.entries(langMap)) {
         localeCount++;
         for (const [field, val] of Object.entries(entry)) {
-          if (typeof val !== 'string') continue;
-          if (/<<(?:I|U)\d+>>/.test(val)) {
-            errors.push(`${col}/${slug}[${lc}].${field}: un-restored placeholder token found`);
-          }
-          if (lc === 'en') {
-            const cleaned = val
-              .replace(/https?:\/\/[^\s)]+/g, '')
-              .replace(/\bIran Human Rights Documentation Center\b/g, '')
-              .replace(/\bOMID,\s*A Memorial in Defense of Human Rights in Iran\b/g, '');
-            for (const usWord of usWords) {
-              const re = new RegExp(`\\b${usWord}\\b`, 'i');
-              if (re.test(cleaned)) {
-                errors.push(
-                  `${col}/${slug}[en].${field}: US spelling "${usWord}" -> should be "${spellingMap[usWord]}"`
-                );
-              }
+          if (typeof val === 'string') {
+            if (/<<(?:I|U)\d+>>/.test(val)) {
+              errors.push(`${col}/${slug}[${lc}].${field}: un-restored placeholder token found`);
+            }
+            if (lc === 'en') {
+              checkBritishSpelling(val, usWords, spellingMap, `${col}/${slug}[en].${field}`, errors);
             }
           }
         }
         if (!entry.title || !entry.title.trim()) {
           errors.push(`${col}/${slug}[${lc}]: empty title`);
         }
-        if (vaultItem?.translations?.[0]) {
-          const src = vaultItem.translations[0];
+
+        if (col === 'poems' && srcTrans && Array.isArray(srcTrans.verses)) {
+          const srcVerses = srcTrans.verses;
+          const dstVerses = entry.verses;
+          if (!Array.isArray(dstVerses)) {
+            errors.push(`poems/${slug}[${lc}]: missing verses array`);
+          } else if (dstVerses.length !== srcVerses.length) {
+            errors.push(
+              `poems/${slug}[${lc}]: verse count mismatch (got ${dstVerses.length}, expected ${srcVerses.length})`
+            );
+          } else {
+            for (let i = 0; i < srcVerses.length; i++) {
+              const sv = srcVerses[i];
+              const dv = dstVerses[i];
+              if (!dv || typeof dv.hemistich_a !== 'string' || !dv.hemistich_a.trim()) {
+                errors.push(`poems/${slug}[${lc}].verses[${i}]: empty hemistich_a`);
+              }
+              const srcHasB = typeof sv.hemistich_b === 'string' && sv.hemistich_b.trim().length > 0;
+              const dstHasB = typeof dv?.hemistich_b === 'string' && dv.hemistich_b.trim().length > 0;
+              if (srcHasB && !dstHasB) {
+                errors.push(`poems/${slug}[${lc}].verses[${i}]: missing required hemistich_b`);
+              } else if (!srcHasB && dstHasB) {
+                errors.push(`poems/${slug}[${lc}].verses[${i}]: unexpected hemistich_b on single-line verse`);
+              }
+              if (lc === 'en') {
+                checkBritishSpelling(
+                  `${dv?.hemistich_a || ''} ${dv?.hemistich_b || ''}`,
+                  usWords,
+                  spellingMap,
+                  `poems/${slug}[en].verses[${i}]`,
+                  errors
+                );
+              }
+              if (lc === 'fa') {
+                const faText = `${dv?.hemistich_a || ''} ${dv?.hemistich_b || ''}`;
+                if (/[\u064A\u0649\u0643]/.test(faText)) {
+                  errors.push(`poems/${slug}[fa].verses[${i}]: contains non-standard Arabic Yeh/Kaf`);
+                }
+              }
+            }
+          }
+          if (
+            typeof srcTrans.commentary_markdown === 'string' &&
+            srcTrans.commentary_markdown.trim().length > 0 &&
+            (typeof entry.commentary_markdown !== 'string' || !entry.commentary_markdown.trim())
+          ) {
+            errors.push(`poems/${slug}[${lc}]: missing commentary_markdown`);
+          }
+        } else if (srcTrans) {
           for (const bodyField of [
             'curatorial_statement_markdown',
             'description_markdown',
             'body_markdown',
             'synopsis',
           ]) {
-            if (typeof src[bodyField] === 'string' && src[bodyField].trim().length > 20) {
+            if (typeof srcTrans[bodyField] === 'string' && srcTrans[bodyField].trim().length > 20) {
               if (typeof entry[bodyField] !== 'string' || entry[bodyField].trim().length < 5) {
-                warnings.push(`${col}/${slug}[${lc}]: source has ${bodyField} (${src[bodyField].length} chars) but translation missing`);
+                warnings.push(
+                  `${col}/${slug}[${lc}]: source has ${bodyField} (${srcTrans[bodyField].length} chars) but translation missing`
+                );
               }
             }
           }
@@ -193,6 +253,6 @@ function verifyAll() {
 const shouldMerge = process.argv.includes('--merge');
 if (shouldMerge) {
   const n = mergeOutputs();
-  console.log(`Merged ${n} translated locale records from ${SHARDS_OUT_DIR}`);
+  console.log(`Merged ${n} total translated locale records across Packs A & B`);
 }
 verifyAll();

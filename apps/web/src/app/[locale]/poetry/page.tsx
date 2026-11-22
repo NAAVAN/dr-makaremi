@@ -65,6 +65,7 @@ export default async function PoetryOverviewPage({
     ...p,
     translations: p.translations?.map((t) => ({
       ...t,
+      commentary_markdown: undefined,
       verses: (t.verses || []).slice(0, 2),
     })),
   }));

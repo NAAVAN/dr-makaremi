@@ -29,17 +29,24 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return poems.filter((p) => {
-      const trans =
-        p.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-        p.translations?.[0];
-      if (langFilter !== 'all' && !trans?.languages_code?.startsWith(langFilter)) {
+      const origTrans = p.translations?.[0];
+      if (langFilter !== 'all' && !origTrans?.languages_code?.toLowerCase().startsWith(langFilter)) {
         return false;
       }
       if (!q) return true;
-      const firstLines = (trans?.verses || []).slice(0, 3).map((v) => `${v.hemistich_a} ${v.hemistich_b || ''}`).join(' ');
-      return `${trans?.title || ''} ${firstLines}`.toLowerCase().includes(q);
+      const searchable = (p.translations || [])
+        .map((t) => {
+          const lines = (t.verses || [])
+            .slice(0, 3)
+            .map((v) => `${v.hemistich_a} ${v.hemistich_b || ''}`)
+            .join(' ');
+          return `${t.title || ''} ${lines}`;
+        })
+        .join(' ')
+        .toLowerCase();
+      return searchable.includes(q);
     });
-  }, [poems, locale, query, langFilter]);
+  }, [poems, query, langFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
