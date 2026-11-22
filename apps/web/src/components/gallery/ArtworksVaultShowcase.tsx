@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Images, Layers } from 'lucide-react';
 import { IIIFDeepZoomViewer } from './IIIFDeepZoomViewer';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 import type { Artwork, Locale } from '@makaremi/shared';
 
 interface ArtworksVaultShowcaseProps {
@@ -114,7 +115,7 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                       }`}
                   >
                     <img
-                      src={img.url}
+                      src={resolveProxiedMediaUrl(img.url, 'art', img.alt || img.title) || img.url}
                       alt={img.alt || img.title}
                       loading="lazy"
                       decoding="async"
@@ -181,7 +182,11 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                 art.translations?.find((t) => t.languages_code.startsWith(locale)) ||
                 art.translations?.[0];
               const isSelected = activeArtwork?.id === art.id;
-              const thumb = art.image_url || art.gallery_images?.[0]?.url;
+              const thumb = resolveProxiedMediaUrl(
+                art.image_url || art.gallery_images?.[0]?.url,
+                'art',
+                tr?.title || art.slug
+              );
 
               return (
                 <button

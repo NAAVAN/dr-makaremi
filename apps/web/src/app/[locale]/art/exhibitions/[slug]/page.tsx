@@ -12,6 +12,7 @@ import { buildExhibitionNode, buildBreadcrumbNode, buildFullGraph } from '@/lib/
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
 import { resolveWorkTranslation } from '@/lib/work-language';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 
 export async function generateStaticParams() {
   const exhibitions = await getExhibitions('fa');
@@ -176,7 +177,7 @@ export default async function ExhibitionDetailPage({
           <div className="space-y-6">
             <IIIFDeepZoomViewer
               imageId={`expo-${expo.slug}`}
-              imageUrl={expo.cover_image_url || expo.gallery_images[0].url}
+              imageUrl={resolveProxiedMediaUrl(expo.cover_image_url || expo.gallery_images[0].url, 'art', title)}
               title={title}
               locale={locale}
             />
@@ -188,7 +189,7 @@ export default async function ExhibitionDetailPage({
                     className="rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)]"
                   >
                     <img
-                      src={img.url}
+                      src={resolveProxiedMediaUrl(img.url, 'art', img.alt || img.title || title) || img.url}
                       alt={img.alt || img.title || title}
                       loading="lazy"
                       decoding="async"
@@ -209,7 +210,7 @@ export default async function ExhibitionDetailPage({
               <div key={art.id} className="space-y-4 p-6 rounded-3xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
                 <IIIFDeepZoomViewer
                   imageId={art.iiif_image_id}
-                  imageUrl={art.image_url}
+                  imageUrl={resolveProxiedMediaUrl(art.image_url, 'art', artTrans?.title)}
                   title={artTrans?.title || 'اثر خوشنویسی'}
                   medium={art.medium}
                   dimensions={art.dimensions}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search, ChevronLeft, ChevronRight, Feather } from 'lucide-react';
 import type { Poem, Locale } from '@makaremi/shared';
 import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
 
 interface PaginatedPoemsGridProps {
@@ -168,7 +169,7 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
                 {p.artwork_image_url && (
                   <div className="aspect-[16/10] w-full overflow-hidden bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)]">
                     <img
-                      src={p.artwork_image_url}
+                      src={resolveProxiedMediaUrl(p.artwork_image_url, 'art', displayTitle) || p.artwork_image_url}
                       alt={displayTitle}
                       loading="lazy"
                       decoding="async"

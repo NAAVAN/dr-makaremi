@@ -8,6 +8,7 @@ import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { ArtworksVaultShowcase } from '@/components/gallery/ArtworksVaultShowcase';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -141,7 +142,11 @@ export default async function GalleryOverviewPage({
           {THEMATIC_GALLERIES.map((gal) => {
             const matchedArtwork = artworks.find((a) => a.slug === gal.artworkSeriesSlug);
             const realCount = matchedArtwork?.gallery_images?.length || gal.artworkCount;
-            const thumb = matchedArtwork?.image_url || matchedArtwork?.gallery_images?.[0]?.url;
+            const thumb = resolveProxiedMediaUrl(
+              matchedArtwork?.image_url || matchedArtwork?.gallery_images?.[0]?.url,
+              'art',
+              gal.title[locale]
+            );
 
             return (
               <Link
@@ -225,7 +230,11 @@ export default async function GalleryOverviewPage({
             const trans =
               expo.translations?.find((t) => t.languages_code.startsWith(locale)) ||
               expo.translations?.[0];
-            const thumb = expo.cover_image_url || expo.gallery_images?.[0]?.url;
+            const thumb = resolveProxiedMediaUrl(
+              expo.cover_image_url || expo.gallery_images?.[0]?.url,
+              'art',
+              trans?.title || expo.slug
+            );
 
             return (
               <article

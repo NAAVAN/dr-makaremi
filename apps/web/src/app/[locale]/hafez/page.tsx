@@ -23,6 +23,7 @@ import {
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { Book3DShowcase } from '@/components/books/Book3DShowcase';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { resolveVideoCoverUrl } from '@/lib/media-url';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -451,17 +452,15 @@ export default async function HafezologyHubPage({
                 href={`/${locale}/media/videos/${vid.slug}`}
                 className="group rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--primary)] hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
               >
-                {vid.thumbnail_url && (
-                  <div className="aspect-video w-full overflow-hidden bg-neutral-900">
-                    <img
-                      src={vid.thumbnail_url}
-                      alt={vTrans?.title || vid.slug}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                )}
+                <div className="aspect-video w-full overflow-hidden bg-neutral-900">
+                  <img
+                    src={resolveVideoCoverUrl(vid, vTrans?.title || vid.slug)}
+                    alt={vTrans?.title || vid.slug}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
                 <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
                   <div className="space-y-1">
                     <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400">

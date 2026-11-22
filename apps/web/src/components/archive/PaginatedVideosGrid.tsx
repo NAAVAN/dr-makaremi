@@ -7,6 +7,7 @@ import { Search, Calendar, Video, FileText, ChevronLeft, ChevronRight, Film } fr
 import type { ContentPillar, VideoSpeech, Locale } from '@makaremi/shared';
 import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
 import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
+import { resolveVideoCoverUrl } from '@/lib/media-url';
 import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
 
 interface PaginatedVideosGridProps {
@@ -408,23 +409,21 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                 key={vid.id}
                 className="archival-lift min-w-0 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:shadow-xl transition-all overflow-hidden flex flex-col justify-between"
               >
-                {vid.thumbnail_url && (
-                  <Link href={href} className="block aspect-video w-full overflow-hidden bg-neutral-900 relative">
-                    <img
-                      src={vid.thumbnail_url}
-                      alt={displayTitle}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover"
-                    />
-                    {origTrans?.transcript_markdown && (
-                      <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 text-white text-[10px] font-mono">
-                        <FileText size={10} className="shrink-0" />
-                        {isFa ? 'متن کامل' : isFr ? 'Texte' : 'Transcript'}
-                      </span>
-                    )}
-                  </Link>
-                )}
+                <Link href={href} className="block aspect-video w-full overflow-hidden bg-neutral-900 relative">
+                  <img
+                    src={resolveVideoCoverUrl(vid, displayTitle)}
+                    alt={displayTitle}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
+                  {origTrans?.transcript_markdown && (
+                    <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 text-white text-[10px] font-mono">
+                      <FileText size={10} className="shrink-0" />
+                      {isFa ? 'متن کامل' : isFr ? 'Texte' : 'Transcript'}
+                    </span>
+                  )}
+                </Link>
 
                 <div className="p-5 space-y-3 flex-1 flex flex-col justify-between min-w-0">
                   <div className="space-y-2 min-w-0">

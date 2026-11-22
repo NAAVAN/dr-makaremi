@@ -5,6 +5,7 @@ import { Play, Pause, Sparkles } from 'lucide-react';
 import { IIIFDeepZoomViewer } from './IIIFDeepZoomViewer';
 import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
 import { resolveWorkTranslation } from '@/lib/work-language';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 import type { Poem, Artwork, Locale } from '@makaremi/shared';
 
 interface PoetryArtworkSyncProps {
@@ -43,7 +44,11 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
         <div className="space-y-4">
           <IIIFDeepZoomViewer
             imageId={hasOwnArtwork ? `poem-${poem.slug}` : artwork?.iiif_image_id || `poem-${poem.slug}`}
-            imageUrl={poem.artwork_image_url || artwork?.image_url || artwork?.gallery_images?.[0]?.url || null}
+            imageUrl={resolveProxiedMediaUrl(
+              poem.artwork_image_url || artwork?.image_url || artwork?.gallery_images?.[0]?.url,
+              'art',
+              viewerTitle
+            )}
             title={viewerTitle}
             medium={hasOwnArtwork ? undefined : artwork?.medium}
             dimensions={hasOwnArtwork ? undefined : artwork?.dimensions}

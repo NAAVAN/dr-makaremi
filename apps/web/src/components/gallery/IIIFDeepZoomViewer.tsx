@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { ZoomIn, ZoomOut, Maximize, RotateCcw, Eye, Layers } from 'lucide-react';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 import type { Locale } from '@makaremi/shared';
 
 interface IIIFDeepZoomViewerProps {
@@ -50,8 +51,11 @@ export function IIIFDeepZoomViewer({
         // Try initializing against Cantaloupe IIIF endpoint
         const iiifInfoUrl = `https://iiif.makaremi.com/iiif/3/${imageId}/info.json`;
 
-        // Check if Cantaloupe is responsive
-        const checkRes = await fetch(iiifInfoUrl, { method: 'HEAD' }).catch(() => null);
+        // Check if Cantaloupe is responsive quickly without stalling behind restricted networks
+        const checkRes = await fetch(iiifInfoUrl, {
+          method: 'HEAD',
+          signal: AbortSignal.timeout(1500),
+        }).catch(() => null);
 
         if (checkRes && checkRes.ok) {
           viewerRef.current = OpenSeadragon({
@@ -142,7 +146,7 @@ export function IIIFDeepZoomViewer({
           >
             {imageUrl && !imgFailed ? (
               <img
-                src={imageUrl}
+                src={resolveProxiedMediaUrl(imageUrl, 'art', title) || imageUrl}
                 alt={title}
                 decoding="async"
                 fetchPriority="high"

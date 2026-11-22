@@ -9,6 +9,7 @@ import { renderSafeMarkdown } from '@/lib/markdown';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
 import { resolveWorkTranslation } from '@/lib/work-language';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 
 export async function generateStaticParams() {
   const pages = await getArchivePages('fa');
@@ -169,7 +170,7 @@ export default async function ArchiveReferencePageDetail({
             {page.gallery_images.map((img, i) => (
               <figure key={`${img.id}-${i}`} className="rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
                 <img
-                  src={img.url}
+                  src={resolveProxiedMediaUrl(img.url, 'archive', img.alt || img.title) || img.url}
                   alt={img.alt || img.title}
                   loading="lazy"
                   decoding="async"

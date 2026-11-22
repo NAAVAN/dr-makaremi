@@ -29,6 +29,7 @@ import { BorromeanKnotWidget } from '@/components/home/BorromeanKnotWidget';
 import { EditorialReveal } from '@/components/home/EditorialReveal';
 import type { Locale } from '@makaremi/shared';
 import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 
 export default async function HomePage({
   params,
@@ -379,7 +380,13 @@ export default async function HomePage({
               {featuredArtwork?.image_url && (
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)]">
                   <img
-                    src={featuredArtwork.image_url}
+                    src={
+                      resolveProxiedMediaUrl(
+                        featuredArtwork.image_url,
+                        'art',
+                        featuredArtworkTrans?.title || featuredArtwork.slug
+                      ) || featuredArtwork.image_url
+                    }
                     alt={featuredArtworkTrans?.title || featuredArtwork.slug}
                     loading="lazy"
                     decoding="async"

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Headphones, Video, ExternalLink, ShieldCheck, AlertCircle } from 'lucide-react';
+import { resolveProxiedMediaUrl } from '@/lib/media-url';
 import type { Locale } from '@makaremi/shared';
 
 interface ResilientMediaPlayerProps {
@@ -97,7 +98,13 @@ export function ResilientMediaPlayer({
               <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-6 text-center space-y-4">
                 <div className="relative mx-auto max-w-md aspect-video rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-neutral-900">
                   <img
-                    src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+                    src={
+                      resolveProxiedMediaUrl(
+                        `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`,
+                        'video',
+                        title
+                      ) || `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`
+                    }
                     alt={title}
                     className="w-full h-full object-cover opacity-85"
                     loading="lazy"
