@@ -1,6 +1,7 @@
 import type { Locale } from '@makaremi/shared';
 import { executeHybridSearch, type SearchResultItem } from './hybrid-search';
 import { detectPromptInjection } from '@/lib/etl/enrichment-pipeline';
+import { synthesizeRagWithClaude } from '@/lib/ai/provider-adapter';
 
 export interface RagCitation {
   id: string;
@@ -143,13 +144,29 @@ export async function askResearchAssistant(options: AskAssistantOptions): Promis
     };
   });
 
-  // Synthesize answer strictly based on retrieved citations
-  const { answer, suggestedFollowUps } = synthesizeGroundedAnswer(query, locale, citations, results);
+  // Synthesize answer: upgrade automatically to Anthropic Claude when ANTHROPIC_API_KEY is configured,
+  // while keeping deterministic grounded synthesis for offline/pre-handoff zero-API operation.
+  const deterministic = synthesizeGroundedAnswer(query, locale, citations, results);
+  let finalAnswer = deterministic.answer;
+
+  if (results.length > 0) {
+    const citationsText = citations
+      .map((c, idx) => `[${idx + 1}] Title: ${c.title}\nExcerpt: ${c.quote}\nURL: ${c.url}`)
+      .join('\n\n');
+    const claudeAnswer = await synthesizeRagWithClaude({
+      query,
+      locale,
+      citationsText,
+    });
+    if (claudeAnswer) {
+      finalAnswer = claudeAnswer;
+    }
+  }
 
   return {
-    answer,
+    answer: finalAnswer,
     locale,
     citations,
-    suggestedFollowUps,
+    suggestedFollowUps: deterministic.suggestedFollowUps,
   };
 }

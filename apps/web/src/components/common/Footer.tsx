@@ -11,7 +11,7 @@ interface FooterProps {
 
 export function Footer({ locale }: FooterProps) {
   const pathname = usePathname();
-  if (pathname?.includes('/curation-studio')) {
+  if (pathname?.includes('/curation-studio') || pathname?.includes('/dashboard')) {
     return null;
   }
 

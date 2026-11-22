@@ -25,8 +25,21 @@ import {
   loadVaultMediaManifest,
   loadVaultLegacyRedirects,
   loadPackTranslations,
+  invalidateTranslationCache,
+  invalidateOverlayCache,
   type TranslationCollectionName,
 } from './vault-loader';
+import {
+  buildCustomArticleFromDraft,
+  buildCustomArtworkFromDraft,
+  buildCustomBookFromDraft,
+  buildCustomExhibitionFromDraft,
+  buildCustomPageFromDraft,
+  buildCustomPoemFromDraft,
+  buildCustomVideoFromDraft,
+  loadCustomStudioWorks,
+  loadWorkEnrichmentsMap,
+} from './studio/overlays';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
 
@@ -300,6 +313,11 @@ function mergePackTranslationsForItem<
 
 function buildArticlesCollection(): Article[] {
   const packArticles = loadPackTranslations('articles');
+  const enrichments = loadWorkEnrichmentsMap();
+  const customArticles = loadCustomStudioWorks()
+    .filter((d) => d.workType === 'article' && (d.status === 'published' || d.status === 'queued_manual_translation'))
+    .map(buildCustomArticleFromDraft);
+
   const vaultArticles = loadVaultArticles().map((art) => {
     const extraTrs = CURATED_ARTICLE_TRANSLATIONS[art.slug];
     let translations = [...(art.translations || [])];
@@ -341,18 +359,37 @@ function buildArticlesCollection(): Article[] {
         ...translations,
         ...extraTrs.filter((t) => !existingPrefixes.has((t.languages_code || '').slice(0, 2).toLowerCase())),
       ];
-      // Preserve verified curated CNBC/CNRS translation for native articles when Pack A didn't supply that language
       void nativePrefixes;
+    }
+
+    const artEnrichment = enrichments[`articles:${art.slug}`];
+    if (artEnrichment && (artEnrichment.notes.length > 0 || artEnrichment.links.length > 0)) {
+      const addendumLines: string[] = [];
+      for (const note of artEnrichment.notes) {
+        addendumLines.push(`\n\n---\n\n### ${note.heading}\n\n${note.bodyMarkdown}`);
+      }
+      if (artEnrichment.links.length > 0) {
+        addendumLines.push(
+          `\n\n---\n\n**پیوندها و منابع تکمیلی:**\n` +
+          artEnrichment.links.map((l) => `- [${l.label || l.platform}](${l.url})`).join('\n')
+        );
+      }
+      const addendum = addendumLines.join('');
+      translations = translations.map((t, idx) =>
+        idx === 0 ? { ...t, body_markdown: `${t.body_markdown || ''}${addendum}` } : t
+      );
     }
 
     return {
       ...art,
+      pdf_url: artEnrichment?.documents?.[0]?.dataUrl || art.pdf_url,
       translations,
     };
   });
 
   const existingSlugs = new Set(vaultArticles.map((a) => a.slug));
   const merged = [
+    ...customArticles.filter((a) => !existingSlugs.has(a.slug)),
     ...vaultArticles,
     ...SUPPLEMENTAL_ARTICLES.filter((a) => !existingSlugs.has(a.slug)),
   ];
@@ -381,30 +418,60 @@ function buildArticlesCollection(): Article[] {
 
 function buildBooksCollection(): Book[] {
   const packBooks = loadPackTranslations('books');
+  const enrichments = loadWorkEnrichmentsMap();
+  const customBooks = loadCustomStudioWorks()
+    .filter((d) => d.workType === 'book' && (d.status === 'published' || d.status === 'queued_manual_translation'))
+    .map((d, i) => buildCustomBookFromDraft(d, i + 1));
   const vaultBooks = loadVaultBooks();
   const existingSlugs = new Set(vaultBooks.map((b) => b.slug));
   const merged = [
+    ...customBooks.filter((b) => !existingSlugs.has(b.slug)),
     ...SUPPLEMENTAL_BOOKS.filter((b) => !existingSlugs.has(b.slug)),
     ...vaultBooks,
-  ].map((b) => mergePackTranslationsForItem(b, 'books', 'books_id', packBooks));
+  ].map((b) => {
+    const withPack = mergePackTranslationsForItem(b, 'books', 'books_id', packBooks);
+    const enrich = enrichments[`books:${b.slug}`];
+    if (!enrich) return withPack;
+    return {
+      ...withPack,
+      cover_image_url: enrich.bookCoverOverrides?.frontCoverDataUrl || withPack.cover_image_url,
+      translations: (withPack.translations || []).map((tr, idx) =>
+        idx === 0 && enrich.links.length > 0
+          ? {
+            ...tr,
+            geo_acquisition_links: {
+              ...tr.geo_acquisition_links,
+              international: [
+                ...(tr.geo_acquisition_links?.international || []),
+                ...enrich.links.map((l) => ({ platform: l.platform, url: l.url, label: l.label })),
+              ],
+            },
+          }
+          : tr
+      ),
+    };
+  });
   return merged.map((b, i) => ({ ...b, order_index: i + 1 }));
 }
 
 function buildExhibitionsCollection(): Exhibition[] {
   const packExhibitions = loadPackTranslations('exhibitions');
+  const customExhibitions = loadCustomStudioWorks()
+    .filter((d) => d.workType === 'exhibition' && (d.status === 'published' || d.status === 'queued_manual_translation'))
+    .map(buildCustomExhibitionFromDraft);
   const vaultExhibitions = loadVaultExhibitions().map((ex) => {
     const enrich = EXHIBITION_ENRICHMENTS[ex.slug];
     const enriched = !enrich
       ? ex
       : {
-          ...ex,
-          start_date: enrich.start_date || ex.start_date,
-          venue_city: enrich.venue_city || ex.venue_city,
-          venue_name: enrich.venue_name || ex.venue_name,
-          translations: (ex.translations || []).map((t) =>
-            enrich.fa_title && t.languages_code.startsWith('fa') ? { ...t, title: enrich.fa_title } : t
-          ),
-        };
+        ...ex,
+        start_date: enrich.start_date || ex.start_date,
+        venue_city: enrich.venue_city || ex.venue_city,
+        venue_name: enrich.venue_name || ex.venue_name,
+        translations: (ex.translations || []).map((t) =>
+          enrich.fa_title && t.languages_code.startsWith('fa') ? { ...t, title: enrich.fa_title } : t
+        ),
+      };
     return mergePackTranslationsForItem(enriched, 'exhibitions', 'exhibitions_id', packExhibitions);
   });
 
@@ -420,36 +487,54 @@ function buildExhibitionsCollection(): Exhibition[] {
     .map((s) => vaultExhibitions.find((e) => e.slug === s))
     .filter((e): e is Exhibition => Boolean(e));
   const rest = vaultExhibitions.filter((e) => !featuredSlugs.includes(e.slug));
-  return [...featured, ...rest];
+  return [...customExhibitions, ...featured, ...rest];
 }
 
 function buildArtworksCollection(): Artwork[] {
   const packArtworks = loadPackTranslations('artworks');
-  return loadVaultArtworks().map((art) =>
-    mergePackTranslationsForItem(art, 'artworks', 'artworks_id', packArtworks)
-  );
+  const customArtworks = loadCustomStudioWorks()
+    .filter((d) => d.workType === 'artwork' && (d.status === 'published' || d.status === 'queued_manual_translation'))
+    .map(buildCustomArtworkFromDraft);
+  return [
+    ...customArtworks,
+    ...loadVaultArtworks().map((art) =>
+      mergePackTranslationsForItem(art, 'artworks', 'artworks_id', packArtworks)
+    ),
+  ];
 }
 
 function buildArchivePagesCollection(): ArchivePage[] {
   const packPages = loadPackTranslations('pages');
-  return loadVaultPages().map((pg) =>
-    mergePackTranslationsForItem(pg, 'pages', 'pages_id', packPages)
-  );
+  const customPages = loadCustomStudioWorks()
+    .filter((d) => d.workType === 'page' && (d.status === 'published' || d.status === 'queued_manual_translation'))
+    .map(buildCustomPageFromDraft);
+  return [
+    ...customPages,
+    ...loadVaultPages().map((pg) =>
+      mergePackTranslationsForItem(pg, 'pages', 'pages_id', packPages)
+    ),
+  ];
 }
 
 function buildPoemsCollection(): Poem[] {
   const packPoems = loadPackTranslations('poems');
+  const customPoems = loadCustomStudioWorks()
+    .filter((d) => d.workType === 'poem' && (d.status === 'published' || d.status === 'queued_manual_translation'))
+    .map(buildCustomPoemFromDraft);
   const vaultPoems = loadVaultPoems().map((p) =>
     mergePackTranslationsForItem(p, 'poems', 'poems_id', packPoems)
   );
   // Ensure caress-me is featured first for PoetryArtworkSync showcase
   const caress = vaultPoems.filter((p) => p.slug === 'caress-me');
   const rest = vaultPoems.filter((p) => p.slug !== 'caress-me');
-  return [...caress, ...rest];
+  return [...caress, ...customPoems, ...rest];
 }
 
 function buildVideosCollection(): VideoSpeech[] {
   const packVideos = loadPackTranslations('videos');
+  const customVideos = loadCustomStudioWorks()
+    .filter((d) => d.workType === 'video' && (d.status === 'published' || d.status === 'queued_manual_translation'))
+    .map(buildCustomVideoFromDraft);
   const vaultVideos = loadVaultVideos().map((v) =>
     mergePackTranslationsForItem(v, 'videos', 'videos_id', packVideos)
   );
@@ -458,16 +543,69 @@ function buildVideosCollection(): VideoSpeech[] {
     .map((s) => vaultVideos.find((v) => v.slug === s))
     .filter((v): v is VideoSpeech => Boolean(v));
   const rest = vaultVideos.filter((v) => !pinnedSlugs.includes(v.slug));
-  return [...pinned, ...rest];
+  return [...pinned, ...customVideos, ...rest];
 }
 
-export const FALLBACK_ARTICLES: Article[] = buildArticlesCollection();
-export const FALLBACK_BOOKS: Book[] = buildBooksCollection();
-export const FALLBACK_EXHIBITIONS: Exhibition[] = buildExhibitionsCollection();
-export const FALLBACK_ARTWORKS: Artwork[] = buildArtworksCollection();
-export const FALLBACK_POEMS: Poem[] = buildPoemsCollection();
-export const FALLBACK_VIDEOS: VideoSpeech[] = buildVideosCollection();
-export const FALLBACK_PAGES: ArchivePage[] = buildArchivePagesCollection();
+let cachedArticlesState: Article[] | null = null;
+let cachedBooksState: Book[] | null = null;
+let cachedExhibitionsState: Exhibition[] | null = null;
+let cachedArtworksState: Artwork[] | null = null;
+let cachedPoemsState: Poem[] | null = null;
+let cachedVideosState: VideoSpeech[] | null = null;
+let cachedPagesState: ArchivePage[] | null = null;
+
+function getActiveArticles(): Article[] {
+  if (!cachedArticlesState) cachedArticlesState = buildArticlesCollection();
+  return cachedArticlesState;
+}
+function getActiveBooks(): Book[] {
+  if (!cachedBooksState) cachedBooksState = buildBooksCollection();
+  return cachedBooksState;
+}
+function getActiveExhibitions(): Exhibition[] {
+  if (!cachedExhibitionsState) cachedExhibitionsState = buildExhibitionsCollection();
+  return cachedExhibitionsState;
+}
+function getActiveArtworks(): Artwork[] {
+  if (!cachedArtworksState) cachedArtworksState = buildArtworksCollection();
+  return cachedArtworksState;
+}
+function getActivePoems(): Poem[] {
+  if (!cachedPoemsState) cachedPoemsState = buildPoemsCollection();
+  return cachedPoemsState;
+}
+function getActiveVideos(): VideoSpeech[] {
+  if (!cachedVideosState) cachedVideosState = buildVideosCollection();
+  return cachedVideosState;
+}
+function getActivePages(): ArchivePage[] {
+  if (!cachedPagesState) cachedPagesState = buildArchivePagesCollection();
+  return cachedPagesState;
+}
+
+export function invalidateCmsCollectionsCache(collection?: TranslationCollectionName): void {
+  invalidateTranslationCache(collection);
+  invalidateOverlayCache();
+  cachedArticlesState = null;
+  cachedBooksState = null;
+  cachedExhibitionsState = null;
+  cachedArtworksState = null;
+  cachedPoemsState = null;
+  cachedVideosState = null;
+  cachedPagesState = null;
+
+  for (const key of Object.keys(VERIFIED_IMMUTABLE_SNAPSHOTS)) {
+    delete VERIFIED_IMMUTABLE_SNAPSHOTS[key];
+  }
+}
+
+export const FALLBACK_ARTICLES: Article[] = getActiveArticles();
+export const FALLBACK_BOOKS: Book[] = getActiveBooks();
+export const FALLBACK_EXHIBITIONS: Exhibition[] = getActiveExhibitions();
+export const FALLBACK_ARTWORKS: Artwork[] = getActiveArtworks();
+export const FALLBACK_POEMS: Poem[] = getActivePoems();
+export const FALLBACK_VIDEOS: VideoSpeech[] = getActiveVideos();
+export const FALLBACK_PAGES: ArchivePage[] = getActivePages();
 
 export const FALLBACK_GLOSSARY: LacanianGlossaryTerm[] = [
   {
@@ -605,10 +743,11 @@ export async function getArticles(locale: Locale = 'fa', pillar?: ContentPillar)
     const data = await res.json();
     return data.data;
   } catch {
+    const articles = getActiveArticles();
     if (pillar) {
-      return FALLBACK_ARTICLES.filter((a) => a.pillar === pillar);
+      return articles.filter((a) => a.pillar === pillar);
     }
-    return FALLBACK_ARTICLES;
+    return articles;
   }
 }
 
@@ -632,7 +771,7 @@ export async function getBooks(locale: Locale = 'fa'): Promise<Book[]> {
     const data = await res.json();
     return data.data;
   } catch {
-    return FALLBACK_BOOKS;
+    return getActiveBooks();
   }
 }
 
@@ -651,7 +790,7 @@ export async function getExhibitions(locale: Locale = 'fa'): Promise<Exhibition[
     const data = await res.json();
     return data.data;
   } catch {
-    return FALLBACK_EXHIBITIONS;
+    return getActiveExhibitions();
   }
 }
 
@@ -676,7 +815,7 @@ function prioritizeByLocale<T extends { slug: string; translations?: Array<{ lan
 }
 
 export async function getPoems(locale: Locale = 'fa'): Promise<Poem[]> {
-  return prioritizeByLocale(FALLBACK_POEMS, locale, ['caress-me']);
+  return prioritizeByLocale(getActivePoems(), locale, ['caress-me']);
 }
 
 export async function getPoemBySlug(slug: string, locale: Locale = 'fa'): Promise<Poem | undefined> {
@@ -685,7 +824,7 @@ export async function getPoemBySlug(slug: string, locale: Locale = 'fa'): Promis
 }
 
 export async function getArtworks(locale: Locale = 'fa'): Promise<Artwork[]> {
-  return prioritizeByLocale(FALLBACK_ARTWORKS, locale);
+  return prioritizeByLocale(getActiveArtworks(), locale);
 }
 
 export async function getArtworkBySlug(slug: string, locale: Locale = 'fa'): Promise<Artwork | undefined> {
@@ -694,7 +833,8 @@ export async function getArtworkBySlug(slug: string, locale: Locale = 'fa'): Pro
 }
 
 export async function getVideoSpeeches(locale: Locale = 'fa', pillar?: ContentPillar): Promise<VideoSpeech[]> {
-  const base = pillar ? FALLBACK_VIDEOS.filter((v) => v.pillar === pillar) : FALLBACK_VIDEOS;
+  const videos = getActiveVideos();
+  const base = pillar ? videos.filter((v) => v.pillar === pillar) : videos;
   return prioritizeByLocale(base, locale, ['khavaran-justice-session', 'hafez-de-chiraz']);
 }
 
@@ -704,7 +844,8 @@ export async function getVideoSpeechBySlug(slug: string, locale: Locale = 'fa'):
 }
 
 export async function getArchivePages(locale: Locale = 'fa', group?: ArchivePageGroup): Promise<ArchivePage[]> {
-  const base = group ? FALLBACK_PAGES.filter((p) => p.group === group) : FALLBACK_PAGES;
+  const pages = getActivePages();
+  const base = group ? pages.filter((p) => p.group === group) : pages;
   return prioritizeByLocale(base, locale);
 }
 

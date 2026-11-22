@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
-import wpFullCatalog from '@/data/wp-full-catalog.json';
-import { CurationStudioClient } from '@/components/curation/CurationStudioClient';
-import { isValidLocale } from '@/lib/i18n';
+import { notFound } from 'next/navigation';
+import { isValidLocale, type Locale } from '@/lib/i18n';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { getStudioSecretConfiguration, isStudioPageAuthenticated } from '@/lib/studio/auth';
+import { getAiRuntimeStatus } from '@/lib/ai/provider-adapter';
+import { StudioAuthGate } from '@/components/studio/StudioAuthGate';
+import { StudioDashboardShell } from '@/components/studio/StudioDashboardShell';
+
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
   params,
@@ -14,14 +19,39 @@ export async function generateMetadata({
   return buildTrilingualMetadata({
     locale,
     path: '/curation-studio',
-    title: 'میز کار تعاملی بازنگری، تکمیل آرشیو و تصمیم‌گیری استاد دکتر حسن مکارمی',
+    title: 'میز کار و آتلیه نشر آثار استاد دکتر حسن مکارمی',
     description:
-      'پورتال اختصاصی بررسی و دسته‌بندی ۳٬۱۷۲ رکورد سایت، بارگذاری تصاویر جلد و صفحات برگزیده کتاب‌ها، ضبط صدای استاد و تایید دستیار هوشمند.',
+      'پورتال اختصاصی ثبت آثار جدید، استانداردسازی رسانه، غنی‌سازی آرشیو پیشین و مرکز کنترل ترجمه‌های دکتر حسن مکارمی.',
     noIndex: true,
   });
 }
 
-export default function CurationStudioPage() {
-  return <CurationStudioClient catalog={wpFullCatalog as any} />;
-}
+export default async function CurationStudioPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) notFound();
 
+  const authenticated = await isStudioPageAuthenticated();
+  const { usingDefaultFallback } = getStudioSecretConfiguration();
+
+  if (!authenticated) {
+    return (
+      <StudioAuthGate
+        locale={locale as Locale}
+        targetName="curation-studio"
+        usingDefaultFallback={usingDefaultFallback}
+      />
+    );
+  }
+
+  return (
+    <StudioDashboardShell
+      locale={locale as Locale}
+      routeMode="curation-studio"
+      initialAiStatus={getAiRuntimeStatus()}
+    />
+  );
+}

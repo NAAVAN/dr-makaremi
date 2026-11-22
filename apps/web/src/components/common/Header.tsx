@@ -95,7 +95,7 @@ export function Header({ locale }: HeaderProps) {
     };
   }, [closeAllMenus]);
 
-  if (pathname?.includes('/curation-studio')) {
+  if (pathname?.includes('/curation-studio') || pathname?.includes('/dashboard')) {
     return null;
   }
 
@@ -548,25 +548,25 @@ export function Header({ locale }: HeaderProps) {
             </button>
 
             <Link
-              href={`/${locale}/curation-studio`}
+              href={`/${locale}/dashboard`}
               aria-label={
                 isFa
-                  ? 'میز کار بازنگری و تصمیم‌گیری استاد'
+                  ? 'داشبورد و میز کار استاد'
                   : isFr
-                    ? 'Studio de Curation'
-                    : 'Author Curation Studio'
+                    ? 'Tableau de bord auteur'
+                    : 'Author Dashboard'
               }
               className="px-3 py-1.5 rounded-xl text-white bg-amber-600 hover:bg-amber-700 transition-colors border border-amber-700 flex items-center gap-1.5 text-xs font-extrabold shadow-sm"
               title={
                 isFa
-                  ? 'میز کار تعاملی بازنگری محتوا و تصمیم‌گیری استاد مکارمی'
+                  ? 'داشبورد و میز کار یک‌پارچه استاد مکارمی'
                   : isFr
-                    ? 'Studio de Curation du Dr Makaremi'
-                    : 'Dr Makaremi’s Interactive Curation Studio'
+                    ? 'Tableau de bord du Dr Makaremi'
+                    : 'Dr Makaremi’s Unified Author Dashboard'
               }
             >
               <Sparkles size={14} />
-              <span>{isFa ? 'میز کار تصمیم‌گیری استاد' : isFr ? 'Studio Curation' : 'Curation Studio'}</span>
+              <span>{isFa ? 'داشبورد استاد' : isFr ? 'Tableau de bord' : 'Author Dashboard'}</span>
             </Link>
 
             <Link
@@ -676,8 +676,8 @@ export function Header({ locale }: HeaderProps) {
                   {hasSubItems && group.subItems && (
                     <div
                       className={`${isDropdownOpen
-                          ? 'visible opacity-100 translate-y-0 pointer-events-auto'
-                          : 'invisible opacity-0 translate-y-1 pointer-events-none'
+                        ? 'visible opacity-100 translate-y-0 pointer-events-auto'
+                        : 'invisible opacity-0 translate-y-1 pointer-events-none'
                         } transition-all duration-150 absolute top-full ${isFa ? 'right-0' : 'left-0'
                         } pt-2 w-80 z-50`}
                     >

@@ -4,7 +4,7 @@ import path from 'node:path';
 import { z } from 'zod';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
-import { timingSafeCompare } from '@/lib/crypto';
+import { isStudioRequestAuthorized } from '@/lib/studio/auth';
 
 const MAX_MANIFEST_BYTES = 512 * 1024; // 512 KB cap to prevent DoS / disk exhaustion
 
@@ -23,16 +23,12 @@ export async function POST(request: NextRequest) {
   const rl = checkRateLimit(request, { windowMs: 60000, maxRequests: 20 }, 'curation_manifest_post');
   if (!rl.allowed) return rl.response!;
 
-  // 2. Optional Admin Secret Gate (mandatory in production when CURATION_ADMIN_SECRET is configured)
-  const configuredSecret = process.env.CURATION_ADMIN_SECRET;
-  if (configuredSecret) {
-    const providedSecret = request.headers.get('x-curation-secret') || '';
-    if (!providedSecret || !timingSafeCompare(providedSecret, configuredSecret)) {
-      return NextResponse.json(
-        { ok: false, error: 'Unauthorized curation manifest mutation' },
-        { status: 401, headers: SECURITY_HEADERS }
-      );
-    }
+  // 2. Enforce Admin Secret / Professor PIN Session Gate from this phase onward
+  if (!isStudioRequestAuthorized(request)) {
+    return NextResponse.json(
+      { ok: false, error: 'Unauthorized curation manifest mutation' },
+      { status: 401, headers: SECURITY_HEADERS }
+    );
   }
 
   // 3. Enforce strict payload size limit before JSON parsing
@@ -108,6 +104,13 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const rl = checkRateLimit(request, { windowMs: 60000, maxRequests: 60 }, 'curation_manifest_get');
   if (!rl.allowed) return rl.response!;
+
+  if (!isStudioRequestAuthorized(request)) {
+    return NextResponse.json(
+      { ok: false, error: 'Unauthorized curation manifest read' },
+      { status: 401, headers: SECURITY_HEADERS }
+    );
+  }
 
   try {
     const filePath = path.join(process.cwd(), 'src', 'data', 'makaremi-curation-decisions.json');

@@ -1,0 +1,8 @@
+{
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-5",
+  "autoTranslateOnPublish": false,
+  "tone": "academic_literary",
+  "preserveGlossaryLock": true,
+  "britishEnglishStrict": true
+}
