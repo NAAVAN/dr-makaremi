@@ -15,10 +15,10 @@ interface WorkLanguageBarProps {
 }
 
 /**
- * In-Box Archival Language Provenance Badge & Translate Toggle for Archive Cards.
+ * In-Box Archival Language Provenance Badge & Show-Original Toggle for Archive Cards.
  * - Renders NOTHING when `originalLang === siteLocale` (zero clutter on native-language works).
- * - Preserves the authentic original work by default; one click switches to the site-language
- *   reading translation (or cleanly indicates queued Waves 3–5 status without broken UX).
+ * - Displays content in the visitor's active site language (`siteLocale`) by default when translated;
+ *   clicking "Show Original" reveals that card's authentic untouched original language (`originalLang`).
  */
 export function WorkLanguageBar({
   originalLang,
@@ -40,14 +40,14 @@ export function WorkLanguageBar({
       ? `Original : ${origName}`
       : `Original: ${origName}`;
 
-  const translateLabel = isFa
-    ? 'ترجمه به فارسی'
+  const switchToSiteLocaleLabel = isFa
+    ? 'نمایش ترجمه فارسی'
     : isFr
-      ? 'Traduire en français'
-      : 'Translate to English';
+      ? 'Voir en français'
+      : 'Show in English';
 
   const showOriginalLabel = isFa
-    ? 'نمایش اصل اثر'
+    ? 'نمایش متن اصلی'
     : isFr
       ? 'Voir l’original'
       : 'Show Original';
@@ -62,9 +62,8 @@ export function WorkLanguageBar({
     <div
       data-work-lang-bar="true"
       data-original-lang={originalLang}
-      className={`flex flex-wrap items-center justify-between gap-2 ${
-        compact ? 'text-[10px]' : 'text-[11px]'
-      } pb-2 mb-2 border-b border-[var(--border-subtle)]`}
+      className={`flex flex-wrap items-center justify-between gap-2 ${compact ? 'text-[10px]' : 'text-[11px]'
+        } pb-2 mb-2 border-b border-[var(--border-subtle)]`}
     >
       <span className="inline-flex items-center gap-1.5 font-mono text-[var(--foreground-muted)]">
         <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-gold)] shrink-0" />
@@ -78,14 +77,13 @@ export function WorkLanguageBar({
           e.stopPropagation();
           onToggle();
         }}
-        aria-pressed={isTranslated}
-        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border font-semibold transition-colors cursor-pointer ${
-          isTranslated
+        aria-pressed={!isTranslated && hasTranslation}
+        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border font-semibold transition-colors cursor-pointer ${!isTranslated && hasTranslation
             ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]'
             : hasTranslation
               ? 'bg-[var(--surface-sunken)] hover:bg-[var(--surface-artifact)] text-[var(--primary)] border-[var(--border-medium)] hover:border-[var(--primary)]'
               : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border-[var(--border-subtle)] hover:text-[var(--foreground)]'
-        }`}
+          }`}
       >
         {isTranslated ? (
           <>
@@ -95,7 +93,7 @@ export function WorkLanguageBar({
         ) : (
           <>
             <Languages size={12} className="shrink-0" />
-            <span>{hasTranslation ? translateLabel : queuedLabel}</span>
+            <span>{hasTranslation ? switchToSiteLocaleLabel : queuedLabel}</span>
           </>
         )}
       </button>

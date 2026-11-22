@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Search, FileText, ChevronLeft, ChevronRight, FileDown } from 'lucide-react';
 import type { Article, ContentPillar, Locale } from '@makaremi/shared';
-import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
+import { getLanguageDir, localizeTaxonomyTag, resolveWorkTranslation } from '@/lib/work-language';
 import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
 
@@ -102,10 +102,10 @@ export function PaginatedArticlesGrid({
   const [pillarFilter, setPillarFilter] = useState<'all' | ContentPillar>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [page, setPage] = useState(1);
-  const [translatedIds, setTranslatedIds] = useState<Record<string, boolean>>({});
+  const [showOriginalIds, setShowOriginalIds] = useState<Record<string, boolean>>({});
 
   const toggleCardTranslation = (id: string) => {
-    setTranslatedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+    setShowOriginalIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleUrlSync = React.useCallback(
@@ -289,7 +289,7 @@ export function PaginatedArticlesGrid({
                     : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
                   }`}
               >
-                {cat} ({count})
+                {localizeTaxonomyTag(cat, locale)} ({count})
               </button>
             ))}
           </div>
@@ -345,7 +345,7 @@ export function PaginatedArticlesGrid({
               translations: art.translations,
               siteLocale: locale,
             });
-            const isShowingTranslated = Boolean(translatedIds[art.id]);
+            const isShowingTranslated = resolved.hasTranslation && !showOriginalIds[art.id];
             const displayTitle =
               isShowingTranslated && resolved.translatedRecord?.title
                 ? resolved.translatedRecord.title
@@ -400,7 +400,7 @@ export function PaginatedArticlesGrid({
                         key={cat}
                         className="px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--primary)] whitespace-nowrap"
                       >
-                        {cat}
+                        {localizeTaxonomyTag(cat, locale)}
                       </span>
                     ))}
                     {art.pdf_url && (

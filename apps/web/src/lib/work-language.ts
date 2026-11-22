@@ -77,6 +77,38 @@ export function getLanguageLabel(lang: Locale, uiLocale: Locale): string {
   return labels[uiLocale][lang];
 }
 
+const TAXONOMY_TRANSLATIONS: Record<string, Record<Locale, string>> = {
+  'در مورد': { fa: 'در مورد', fr: 'À propos', en: 'About' },
+  'à propos': { fa: 'درباره', fr: 'À propos', en: 'About' },
+  'روانکاوی': { fa: 'روانکاوی', fr: 'Psychanalyse', en: 'Psychoanalysis' },
+  psychanalyse: { fa: 'روانکاوی', fr: 'Psychanalyse', en: 'Psychoanalysis' },
+  'پژوهش': { fa: 'پژوهش', fr: 'Recherche', en: 'Research' },
+  recherche: { fa: 'پژوهش', fr: 'Recherche', en: 'Research' },
+  'جامعه': { fa: 'جامعه', fr: 'Société', en: 'Society' },
+  société: { fa: 'جامعه', fr: 'Société', en: 'Society' },
+  'شعر': { fa: 'شعر', fr: 'Poésie', en: 'Poetry' },
+  poésie: { fa: 'شعر', fr: 'Poésie', en: 'Poetry' },
+  'هنر': { fa: 'هنر', fr: 'Art', en: 'Art' },
+  art: { fa: 'هنر', fr: 'Art', en: 'Art' },
+  'حافظ': { fa: 'حافظ', fr: 'Hafez', en: 'Hafez' },
+  hafez: { fa: 'حافظ', fr: 'Hafez', en: 'Hafez' },
+  'خبر': { fa: 'خبر', fr: 'Actualités', en: 'News' },
+  'اخبار': { fa: 'اخبار', fr: 'Actualités', en: 'News' },
+  news: { fa: 'اخبار', fr: 'Actualités', en: 'News' },
+  'طبقه بندی نشده': { fa: 'عمومی', fr: 'Général', en: 'General' },
+  'طبقه‌بندی نشده': { fa: 'عمومی', fr: 'Général', en: 'General' },
+  'non classé': { fa: 'عمومی', fr: 'Général', en: 'General' },
+  unclassified: { fa: 'عمومی', fr: 'Général', en: 'General' },
+};
+
+export function localizeTaxonomyTag(tag: string | undefined | null, locale: Locale): string {
+  if (!tag) return '';
+  const trimmed = tag.trim();
+  const mapped = TAXONOMY_TRANSLATIONS[trimmed.toLowerCase()];
+  if (mapped) return mapped[locale];
+  return trimmed;
+}
+
 export interface ResolvedWorkTranslation<T extends BaseTranslationLike> {
   originalLang: Locale;
   originalRecord: T | undefined;

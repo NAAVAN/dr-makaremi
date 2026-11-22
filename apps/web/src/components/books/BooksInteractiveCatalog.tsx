@@ -76,10 +76,10 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
     books[0]?.slug || 'lacan-seminar-3-psychoses'
   );
   const [showInlineReader, setShowInlineReader] = useState<boolean>(false);
-  const [translatedIds, setTranslatedIds] = useState<Record<string, boolean>>({});
+  const [showOriginalIds, setShowOriginalIds] = useState<Record<string, boolean>>({});
 
   const toggleBookTranslation = (id: string) => {
-    setTranslatedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+    setShowOriginalIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleUrlSync = React.useCallback((genre: 'all' | BookGenreKey, spotlight?: string) => {
@@ -326,7 +326,7 @@ export function BooksInteractiveCatalog({ books, locale }: BooksInteractiveCatal
               translations: b.translations,
               siteLocale: locale,
             });
-            const isShowingTranslated = Boolean(translatedIds[b.id]);
+            const isShowingTranslated = resolved.hasTranslation && !showOriginalIds[b.id];
             const origTrans = resolved.originalRecord;
             const displayTitle =
               isShowingTranslated && resolved.translatedRecord?.title

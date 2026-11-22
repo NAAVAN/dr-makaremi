@@ -32,9 +32,10 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
   const verses = poemTrans?.verses || [];
 
   const hasOwnArtwork = Boolean(poem.artwork_image_url);
+  const displayPoemTitle = resolved.translatedRecord?.title || poemTrans?.title || poem.slug;
   const viewerTitle = hasOwnArtwork
-    ? poemTrans?.title || poem.slug
-    : artworkTrans?.title || poemTrans?.title || (isFa ? 'میان نشان و نماد' : 'Entre Signe et Symbole');
+    ? displayPoemTitle
+    : artworkTrans?.title || displayPoemTitle || (isFa ? 'میان نشان و نماد' : 'Entre Signe et Symbole');
   const hasRealAudio = Boolean(poem.audio_recitation_file_id);
 
   return (
@@ -73,7 +74,7 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
                     : 'Poetry & Image (Poem & Original Calligraphy)'}
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-[var(--foreground)] mt-1">
-                {poemTrans?.title || poem.slug}
+                {displayPoemTitle}
               </h2>
             </div>
 
@@ -108,6 +109,7 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
             originalLang={resolved.originalLang}
             siteLocale={locale}
             translated={resolved.translatedRecord}
+            originalTitle={poemTrans?.title}
             originalContent={
               <div className="space-y-6 py-2">
                 {verses.map((v) => (

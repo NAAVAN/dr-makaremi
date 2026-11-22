@@ -34,11 +34,14 @@ export function ArticleReader({
   });
 
   const orig = resolved.originalRecord || translation;
-  const title = orig?.title || article.slug;
-  const rawSummary = orig?.executive_summary || '';
-  const summary = cleanSummaryWithoutRawUrls(rawSummary);
-  const summaryLinks = extractUrlsFromText(rawSummary);
+  const origRawSummary = orig?.executive_summary || '';
+  const origSummary = cleanSummaryWithoutRawUrls(origRawSummary);
+  const origSummaryLinks = extractUrlsFromText(origRawSummary);
   const body = orig?.body_markdown || '';
+
+  const title = resolved.translatedRecord?.title || orig?.title || article.slug;
+  const displayRawSummary = resolved.translatedRecord?.summary || origRawSummary;
+  const summary = cleanSummaryWithoutRawUrls(displayRawSummary);
   const dateStr = article.published_at || article.created_at;
   const pillarRoute =
     article.pillar === 'psychoanalysis'
@@ -134,14 +137,15 @@ export function ArticleReader({
         executiveSummary={summary}
       />
 
-      {/* 3-Mode Scholarly Bilingual Reader (Original Default / Site Translation / Side-by-Side) */}
+      {/* 3-Mode Scholarly Bilingual Reader (Site Language Default / Show Original / Side-by-Side) */}
       <BilingualWorkReader
         originalLang={resolved.originalLang}
         siteLocale={locale}
         translated={resolved.translatedRecord}
+        originalTitle={orig?.title}
         originalContent={
           <div className="space-y-8">
-            {(summary || summaryLinks.length > 0) && (
+            {(origSummary || origSummaryLinks.length > 0) && (
               <section
                 aria-label={isFa ? 'چکیده مدیریتی' : isFr ? 'Résumé analytique' : 'Executive Summary'}
                 className="aeo-summary-box"
@@ -154,10 +158,10 @@ export function ArticleReader({
                         ? 'Résumé analytique :'
                         : 'Executive Summary:'}
                   </span>
-                  {summary && <p>{summary}</p>}
-                  {summaryLinks.length > 0 && (
+                  {origSummary && <p>{origSummary}</p>}
+                  {origSummaryLinks.length > 0 && (
                     <div className="not-italic flex flex-wrap gap-2">
-                      {summaryLinks.map((u) => (
+                      {origSummaryLinks.map((u) => (
                         <DestinationLinkButton key={u} href={u} locale={locale} compact />
                       ))}
                     </div>

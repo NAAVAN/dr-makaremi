@@ -45,7 +45,7 @@ export async function generateMetadata({
   });
   const trans = resolved.originalRecord || expo.translations?.[0];
 
-  const title = trans?.title || expo.slug;
+  const title = resolved.translatedRecord?.title || trans?.title || expo.slug;
   const description =
     trans?.curatorial_statement_markdown?.slice(0, 160) ||
     `${title} — ${expo.venue_name} (${expo.venue_city})`;
@@ -83,7 +83,7 @@ export default async function ExhibitionDetailPage({
   });
   const trans = resolved.originalRecord || expo.translations?.[0];
 
-  const title = trans?.title || expo.slug;
+  const title = resolved.translatedRecord?.title || trans?.title || expo.slug;
   const jsonLdGraph = buildFullGraph({
     locale,
     items: [
@@ -112,7 +112,13 @@ export default async function ExhibitionDetailPage({
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به گالری و نمایشگاه‌ها' : 'Retour à la galerie'}</span>
+          <span>
+            {isFa
+              ? 'بازگشت به گالری و نمایشگاه‌ها'
+              : isFr
+                ? 'Retour à la galerie'
+                : 'Back to Gallery & Exhibitions'}
+          </span>
         </Link>
 
         <Link
@@ -159,6 +165,7 @@ export default async function ExhibitionDetailPage({
           originalLang={resolved.originalLang}
           siteLocale={locale}
           translated={resolved.translatedRecord}
+          originalTitle={trans?.title}
           originalContent={
             <div className="text-base leading-relaxed text-[var(--foreground)] font-serif space-y-4">
               {renderSafeMarkdown(trans?.curatorial_statement_markdown || '')}

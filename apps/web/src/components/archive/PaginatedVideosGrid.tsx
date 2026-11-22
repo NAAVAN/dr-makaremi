@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Search, Calendar, Video, FileText, ChevronLeft, ChevronRight, Film } from 'lucide-react';
 import type { ContentPillar, VideoSpeech, Locale } from '@makaremi/shared';
-import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
+import { getLanguageDir, localizeTaxonomyTag, resolveWorkTranslation } from '@/lib/work-language';
 import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 import { resolveVideoCoverUrl } from '@/lib/media-url';
 import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
@@ -125,10 +125,10 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
   const [selectedTheme, setSelectedTheme] = useState<string>('all');
   const [onlyTranscript, setOnlyTranscript] = useState<boolean>(false);
   const [page, setPage] = useState(1);
-  const [translatedIds, setTranslatedIds] = useState<Record<string, boolean>>({});
+  const [showOriginalIds, setShowOriginalIds] = useState<Record<string, boolean>>({});
 
   const toggleVideoTranslation = (id: string) => {
-    setTranslatedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+    setShowOriginalIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleUrlSync = React.useCallback(
@@ -327,7 +327,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                   : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
                   }`}
               >
-                {theme}
+                {localizeTaxonomyTag(theme, locale)}
               </button>
             ))}
           </div>
@@ -384,7 +384,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
               translations: vid.translations,
               siteLocale: locale,
             });
-            const isShowingTranslated = Boolean(translatedIds[vid.id]);
+            const isShowingTranslated = resolved.hasTranslation && !showOriginalIds[vid.id];
             const origTrans = resolved.originalRecord;
             const displayTitle =
               isShowingTranslated && resolved.translatedRecord?.title
@@ -464,7 +464,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
 
                   <div className="border-t border-[var(--border-subtle)] pt-3 flex items-center justify-between gap-2 text-xs">
                     <span className="text-[11px] text-[var(--foreground-muted)] truncate min-w-0">
-                      {vid.themes?.[0] || vid.event_location}
+                      {localizeTaxonomyTag(vid.themes?.[0], locale) || vid.event_location}
                     </span>
                     <Link href={href} className="font-bold text-[var(--primary)] hover:underline shrink-0 whitespace-nowrap">
                       {isFa ? 'مشاهده ←' : isFr ? 'Voir →' : 'Watch →'}

@@ -81,8 +81,16 @@ export default async function BookDetailPage({
     siteLocale: locale,
   });
   const trans = resolved.originalRecord || book.translations?.[0];
-
-  const title = trans?.title || book.slug;
+  const title = resolved.translatedRecord?.title || trans?.title || book.slug;
+  const displaySubtitle = resolved.translatedRecord?.subtitle || trans?.subtitle;
+  const displayBookTrans = resolved.translatedRecord && trans
+    ? {
+        ...trans,
+        title,
+        subtitle: displaySubtitle,
+        synopsis: resolved.translatedRecord.summary || trans.synopsis,
+      }
+    : trans;
 
   const bookNode = buildBookNode(book, locale);
   const breadcrumbNode = buildBreadcrumbNode([
@@ -143,9 +151,9 @@ export default async function BookDetailPage({
               {title}
             </h1>
 
-            {trans?.subtitle && (
+            {displaySubtitle && (
               <p className="text-sm sm:text-base font-bold text-[var(--foreground-muted)]">
-                {trans.subtitle}
+                {displaySubtitle}
               </p>
             )}
           </div>
@@ -154,6 +162,7 @@ export default async function BookDetailPage({
             originalLang={resolved.originalLang}
             siteLocale={locale}
             translated={resolved.translatedRecord}
+            originalTitle={trans?.title}
             originalContent={
               <p className="text-sm text-[var(--foreground)] leading-relaxed font-serif">
                 {trans?.synopsis}
@@ -170,13 +179,13 @@ export default async function BookDetailPage({
       </div>
 
       {/* Bibliographic Card & Academic Citations */}
-      <BookMetadataCard book={book} translation={trans} locale={locale} />
+      <BookMetadataCard book={book} translation={displayBookTrans} locale={locale} />
 
       {/* In-Browser Flipbook / Sample Chapter Reader */}
       <section aria-label="پیش‌نمایش متن و فصل نمونه">
         <BookSampleReader
           title={title}
-          subtitle={trans?.subtitle}
+          subtitle={displaySubtitle}
           publisherName={trans?.publisher_name}
           tableOfContents={trans?.table_of_contents_markdown}
           sampleChapter={trans?.sample_chapter_markdown}

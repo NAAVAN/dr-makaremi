@@ -46,7 +46,7 @@ export async function generateMetadata({
   });
   const trans = resolved.originalRecord || speech.translations?.[0];
 
-  const title = trans?.title || speech.slug;
+  const title = resolved.translatedRecord?.title || trans?.title || speech.slug;
   const description = trans?.description?.slice(0, 160) || title;
 
   return buildTrilingualMetadata({
@@ -81,7 +81,7 @@ export default async function SpeechDetailPage({
   });
   const trans = resolved.originalRecord || speech.translations?.[0];
 
-  const title = trans?.title || speech.slug;
+  const title = resolved.translatedRecord?.title || trans?.title || speech.slug;
   const jsonLdGraph = buildFullGraph({
     locale,
     items: [
@@ -109,7 +109,13 @@ export default async function SpeechDetailPage({
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به پورتال حقوق بشر و دادخواهی' : 'Retour aux droits de l’homme'}</span>
+          <span>
+            {isFa
+              ? 'بازگشت به پورتال حقوق بشر و دادخواهی'
+              : isFr
+                ? 'Retour aux droits de l’homme'
+                : 'Back to Human Rights'}
+          </span>
         </Link>
 
         <Link
@@ -126,7 +132,7 @@ export default async function SpeechDetailPage({
       <header className="space-y-4 border-b border-[var(--border-subtle)] pb-6">
         <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--foreground-muted)] font-medium">
           <span className="font-mono uppercase px-2.5 py-0.5 rounded-full bg-[var(--surface-sunken)] border border-[var(--border-subtle)] font-bold text-[var(--color-dadkhahi)]">
-            دادخواهی و عدالت انتقالی
+            {isFa ? 'دادخواهی و عدالت انتقالی' : isFr ? 'Droits humains & Justice' : 'Human Rights & Justice'}
           </span>
           <span className="flex items-center gap-1">
             <Calendar size={13} />
@@ -160,9 +166,10 @@ export default async function SpeechDetailPage({
         originalLang={resolved.originalLang}
         siteLocale={locale}
         translated={resolved.translatedRecord}
+        originalTitle={trans?.title}
         originalContent={
           <SpeechTranscriptView
-            title={title}
+            title={trans?.title || speech.slug}
             transcriptMarkdown={trans?.transcript_markdown}
             description={trans?.description}
             locale={locale}

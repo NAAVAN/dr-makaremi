@@ -21,10 +21,10 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
   const [query, setQuery] = useState('');
   const [langFilter, setLangFilter] = useState<'all' | 'fa' | 'fr'>('all');
   const [page, setPage] = useState(1);
-  const [translatedIds, setTranslatedIds] = useState<Record<string, boolean>>({});
+  const [showOriginalIds, setShowOriginalIds] = useState<Record<string, boolean>>({});
 
   const toggleCardTranslation = (id: string) => {
-    setTranslatedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+    setShowOriginalIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const filtered = useMemo(() => {
@@ -148,7 +148,7 @@ export function PaginatedPoemsGrid({ poems, locale }: PaginatedPoemsGridProps) {
               translations: p.translations,
               siteLocale: locale,
             });
-            const isShowingTranslated = Boolean(translatedIds[p.id]);
+            const isShowingTranslated = resolved.hasTranslation && !showOriginalIds[p.id];
             const displayTitle =
               isShowingTranslated && resolved.translatedRecord?.title
                 ? resolved.translatedRecord.title

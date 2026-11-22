@@ -15,6 +15,8 @@ interface BilingualWorkReaderProps {
   originalLang: Locale;
   siteLocale: Locale;
   translated: StoredWorkTranslation | null;
+  /** Optional untouched title in `originalLang` shown when viewing Show Original or Side-by-Side */
+  originalTitle?: string | null;
   /** The 100% authentic untouched original work (rendered inside native dir/lang wrapper) */
   originalContent: React.ReactNode;
   /** Optional custom pre-rendered translated node (falls back to clean paragraphs/verses) */
@@ -25,18 +27,19 @@ interface BilingualWorkReaderProps {
  * Gold-Standard 3-Mode Scholarly Bilingual Reader (Gallimard / Loeb Classical Library Pattern).
  * - Server-Component safe (accepts ReactNode slots, zero function props).
  * - If `originalLang === siteLocale`: renders `originalContent` directly with ZERO extra chrome.
- * - If `originalLang !== siteLocale`: defaults strictly to the untouched original work while
- *   offering crisp switching between Original, Site-Language Translation, and Side-by-Side
- *   parallel reading (with proper RTL/LTR isolation per column).
+ * - If `originalLang !== siteLocale`: displays the active site language (`siteLocale`) by default
+ *   whenever a translation is available, while offering one-click switching to "Show Original"
+ *   or Side-by-Side parallel reading (with proper RTL/LTR isolation per column).
  */
 export function BilingualWorkReader({
   originalLang,
   siteLocale,
   translated,
+  originalTitle,
   originalContent,
   translatedContent,
 }: BilingualWorkReaderProps) {
-  const [mode, setMode] = useState<BilingualViewMode>('original');
+  const [mode, setMode] = useState<BilingualViewMode>(translated ? 'translated' : 'original');
 
   // Native match: zero extra UI needed — show authentic original cleanly
   if (originalLang === siteLocale) {
@@ -58,15 +61,15 @@ export function BilingualWorkReader({
         ? `Langue originale : ${origName}`
         : `Original language: ${origName}`,
     modeOriginal: isFa
-      ? `اصل اثر (${origName})`
+      ? `نمایش متن اصلی (${origName})`
       : isFr
-        ? `Texte original (${origName})`
-        : `Original (${origName})`,
+        ? `Voir l’original (${origName})`
+        : `Show Original (${origName})`,
     modeTranslated: isFa
-      ? `ترجمه به ${targetName}`
+      ? `${targetName}`
       : isFr
-        ? `Traduction (${targetName})`
-        : `${targetName} Translation`,
+        ? `${targetName}`
+        : `${targetName}`,
     modeParallel: isFa
       ? 'مطالعه دوزبانه روبه‌رو'
       : isFr
@@ -84,13 +87,13 @@ export function BilingualWorkReader({
         : `The full International English scholarly translation of this work (using consistent British/UNESCO spelling) is scheduled in our trilingual editorial pipeline (Waves 3–5). The untouched original text remains available below.`,
   };
 
-  const renderDefaultTranslated = (tr: StoredWorkTranslation) => {
+  const renderDefaultTranslated = (tr: StoredWorkTranslation, showHeading = true) => {
     const cleanSum = cleanSummaryWithoutRawUrls(tr.summary);
     const summaryUrls = extractUrlsFromText(tr.summary);
 
     return (
       <div dir={targetDir} lang={siteLocale} className="space-y-5">
-        {tr.title && (
+        {showHeading && tr.title && (
           <h2 className="font-display text-xl sm:text-2xl font-black text-[var(--foreground)]">
             {tr.title}
           </h2>
@@ -158,29 +161,29 @@ export function BilingualWorkReader({
           <button
             type="button"
             role="tab"
-            aria-selected={mode === 'original'}
-            onClick={() => setMode('original')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'original'
-                ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
-                : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
+            aria-selected={mode === 'translated'}
+            onClick={() => setMode('translated')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'translated'
+              ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
+              : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
               }`}
           >
-            <BookOpen size={13} />
-            <span>{labels.modeOriginal}</span>
+            <Languages size={13} />
+            <span>{labels.modeTranslated}</span>
           </button>
 
           <button
             type="button"
             role="tab"
-            aria-selected={mode === 'translated'}
-            onClick={() => setMode('translated')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'translated'
-                ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
-                : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
+            aria-selected={mode === 'original'}
+            onClick={() => setMode('original')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'original'
+              ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
+              : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
               }`}
           >
-            <Languages size={13} />
-            <span>{labels.modeTranslated}</span>
+            <BookOpen size={13} />
+            <span>{labels.modeOriginal}</span>
           </button>
 
           {hasTranslation && (
@@ -190,8 +193,8 @@ export function BilingualWorkReader({
               aria-selected={mode === 'side-by-side'}
               onClick={() => setMode('side-by-side')}
               className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'side-by-side'
-                  ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
-                  : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
+                ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
+                : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
                 }`}
             >
               <Columns2 size={13} />
@@ -201,9 +204,14 @@ export function BilingualWorkReader({
         </div>
       </div>
 
-      {/* Mode 1: Untouched Original Work (Default — Native RTL/LTR Direction!) */}
+      {/* Mode 1: Untouched Original Work (Native RTL/LTR Direction on Show Original) */}
       {mode === 'original' && (
-        <div dir={origDir} lang={originalLang}>
+        <div dir={origDir} lang={originalLang} className="space-y-4">
+          {originalTitle && (
+            <h2 className="font-display text-xl sm:text-2xl font-black text-[var(--foreground)]">
+              {originalTitle}
+            </h2>
+          )}
           {originalContent}
         </div>
       )}
@@ -216,7 +224,7 @@ export function BilingualWorkReader({
               <div className="px-4 py-2.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)]">
                 {labels.colophon}
               </div>
-              {translatedContent || renderDefaultTranslated(translated)}
+              {translatedContent || renderDefaultTranslated(translated, !originalTitle)}
             </>
           ) : (
             <div className="space-y-6">
@@ -246,6 +254,11 @@ export function BilingualWorkReader({
               <div className="pb-2 border-b border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--primary)]">
                 {labels.modeOriginal}
               </div>
+              {originalTitle && (
+                <h3 className="font-display text-lg font-black text-[var(--foreground)]">
+                  {originalTitle}
+                </h3>
+              )}
               {originalContent}
             </div>
 
@@ -257,7 +270,7 @@ export function BilingualWorkReader({
               <div className="pb-2 border-b border-[var(--border-subtle)] text-xs font-mono font-bold text-[var(--accent-gold)]">
                 {labels.modeTranslated}
               </div>
-              {translatedContent || renderDefaultTranslated(translated)}
+              {translatedContent || renderDefaultTranslated(translated, !originalTitle)}
             </div>
           </div>
         </div>

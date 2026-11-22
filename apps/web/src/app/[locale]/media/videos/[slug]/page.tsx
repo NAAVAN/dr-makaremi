@@ -46,7 +46,7 @@ export async function generateMetadata({
   });
   const trans = resolved.originalRecord || vid.translations?.[0];
 
-  const title = trans?.title || vid.slug;
+  const title = resolved.translatedRecord?.title || trans?.title || vid.slug;
   const description = trans?.description?.slice(0, 160) || title;
 
   return buildTrilingualMetadata({
@@ -81,7 +81,7 @@ export default async function VideoDetailPage({
   });
   const trans = resolved.originalRecord || vid.translations?.[0];
 
-  const title = trans?.title || vid.slug;
+  const title = resolved.translatedRecord?.title || trans?.title || vid.slug;
   const jsonLdGraph = buildFullGraph({
     locale,
     items: [
@@ -109,7 +109,7 @@ export default async function VideoDetailPage({
           className="flex items-center gap-1 hover:text-[var(--primary)] transition-colors font-medium"
         >
           {isFa ? <ArrowRight size={14} /> : <ArrowLeft size={14} />}
-          <span>{isFa ? 'بازگشت به آرشیو رسانه' : 'Retour aux médias'}</span>
+          <span>{isFa ? 'بازگشت به آرشیو رسانه' : isFr ? 'Retour aux médias' : 'Back to Media & Videos'}</span>
         </Link>
 
         <Link
@@ -160,9 +160,10 @@ export default async function VideoDetailPage({
         originalLang={resolved.originalLang}
         siteLocale={locale}
         translated={resolved.translatedRecord}
+        originalTitle={trans?.title}
         originalContent={
           <SpeechTranscriptView
-            title={title}
+            title={trans?.title || vid.slug}
             transcriptMarkdown={trans?.transcript_markdown}
             description={trans?.description}
             locale={locale}

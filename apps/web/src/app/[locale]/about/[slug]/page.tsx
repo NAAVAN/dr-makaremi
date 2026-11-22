@@ -66,6 +66,7 @@ export default async function ArchiveReferencePageDetail({
     siteLocale: locale,
   });
   const trans = resolved.originalRecord || page.translations?.[0];
+  const displayTitle = resolved.translatedRecord?.title || trans?.title || page.slug;
 
   return (
     <article className="max-w-4xl mx-auto space-y-10">
@@ -111,7 +112,7 @@ export default async function ArchiveReferencePageDetail({
         </div>
 
         <h1 className="text-2xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
-          {trans?.title || page.slug}
+          {displayTitle}
         </h1>
       </header>
 
@@ -119,6 +120,7 @@ export default async function ArchiveReferencePageDetail({
         originalLang={resolved.originalLang}
         siteLocale={locale}
         translated={resolved.translatedRecord}
+        originalTitle={trans?.title}
         originalContent={
           <section
             aria-label={isFa ? 'متن سند آرشیوی' : isFr ? 'Document d’archive' : 'Archival Document'}
