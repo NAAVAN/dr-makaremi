@@ -7,6 +7,7 @@ import { getExhibitions, getArtworks, THEMATIC_GALLERIES } from '@/lib/cms';
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { ArtworksVaultShowcase } from '@/components/gallery/ArtworksVaultShowcase';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -272,7 +273,7 @@ export default async function GalleryOverviewPage({
                     </h3>
 
                     <p className="text-xs text-[var(--foreground-muted)] line-clamp-3 leading-relaxed break-words">
-                      {trans?.curatorial_statement_markdown}
+                      {cleanSummaryWithoutRawUrls(trans?.curatorial_statement_markdown)}
                     </p>
                   </div>
 

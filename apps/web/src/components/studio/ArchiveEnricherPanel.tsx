@@ -19,6 +19,7 @@ import type {
 } from '@makaremi/shared';
 import { AccessibleListbox, type ListboxOption } from './AccessibleListbox';
 import { StandardUploadDropzone } from './StandardUploadDropzone';
+import { DestinationLinkButton } from '@/components/common/DestinationLinkButton';
 
 const COLLECTION_OPTIONS: ListboxOption<string>[] = [
   { value: 'all', label: 'همه آثار آرشیو (۱٬۰۶۸ اثر)' },
@@ -324,9 +325,8 @@ export function ArchiveEnricherPanel({ onEnrichedSuccess }: ArchiveEnricherPanel
                     </div>
                   ))}
                   {selectedWork.enrichment.links.map((l) => (
-                    <div key={l.id} className="flex items-center gap-2 text-[var(--foreground-muted)]">
-                      <ExternalLink size={13} className="text-[var(--primary)] shrink-0" />
-                      <span>{l.label}: {l.url}</span>
+                    <div key={l.id} className="flex flex-wrap items-center gap-2 text-[var(--foreground-muted)]">
+                      <DestinationLinkButton href={l.url} label={l.label} locale="fa" compact />
                     </div>
                   ))}
                   {selectedWork.enrichment.documents.map((d) => (

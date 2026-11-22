@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Search, Calendar, Video, FileText, ChevronLeft, ChevronRight, Film } from 'lucide-react';
 import type { ContentPillar, VideoSpeech, Locale } from '@makaremi/shared';
 import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
+import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
 
 interface PaginatedVideosGridProps {
@@ -388,10 +389,11 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
               isShowingTranslated && resolved.translatedRecord?.title
                 ? resolved.translatedRecord.title
                 : origTrans?.title || vid.slug;
-            const displayDesc =
+            const displayDesc = cleanSummaryWithoutRawUrls(
               isShowingTranslated && resolved.translatedRecord?.summary
                 ? resolved.translatedRecord.summary
-                : origTrans?.description;
+                : origTrans?.description
+            );
             const activeDir = isShowingTranslated && resolved.hasTranslation
               ? getLanguageDir(locale)
               : getLanguageDir(resolved.originalLang);

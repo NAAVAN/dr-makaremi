@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Locale } from '@makaremi/shared';
 import { HelpCircle, CheckCircle2, BarChart3 } from 'lucide-react';
+import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 
 interface AeoKeyTakeawaysProps {
   slug: string;
@@ -50,7 +51,7 @@ export function AeoKeyTakeaways({ slug, locale, title, executiveSummary }: AeoKe
             <strong className="text-[var(--foreground)]">
               {isFa ? 'پاسخ فشرده مؤلف:' : isFr ? 'Réponse Synthétique :' : 'Core Direct Answer:'}{' '}
             </strong>
-            {executiveSummary}
+            {cleanSummaryWithoutRawUrls(executiveSummary)}
           </p>
         </div>
 

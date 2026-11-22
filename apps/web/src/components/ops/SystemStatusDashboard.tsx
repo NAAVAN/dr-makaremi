@@ -113,9 +113,9 @@ export function SystemStatusDashboard({ locale }: SystemStatusDashboardProps) {
       title: tx('گیت ۱: یکپارچگی تک‌گامی دامنه‌ها', 'Porte 1: Canonicalisation Domaine', 'Gate 1: Single-Hop Domain Canonicalisation'),
       status: '100% Passed',
       desc: tx(
-        'انتقال ۳۰۱ یک‌گامی دامنه‌های makaremi.net و com به https://makaremi.com',
-        'Redirection 301 directe des domaines historiques vers https://makaremi.com',
-        '301 single-hop redirect from all legacy domains to https://makaremi.com'
+        'انتقال ۳۰۱ یک‌گامی دامنه‌های قدیمی به دامنه اصلی رسمی',
+        'Redirection 301 directe des anciens domaines vers le domaine officiel',
+        '301 single-hop redirect from legacy domains to the canonical domain'
       ),
       icon: Radio,
     },

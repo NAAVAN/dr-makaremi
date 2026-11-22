@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import type { Locale } from '@makaremi/shared';
+import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -314,7 +315,7 @@ export function SearchModal({ isOpen, onClose, locale }: SearchModalProps) {
                     </span>
                   </div>
                   <p className="text-xs text-[var(--foreground-muted)] line-clamp-1 mt-1 leading-relaxed">
-                    {item.snippet}
+                    {cleanSummaryWithoutRawUrls(item.snippet)}
                   </p>
                 </div>
               </Link>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import type { ArticleDraft, OmnichannelPublishResult } from '@/lib/agents/types';
 import { generateSvgQuoteCard } from '@/lib/agents/quote-card-generator';
+import { DestinationLinkButton } from '@/components/common/DestinationLinkButton';
 
 interface Props {
   isOpen: boolean;
@@ -154,9 +155,14 @@ export default function OmnichannelPreviewModal({
                 <p className="mt-3 text-emerald-400 font-mono text-[11px]">
                   &bull; Certified Ed25519 Digest: {currentDigest.slice(0, 32)}...
                 </p>
-                <p className="mt-1 text-sky-400">
-                  https://makaremi.com/fa/articles/{draft?.slug || 'sample'}
-                </p>
+                <div className="mt-2">
+                  <DestinationLinkButton
+                    href={`https://makaremi.com/fa/articles/${draft?.slug || 'sample'}`}
+                    label="مطالعه مقاله در وب‌سایت رسمی"
+                    locale="fa"
+                    compact
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -179,11 +185,16 @@ export default function OmnichannelPreviewModal({
 
 ${currentSummary}
 
-📌 پیوند مطالعه و استنادها:
-https://makaremi.com/fa/articles/${draft?.slug || 'sample'}
-
 #روانکاوی #لکان #دکتر_حسن_مکارمی #حقوق_بشر`}
               </p>
+              <div className="mt-3">
+                <DestinationLinkButton
+                  href={`https://makaremi.com/fa/articles/${draft?.slug || 'sample'}`}
+                  label="پیوند مطالعه و استنادها در وب‌سایت"
+                  locale="fa"
+                  compact
+                />
+              </div>
             </div>
           )}
 

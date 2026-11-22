@@ -5,6 +5,9 @@ import { BookOpen, Columns2, Languages, ShieldCheck } from 'lucide-react';
 import type { Locale } from '@makaremi/shared';
 import { getLanguageDir, getLanguageLabel } from '@/lib/work-language';
 import type { StoredWorkTranslation } from '@/lib/translations-store';
+import { renderSafeMarkdown } from '@/lib/markdown';
+import { cleanSummaryWithoutRawUrls, extractUrlsFromText } from '@/lib/link-labeler';
+import { DestinationLinkButton } from '@/components/common/DestinationLinkButton';
 
 export type BilingualViewMode = 'original' | 'translated' | 'side-by-side';
 
@@ -81,43 +84,54 @@ export function BilingualWorkReader({
         : `The full International English scholarly translation of this work (using consistent British/UNESCO spelling) is scheduled in our trilingual editorial pipeline (Waves 3–5). The untouched original text remains available below.`,
   };
 
-  const renderDefaultTranslated = (tr: StoredWorkTranslation) => (
-    <div dir={targetDir} lang={siteLocale} className="space-y-5">
-      {tr.title && (
-        <h2 className="font-display text-xl sm:text-2xl font-black text-[var(--foreground)]">
-          {tr.title}
-        </h2>
-      )}
-      {tr.summary && (
-        <p className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-sm sm:text-base italic text-[var(--foreground)] leading-relaxed">
-          {tr.summary}
-        </p>
-      )}
-      {tr.verses && tr.verses.length > 0 && (
-        <div className="space-y-4 py-2">
-          {tr.verses.map((v) => (
-            <div
-              key={v.line_index}
-              className="p-3.5 rounded-xl bg-[var(--surface-artifact)] border border-[var(--border-subtle)] space-y-1 font-serif text-base text-[var(--foreground)] leading-loose"
-            >
-              <p>{v.hemistich_a}</p>
-              {v.hemistich_b && <p className="text-[var(--foreground-muted)]">{v.hemistich_b}</p>}
-            </div>
-          ))}
-        </div>
-      )}
-      {tr.body_markdown && (
-        <div className="font-serif text-base sm:text-lg leading-loose text-[var(--foreground)] space-y-4">
-          {tr.body_markdown
-            .split(/\n{2,}/)
-            .filter(Boolean)
-            .map((para, idx) => (
-              <p key={idx}>{para.trim()}</p>
+  const renderDefaultTranslated = (tr: StoredWorkTranslation) => {
+    const cleanSum = cleanSummaryWithoutRawUrls(tr.summary);
+    const summaryUrls = extractUrlsFromText(tr.summary);
+
+    return (
+      <div dir={targetDir} lang={siteLocale} className="space-y-5">
+        {tr.title && (
+          <h2 className="font-display text-xl sm:text-2xl font-black text-[var(--foreground)]">
+            {tr.title}
+          </h2>
+        )}
+        {(cleanSum || summaryUrls.length > 0) && (
+          <div className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-2.5">
+            {cleanSum && (
+              <p className="text-sm sm:text-base italic text-[var(--foreground)] leading-relaxed">
+                {cleanSum}
+              </p>
+            )}
+            {summaryUrls.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {summaryUrls.map((u) => (
+                  <DestinationLinkButton key={u} href={u} locale={siteLocale} compact />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        {tr.verses && tr.verses.length > 0 && (
+          <div className="space-y-4 py-2">
+            {tr.verses.map((v) => (
+              <div
+                key={v.line_index}
+                className="p-3.5 rounded-xl bg-[var(--surface-artifact)] border border-[var(--border-subtle)] space-y-1 font-serif text-base text-[var(--foreground)] leading-loose"
+              >
+                <p>{v.hemistich_a}</p>
+                {v.hemistich_b && <p className="text-[var(--foreground-muted)]">{v.hemistich_b}</p>}
+              </div>
             ))}
-        </div>
-      )}
-    </div>
-  );
+          </div>
+        )}
+        {tr.body_markdown && (
+          <div className="font-serif text-base sm:text-lg leading-loose text-[var(--foreground)] space-y-4">
+            {renderSafeMarkdown(tr.body_markdown, { locale: siteLocale })}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div
@@ -146,11 +160,10 @@ export function BilingualWorkReader({
             role="tab"
             aria-selected={mode === 'original'}
             onClick={() => setMode('original')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${
-              mode === 'original'
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'original'
                 ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
                 : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
-            }`}
+              }`}
           >
             <BookOpen size={13} />
             <span>{labels.modeOriginal}</span>
@@ -161,11 +174,10 @@ export function BilingualWorkReader({
             role="tab"
             aria-selected={mode === 'translated'}
             onClick={() => setMode('translated')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${
-              mode === 'translated'
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'translated'
                 ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
                 : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
-            }`}
+              }`}
           >
             <Languages size={13} />
             <span>{labels.modeTranslated}</span>
@@ -177,11 +189,10 @@ export function BilingualWorkReader({
               role="tab"
               aria-selected={mode === 'side-by-side'}
               onClick={() => setMode('side-by-side')}
-              className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${
-                mode === 'side-by-side'
+              className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${mode === 'side-by-side'
                   ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-xs'
                   : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)] hover:border-[var(--primary)]'
-              }`}
+                }`}
             >
               <Columns2 size={13} />
               <span>{labels.modeParallel}</span>

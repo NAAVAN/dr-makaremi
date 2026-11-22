@@ -12,6 +12,7 @@ import {
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import type { ContentPillar } from '@makaremi/shared';
+import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 
 const PILLAR_SLUGS: Record<Locale, string[]> = {
   fa: ['psychoanalysis', 'art', 'strategy', 'human-rights'],
@@ -265,7 +266,7 @@ export default async function PillarHubPage({
                     </Link>
                   </h3>
                   <p className="text-xs text-[var(--foreground-muted)] leading-relaxed line-clamp-3">
-                    {trans?.executive_summary}
+                    {cleanSummaryWithoutRawUrls(trans?.executive_summary)}
                   </p>
                 </div>
 

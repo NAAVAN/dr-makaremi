@@ -20,6 +20,8 @@ import type {
   TranslationWorkSummary,
 } from '@makaremi/shared';
 import { AccessibleListbox, type ListboxOption } from './AccessibleListbox';
+import { cleanSummaryWithoutRawUrls, extractUrlsFromText } from '@/lib/link-labeler';
+import { DestinationLinkButton } from '@/components/common/DestinationLinkButton';
 
 const COLLECTION_OPTIONS: ListboxOption<string>[] = [
   { value: 'all', label: 'همه کلکسیون‌ها (۱٬۰۶۸ اثر)' },
@@ -128,6 +130,7 @@ export function TranslationControlRoom({ onTranslationSaved }: TranslationContro
     if (existing) {
       setEditDraft({
         ...existing,
+        summary: cleanSummaryWithoutRawUrls(existing.summary),
         verses: existing.verses ? existing.verses.map((v) => ({ ...v })) : undefined,
       });
     } else {
@@ -451,7 +454,7 @@ export function TranslationControlRoom({ onTranslationSaved }: TranslationContro
                 </div>
                 {detail.originalContent.summary && (
                   <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                    {detail.originalContent.summary}
+                    {cleanSummaryWithoutRawUrls(detail.originalContent.summary)}
                   </p>
                 )}
                 {detail.originalContent.verses && detail.originalContent.verses.length > 0 ? (
@@ -465,10 +468,23 @@ export function TranslationControlRoom({ onTranslationSaved }: TranslationContro
                   </div>
                 ) : detail.originalContent.body_markdown ? (
                   <p className="text-xs text-[var(--foreground-muted)] leading-relaxed max-h-36 overflow-y-auto whitespace-pre-wrap">
-                    {detail.originalContent.body_markdown.slice(0, 1400)}
-                    {detail.originalContent.body_markdown.length > 1400 ? '…' : ''}
+                    {cleanSummaryWithoutRawUrls(detail.originalContent.body_markdown).slice(0, 1400)}
+                    {cleanSummaryWithoutRawUrls(detail.originalContent.body_markdown).length > 1400 ? '…' : ''}
                   </p>
                 ) : null}
+                {(() => {
+                  const origUrls = extractUrlsFromText(
+                    `${detail.originalContent.summary || ''}\n${detail.originalContent.body_markdown || ''}`
+                  );
+                  if (origUrls.length === 0) return null;
+                  return (
+                    <div className="flex flex-wrap gap-2 pt-2 border-t border-[var(--border-subtle)]">
+                      {origUrls.map((u) => (
+                        <DestinationLinkButton key={u} href={u} locale={detail.originalLocale} compact />
+                      ))}
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Target Language Switcher Tabs */}
@@ -596,6 +612,20 @@ export function TranslationControlRoom({ onTranslationSaved }: TranslationContro
                       }
                       className="w-full rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-medium)] p-3.5 text-sm leading-relaxed text-[var(--foreground)]"
                     />
+                    {(() => {
+                      const bodyUrls = extractUrlsFromText(editDraft.body_markdown || '');
+                      if (bodyUrls.length === 0) return null;
+                      return (
+                        <div className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-2.5">
+                          <span className="text-[11px] font-bold text-[var(--foreground-muted)]">
+                            پیش‌نمایش دکمه‌های پیوند (در سایت با نام مقصد نمایش داده می‌شوند):
+                          </span>
+                          {bodyUrls.map((u) => (
+                            <DestinationLinkButton key={u} href={u} locale={editingLocale} compact />
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
 

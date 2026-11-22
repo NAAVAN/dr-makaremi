@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Search, FileText, ChevronLeft, ChevronRight, FileDown } from 'lucide-react';
 import type { Article, ContentPillar, Locale } from '@makaremi/shared';
 import { getLanguageDir, resolveWorkTranslation } from '@/lib/work-language';
+import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 import { WorkLanguageBar } from '@/components/i18n/WorkLanguageBar';
 
 interface PaginatedArticlesGridProps {
@@ -199,11 +200,10 @@ export function PaginatedArticlesGrid({
                     setCategoryFilter('all');
                     setPage(1);
                   }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer tabular-nums ${
-                    active
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer tabular-nums ${active
                       ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
                       : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
-                  }`}
+                    }`}
                 >
                   {getPillarDisplayLabel(pKey, locale)} ({pillarCounts[pKey] || 0})
                 </button>
@@ -249,11 +249,10 @@ export function PaginatedArticlesGrid({
                   setLangFilter(code);
                   setPage(1);
                 }}
-                className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
-                  langFilter === code
+                className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${langFilter === code
                     ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
                     : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
-                }`}
+                  }`}
               >
                 {code === 'all' ? tx('همه', 'Tous', 'All') : code.toUpperCase()}
               </button>
@@ -270,11 +269,10 @@ export function PaginatedArticlesGrid({
                 setCategoryFilter('all');
                 setPage(1);
               }}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors cursor-pointer ${
-                categoryFilter === 'all'
+              className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors cursor-pointer ${categoryFilter === 'all'
                   ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
                   : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
-              }`}
+                }`}
             >
               {tx('همه دسته‌بندی‌ها', 'Toutes catégories', 'All Categories')}
             </button>
@@ -286,11 +284,10 @@ export function PaginatedArticlesGrid({
                   setCategoryFilter(cat);
                   setPage(1);
                 }}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer tabular-nums ${
-                  categoryFilter.toLowerCase() === cat.toLowerCase()
+                className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer tabular-nums ${categoryFilter.toLowerCase() === cat.toLowerCase()
                     ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
                     : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
-                }`}
+                  }`}
               >
                 {cat} ({count})
               </button>
@@ -353,10 +350,11 @@ export function PaginatedArticlesGrid({
               isShowingTranslated && resolved.translatedRecord?.title
                 ? resolved.translatedRecord.title
                 : resolved.originalRecord?.title || art.slug;
-            const displaySummary =
+            const displaySummary = cleanSummaryWithoutRawUrls(
               isShowingTranslated && resolved.translatedRecord?.summary
                 ? resolved.translatedRecord.summary
-                : resolved.originalRecord?.executive_summary;
+                : resolved.originalRecord?.executive_summary
+            );
             const activeDir = isShowingTranslated && resolved.hasTranslation
               ? getLanguageDir(locale)
               : getLanguageDir(resolved.originalLang);

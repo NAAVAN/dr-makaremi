@@ -28,6 +28,7 @@ import { MuseumHeroSection } from '@/components/home/MuseumHeroSection';
 import { BorromeanKnotWidget } from '@/components/home/BorromeanKnotWidget';
 import { EditorialReveal } from '@/components/home/EditorialReveal';
 import type { Locale } from '@makaremi/shared';
+import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 
 export default async function HomePage({
   params,
@@ -742,7 +743,7 @@ export default async function HomePage({
                       </h3>
 
                       <p className="font-serif text-sm sm:text-base text-[var(--foreground-muted)] leading-relaxed line-clamp-4">
-                        {trans?.executive_summary}
+                        {cleanSummaryWithoutRawUrls(trans?.executive_summary)}
                       </p>
                     </div>
 
@@ -801,7 +802,7 @@ export default async function HomePage({
                       </h3>
 
                       <p className="text-xs text-[var(--foreground-muted)] leading-relaxed line-clamp-2">
-                        {trans?.executive_summary}
+                        {cleanSummaryWithoutRawUrls(trans?.executive_summary)}
                       </p>
                     </article>
                   );

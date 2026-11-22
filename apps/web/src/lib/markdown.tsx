@@ -1,9 +1,11 @@
 import React from 'react';
-import type { LacanianGlossaryTerm } from '@makaremi/shared';
+import type { LacanianGlossaryTerm, Locale } from '@makaremi/shared';
+import { DestinationLinkButton } from '@/components/common/DestinationLinkButton';
 
 export interface RenderMarkdownOptions {
   glossaryTerms?: LacanianGlossaryTerm[];
   onTermClick?: (term: LacanianGlossaryTerm) => void;
+  locale?: Locale;
 }
 
 /**
@@ -169,32 +171,33 @@ function renderInlineText(
   options: RenderMarkdownOptions,
   keyPrefix: string
 ): React.ReactNode[] {
-  // 1. Process inline links [title](url) safely
-  const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g;
+  // Match either explicit Markdown links [label](url) OR bare http(s):// URLs
+  const linkOrUrlRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)|(https?:\/\/[^\s<>)\]"']+)/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
+  const activeLocale = options.locale || 'fa';
 
-  while ((match = linkRegex.exec(text)) !== null) {
+  while ((match = linkOrUrlRegex.exec(text)) !== null) {
     if (match.index > lastIndex) {
       const beforeText = text.substring(lastIndex, match.index);
       parts.push(...processFormattingAndGlossary(beforeText, options, `${keyPrefix}-pre-${lastIndex}`));
     }
-    const linkTitle = match[1];
-    const linkUrl = match[2];
-    const isExternal = linkUrl.startsWith('http');
+    const rawMdLabel = match[1];
+    const rawMdUrl = match[2];
+    const rawBareUrl = match[3];
+    const rawHref = (rawMdUrl || rawBareUrl || '').replace(/[.,;:!?]+$/, '');
+
     parts.push(
-      <a
+      <DestinationLinkButton
         key={`${keyPrefix}-link-${match.index}`}
-        href={linkUrl}
-        target={isExternal ? '_blank' : undefined}
-        rel={isExternal ? 'noopener noreferrer' : undefined}
-        className="text-[var(--primary)] underline underline-offset-4 hover:opacity-80 transition-opacity"
-      >
-        {linkTitle}
-      </a>
+        href={rawHref}
+        label={rawMdLabel}
+        locale={activeLocale}
+        compact
+      />
     );
-    lastIndex = linkRegex.lastIndex;
+    lastIndex = linkOrUrlRegex.lastIndex;
   }
 
   if (lastIndex < text.length) {

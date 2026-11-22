@@ -5,6 +5,8 @@ import { ContentIntegrityBadge } from './ContentIntegrityBadge';
 import { AeoKeyTakeaways } from './AeoKeyTakeaways';
 import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
 import { renderSafeMarkdown } from '@/lib/markdown';
+import { cleanSummaryWithoutRawUrls, extractUrlsFromText } from '@/lib/link-labeler';
+import { DestinationLinkButton } from '@/components/common/DestinationLinkButton';
 import { resolveWorkTranslation } from '@/lib/work-language';
 import type { Article, ArticleTranslation, LacanianGlossaryTerm, Locale } from '@makaremi/shared';
 
@@ -33,7 +35,9 @@ export function ArticleReader({
 
   const orig = resolved.originalRecord || translation;
   const title = orig?.title || article.slug;
-  const summary = orig?.executive_summary || '';
+  const rawSummary = orig?.executive_summary || '';
+  const summary = cleanSummaryWithoutRawUrls(rawSummary);
+  const summaryLinks = extractUrlsFromText(rawSummary);
   const body = orig?.body_markdown || '';
   const dateStr = article.published_at || article.created_at;
   const pillarRoute =
@@ -137,20 +141,27 @@ export function ArticleReader({
         translated={resolved.translatedRecord}
         originalContent={
           <div className="space-y-8">
-            {summary && (
+            {(summary || summaryLinks.length > 0) && (
               <section
                 aria-label={isFa ? 'چکیده مدیریتی' : isFr ? 'Résumé analytique' : 'Executive Summary'}
                 className="aeo-summary-box"
               >
-                <blockquote className="executive-summary p-6 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] shadow-sm text-base sm:text-lg italic leading-relaxed text-[var(--foreground)]">
-                  <span className="block text-xs font-bold uppercase tracking-wider text-[var(--primary)] not-italic mb-2">
+                <blockquote className="executive-summary p-6 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] shadow-sm text-base sm:text-lg italic leading-relaxed text-[var(--foreground)] space-y-3">
+                  <span className="block text-xs font-bold uppercase tracking-wider text-[var(--primary)] not-italic">
                     {isFa
                       ? 'چکیده مدیریتی و یافته‌های کلیدی:'
                       : isFr
                         ? 'Résumé analytique :'
                         : 'Executive Summary:'}
                   </span>
-                  {summary}
+                  {summary && <p>{summary}</p>}
+                  {summaryLinks.length > 0 && (
+                    <div className="not-italic flex flex-wrap gap-2">
+                      {summaryLinks.map((u) => (
+                        <DestinationLinkButton key={u} href={u} locale={locale} compact />
+                      ))}
+                    </div>
+                  )}
                 </blockquote>
               </section>
             )}
@@ -159,20 +170,28 @@ export function ArticleReader({
               aria-label={isFa ? 'متن اصلی مقاله' : isFr ? 'Texte intégral de l’article' : 'Article Body'}
               className="article-body text-base sm:text-lg leading-loose text-[var(--foreground)] font-serif space-y-6 break-words"
             >
-              {renderSafeMarkdown(body, { glossaryTerms })}
+              {renderSafeMarkdown(body, { glossaryTerms, locale })}
             </section>
           </div>
         }
       />
 
       {/* Academic Citation Footer */}
-      <footer className="mt-12 pt-6 border-t border-[var(--border-subtle)] rounded-2xl bg-[var(--surface-sunken)] p-6 text-xs text-[var(--foreground-muted)] space-y-2">
+      <footer className="mt-12 pt-6 border-t border-[var(--border-subtle)] rounded-2xl bg-[var(--surface-sunken)] p-6 text-xs text-[var(--foreground-muted)] space-y-3">
         <span className="font-bold text-[var(--foreground)] block">
           {isFa ? 'ارجاع علمی پیشنهادی (Citation):' : isFr ? 'Citation académique suggérée :' : 'Suggested Academic Citation:'}
         </span>
         <p className="font-mono text-[11px] leading-relaxed select-all bg-[var(--surface-card)] p-3 rounded-lg border border-[var(--border-subtle)]">
-          Makaremi, H. ({dateStr.slice(0, 4)}). &quot;{title}&quot;. Official Digital Archive, https://makaremi.com/{locale}/{pillarRoute}/articles/{article.slug}
+          Makaremi, H. ({dateStr.slice(0, 4)}). &quot;{title}&quot;. Dr. Hassan Makaremi Official Digital Archive.
         </p>
+        <div>
+          <DestinationLinkButton
+            href={`/${locale}/${pillarRoute}/articles/${article.slug}`}
+            label={isFa ? 'پیوند مرجع و ارجاع مقاله' : isFr ? 'Lien de référence de l’article' : 'Article Permalink'}
+            locale={locale}
+            compact
+          />
+        </div>
       </footer>
     </article>
   );
