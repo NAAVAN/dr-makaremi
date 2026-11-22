@@ -185,11 +185,14 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
       if (selectedTheme !== 'all' && !(vid.themes || []).includes(selectedTheme)) {
         return false;
       }
-      if (onlyTranscript && !trans?.transcript_markdown) {
+      if (onlyTranscript && !vid.translations?.[0]?.transcript_markdown) {
         return false;
       }
       if (!q) return true;
-      const hay = `${trans?.title || ''} ${trans?.description || ''} ${(vid.themes || []).join(' ')}`.toLowerCase();
+      const allTexts = (vid.translations || [])
+        .map((t) => `${t.title || ''} ${t.description || ''}`)
+        .join(' ');
+      const hay = `${allTexts} ${(vid.themes || []).join(' ')}`.toLowerCase();
       return hay.includes(q);
     });
   }, [videos, locale, query, selectedSeries, selectedPillar, selectedTheme, onlyTranscript]);
@@ -224,8 +227,8 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                   setPage(1);
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer tabular-nums ${isSelected
-                    ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
-                    : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
+                  ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
+                  : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
                   }`}
               >
                 {s.label[locale]} ({count})
@@ -286,8 +289,8 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
               setPage(1);
             }}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer shrink-0 ${onlyTranscript
-                ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
-                : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)]'
+              ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-transparent'
+              : 'bg-[var(--surface-card)] text-[var(--foreground)] border-[var(--border-subtle)]'
               }`}
           >
             {tx('دارای متن پیاده‌شده', 'Avec transcription', 'With Transcript')}
@@ -303,8 +306,8 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                 setPage(1);
               }}
               className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors cursor-pointer ${selectedTheme === 'all'
-                  ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
-                  : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]'
+                ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
+                : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]'
                 }`}
             >
               {tx(`همه موضوعات (${videos.length})`, `Tous (${videos.length})`, `All Topics (${videos.length})`)}
@@ -318,8 +321,8 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                   setPage(1);
                 }}
                 className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer ${selectedTheme === theme
-                    ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
-                    : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
+                  ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
+                  : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)]'
                   }`}
               >
                 {theme}

@@ -19,7 +19,7 @@ const GLOSSARY_PATH = path.join(ROOT, 'packages', 'shared', 'src', 'data', 'glos
 const SHARD_ROOT =
   'C:\\Users\\Acer\\.gemini\\antigravity\\brain\\dee33ca8-8211-48b8-b73d-9681c717f163\\scratch\\translation-shards';
 
-const COLLECTIONS = ['exhibitions', 'artworks', 'books', 'pages', 'articles', 'poems'];
+const COLLECTIONS = ['exhibitions', 'artworks', 'books', 'pages', 'articles', 'poems', 'videos'];
 
 function readJson(p, fb) {
   if (!fs.existsSync(p)) return fb;
@@ -36,11 +36,14 @@ function mergeOutputs() {
   const urlMaps = {};
   for (const col of COLLECTIONS) {
     stores[col] = readJson(path.join(TRANS_DIR, `${col}.json`), {});
-    urlMaps[col] = readJson(path.join(SHARD_ROOT, 'pack-a', 'url-maps', `${col}.json`), {});
+    const mapA = readJson(path.join(SHARD_ROOT, 'pack-a', 'url-maps', `${col}.json`), {});
+    const mapC = readJson(path.join(SHARD_ROOT, 'pack-c', 'url-maps', `${col}.json`), {});
+    const mapD = readJson(path.join(SHARD_ROOT, 'pack-d', 'url-maps', `${col}.json`), {});
+    urlMaps[col] = { ...mapA, ...mapC, ...mapD };
   }
 
   const grouped = new Map();
-  for (const packName of ['pack-a', 'pack-b']) {
+  for (const packName of ['pack-a', 'pack-b', 'pack-c', 'pack-d']) {
     const outDir = path.join(SHARD_ROOT, packName, 'out');
     if (!fs.existsSync(outDir)) continue;
     const outFiles = fs.readdirSync(outDir).filter((f) => f.endsWith('.json')).sort();
@@ -214,6 +217,8 @@ function verifyAll() {
             'description_markdown',
             'body_markdown',
             'synopsis',
+            'description',
+            'transcript_markdown',
           ]) {
             if (typeof srcTrans[bodyField] === 'string' && srcTrans[bodyField].trim().length > 20) {
               if (typeof entry[bodyField] !== 'string' || entry[bodyField].trim().length < 5) {
@@ -253,6 +258,6 @@ function verifyAll() {
 const shouldMerge = process.argv.includes('--merge');
 if (shouldMerge) {
   const n = mergeOutputs();
-  console.log(`Merged ${n} total translated locale records across Packs A & B`);
+  console.log(`Merged ${n} total translated locale records across Packs A-D`);
 }
 verifyAll();
