@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Wifi, WifiOff, Check, Bookmark, Radio } from 'lucide-react';
 import { saveArticleOffline } from '@/lib/pwa';
 import { MirrorSwitcher } from './MirrorSwitcher';
@@ -11,9 +12,14 @@ interface PwaOfflineBarProps {
 }
 
 export function PwaOfflineBar({ locale }: PwaOfflineBarProps) {
+  const pathname = usePathname();
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [saved, setSaved] = useState<boolean>(false);
   const [mirrorOpen, setMirrorOpen] = useState<boolean>(false);
+
+  const isStudioRoute = Boolean(
+    pathname && (pathname.includes('/dashboard') || pathname.includes('/curation-studio'))
+  );
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
@@ -48,6 +54,10 @@ export function PwaOfflineBar({ locale }: PwaOfflineBarProps) {
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
+
+  if (isStudioRoute) {
+    return null;
+  }
 
   return (
     <>

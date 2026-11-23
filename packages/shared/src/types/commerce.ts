@@ -240,3 +240,38 @@ export interface ArtworkAuthenticityCertificate {
   publicKeyUrl: string;
   decretMarcusStatementFr: string;
 }
+
+export interface CommerceArchivePlateOption {
+  id: number;
+  title: string;
+  imageUrl: string;
+}
+
+export interface CommerceArchiveWorkOption {
+  collection: CommerceCatalogItem['collection'];
+  slug: string;
+  title: LocalizedTextMap;
+  year?: number | null;
+  imageUrl?: string | null;
+  medium?: string | null;
+  dimensions?: string | null;
+  publisherName?: string | null;
+  isbn?: string | null;
+  pdfUrls?: string[];
+  externalLinks?: Array<{ platform: string; url: string; label: string }>;
+  plates?: CommerceArchivePlateOption[];
+}
+
+export interface CommerceArchiveOptionsPayload {
+  counts: {
+    artworks: number;
+    artworkPlates: number;
+    books: number;
+    poems: number;
+    videos: number;
+  };
+  artworks: CommerceArchiveWorkOption[];
+  books: CommerceArchiveWorkOption[];
+  poems: CommerceArchiveWorkOption[];
+  videos: CommerceArchiveWorkOption[];
+}

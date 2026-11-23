@@ -14,16 +14,15 @@ import type {
 import {
   readCommerceJson,
   writeCommerceJson,
-  loadVaultArtworks,
-  loadVaultBooks,
 } from '@/lib/vault-loader';
+import { getArtworks, getBooks, getPoems, getVideoSpeeches } from '@/lib/cms';
 import {
   computeCanonicalSha256,
   OFFICIAL_DR_MAKAREMI_PUBLIC_KEY,
   signWithEd25519,
   verifyEd25519Signature,
 } from '@/lib/crypto';
-import { resolveProxiedMediaUrl } from '@/lib/media-url';
+import { resolveProxiedMediaUrl, resolveVideoCoverUrl } from '@/lib/media-url';
 import {
   ensureCommerceSchema,
   getNeonSql,
@@ -32,6 +31,8 @@ import {
 
 const LEGAL_CONFIG_FILE = 'legal-config.json';
 const CATALOG_FILE = 'catalog.json';
+const CATALOG_OVERRIDES_FILE = 'runtime-catalog-overrides.json';
+const CATALOG_DELETED_FILE = 'runtime-catalog-deleted.json';
 const ORDERS_FILE = 'runtime-orders.json';
 const WITHDRAWALS_FILE = 'runtime-withdrawals.json';
 const CERTIFICATES_FILE = 'runtime-certificates.json';
@@ -180,15 +181,21 @@ export async function saveCommerceLegalConfig(
   return next;
 }
 
-function hydrateCatalogWithVaultAndLocks(
+async function hydrateCatalogWithVaultAndLocks(
   items: CommerceCatalogItem[],
   soldUniqueSkus: Set<string>,
   reservedUniqueSkus: Set<string>
-): CommerceCatalogItem[] {
-  const artworks = loadVaultArtworks();
-  const books = loadVaultBooks();
+): Promise<CommerceCatalogItem[]> {
+  const [artworks, books, poems, videos] = await Promise.all([
+    getArtworks('fa'),
+    getBooks('fa'),
+    getPoems('fa'),
+    getVideoSpeeches('fa'),
+  ]);
   const artworkMap = new Map(artworks.map((a) => [a.slug, a]));
   const bookMap = new Map(books.map((b) => [b.slug, b]));
+  const poemMap = new Map(poems.map((p) => [p.slug, p]));
+  const videoMap = new Map(videos.map((v) => [v.slug, v]));
 
   return items.map((item) => {
     let resolvedImageUrl = item.imageUrl || null;
@@ -203,6 +210,14 @@ function hydrateCatalogWithVaultAndLocks(
       } else if (item.collection === 'books') {
         const book = bookMap.get(item.slug);
         resolvedImageUrl = resolveProxiedMediaUrl(book?.cover_image_url, 'book', item.title.fr);
+      } else if (item.collection === 'poems') {
+        const poem = poemMap.get(item.slug);
+        resolvedImageUrl = poem?.artwork_image_url
+          ? resolveProxiedMediaUrl(poem.artwork_image_url, 'art', item.title.fr)
+          : null;
+      } else if (item.collection === 'videos') {
+        const video = videoMap.get(item.slug);
+        resolvedImageUrl = video ? resolveVideoCoverUrl(video, item.title.fr) : null;
       }
     }
 
@@ -226,6 +241,29 @@ function hydrateCatalogWithVaultAndLocks(
   });
 }
 
+function mergeBaseAndOverrides(
+  baseItems: CommerceCatalogItem[],
+  overridesMap: Record<string, CommerceCatalogItem>,
+  deletedSkus: Set<string>
+): CommerceCatalogItem[] {
+  const baseSkuSet = new Set(baseItems.map((i) => i.sku));
+  const newlyAdded: CommerceCatalogItem[] = [];
+  for (const [sku, overrideItem] of Object.entries(overridesMap)) {
+    if (!baseSkuSet.has(sku) && !deletedSkus.has(sku)) {
+      newlyAdded.push(overrideItem);
+    }
+  }
+  newlyAdded.sort((a, b) => Date.parse(b.updatedAt || '') - Date.parse(a.updatedAt || ''));
+
+  const mergedBase: CommerceCatalogItem[] = [];
+  for (const baseItem of baseItems) {
+    if (deletedSkus.has(baseItem.sku)) continue;
+    mergedBase.push(overridesMap[baseItem.sku] || baseItem);
+  }
+
+  return [...newlyAdded, ...mergedBase];
+}
+
 export async function getCommerceCatalog(): Promise<CommerceCatalogItem[]> {
   const baseItems = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
   const soldUniqueSkus = new Set<string>();
@@ -236,21 +274,20 @@ export async function getCommerceCatalog(): Promise<CommerceCatalogItem[]> {
       await ensureCommerceSchema();
       const sql = getNeonSql();
 
-      const [overrideRowsRaw, lockRowsRaw] = await Promise.all([
+      const [overrideRowsRaw, deletedRowsRaw, lockRowsRaw] = await Promise.all([
         sql`SELECT value_json FROM commerce_settings WHERE key = 'catalog_overrides' LIMIT 1`,
+        sql`SELECT value_json FROM commerce_settings WHERE key = 'catalog_deleted_skus' LIMIT 1`,
         sql`
           SELECT sku, status, expires_at FROM commerce_unique_locks
           WHERE status = 'sold' OR (status = 'reserved' AND (expires_at IS NULL OR expires_at > NOW()))
         `,
       ]);
       const overrideRows = overrideRowsRaw as Array<{ value_json?: Record<string, CommerceCatalogItem> }>;
+      const deletedRows = deletedRowsRaw as Array<{ value_json?: string[] }>;
       const lockRows = lockRowsRaw as Array<{ sku: string; status: string }>;
 
       const overridesMap = overrideRows[0]?.value_json || {};
-      const mergedMap = new Map(baseItems.map((i) => [i.sku, i]));
-      for (const [sku, overrideItem] of Object.entries(overridesMap)) {
-        mergedMap.set(sku, overrideItem);
-      }
+      const deletedSkus = new Set<string>(Array.isArray(deletedRows[0]?.value_json) ? deletedRows[0].value_json : []);
 
       for (const lock of lockRows) {
         if (lock.status === 'sold') soldUniqueSkus.add(lock.sku);
@@ -258,7 +295,7 @@ export async function getCommerceCatalog(): Promise<CommerceCatalogItem[]> {
       }
 
       return hydrateCatalogWithVaultAndLocks(
-        Array.from(mergedMap.values()),
+        mergeBaseAndOverrides(baseItems, overridesMap, deletedSkus),
         soldUniqueSkus,
         reservedUniqueSkus
       );
@@ -267,7 +304,9 @@ export async function getCommerceCatalog(): Promise<CommerceCatalogItem[]> {
     }
   }
 
-  // Local fallback path
+  // Local fallback path (mirrors Neon overrides + tombstones cleanly without mutating git seed catalog.json)
+  const localOverrides = readCommerceJson<Record<string, CommerceCatalogItem>>(CATALOG_OVERRIDES_FILE, {});
+  const localDeleted = new Set<string>(readCommerceJson<string[]>(CATALOG_DELETED_FILE, []));
   const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
   const now = Date.now();
   for (const ord of orders) {
@@ -286,7 +325,11 @@ export async function getCommerceCatalog(): Promise<CommerceCatalogItem[]> {
     else localUniqueSkuLocks.delete(sku);
   }
 
-  return hydrateCatalogWithVaultAndLocks(baseItems, soldUniqueSkus, reservedUniqueSkus);
+  return hydrateCatalogWithVaultAndLocks(
+    mergeBaseAndOverrides(baseItems, localOverrides, localDeleted),
+    soldUniqueSkus,
+    reservedUniqueSkus
+  );
 }
 
 export async function getCommerceProductBySku(sku: string): Promise<CommerceCatalogItem | null> {
@@ -313,25 +356,107 @@ export async function upsertCommerceCatalogItem(
   if (isNeonDatabaseConfigured()) {
     await ensureCommerceSchema();
     const sql = getNeonSql();
-    const rows = (await sql`
-      SELECT value_json FROM commerce_settings WHERE key = 'catalog_overrides' LIMIT 1
-    `) as Array<{ value_json?: Record<string, CommerceCatalogItem> }>;
-    const overrides = { ...(rows[0]?.value_json || {}) };
+    const [overrideRowsRaw, deletedRowsRaw] = await Promise.all([
+      sql`SELECT value_json FROM commerce_settings WHERE key = 'catalog_overrides' LIMIT 1`,
+      sql`SELECT value_json FROM commerce_settings WHERE key = 'catalog_deleted_skus' LIMIT 1`,
+    ]);
+    const overrideRows = overrideRowsRaw as Array<{ value_json?: Record<string, CommerceCatalogItem> }>;
+    const deletedRows = deletedRowsRaw as Array<{ value_json?: string[] }>;
+
+    const overrides = { ...(overrideRows[0]?.value_json || {}) };
     overrides[stamped.sku] = stamped;
+
     await sql`
       INSERT INTO commerce_settings (key, value_json, updated_at)
       VALUES ('catalog_overrides', ${JSON.stringify(overrides)}::jsonb, NOW())
       ON CONFLICT (key) DO UPDATE
       SET value_json = EXCLUDED.value_json, updated_at = NOW()
     `;
+
+    const existingDeleted = Array.isArray(deletedRows[0]?.value_json) ? deletedRows[0].value_json : [];
+    if (existingDeleted.includes(stamped.sku)) {
+      const nextDeleted = existingDeleted.filter((s) => s !== stamped.sku);
+      await sql`
+        INSERT INTO commerce_settings (key, value_json, updated_at)
+        VALUES ('catalog_deleted_skus', ${JSON.stringify(nextDeleted)}::jsonb, NOW())
+        ON CONFLICT (key) DO UPDATE
+        SET value_json = EXCLUDED.value_json, updated_at = NOW()
+      `;
+    }
+
     return getCommerceCatalog();
   }
 
-  const raw = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
-  const idx = raw.findIndex((x) => x.sku === stamped.sku);
-  if (idx >= 0) raw[idx] = stamped;
-  else raw.unshift(stamped);
-  writeCommerceJson(CATALOG_FILE, raw);
+  const overrides = { ...readCommerceJson<Record<string, CommerceCatalogItem>>(CATALOG_OVERRIDES_FILE, {}) };
+  overrides[stamped.sku] = stamped;
+  writeCommerceJson(CATALOG_OVERRIDES_FILE, overrides);
+
+  const deleted = readCommerceJson<string[]>(CATALOG_DELETED_FILE, []);
+  if (deleted.includes(stamped.sku)) {
+    writeCommerceJson(
+      CATALOG_DELETED_FILE,
+      deleted.filter((s) => s !== stamped.sku)
+    );
+  }
+  return getCommerceCatalog();
+}
+
+export async function deleteCommerceCatalogItem(sku: string): Promise<CommerceCatalogItem[]> {
+  const cleanSku = sku.trim();
+  if (!cleanSku) return getCommerceCatalog();
+
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const [overrideRowsRaw, deletedRowsRaw] = await Promise.all([
+      sql`SELECT value_json FROM commerce_settings WHERE key = 'catalog_overrides' LIMIT 1`,
+      sql`SELECT value_json FROM commerce_settings WHERE key = 'catalog_deleted_skus' LIMIT 1`,
+    ]);
+    const overrideRows = overrideRowsRaw as Array<{ value_json?: Record<string, CommerceCatalogItem> }>;
+    const deletedRows = deletedRowsRaw as Array<{ value_json?: string[] }>;
+
+    const overrides = { ...(overrideRows[0]?.value_json || {}) };
+    if (cleanSku in overrides) {
+      delete overrides[cleanSku];
+      await sql`
+        INSERT INTO commerce_settings (key, value_json, updated_at)
+        VALUES ('catalog_overrides', ${JSON.stringify(overrides)}::jsonb, NOW())
+        ON CONFLICT (key) DO UPDATE
+        SET value_json = EXCLUDED.value_json, updated_at = NOW()
+      `;
+    }
+
+    const baseItems = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
+    const isInBase = baseItems.some((b) => b.sku === cleanSku);
+    if (isInBase) {
+      const deletedSet = new Set<string>(
+        Array.isArray(deletedRows[0]?.value_json) ? deletedRows[0].value_json : []
+      );
+      deletedSet.add(cleanSku);
+      await sql`
+        INSERT INTO commerce_settings (key, value_json, updated_at)
+        VALUES ('catalog_deleted_skus', ${JSON.stringify(Array.from(deletedSet))}::jsonb, NOW())
+        ON CONFLICT (key) DO UPDATE
+        SET value_json = EXCLUDED.value_json, updated_at = NOW()
+      `;
+    }
+
+    return getCommerceCatalog();
+  }
+
+  const overrides = { ...readCommerceJson<Record<string, CommerceCatalogItem>>(CATALOG_OVERRIDES_FILE, {}) };
+  if (cleanSku in overrides) {
+    delete overrides[cleanSku];
+    writeCommerceJson(CATALOG_OVERRIDES_FILE, overrides);
+  }
+
+  const baseItems = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
+  if (baseItems.some((b) => b.sku === cleanSku)) {
+    const deletedSet = new Set<string>(readCommerceJson<string[]>(CATALOG_DELETED_FILE, []));
+    deletedSet.add(cleanSku);
+    writeCommerceJson(CATALOG_DELETED_FILE, Array.from(deletedSet));
+  }
+
   return getCommerceCatalog();
 }
 

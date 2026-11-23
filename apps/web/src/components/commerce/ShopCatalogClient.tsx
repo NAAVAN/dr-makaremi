@@ -75,6 +75,8 @@ export function ShopCatalogClient({ products, legalConfig, locale }: ShopCatalog
   const getWorkDetailHref = (p: CommerceCatalogItem): string | null => {
     if (p.collection === 'artworks') return `/${locale}/gallery?series=${p.slug}#iiif-stage`;
     if (p.collection === 'books') return `/${locale}/books/${p.slug}`;
+    if (p.collection === 'poems') return `/${locale}/poetry/poems/${p.slug}`;
+    if (p.collection === 'videos') return `/${locale}/speeches/${p.slug}`;
     return null;
   };
 
@@ -233,9 +235,9 @@ export function ShopCatalogClient({ products, legalConfig, locale }: ShopCatalog
                   {/* Body Info */}
                   <div className="p-5 space-y-2.5">
                     <div className="flex items-center justify-between gap-2 text-[10px] font-mono text-[var(--foreground-muted)]">
-                      <span>{p.sku}</span>
-                      {p.physicalSpecs?.dimensionsCm && <span>{p.physicalSpecs.dimensionsCm}</span>}
-                      {!p.physicalSpecs?.dimensionsCm && p.year && <span>{p.year}</span>}
+                      <span dir="ltr">{p.sku}</span>
+                      {p.physicalSpecs?.dimensionsCm && <span dir="ltr">{p.physicalSpecs.dimensionsCm}</span>}
+                      {!p.physicalSpecs?.dimensionsCm && p.year && <span dir="ltr">{p.year}</span>}
                     </div>
 
                     <h2 className="text-base font-extrabold text-[var(--foreground)] leading-snug">
@@ -321,7 +323,11 @@ export function ShopCatalogClient({ products, legalConfig, locale }: ShopCatalog
                       <span>
                         {p.collection === 'artworks'
                           ? tx('بررسی بافت اثر در نمایشگر زوم عمیق IIIF', 'Examiner en zoom muséal IIIF', 'Inspect in IIIF Deep Zoom')
-                          : tx('مشاهده کتاب سه‌بعدی و فصل نمونه', 'Voir le livre 3D & extrait', 'View 3D book & sample chapter')}
+                          : p.collection === 'books'
+                            ? tx('مشاهده کتاب سه‌بعدی و فصل نمونه', 'Voir le livre 3D & extrait', 'View 3D book & sample chapter')
+                            : p.collection === 'poems'
+                              ? tx('مطالعه شعر کامل در آرشیو', 'Lire le poème dans les archives', 'Read poem in archive')
+                              : tx('مشاهده سخنرانی در آرشیو', 'Voir la conférence dans les archives', 'View lecture in archive')}
                       </span>
                     </Link>
                   )}

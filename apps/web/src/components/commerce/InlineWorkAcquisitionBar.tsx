@@ -49,9 +49,8 @@ export function InlineWorkAcquisitionBar({
 
   return (
     <div
-      className={`rounded-2xl bg-[var(--surface-card)] border border-amber-500/35 ${
-        compact ? 'p-4 space-y-3' : 'p-5 space-y-4'
-      }`}
+      className={`rounded-2xl bg-[var(--surface-card)] border border-amber-500/35 ${compact ? 'p-4 space-y-3' : 'p-5 space-y-4'
+        }`}
     >
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] pb-2.5">
         <div className="flex items-center gap-2">
@@ -93,11 +92,11 @@ export function InlineWorkAcquisitionBar({
                   {product.title[locale]}
                 </p>
                 {product.physicalSpecs?.dimensionsCm && (
-                  <p className="text-[11px] font-mono text-[var(--foreground-muted)]">
-                    {product.physicalSpecs.dimensionsCm}
-                    {product.editionSize && product.editionSize > 1
-                      ? ` • ${product.editionRemaining ?? product.editionSize}/${product.editionSize}`
-                      : ''}
+                  <p className="text-[11px] font-mono text-[var(--foreground-muted)] flex flex-wrap items-center gap-1.5">
+                    <span dir="ltr">{product.physicalSpecs.dimensionsCm}</span>
+                    {product.editionSize && product.editionSize > 1 && (
+                      <span dir="ltr">• {product.editionRemaining ?? product.editionSize}/{product.editionSize}</span>
+                    )}
                   </p>
                 )}
               </div>
@@ -111,11 +110,10 @@ export function InlineWorkAcquisitionBar({
                   <button
                     type="button"
                     onClick={() => addItem(product)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                      inCart
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${inCart
                         ? 'bg-emerald-600 text-white'
                         : 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-95'
-                    }`}
+                      }`}
                   >
                     {inCart ? <CheckCircle2 size={13} /> : <ShoppingBag size={13} />}
                     <span>

@@ -54,3 +54,5 @@ packages/shared/src/data/curator-overlays/studio-security-overrides.json
 packages/shared/src/data/commerce/runtime-orders.json
 packages/shared/src/data/commerce/runtime-withdrawals.json
 packages/shared/src/data/commerce/runtime-certificates.json
+packages/shared/src/data/commerce/runtime-catalog-overrides.json
+packages/shared/src/data/commerce/runtime-catalog-deleted.json
