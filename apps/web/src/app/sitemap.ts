@@ -46,6 +46,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/poetry', priority: 0.85, changeFrequency: 'weekly' as const },
     { path: '/hafez', priority: 0.9, changeFrequency: 'weekly' as const },
     { path: '/media', priority: 0.85, changeFrequency: 'weekly' as const },
+    { path: '/shop', priority: 0.9, changeFrequency: 'weekly' as const },
+    { path: '/legal/mentions-legales', priority: 0.4, changeFrequency: 'monthly' as const },
+    { path: '/legal/cgv', priority: 0.4, changeFrequency: 'monthly' as const },
+    { path: '/legal/confidentialite', priority: 0.4, changeFrequency: 'monthly' as const },
+    { path: '/legal/retractation', priority: 0.4, changeFrequency: 'monthly' as const },
   ];
 
   // 1. Static Pages across locales (with localized French /psychanalyse path mapping)

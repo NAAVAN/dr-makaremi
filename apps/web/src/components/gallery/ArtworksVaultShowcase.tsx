@@ -1,18 +1,21 @@
 'use client';
 
 import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Search, Images, Layers } from 'lucide-react';
+import { Search, Images, Layers, Sparkles } from 'lucide-react';
 import { IIIFDeepZoomViewer } from './IIIFDeepZoomViewer';
+import { InlineWorkAcquisitionBar } from '@/components/commerce/InlineWorkAcquisitionBar';
 import { resolveProxiedMediaUrl } from '@/lib/media-url';
-import type { Artwork, Locale } from '@makaremi/shared';
+import type { Artwork, CommerceCatalogItem, Locale } from '@makaremi/shared';
 
 interface ArtworksVaultShowcaseProps {
   artworks: Artwork[];
+  commerceProducts?: CommerceCatalogItem[];
   locale: Locale;
 }
 
-function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseProps) {
+function ArtworksVaultShowcaseInner({ artworks, commerceProducts = [], locale }: ArtworksVaultShowcaseProps) {
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
   const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
@@ -110,8 +113,8 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                     type="button"
                     onClick={() => setSelectedImageUrl(img.url)}
                     className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${viewerImage === img.url
-                        ? 'border-[var(--primary)] scale-105'
-                        : 'border-transparent opacity-75 hover:opacity-100'
+                      ? 'border-[var(--primary)] scale-105'
+                      : 'border-transparent opacity-75 hover:opacity-100'
                       }`}
                   >
                     <img
@@ -126,6 +129,45 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
               </div>
             )}
           </div>
+
+          {/* Contextual Museum Acquisition Panel for Active Series */}
+          {(() => {
+            const matched = commerceProducts.filter((p) => p.slug === activeArtwork.slug);
+            if (matched.length > 0) {
+              return (
+                <InlineWorkAcquisitionBar
+                  products={matched}
+                  locale={locale}
+                  heading={tx(
+                    `تملک اثر اصل یا چاپ موزه‌ای از مجموعه «${activeTrans?.title || activeArtwork.slug}»`,
+                    `Acquisition (Œuvre originale / Tirage Fine Art) — ${activeTrans?.title || activeArtwork.slug}`,
+                    `Acquire Original or Fine Art Print — ${activeTrans?.title || activeArtwork.slug}`
+                  )}
+                  compact
+                />
+              );
+            }
+            return (
+              <div className="p-4 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2 text-[var(--foreground-muted)]">
+                  <Sparkles size={14} className="text-amber-600 shrink-0" />
+                  <span>
+                    {tx(
+                      'علاقه‌مند به تملک اثر اصل یا سفارش چاپ موزه‌ای شماره‌دار از این مجموعه هستید؟',
+                      'Intéressé par l’acquisition d’une œuvre originale ou d’un tirage Fine Art de cette série ?',
+                      'Interested in acquiring an original piece or numbered Fine Art print from this series?'
+                    )}
+                  </span>
+                </div>
+                <Link
+                  href={`/${locale}/shop`}
+                  className="px-3.5 py-1.5 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] font-bold whitespace-nowrap"
+                >
+                  {tx('مشاهده آثار قابل تملک در فروشگاه ←', 'Voir la Boutique & Éditions →', 'Browse Shop & Editions →')}
+                </Link>
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -194,8 +236,8 @@ function ArtworksVaultShowcaseInner({ artworks, locale }: ArtworksVaultShowcaseP
                   type="button"
                   onClick={() => selectArtwork(art)}
                   className={`text-start min-w-0 rounded-2xl overflow-hidden border transition-all cursor-pointer flex flex-col justify-between bg-[var(--surface-card)] ${isSelected
-                      ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20 shadow-lg'
-                      : 'border-[var(--border-subtle)] hover:shadow-md'
+                    ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20 shadow-lg'
+                    : 'border-[var(--border-subtle)] hover:shadow-md'
                     }`}
                 >
                   <div className="aspect-[4/3] w-full bg-[var(--surface-sunken)] overflow-hidden relative">

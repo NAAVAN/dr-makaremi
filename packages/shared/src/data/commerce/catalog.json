@@ -1,0 +1,633 @@
+[
+  {
+    "sku": "ART-TRACE-ORIG-01",
+    "collection": "artworks",
+    "slug": "trace-du-temps-dans-la-calligraphie-persane",
+    "plateImageId": 728,
+    "kind": "original_artwork",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 340000,
+    "vatRateBasisPoints": 550,
+    "editionSize": 1,
+    "editionRemaining": 1,
+    "title": {
+      "fa": "اثر اصل: جای پای زمان در خوشنویسی فارسی (تابلوی شماره ۱)",
+      "fr": "Œuvre originale : Trace du temps dans la calligraphie persane (N° 1)",
+      "en": "Original Artwork: Trace of Time in Persian Calligraphy (No. 1)"
+    },
+    "subtitle": {
+      "fa": "اثر یکتای دست‌ساز با مرکب و قلم‌نی — همراه با گواهی اصالت Décret Marcus و امضای دیجیتال Ed25519",
+      "fr": "Pièce unique exécutée à la main — Certificat d'authenticité Décret Marcus & signature Ed25519",
+      "en": "Unique hand-executed piece — Décret Marcus Certificate of Authenticity & Ed25519 signature"
+    },
+    "description": {
+      "fa": "تابلوی اصل نقاشی‌خط شکسته نستعلیق نوگرا از مجموعه شاخص «جای پای زمان». ارسال ایمن موزه‌ای از پاریس به سراسر اروپا و جهان همراه با گواهی اصالت امضاشده استاد.",
+      "fr": "Œuvre calligraphique originale exécutée entièrement à la main par Dr Hassan Makaremi (Paris). Expédition assurée en caisse muséale avec certificat d'authenticité signé.",
+      "en": "Original hand-executed contemporary Persian calligraphy by Dr. Hassan Makaremi (Paris). Insured museum-grade shipping with signed Certificate of Authenticity."
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "70 × 100 cm",
+      "medium": {
+        "fa": "مرکب، رنگ‌دانه و اکریلیک روی بوم (اجرای کامل دستی)",
+        "fr": "Encre, pigments et acrylique sur toile (entièrement exécuté à la main)",
+        "en": "Ink, natural pigments & acrylic on canvas (hand-executed original)"
+      },
+      "weightGrams": 2800,
+      "framed": false,
+      "paperOrSupport": "Toile de lin galerie",
+      "signedByArtist": true,
+      "numberedEdition": false
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "9701.91",
+    "featured": true,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "ART-TRACE-PRINT-50X70",
+    "collection": "artworks",
+    "slug": "trace-du-temps-dans-la-calligraphie-persane",
+    "plateImageId": 728,
+    "kind": "fine_art_print",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 24000,
+    "vatRateBasisPoints": 2000,
+    "editionSize": 30,
+    "editionRemaining": 27,
+    "title": {
+      "fa": "چاپ موزه‌ای شماره‌دار (۵۰×۷۰): جای پای زمان در خوشنویسی فارسی",
+      "fr": "Tirage Fine Art numéroté (50 × 70 cm) : Trace du temps",
+      "en": "Numbered Museum Fine Art Print (50 × 70 cm): Trace of Time"
+    },
+    "subtitle": {
+      "fa": "بازتولید هنری فاخر روی کاغذ پنبه‌ای Hahnemühle 308g — تیراژ محدود ۳۰ نسخه با امضای استاد",
+      "fr": "Reproduction d'art sur papier coton Hahnemühle Photo Rag 308g — Édition limitée à 30 ex. signés",
+      "en": "Archival Fine Art reproduction on Hahnemühle Photo Rag 308g cotton paper — Limited edition of 30, signed"
+    },
+    "description": {
+      "fa": "چاپ موزه‌ای با دوام ۱۰۰ ساله روی کاغذ پنبه‌ای بدون اسید، شماره‌گذاری و امضاشده توسط دکتر حسن مکارمی در پاریس (دارای گواهی شماره نسخه).",
+      "fr": "Tirage pigmentaire d'archive sur papier Hahnemühle 308g, numéroté et signé à la main à Paris (reproduction d'art — non qualifiée d'œuvre originale au sens de l'art. 98 A CGI).",
+      "en": "Archival pigment print on acid-free Hahnemühle 308g cotton paper, hand-numbered and signed in Paris."
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "50 × 70 cm",
+      "medium": {
+        "fa": "چاپ پیگمنت موزه‌ای روی کاغذ Hahnemühle Photo Rag 308g",
+        "fr": "Tirage pigmentaire Fine Art sur Hahnemühle Photo Rag 308g",
+        "en": "Archival pigment Fine Art print on Hahnemühle Photo Rag 308g"
+      },
+      "weightGrams": 450,
+      "framed": false,
+      "paperOrSupport": "Hahnemühle Photo Rag 308g",
+      "signedByArtist": true,
+      "numberedEdition": true
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4911.91",
+    "featured": true,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "ART-TORE-ORIG-01",
+    "collection": "artworks",
+    "slug": "si-notre-univers-etait-un-tore",
+    "plateImageId": 616,
+    "kind": "original_artwork",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 185000,
+    "vatRateBasisPoints": 550,
+    "editionSize": 1,
+    "editionRemaining": 1,
+    "title": {
+      "fa": "اثر اصل: آیا جهان‌های ما چنبره‌ای نیستند؟ (توپولوژی لکانی)",
+      "fr": "Œuvre originale : Si notre univers était un tore !",
+      "en": "Original Artwork: What If Our Universes Were a Torus?"
+    },
+    "subtitle": {
+      "fa": "تلفیق توپولوژی روانکاوی لکان و نقاشی‌خط شکسته — قابل پرداخت نقدی یا ۳/۴ قسط Alma",
+      "fr": "Pièce unique — Topologie lacanienne et calligraphie contemporaine (paiement 1x ou Alma 3x/4x)",
+      "en": "Unique original canvas — Lacanian topology & calligraphy (direct checkout or Alma installments)"
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "60 × 80 cm",
+      "medium": {
+        "fa": "مرکب و رنگ‌دانه روی کاغذ دست‌ساز (اجرای دستی)",
+        "fr": "Encre et pigments sur papier marouflé (exécuté à la main)",
+        "en": "Ink & pigments on archival mounted paper (hand-executed)"
+      },
+      "weightGrams": 1600,
+      "framed": false,
+      "signedByArtist": true,
+      "numberedEdition": false
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "9701.91",
+    "featured": true,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "ART-TORE-PRINT-30X40",
+    "collection": "artworks",
+    "slug": "si-notre-univers-etait-un-tore",
+    "plateImageId": 616,
+    "kind": "fine_art_print",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 14000,
+    "vatRateBasisPoints": 2000,
+    "editionSize": 30,
+    "editionRemaining": 29,
+    "title": {
+      "fa": "چاپ موزه‌ای شماره‌دار (۳۰×۴۰): آیا جهان‌های ما چنبره‌ای نیستند؟",
+      "fr": "Tirage Fine Art numéroté (30 × 40 cm) : Si notre univers était un tore",
+      "en": "Numbered Fine Art Print (30 × 40 cm): What If Our Universes Were a Torus?"
+    },
+    "subtitle": {
+      "fa": "نسخه کلکسیونی روی کاغذ Hahnemühle 308g با امضا و شماره دستی استاد",
+      "fr": "Reproduction d'art numérotée et signée sur Hahnemühle Photo Rag 308g",
+      "en": "Signed & numbered Fine Art reproduction on Hahnemühle Photo Rag 308g"
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "30 × 40 cm",
+      "medium": {
+        "fa": "چاپ پیگمنت موزه‌ای Hahnemühle 308g",
+        "fr": "Tirage pigmentaire Fine Art Hahnemühle 308g",
+        "en": "Archival pigment Fine Art print on Hahnemühle 308g"
+      },
+      "weightGrams": 320,
+      "framed": false,
+      "signedByArtist": true,
+      "numberedEdition": true
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4911.91",
+    "featured": false,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "ART-EXCELLENCE-ORIG-01",
+    "collection": "artworks",
+    "slug": "excellence",
+    "plateImageId": 2374,
+    "kind": "original_artwork",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 420000,
+    "vatRateBasisPoints": 550,
+    "editionSize": 1,
+    "editionRemaining": 1,
+    "title": {
+      "fa": "اثر اصل کلکسیونی: مجموعه برجسته‌ها (Excellence)",
+      "fr": "Œuvre originale de collection : Série Excellence",
+      "en": "Collector Original Artwork: Excellence Series"
+    },
+    "subtitle": {
+      "fa": "اثر موزه‌ای بزرگ‌قطع — تملک با واریز بانکی SEPA (کارمزد ۰٪) و گواهی اصالت پاریس",
+      "fr": "Grand format muséal — Acquisition par virement SEPA (0 % de frais) avec certificat Décret Marcus",
+      "en": "Large-format museum original — 0%-fee SEPA wire acquisition with Décret Marcus certificate"
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "100 × 130 cm",
+      "medium": {
+        "fa": "مرکب و تکنیک ترکیبی روی بوم (اجرای دستی)",
+        "fr": "Encre et technique mixte sur toile (entièrement exécuté à la main)",
+        "en": "Ink & mixed media on canvas (hand-executed original)"
+      },
+      "weightGrams": 4200,
+      "framed": false,
+      "signedByArtist": true,
+      "numberedEdition": false
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "9701.91",
+    "featured": true,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "ART-HENNE-ORIG-01",
+    "collection": "artworks",
+    "slug": "fait-par-henne",
+    "plateImageId": 1294,
+    "kind": "original_artwork",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 145000,
+    "vatRateBasisPoints": 550,
+    "editionSize": 1,
+    "editionRemaining": 1,
+    "title": {
+      "fa": "اثر اصل با حنا و رنگ‌دانه طبیعی (Fait par henné)",
+      "fr": "Œuvre originale au henné naturel (Fait par henné)",
+      "en": "Original Artwork in Natural Henna (Fait par henné)"
+    },
+    "subtitle": {
+      "fa": "تکنیک منحصربه‌فرد حنا و مرکب روی کاغذ هنری — اثر یکتا همراه با گواهی اصالت",
+      "fr": "Technique singulière au henné naturel sur papier d'art — Pièce unique certifiée",
+      "en": "Unique natural henna technique on archival art paper — Certified one-of-a-kind original"
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "50 × 65 cm",
+      "medium": {
+        "fa": "حنای طبیعی و مرکب روی کاغذ هنری بدون اسید",
+        "fr": "Henné naturel et encre sur papier d'art sans acide",
+        "en": "Natural henna & ink on acid-free fine art paper"
+      },
+      "weightGrams": 900,
+      "framed": false,
+      "signedByArtist": true,
+      "numberedEdition": false
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "9701.91",
+    "featured": true,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "ART-AMOUR-PRINT-50X70",
+    "collection": "artworks",
+    "slug": "lamour-fusionnel",
+    "plateImageId": 338,
+    "kind": "fine_art_print",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 22000,
+    "vatRateBasisPoints": 2000,
+    "editionSize": 30,
+    "editionRemaining": 28,
+    "title": {
+      "fa": "چاپ موزه‌ای شماره‌دار (۵۰×۷۰): عشق و یگانگی (L’Amour Fusionnel)",
+      "fr": "Tirage Fine Art numéroté (50 × 70 cm) : L’Amour Fusionnel",
+      "en": "Numbered Fine Art Print (50 × 70 cm): Fusion Love (L’Amour Fusionnel)"
+    },
+    "subtitle": {
+      "fa": "بازتولید فاخر شماره‌دار و امضاشده روی کاغذ Hahnemühle 308g",
+      "fr": "Reproduction d'art numérotée et signée sur Hahnemühle Photo Rag 308g",
+      "en": "Signed & numbered archival Fine Art print on Hahnemühle 308g"
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "50 × 70 cm",
+      "medium": {
+        "fa": "چاپ پیگمنت موزه‌ای Hahnemühle 308g",
+        "fr": "Tirage pigmentaire Fine Art Hahnemühle 308g",
+        "en": "Archival pigment Fine Art print on Hahnemühle 308g"
+      },
+      "weightGrams": 450,
+      "framed": false,
+      "signedByArtist": true,
+      "numberedEdition": true
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4911.91",
+    "featured": false,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "ART-SIMORQ-PRINT-70X100",
+    "collection": "artworks",
+    "slug": "simorq",
+    "plateImageId": 286,
+    "kind": "fine_art_print",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 36000,
+    "vatRateBasisPoints": 2000,
+    "editionSize": 25,
+    "editionRemaining": 24,
+    "title": {
+      "fa": "چاپ موزه‌ای بزرگ‌قطع شماره‌دار (۷۰×۱۰۰): منطق‌الطیر / سیمرغ",
+      "fr": "Grand Tirage Fine Art numéroté (70 × 100 cm) : Simorq / Le Langage des Oiseaux",
+      "en": "Large Numbered Fine Art Print (70 × 100 cm): Simorq / Conference of the Birds"
+    },
+    "subtitle": {
+      "fa": "چاپ کلکسیونی بزرگ‌قطع با امضای دستی استاد در پاریس",
+      "fr": "Grand format de collection, signé et numéroté à Paris sur Hahnemühle 308g",
+      "en": "Large-format collector print, hand-signed and numbered in Paris on Hahnemühle 308g"
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "70 × 100 cm",
+      "medium": {
+        "fa": "چاپ پیگمنت موزه‌ای Hahnemühle 308g",
+        "fr": "Tirage pigmentaire Fine Art Hahnemühle 308g",
+        "en": "Archival pigment Fine Art print on Hahnemühle 308g"
+      },
+      "weightGrams": 650,
+      "framed": false,
+      "signedByArtist": true,
+      "numberedEdition": true
+    },
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4911.91",
+    "featured": true,
+    "year": 2014,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-HAFEZ-PAR-HAFEZ-SIGNED",
+    "collection": "books",
+    "slug": "hafez-par-hafez",
+    "kind": "book_physical_signed",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 2450,
+    "vatRateBasisPoints": 550,
+    "editionSize": 50,
+    "editionRemaining": 38,
+    "title": {
+      "fa": "نسخه چاپی امضاشده استاد: حافظ به روایت حافظ (Hâfez, par Hâfez)",
+      "fr": "Exemplaire dédicacé par l'auteur : Hâfez, par Hâfez (Éd. L'Harmattan)",
+      "en": "Author-Signed Copy: Hâfez, par Hâfez (L'Harmattan Paris)"
+    },
+    "subtitle": {
+      "fa": "نسخه فیزیکی با امضا و تقدیم‌نامه اختصاصی دکتر مکارمی — تابع قانون قیمت واحد کتاب فرانسه (Loi Lang & Darcos)",
+      "fr": "Livre neuf au prix unique éditeur (Loi Lang) avec dédicace manuscrite de l'auteur — Frais de port Loi Darcos",
+      "en": "Official French edition with Dr. Makaremi's handwritten dedication (Loi Lang & Loi Darcos compliant)"
+    },
+    "physicalSpecs": {
+      "weightGrams": 380,
+      "signedByArtist": true
+    },
+    "externalPublisherUrl": "https://www.amazon.fr/Hfez-par-regard-majeur-persane/dp/2296968015",
+    "externalPublisherLabel": "Éditions L'Harmattan / Amazon FR",
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4901.99",
+    "featured": true,
+    "year": 2012,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-CE-JARDIN-SIGNED",
+    "collection": "books",
+    "slug": "ce-jardin-tu-es-en-lair",
+    "kind": "book_physical_signed",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 1800,
+    "vatRateBasisPoints": 550,
+    "editionSize": 40,
+    "editionRemaining": 31,
+    "title": {
+      "fa": "نسخه چاپی امضاشده: این باغ را هوا تویی (Ce jardin tu es en l’air)",
+      "fr": "Exemplaire dédicacé : Ce jardin tu es en l’air (Éd. L'Harmattan)",
+      "en": "Author-Signed Copy: Ce jardin tu es en l’air (Bilingual Poetry)"
+    },
+    "subtitle": {
+      "fa": "دفتر شعر دوزبانه فارسی-فرانسوی با امضای دستی استاد از پاریس",
+      "fr": "Recueil bilingue persan-français au prix unique éditeur avec dédicace manuscrite",
+      "en": "Bilingual Persian-French poetry volume with author's dedication"
+    },
+    "physicalSpecs": {
+      "weightGrams": 260,
+      "signedByArtist": true
+    },
+    "externalPublisherUrl": "https://www.editions-harmattan.fr/index.asp?navig=catalogue&obj=livre&no=47334",
+    "externalPublisherLabel": "Éditions L'Harmattan",
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4901.99",
+    "featured": true,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-CULTURAL-LAND-SIGNED",
+    "collection": "books",
+    "slug": "cultural-land-of-iran",
+    "kind": "book_physical_signed",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 2600,
+    "vatRateBasisPoints": 550,
+    "editionSize": 40,
+    "editionRemaining": 29,
+    "title": {
+      "fa": "نسخه چاپی امضاشده: نگاهی دیگر به سرزمین فرهنگی ایران",
+      "fr": "Exemplaire dédicacé : Un autre regard sur la terre culturelle d'Iran",
+      "en": "Author-Signed Copy: Another Look at the Cultural Land of Iran"
+    },
+    "subtitle": {
+      "fa": "ارسال از پاریس با امضای استاد (نسخه چاپی ناشر H&S Media)",
+      "fr": "Édition imprimée avec dédicace manuscrite — Expédié depuis Paris",
+      "en": "Print edition with handwritten dedication — Shipped from Paris"
+    },
+    "physicalSpecs": {
+      "weightGrams": 420,
+      "signedByArtist": true
+    },
+    "externalPublisherUrl": "https://www.amazon.fr/Iranian-Cultural-Land-Sarzamin-e-Farhangi-e/dp/1780834683",
+    "externalPublisherLabel": "H&S Media / Amazon",
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4901.99",
+    "featured": true,
+    "year": 2015,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-SECRET-HAFEZ-SIGNED",
+    "collection": "books",
+    "slug": "another-look-at-secret-of-hafez",
+    "kind": "book_physical_signed",
+    "legalBucket": "commercial_bic",
+    "availability": "available",
+    "priceEurCents": 2400,
+    "vatRateBasisPoints": 550,
+    "editionSize": 40,
+    "editionRemaining": 34,
+    "title": {
+      "fa": "نسخه چاپی امضاشده: نگرشی دیگر بر راز حافظ",
+      "fr": "Exemplaire dédicacé : Un autre regard sur le secret de Hafez",
+      "en": "Author-Signed Copy: Another Look at the Secret of Hafez"
+    },
+    "subtitle": {
+      "fa": "نسخه چاپی با امضای استاد — قابل تهیه مستقیم در اروپا و جهان",
+      "fr": "Édition imprimée avec dédicace manuscrite du Dr Hassan Makaremi",
+      "en": "Signed physical edition shipped worldwide from Paris"
+    },
+    "physicalSpecs": {
+      "weightGrams": 390,
+      "signedByArtist": true
+    },
+    "externalPublisherUrl": "https://www.amazon.fr/Secret-Hafez-Negareshi-Digar-Raaz-e/dp/1780831145",
+    "externalPublisherLabel": "H&S Media / Amazon",
+    "requiresWithdrawalWaiver": false,
+    "hsCode": "4901.99",
+    "featured": false,
+    "year": 2013,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-NOUVEL-ENTENDEMENT-EBOOK",
+    "collection": "books",
+    "slug": "nouvel-entendement-recueil-darticles",
+    "kind": "book_digital_ebook",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 1200,
+    "vatRateBasisPoints": 550,
+    "title": {
+      "fa": "نسخه دیجیتال رسمی (PDF/eBook): دگرشنیدن جدید (مجموعه مقالات)",
+      "fr": "Édition numérique officielle (PDF/eBook) : Nouvel Entendement",
+      "en": "Official Digital Edition (PDF/eBook): Nouvel Entendement"
+    },
+    "subtitle": {
+      "fa": "خودنشر رسمی مؤلف (Artiste-Auteur) — تحویل فوری پس از پرداخت با گواهی اصالت نسخه",
+      "fr": "Auto-édition officielle (TVA 5,5 % / Franchise art. 293 B) — Téléchargement immédiat sécurisé",
+      "en": "Official author self-published digital edition — Instant watermarked download"
+    },
+    "digitalAssetKey": "https://www.makaremi.com/wp-content/uploads/2015/03/livre2_RevNS2-site.pdf",
+    "requiresWithdrawalWaiver": true,
+    "hsCode": "4901.99",
+    "featured": true,
+    "year": 2001,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-INEVITABLE-ESCAPE-EBOOK",
+    "collection": "books",
+    "slug": "inevitable-escape-thirty-narratives",
+    "kind": "book_digital_ebook",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 1400,
+    "vatRateBasisPoints": 550,
+    "title": {
+      "fa": "نسخه دیجیتال کلکسیونی (۳ بخش کامل): گریز ناگزیر، سی روایت از سی سال پیش",
+      "fr": "Édition numérique intégrale : Fuite inévitable (Trente récits)",
+      "en": "Complete Digital Edition: Inevitable Escape (Thirty Narratives)"
+    },
+    "subtitle": {
+      "fa": "نسخه یکپارچه مؤلف با واترمارک اختصاصی خریدار — درآمد مستقیم جهت حفظ آرشیو",
+      "fr": "Auto-édition intégrale de l'auteur — Téléchargement sécurisé immédiat",
+      "en": "Complete self-published author edition — Instant secure download"
+    },
+    "digitalAssetKey": "https://www.makaremi.com/wp-content/uploads/2015/04/goriz-1.pdf",
+    "requiresWithdrawalWaiver": true,
+    "hsCode": "4901.99",
+    "featured": true,
+    "year": 2008,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-SEXOLOGIE-EBOOK",
+    "collection": "books",
+    "slug": "sexologie-et-ecoute-psychanalytique",
+    "kind": "book_digital_ebook",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 1200,
+    "vatRateBasisPoints": 550,
+    "title": {
+      "fa": "نسخه دیجیتال پژوهشی: سکسولوژی و گوش‌سپردن روانکاوانه (دانشگاه پاریس ۷)",
+      "fr": "Édition numérique de recherche : Sexologie et écoute psychanalytique (Paris VII)",
+      "en": "Research Digital Edition: Sexology & Psychoanalytic Listening (Paris VII)"
+    },
+    "subtitle": {
+      "fa": "رساله دانشگاه پاریس ۷ با بازنگری مؤلف — دانلود فوری ایمن",
+      "fr": "Mémoire universitaire Paris VII — Téléchargement immédiat sécurisé",
+      "en": "Paris VII academic monograph — Instant secure digital download"
+    },
+    "digitalAssetKey": "https://www.makaremi.com/wp-content/uploads/2015/03/complet-memoire-paris-VII-.pdf",
+    "requiresWithdrawalWaiver": true,
+    "hsCode": "4901.99",
+    "featured": false,
+    "year": 2003,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "BOOK-REGARDS-CALLIGRAPHIE-EBOOK",
+    "collection": "books",
+    "slug": "regards-croises-calligraphie",
+    "kind": "book_digital_ebook",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 1500,
+    "vatRateBasisPoints": 550,
+    "title": {
+      "fa": "نسخه دیجیتال هنری: نگاهی چندسویه به خوشنویسی (Regards croisés)",
+      "fr": "Édition numérique illustrée : Regards croisés sur la calligraphie",
+      "en": "Illustrated Digital Edition: Crossed Perspectives on Calligraphy"
+    },
+    "subtitle": {
+      "fa": "نسخه مصور دیجیتال با کیفیت بالا — تحویل فوری پس از تأیید",
+      "fr": "Édition numérique haute définition — Téléchargement immédiat",
+      "en": "High-resolution illustrated digital edition — Instant delivery"
+    },
+    "digitalAssetKey": "regards-croises-calligraphie",
+    "requiresWithdrawalWaiver": true,
+    "hsCode": "4901.99",
+    "featured": false,
+    "year": 2009,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "COMMISSION-CALLIGRAPHY-BESPOKE",
+    "collection": "artworks",
+    "slug": "calligraphie-de-l-abstrait-vers-une-composition-retrouve",
+    "plateImageId": 1295,
+    "kind": "commission_inquiry",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 120000,
+    "vatRateBasisPoints": 550,
+    "editionSize": 5,
+    "editionRemaining": 5,
+    "title": {
+      "fa": "سفارش اختصاصی خوشنویسی اصل (بر پایه شعر یا نام دلخواه)",
+      "fr": "Commande d'œuvre calligraphique originale sur mesure",
+      "en": "Bespoke Original Calligraphy Commission"
+    },
+    "subtitle": {
+      "fa": "خلق اثر یکتای دست‌ساز به سفارش شما در پاریس (مشمول استثنای حق انصراف آثار سفارشی — Art. L221-28 3°)",
+      "fr": "Création originale sur mesure à Paris (bien personnalisé — exclu du droit de rétractation, art. L221-28 3°)",
+      "en": "Hand-executed custom commission in Paris (bespoke artwork — excluded from 14-day withdrawal per Art. L221-28 3°)"
+    },
+    "physicalSpecs": {
+      "dimensionsCm": "50 × 70 cm (sur mesure)",
+      "medium": {
+        "fa": "مرکب و رنگ‌دانه روی کاغذ موزه‌ای یا بوم (اجرای کامل دستی)",
+        "fr": "Encre et pigments sur papier muséal ou toile (exécuté à la main)",
+        "en": "Ink & pigments on museum paper or canvas (hand-executed)"
+      },
+      "weightGrams": 1200,
+      "signedByArtist": true
+    },
+    "requiresWithdrawalWaiver": true,
+    "hsCode": "9701.91",
+    "featured": true,
+    "year": 2026,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "sku": "PATRONAGE-ARCHIVE-2026",
+    "collection": "patronage",
+    "slug": "archive-preservation-patronage",
+    "kind": "patronage_edition",
+    "legalBucket": "artiste_auteur",
+    "availability": "available",
+    "priceEurCents": 5000,
+    "vatRateBasisPoints": 0,
+    "title": {
+      "fa": "حمایت از نگهداری و ترجمه سه‌زبانه آرشیو مستقل دکتر مکارمی",
+      "fr": "Soutien à la préservation & édition trilingue des archives",
+      "en": "Archival Preservation & Trilingual Digital Editions Patronage"
+    },
+    "subtitle": {
+      "fa": "مشارکت در حفظ دائمی ۴۰۳ مقاله، ۳۰۰ شعر و ۲۶۱ سخنرانی آزاد و رایگان برای همگان",
+      "fr": "Contribuez à la gratuité pérenne des 403 articles, 300 poèmes et 261 conférences",
+      "en": "Support permanent open scholarly access to 403 articles, 300 poems, and 261 lectures"
+    },
+    "requiresWithdrawalWaiver": true,
+    "hsCode": "4901.99",
+    "featured": false,
+    "year": 2026,
+    "updatedAt": "2026-11-23T00:00:00.000Z"
+  }
+]

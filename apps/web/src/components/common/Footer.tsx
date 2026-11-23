@@ -121,6 +121,11 @@ export function Footer({ locale }: FooterProps) {
           </span>
           <ul className="space-y-2 text-xs">
             <li>
+              <Link href={`/${locale}/shop`} className="hover:text-[var(--primary)] transition-colors font-bold text-amber-700 dark:text-amber-400">
+                {isFa ? 'فروشگاه و تملک آثار (تابلوها و کتاب‌ها)' : isFr ? 'Boutique & Acquisition d’œuvres' : 'Shop & Artwork Acquisitions'}
+              </Link>
+            </li>
+            <li>
               <Link href={`/${locale}/books`} className="hover:text-[var(--primary)] transition-colors font-semibold">
                 {isFa ? 'تالار کتاب‌های سه‌بعدی و ورق‌خور' : isFr ? 'Bibliothèque 3D Interactive' : '3D Books & Page-Flip Reader'}
               </Link>
@@ -186,7 +191,37 @@ export function Footer({ locale }: FooterProps) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      {/* Mandatory French E-Commerce Legal Bar (LCEN, CGV, RGPD & June 19, 2026 Withdrawal Button) */}
+      <div className="max-w-7xl mx-auto mt-10 pt-5 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href={`/${locale}/legal/mentions-legales`} className="hover:text-[var(--primary)] font-semibold transition-colors">
+            {isFa ? 'اطلاعات حقوقی (Mentions légales)' : isFr ? 'Mentions légales' : 'Legal Notices (LCEN)'}
+          </Link>
+          <span className="opacity-30">•</span>
+          <Link href={`/${locale}/legal/cgv`} className="hover:text-[var(--primary)] font-semibold transition-colors">
+            {isFa ? 'شرایط عمومی فروش (CGV)' : isFr ? 'Conditions Générales de Vente (CGV)' : 'General Terms of Sale (CGV)'}
+          </Link>
+          <span className="opacity-30">•</span>
+          <Link href={`/${locale}/legal/confidentialite`} className="hover:text-[var(--primary)] font-semibold transition-colors">
+            {isFa ? 'حریم خصوصی (RGPD)' : isFr ? 'Confidentialité (RGPD)' : 'Privacy Policy (GDPR)'}
+          </Link>
+        </div>
+
+        <Link
+          href={`/${locale}/legal/retractation`}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-card)] border border-amber-500/40 text-amber-800 dark:text-amber-300 font-bold hover:border-amber-500 transition-colors"
+        >
+          <span>
+            {isFa
+              ? 'انصراف از خرید (Renoncer au contrat ici)'
+              : isFr
+                ? 'Renoncer au contrat ici'
+                : 'Withdraw from Contract (14-Day Right)'}
+          </span>
+        </Link>
+      </div>
+
+      <div className="max-w-7xl mx-auto mt-5 pt-5 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
         <p>© {new Date().getFullYear()} Dr. Hassan Makaremi. All rights reserved.</p>
         <p className="text-[11px] text-[var(--foreground-muted)]">
           {isFa

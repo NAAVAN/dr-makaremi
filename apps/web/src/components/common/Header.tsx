@@ -17,11 +17,13 @@ import {
   Feather,
   Video,
   Home,
+  ShoppingBag,
 } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeToggle } from './ThemeToggle';
 import { SearchModal } from './SearchModal';
 import { MirrorSwitcher } from './MirrorSwitcher';
+import { useAcquisitionCart } from '@/components/commerce/CartProvider';
 import type { Locale } from '@makaremi/shared';
 
 interface HeaderProps {
@@ -44,6 +46,7 @@ interface NavGroupItem {
 
 export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
+  const { itemCount, openDrawer } = useAcquisitionCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
   const [openDesktopGroup, setOpenDesktopGroup] = useState<string | null>(null);
@@ -500,6 +503,47 @@ export function Header({ locale }: HeaderProps) {
         },
       ],
     },
+    {
+      href: `/${locale}/shop`,
+      label: isFa ? 'فروشگاه آثار' : isFr ? 'Boutique' : 'Shop',
+      accent: '#b45309',
+      icon: ShoppingBag,
+      subItems: [
+        {
+          href: `/${locale}/shop`,
+          label: isFa
+            ? 'تالار جامع تملک تابلوها، چاپ موزه‌ای و کتاب‌ها'
+            : isFr
+              ? 'Boutique — Œuvres, Tirages Fine Art & Livres'
+              : 'Shop — Originals, Fine Art Prints & Books',
+          badge: 'EUR',
+        },
+        {
+          href: `/${locale}/legal/cgv`,
+          label: isFa
+            ? 'شرایط عمومی فروش فرانسه (CGV)'
+            : isFr
+              ? 'Conditions Générales de Vente (CGV)'
+              : 'French Terms of Sale (CGV)',
+        },
+        {
+          href: `/${locale}/legal/mentions-legales`,
+          label: isFa
+            ? 'اطلاعات حقوقی رسمی (Mentions légales)'
+            : isFr
+              ? 'Mentions légales (LCEN)'
+              : 'Legal Notices (LCEN)',
+        },
+        {
+          href: `/${locale}/legal/retractation`,
+          label: isFa
+            ? 'انصراف از خرید (قانون ۱۴ روزه فرانسه)'
+            : isFr
+              ? 'Renoncer au contrat ici (14 jours)'
+              : 'Withdraw from Contract (14 Days)',
+        },
+      ],
+    },
   ];
 
   return (
@@ -578,6 +622,21 @@ export function Header({ locale }: HeaderProps) {
               <Sparkles size={14} />
               <span className="hidden md:inline">{isFa ? 'دستیار هوشمند' : isFr ? 'Assistant IA' : 'AI Assistant'}</span>
             </Link>
+
+            <button
+              type="button"
+              onClick={openDrawer}
+              aria-label={isFa ? 'سبد تملک آثار' : isFr ? 'Panier d’acquisition' : 'Acquisition cart'}
+              className="relative px-2.5 py-1.5 rounded-xl text-stone-700 dark:text-stone-200 hover:bg-stone-200/70 dark:hover:bg-stone-800 transition-colors border border-stone-300/80 dark:border-stone-700 flex items-center gap-1.5 text-xs font-bold cursor-pointer"
+              title={isFa ? 'سبد تملک آثار و کتاب‌ها' : isFr ? 'Panier d’acquisition' : 'Acquisition cart'}
+            >
+              <ShoppingBag size={15} className="text-amber-700 dark:text-amber-400" />
+              {itemCount > 0 && (
+                <span className="px-1.5 py-0.5 rounded-full bg-amber-600 text-white text-[10px] font-black font-mono leading-none tabular-nums">
+                  {itemCount}
+                </span>
+              )}
+            </button>
 
             <button
               type="button"

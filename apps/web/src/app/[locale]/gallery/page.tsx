@@ -9,6 +9,7 @@ import { ArtworksVaultShowcase } from '@/components/gallery/ArtworksVaultShowcas
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import { cleanSummaryWithoutRawUrls } from '@/lib/link-labeler';
 import { resolveProxiedMediaUrl } from '@/lib/media-url';
+import { getCommerceCatalog } from '@/lib/commerce/store';
 
 export async function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -54,6 +55,7 @@ export default async function GalleryOverviewPage({
 
   const exhibitions = await getExhibitions(locale);
   const artworks = await getArtworks(locale);
+  const commerceCatalog = getCommerceCatalog().filter((p) => p.collection === 'artworks');
 
   return (
     <div className="space-y-16">
@@ -118,7 +120,7 @@ export default async function GalleryOverviewPage({
             </p>
           </div>
 
-          <ArtworksVaultShowcase artworks={artworks} locale={locale} />
+          <ArtworksVaultShowcase artworks={artworks} commerceProducts={commerceCatalog} locale={locale} />
         </section>
       )}
 

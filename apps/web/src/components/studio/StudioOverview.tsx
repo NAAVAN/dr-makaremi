@@ -21,6 +21,7 @@ export type StudioTabId =
   | 'create'
   | 'enrich'
   | 'translations'
+  | 'commerce'
   | 'ai_system'
   | 'security';
 

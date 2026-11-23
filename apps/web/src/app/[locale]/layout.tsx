@@ -9,9 +9,12 @@ import {
 import { Header } from '@/components/common/Header';
 import { Footer } from '@/components/common/Footer';
 import { PwaOfflineBar } from '@/components/common/PwaOfflineBar';
+import { CartProvider } from '@/components/commerce/CartProvider';
 import { JsonLdGraph } from '@/components/seo/JsonLdGraph';
 import { buildFullGraph } from '@/lib/schema-org';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
+import { getCommerceLegalConfig } from '@/lib/commerce/store';
+import { getStripeRuntimeMode } from '@/lib/commerce/stripe';
 import '../../styles/globals.css';
 import '../../styles/tokens.css';
 import '../../styles/typography.css';
@@ -72,6 +75,8 @@ export default async function LocaleLayout({
 
   const direction = getDirection(locale);
   const rootGraph = buildFullGraph({ locale: locale as Locale });
+  const legalConfig = getCommerceLegalConfig();
+  const stripeMode = getStripeRuntimeMode();
 
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
@@ -109,12 +114,14 @@ export default async function LocaleLayout({
       </head>
       <body className="min-h-screen flex flex-col bg-[var(--surface-canvas)] text-[var(--foreground)] font-sans antialiased transition-colors duration-200">
         <JsonLdGraph data={rootGraph} />
-        <PwaOfflineBar locale={locale} />
-        <Header locale={locale} />
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          {children}
-        </main>
-        <Footer locale={locale} />
+        <CartProvider locale={locale as Locale} legalConfig={legalConfig} stripeMode={stripeMode}>
+          <PwaOfflineBar locale={locale} />
+          <Header locale={locale} />
+          <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+            {children}
+          </main>
+          <Footer locale={locale} />
+        </CartProvider>
       </body>
     </html>
   );

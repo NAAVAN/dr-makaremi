@@ -20,6 +20,7 @@ import { buildBookAcademicMeta } from '@/lib/academic-metadata';
 import { buildTrilingualMetadata } from '@/lib/seo-helpers';
 import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
 import { resolveWorkTranslation } from '@/lib/work-language';
+import { getCommerceProductsForWork } from '@/lib/commerce/store';
 
 export async function generateStaticParams() {
   const books = await getBooks('fa');
@@ -173,8 +174,12 @@ export default async function BookDetailPage({
           {/* Author Commentary Audio Player */}
           <AuthorAudioPlayer bookTitle={title} locale={locale} />
 
-          {/* Acquisition Options */}
-          <GeoPurchaseLinks geoLinks={trans?.geo_acquisition_links} locale={locale} />
+          {/* Acquisition Options (Direct Paris Editions + Regional Publishers) */}
+          <GeoPurchaseLinks
+            geoLinks={trans?.geo_acquisition_links}
+            directProducts={getCommerceProductsForWork('books', book.slug)}
+            locale={locale}
+          />
         </div>
       </div>
 

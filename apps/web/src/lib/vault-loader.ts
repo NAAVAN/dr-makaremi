@@ -12,7 +12,7 @@ import type {
   MediaAsset,
 } from '@makaremi/shared';
 
-function resolveDataSubdir(subdir: 'vault' | 'translations' | 'curator-overlays'): string {
+function resolveDataSubdir(subdir: 'vault' | 'translations' | 'curator-overlays' | 'commerce'): string {
   const candidates = [
     path.resolve(process.cwd(), 'packages', 'shared', 'src', 'data', subdir),
     path.resolve(process.cwd(), '..', '..', 'packages', 'shared', 'src', 'data', subdir),
@@ -32,6 +32,7 @@ function resolveDataSubdir(subdir: 'vault' | 'translations' | 'curator-overlays'
 const VAULT_DIR = resolveDataSubdir('vault');
 const TRANSLATIONS_DIR = resolveDataSubdir('translations');
 const OVERLAYS_DIR = resolveDataSubdir('curator-overlays');
+const COMMERCE_DIR = resolveDataSubdir('commerce');
 const SERVERLESS_TMP_ROOT = path.join(os.tmpdir(), 'makaremi-studio');
 const cache = new Map<string, unknown>();
 
@@ -41,6 +42,10 @@ export function getTranslationsDir(): string {
 
 export function getOverlaysDir(): string {
   return OVERLAYS_DIR;
+}
+
+export function getCommerceDir(): string {
+  return COMMERCE_DIR;
 }
 
 export function invalidateTranslationCache(collection?: TranslationCollectionName): void {
@@ -258,4 +263,45 @@ export function writeOverlayJson<T>(filename: string, data: T): void {
     fs.writeFileSync(path.join(tmpOverlayDir, filename), serialized, 'utf8');
   }
   invalidateOverlayCache(filename);
+}
+
+export function invalidateCommerceCache(key?: string): void {
+  if (key) {
+    cache.delete(`commerce:${key}`);
+  } else {
+    for (const k of Array.from(cache.keys())) {
+      if (k.startsWith('commerce:')) cache.delete(k);
+    }
+  }
+}
+
+export function readCommerceJson<T>(filename: string, fallback: T): T {
+  const cacheKey = `commerce:${filename}`;
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey) as T;
+  }
+  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'commerce', filename);
+  try {
+    if (fs.existsSync(tmpFile)) {
+      const parsedTmp = JSON.parse(fs.readFileSync(tmpFile, 'utf8')) as T;
+      cache.set(cacheKey, parsedTmp);
+      return parsedTmp;
+    }
+  } catch {
+    // fall through to repo commerce file
+  }
+  return readJsonFromDir<T>(COMMERCE_DIR, cacheKey, filename, fallback);
+}
+
+export function writeCommerceJson<T>(filename: string, data: T): void {
+  const serialized = JSON.stringify(data, null, 2);
+  try {
+    fs.mkdirSync(COMMERCE_DIR, { recursive: true });
+    fs.writeFileSync(path.join(COMMERCE_DIR, filename), serialized, 'utf8');
+  } catch {
+    const tmpCommerceDir = path.join(SERVERLESS_TMP_ROOT, 'commerce');
+    fs.mkdirSync(tmpCommerceDir, { recursive: true });
+    fs.writeFileSync(path.join(tmpCommerceDir, filename), serialized, 'utf8');
+  }
+  invalidateCommerceCache(filename);
 }

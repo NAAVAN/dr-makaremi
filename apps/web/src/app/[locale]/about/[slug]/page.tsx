@@ -116,6 +116,29 @@ export default async function ArchiveReferencePageDetail({
         </h1>
       </header>
 
+      {page.slug === 'contact-mention-fa' && (
+        <aside className="p-5 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--primary)]/40 space-y-3">
+          <p className="text-xs sm:text-sm font-bold text-[var(--foreground)]">
+            {isFa
+              ? 'نسخه به‌روز و رسمی اطلاعات حقوقی (LCEN)، شرایط عمومی فروش (CGV)، حریم خصوصی (RGPD) و سامانه انصراف از خرید (۲۰۲۶) در بخش قانونی سایت در دسترس است:'
+              : isFr
+                ? 'Les mentions légales actualisées (LCEN 2026), les CGV, la politique RGPD et la fonctionnalité de rétractation en ligne sont disponibles ici :'
+                : 'Up-to-date French LCEN Legal Notices, General Terms of Sale (CGV), GDPR Privacy Policy, and Online Withdrawal are available here:'}
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <Link href={`/${locale}/legal/mentions-legales`} className="px-3.5 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] font-bold">
+              {isFa ? 'اطلاعات حقوقی رسمی (Mentions légales)' : isFr ? 'Mentions légales (2026)' : 'Official Legal Notices'}
+            </Link>
+            <Link href={`/${locale}/legal/cgv`} className="px-3.5 py-2 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] font-bold hover:border-[var(--primary)]">
+              {isFa ? 'شرایط عمومی فروش (CGV)' : isFr ? 'CGV' : 'Terms of Sale (CGV)'}
+            </Link>
+            <Link href={`/${locale}/legal/retractation`} className="px-3.5 py-2 rounded-xl bg-[var(--surface-card)] border border-amber-500/40 text-amber-800 dark:text-amber-300 font-bold">
+              {isFa ? 'انصراف از خرید' : isFr ? 'Renoncer au contrat ici' : 'Withdraw from Contract'}
+            </Link>
+          </div>
+        </aside>
+      )}
+
       <BilingualWorkReader
         originalLang={resolved.originalLang}
         siteLocale={locale}

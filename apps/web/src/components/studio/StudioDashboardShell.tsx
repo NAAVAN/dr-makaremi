@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   Lock,
   ShieldCheck,
+  ShoppingBag,
 } from 'lucide-react';
 import type { AiProviderRuntimeStatus, Locale } from '@makaremi/shared';
 import { StudioOverview, type StudioTabId } from './StudioOverview';
@@ -21,6 +22,7 @@ import { ArchiveEnricherPanel } from './ArchiveEnricherPanel';
 import { TranslationControlRoom } from './TranslationControlRoom';
 import { AiAndApiSettingsPanel } from './AiAndApiSettingsPanel';
 import { StudioSecurityPanel } from './StudioSecurityPanel';
+import { StudioCommercePanel } from './StudioCommercePanel';
 
 interface StudioDashboardShellProps {
   locale: Locale;
@@ -78,6 +80,7 @@ export function StudioDashboardShell({
       { id: 'create', label: 'ثبت اثر جدید', icon: FilePlus2 },
       { id: 'enrich', label: 'تکمیل آثار پیشین', icon: FolderPlus },
       { id: 'translations', label: 'کنترل و ویرایش ترجمه‌ها', icon: Languages },
+      { id: 'commerce', label: 'فروشگاه و سفارش‌ها', icon: ShoppingBag },
       { id: 'ai_system', label: 'موتور هوشمند و صف ترجمه', icon: Bot },
       { id: 'security', label: 'تغییر پین و کلید', icon: KeyRound },
     ];
@@ -224,6 +227,8 @@ export function StudioDashboardShell({
         {activeTab === 'translations' && (
           <TranslationControlRoom onTranslationSaved={refreshOverviewStats} />
         )}
+
+        {activeTab === 'commerce' && <StudioCommercePanel />}
 
         {activeTab === 'ai_system' && (
           <AiAndApiSettingsPanel onStatusUpdated={setAiStatus} />

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Play, Pause, Sparkles } from 'lucide-react';
 import { IIIFDeepZoomViewer } from './IIIFDeepZoomViewer';
 import { BilingualWorkReader } from '@/components/i18n/BilingualWorkReader';
@@ -60,6 +61,18 @@ export function PoetryArtworkSync({ poem, artwork, locale }: PoetryArtworkSyncPr
               {artworkTrans.curator_critique_markdown}
             </div>
           )}
+          <div className="p-3.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span className="text-[var(--foreground-muted)]">
+              {isFa
+                ? 'مایل به تملک تابلوی خوشنویسی یا سفارش خطاطی اختصاصی این سروده هستید؟'
+                : isFr
+                  ? 'Souhaitez-vous acquérir une calligraphie ou commander ce poème calligraphié ?'
+                  : 'Interested in acquiring a calligraphy artwork or bespoke commission of this poem?'}
+            </span>
+            <Link href={`/${locale}/shop`} className="font-bold text-[var(--primary)] hover:underline whitespace-nowrap">
+              {isFa ? 'گالری تملک آثار ←' : isFr ? 'Boutique & Commandes →' : 'Shop & Commissions →'}
+            </Link>
+          </div>
         </div>
 
         {/* Poetry & Recitation Side */}

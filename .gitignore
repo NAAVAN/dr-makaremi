@@ -42,9 +42,15 @@ studio-lab/
 # Raw WordPress export dumps
 *.WordPress.*.xml
 *.sql
+!infra/postgres/migrations/*.sql
 
 # Graphify local knowledge graph outputs (auto-rebuilt by git hooks)
 graphify-out/
 
 # Runtime studio security PIN/key hash overrides (never commit live credential hashes)
 packages/shared/src/data/curator-overlays/studio-security-overrides.json
+
+# Runtime transactional commerce logs & local orders (never commit customer PII)
+packages/shared/src/data/commerce/runtime-orders.json
+packages/shared/src/data/commerce/runtime-withdrawals.json
+packages/shared/src/data/commerce/runtime-certificates.json
