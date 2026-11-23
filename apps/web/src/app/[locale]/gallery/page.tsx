@@ -53,9 +53,12 @@ export default async function GalleryOverviewPage({
   const isFr = locale === 'fr';
   const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
-  const exhibitions = await getExhibitions(locale);
-  const artworks = await getArtworks(locale);
-  const commerceCatalog = getCommerceCatalog().filter((p) => p.collection === 'artworks');
+  const [exhibitions, artworks, fullCatalog] = await Promise.all([
+    getExhibitions(locale),
+    getArtworks(locale),
+    getCommerceCatalog(),
+  ]);
+  const commerceCatalog = fullCatalog.filter((p) => p.collection === 'artworks');
 
   return (
     <div className="space-y-16">

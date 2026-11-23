@@ -40,7 +40,7 @@ export default async function VerifyCertificatePage({
   const isFr = locale === 'fr';
   const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
-  const cert = getAuthenticityCertificateById(certificateId);
+  const cert = await getAuthenticityCertificateById(certificateId);
   const verification = cert ? verifyAuthenticityCertificate(cert) : null;
   const isValid = Boolean(verification?.sha256Matches && verification?.ed25519Valid);
 

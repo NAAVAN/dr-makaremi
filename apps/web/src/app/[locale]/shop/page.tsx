@@ -54,8 +54,10 @@ export default async function ShopPage({
   const isFr = locale === 'fr';
   const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
-  const products = getCommerceCatalog();
-  const legalConfig = getCommerceLegalConfig();
+  const [products, legalConfig] = await Promise.all([
+    getCommerceCatalog(),
+    getCommerceLegalConfig(),
+  ]);
 
   const offerItems = products
     .filter((p) => p.availability === 'available' && p.priceEurCents !== null)

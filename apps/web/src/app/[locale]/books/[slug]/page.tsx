@@ -72,6 +72,7 @@ export default async function BookDetailPage({
 
   const book = await getBookBySlug(slug, locale);
   if (!book) notFound();
+  const directBookProducts = await getCommerceProductsForWork('books', book.slug);
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
@@ -177,7 +178,7 @@ export default async function BookDetailPage({
           {/* Acquisition Options (Direct Paris Editions + Regional Publishers) */}
           <GeoPurchaseLinks
             geoLinks={trans?.geo_acquisition_links}
-            directProducts={getCommerceProductsForWork('books', book.slug)}
+            directProducts={directBookProducts}
             locale={locale}
           />
         </div>

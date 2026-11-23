@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   const bucket =
     rawBucket === 'artiste_auteur' || rawBucket === 'commercial_bic' ? rawBucket : 'all';
 
-  const csv = buildFrenchAccountingLedgerCsv(bucket);
+  const csv = await buildFrenchAccountingLedgerCsv(bucket);
   const year = new Date().getUTCFullYear();
   const filename = `Livre_de_recettes_Makaremi_${bucket}_${year}.csv`;
 

@@ -49,7 +49,7 @@ export default async function CgvPage({
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
   const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
-  const cfg = getCommerceLegalConfig();
+  const cfg = await getCommerceLegalConfig();
 
   const clauses = [
     {

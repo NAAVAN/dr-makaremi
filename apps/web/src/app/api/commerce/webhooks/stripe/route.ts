@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     const obj = event.data?.object;
     if (event.type === 'checkout.session.completed' && obj) {
-      const paidOrder = markCommerceOrderPaid({
+      const paidOrder = await markCommerceOrderPaid({
         orderId: obj.metadata?.order_id,
         orderNumber: obj.metadata?.order_number,
         stripeSessionId: obj.id,
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
         await sendOrderConfirmationEmail(paidOrder);
       }
     } else if (event.type === 'checkout.session.expired' && obj?.metadata?.order_id) {
-      updateCommerceOrderStatus(obj.metadata.order_id, 'cancelled');
+      await updateCommerceOrderStatus(obj.metadata.order_id, 'cancelled');
     }
 
     return NextResponse.json({ ok: true, received: true });

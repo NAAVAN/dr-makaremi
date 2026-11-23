@@ -10,7 +10,7 @@ export async function GET(
   if (!rl.allowed) return rl.response!;
 
   const { token } = await context.params;
-  const result = consumeDownloadToken(token);
+  const result = await consumeDownloadToken(token);
   if (!result.valid || !result.order) {
     return NextResponse.json(
       { ok: false, error: result.error || 'Invalid download link' },

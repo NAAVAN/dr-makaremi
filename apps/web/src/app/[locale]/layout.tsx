@@ -75,7 +75,7 @@ export default async function LocaleLayout({
 
   const direction = getDirection(locale);
   const rootGraph = buildFullGraph({ locale: locale as Locale });
-  const legalConfig = getCommerceLegalConfig();
+  const legalConfig = await getCommerceLegalConfig();
   const stripeMode = getStripeRuntimeMode();
 
   return (

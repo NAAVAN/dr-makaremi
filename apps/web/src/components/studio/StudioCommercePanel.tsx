@@ -30,6 +30,13 @@ interface StudioCommercePayload {
   orders: CommerceOrder[];
   withdrawals: CommerceWithdrawalRequest[];
   certificates: ArtworkAuthenticityCertificate[];
+  storageStatus?: {
+    mode: 'neon_postgres' | 'local_file_fallback';
+    configured: boolean;
+    providerLabel: string;
+    regionHint: string | null;
+    healthy?: boolean;
+  };
   stripeMode: 'live' | 'test' | 'unconfigured';
   emailConfigured: boolean;
   stats: {
@@ -244,16 +251,15 @@ export function StudioCommercePanel() {
         </div>
 
         <div className="p-4 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-1">
-          <span className="text-xs text-[var(--foreground-muted)]">وضعیت درگاه Stripe France</span>
-          <p className="text-lg font-black text-[var(--foreground)]">
-            {data.stripeMode === 'live'
-              ? 'متصل و زنده (Live)'
-              : data.stripeMode === 'test'
-                ? 'حالت آزمایشی (Test)'
-                : 'آماده اتصال کلید (SEPA فعال)'}
+          <span className="text-xs text-[var(--foreground-muted)]">دیتابیس دائمی و درگاه پرداخت</span>
+          <p className="text-sm font-black text-[var(--foreground)]">
+            {data.storageStatus?.mode === 'neon_postgres'
+              ? `Neon Postgres متصل (${data.storageStatus.regionHint || 'EU'})`
+              : 'آماده اتصال خودکار Neon Postgres'}
           </p>
-          <span className="text-[11px] text-[var(--foreground-muted)]">
-            رژیم TVA: {data.legalConfig.taxMode === 'franchise_en_base' ? 'معاف (Art. 293 B)' : 'TVA فعال'}
+          <span className="text-[11px] text-[var(--foreground-muted)] block">
+            Stripe: {data.stripeMode === 'live' ? 'زنده' : data.stripeMode === 'test' ? 'تست' : 'SEPA فعال'} • TVA:{' '}
+            {data.legalConfig.taxMode === 'franchise_en_base' ? 'معاف 293 B' : 'فعال'}
           </span>
         </div>
       </div>

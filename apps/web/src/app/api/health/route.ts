@@ -11,6 +11,7 @@ import { VERIFIED_IMMUTABLE_SNAPSHOTS } from '@/lib/snapshots';
 import { buildCorpusChunks } from '@/lib/rag/hybrid-search';
 import { getBackupStatus } from '@/lib/ops/backup-manager';
 import { runPreLaunchAudit } from '@/lib/ops/prelaunch-auditor';
+import { getNeonStorageStatus } from '@/lib/commerce/db';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
     const corpusChunks = buildCorpusChunks();
     const backupReport = await getBackupStatus();
     const qaReport = runPreLaunchAudit();
+    const commerceStorage = getNeonStorageStatus();
 
     // Verify snapshots count
     const snapshotsCount = Object.keys(VERIFIED_IMMUTABLE_SNAPSHOTS).length;
@@ -87,6 +89,12 @@ export async function GET(request: NextRequest) {
           passedGates: qaReport.passedGates,
           totalGates: qaReport.totalGates,
           certified: qaReport.status === 'CERTIFIED_FOR_PRODUCTION',
+        },
+        commerceStorage: {
+          status: 'healthy' as const,
+          mode: commerceStorage.mode,
+          configured: commerceStorage.configured,
+          regionHint: commerceStorage.regionHint,
         },
       },
     };

@@ -76,7 +76,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Authoritative server-side catalog lookup (never trust client-submitted prices)
-    const catalog = getCommerceCatalog();
+    const [catalog, legalConfig] = await Promise.all([
+      getCommerceCatalog(),
+      getCommerceLegalConfig(),
+    ]);
     const catalogMap = new Map(catalog.map((p) => [p.sku, p]));
     const resolvedItems = [];
 
@@ -105,7 +108,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const legalConfig = getCommerceLegalConfig();
     const quote = calculateFrenchCommerceQuote({
       items: resolvedItems,
       countryCode: countryUpper,
@@ -169,7 +171,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const order = createCommerceOrder({
+    const order = await createCommerceOrder({
       paymentMethod: body.paymentMethod,
       locale: body.locale,
       customer: {
@@ -204,7 +206,7 @@ export async function POST(request: NextRequest) {
     try {
       const origin = request.nextUrl.origin || 'https://makaremi.com';
       const session = await createStripeCheckoutSession({ order, origin });
-      attachStripeSessionToOrder(order.id, session.id);
+      await attachStripeSessionToOrder(order.id, session.id);
       return NextResponse.json(
         {
           ok: true,
@@ -216,7 +218,7 @@ export async function POST(request: NextRequest) {
         { status: 201 }
       );
     } catch (stripeErr) {
-      updateCommerceOrderStatus(order.id, 'cancelled');
+      await updateCommerceOrderStatus(order.id, 'cancelled');
       return NextResponse.json(
         {
           ok: false,

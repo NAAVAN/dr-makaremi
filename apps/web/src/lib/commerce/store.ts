@@ -24,6 +24,11 @@ import {
   verifyEd25519Signature,
 } from '@/lib/crypto';
 import { resolveProxiedMediaUrl } from '@/lib/media-url';
+import {
+  ensureCommerceSchema,
+  getNeonSql,
+  isNeonDatabaseConfigured,
+} from './db';
 
 const LEGAL_CONFIG_FILE = 'legal-config.json';
 const CATALOG_FILE = 'catalog.json';
@@ -34,7 +39,8 @@ const CERTIFICATES_FILE = 'runtime-certificates.json';
 const DEFAULT_LEGAL_CONFIG: CommerceLegalConfig = {
   sellerName: 'Dr Hassan Makaremi',
   tradeName: 'Atelier & Éditions Dr Hassan Makaremi',
-  legalStatusFr: "Entrepreneur Individuel — Artiste-Auteur (URSSAF Limousin) & Activité complémentaire d'éditions",
+  legalStatusFr:
+    "Entrepreneur Individuel — Artiste-Auteur (URSSAF Limousin) & Activité complémentaire d'éditions",
   legalStatusFa: 'شخص حقیقی ثبت‌شده در فرانسه — هنرمند-مؤلف (URSSAF Limousin) و انتشارات آثار',
   legalStatusEn: 'Individual French Artist-Author (URSSAF Limousin) & Independent Editions',
   siret: 'À renseigner dans le Pishkhan (14 chiffres)',
@@ -65,62 +71,124 @@ const DEFAULT_LEGAL_CONFIG: CommerceLegalConfig = {
   updatedAt: '2026-11-23T00:00:00.000Z',
 };
 
-// In-process reservation lock for unique original artworks (prevents double-sell race condition)
-const activeUniqueSkuLocks = new Map<string, { orderId: string; expiresAt: number }>();
+// Local-only fallback lock map when Neon Postgres is not yet connected
+const localUniqueSkuLocks = new Map<string, { orderId: string; expiresAt: number }>();
 
-export function getCommerceLegalConfig(): CommerceLegalConfig {
-  const stored = readCommerceJson<Partial<CommerceLegalConfig>>(LEGAL_CONFIG_FILE, DEFAULT_LEGAL_CONFIG);
+function mapRowToOrder(row: Record<string, unknown>): CommerceOrder {
   return {
-    ...DEFAULT_LEGAL_CONFIG,
-    ...stored,
+    id: String(row.id),
+    orderNumber: String(row.order_number),
+    invoiceNumber: String(row.invoice_number),
+    status: String(row.status) as CommerceOrderStatus,
+    paymentMethod: String(row.payment_method) as CommercePaymentMethod,
+    stripeSessionId: row.stripe_session_id ? String(row.stripe_session_id) : null,
+    stripePaymentIntentId: row.stripe_payment_intent_id ? String(row.stripe_payment_intent_id) : null,
+    locale: (String(row.locale) as Locale) || 'fr',
+    customer: row.customer_json as CommerceCustomerInfo,
+    quote: row.quote_json as CommerceQuote,
+    cgvAcceptedAt: new Date(String(row.cgv_accepted_at)).toISOString(),
+    digitalWithdrawalWaivedAt: row.digital_withdrawal_waived_at
+      ? new Date(String(row.digital_withdrawal_waived_at)).toISOString()
+      : null,
+    customOrderWaivedAt: row.custom_order_waived_at
+      ? new Date(String(row.custom_order_waived_at)).toISOString()
+      : null,
+    certificateIds: Array.isArray(row.certificate_ids) ? (row.certificate_ids as string[]) : [],
+    downloadTokens: Array.isArray(row.download_tokens_json)
+      ? (row.download_tokens_json as CommerceOrder['downloadTokens'])
+      : [],
+    createdAt: new Date(String(row.created_at)).toISOString(),
+    updatedAt: new Date(String(row.updated_at)).toISOString(),
+    paidAt: row.paid_at ? new Date(String(row.paid_at)).toISOString() : null,
   };
 }
 
-export function saveCommerceLegalConfig(patch: Partial<CommerceLegalConfig>): CommerceLegalConfig {
-  const current = getCommerceLegalConfig();
+function mapRowToWithdrawal(row: Record<string, unknown>): CommerceWithdrawalRequest {
+  return {
+    id: String(row.id),
+    referenceCode: String(row.reference_code),
+    orderNumber: String(row.order_number),
+    customerFullName: String(row.customer_full_name),
+    customerEmail: String(row.customer_email),
+    reason: row.reason ? String(row.reason) : undefined,
+    submittedAt: new Date(String(row.submitted_at)).toISOString(),
+    confirmedAt: new Date(String(row.confirmed_at)).toISOString(),
+    receiptEmailSent: Boolean(row.receipt_email_sent),
+    status: String(row.status) as CommerceWithdrawalRequest['status'],
+    legalBasisNoteFr: String(row.legal_basis_note_fr),
+  };
+}
+
+export async function getCommerceLegalConfig(): Promise<CommerceLegalConfig> {
+  const fileConfig = readCommerceJson<Partial<CommerceLegalConfig>>(
+    LEGAL_CONFIG_FILE,
+    DEFAULT_LEGAL_CONFIG
+  );
+
+  if (isNeonDatabaseConfigured()) {
+    try {
+      await ensureCommerceSchema();
+      const sql = getNeonSql();
+      const rows = (await sql`
+        SELECT value_json FROM commerce_settings WHERE key = 'legal_config' LIMIT 1
+      `) as Array<{ value_json?: Partial<CommerceLegalConfig> }>;
+      if (rows[0]?.value_json) {
+        return {
+          ...DEFAULT_LEGAL_CONFIG,
+          ...fileConfig,
+          ...rows[0].value_json,
+        };
+      }
+    } catch {
+      // Safe fallback to static repo defaults during SSG build or transient outage
+    }
+  }
+
+  return {
+    ...DEFAULT_LEGAL_CONFIG,
+    ...fileConfig,
+  };
+}
+
+export async function saveCommerceLegalConfig(
+  patch: Partial<CommerceLegalConfig>
+): Promise<CommerceLegalConfig> {
+  const current = await getCommerceLegalConfig();
   const next: CommerceLegalConfig = {
     ...current,
     ...patch,
     siretConfigured: Boolean(
       (patch.siret ?? current.siret) &&
-        /^\d{14}$/.test((patch.siret ?? current.siret).replace(/\s+/g, ''))
+      /^\d{14}$/.test((patch.siret ?? current.siret).replace(/\s+/g, ''))
     ),
     updatedAt: new Date().toISOString(),
   };
+
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    await sql`
+      INSERT INTO commerce_settings (key, value_json, updated_at)
+      VALUES ('legal_config', ${JSON.stringify(next)}::jsonb, NOW())
+      ON CONFLICT (key) DO UPDATE
+      SET value_json = EXCLUDED.value_json, updated_at = NOW()
+    `;
+    return next;
+  }
+
   writeCommerceJson(LEGAL_CONFIG_FILE, next);
   return next;
 }
 
-function hydrateCatalogImages(items: CommerceCatalogItem[]): CommerceCatalogItem[] {
+function hydrateCatalogWithVaultAndLocks(
+  items: CommerceCatalogItem[],
+  soldUniqueSkus: Set<string>,
+  reservedUniqueSkus: Set<string>
+): CommerceCatalogItem[] {
   const artworks = loadVaultArtworks();
   const books = loadVaultBooks();
   const artworkMap = new Map(artworks.map((a) => [a.slug, a]));
   const bookMap = new Map(books.map((b) => [b.slug, b]));
-
-  const orders = getCommerceOrders();
-  const soldUniqueSkus = new Set<string>();
-  const reservedUniqueSkus = new Set<string>();
-  const now = Date.now();
-
-  for (const ord of orders) {
-    if (ord.status === 'paid' || ord.status === 'fulfilled') {
-      for (const ln of ord.quote.lines) {
-        if (ln.kind === 'original_artwork') soldUniqueSkus.add(ln.sku);
-      }
-    } else if (ord.status === 'awaiting_sepa_transfer') {
-      for (const ln of ord.quote.lines) {
-        if (ln.kind === 'original_artwork') reservedUniqueSkus.add(ln.sku);
-      }
-    }
-  }
-
-  for (const [sku, lock] of activeUniqueSkuLocks.entries()) {
-    if (lock.expiresAt > now) {
-      reservedUniqueSkus.add(sku);
-    } else {
-      activeUniqueSkuLocks.delete(sku);
-    }
-  }
 
   return items.map((item) => {
     let resolvedImageUrl = item.imageUrl || null;
@@ -158,71 +226,155 @@ function hydrateCatalogImages(items: CommerceCatalogItem[]): CommerceCatalogItem
   });
 }
 
-export function getCommerceCatalog(): CommerceCatalogItem[] {
-  const raw = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
-  return hydrateCatalogImages(raw);
+export async function getCommerceCatalog(): Promise<CommerceCatalogItem[]> {
+  const baseItems = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
+  const soldUniqueSkus = new Set<string>();
+  const reservedUniqueSkus = new Set<string>();
+
+  if (isNeonDatabaseConfigured()) {
+    try {
+      await ensureCommerceSchema();
+      const sql = getNeonSql();
+
+      const [overrideRowsRaw, lockRowsRaw] = await Promise.all([
+        sql`SELECT value_json FROM commerce_settings WHERE key = 'catalog_overrides' LIMIT 1`,
+        sql`
+          SELECT sku, status, expires_at FROM commerce_unique_locks
+          WHERE status = 'sold' OR (status = 'reserved' AND (expires_at IS NULL OR expires_at > NOW()))
+        `,
+      ]);
+      const overrideRows = overrideRowsRaw as Array<{ value_json?: Record<string, CommerceCatalogItem> }>;
+      const lockRows = lockRowsRaw as Array<{ sku: string; status: string }>;
+
+      const overridesMap = overrideRows[0]?.value_json || {};
+      const mergedMap = new Map(baseItems.map((i) => [i.sku, i]));
+      for (const [sku, overrideItem] of Object.entries(overridesMap)) {
+        mergedMap.set(sku, overrideItem);
+      }
+
+      for (const lock of lockRows) {
+        if (lock.status === 'sold') soldUniqueSkus.add(lock.sku);
+        else reservedUniqueSkus.add(lock.sku);
+      }
+
+      return hydrateCatalogWithVaultAndLocks(
+        Array.from(mergedMap.values()),
+        soldUniqueSkus,
+        reservedUniqueSkus
+      );
+    } catch {
+      // Safe fallback to static repo catalog during build or outage
+    }
+  }
+
+  // Local fallback path
+  const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
+  const now = Date.now();
+  for (const ord of orders) {
+    if (ord.status === 'paid' || ord.status === 'fulfilled') {
+      for (const ln of ord.quote.lines) {
+        if (ln.kind === 'original_artwork') soldUniqueSkus.add(ln.sku);
+      }
+    } else if (ord.status === 'awaiting_sepa_transfer') {
+      for (const ln of ord.quote.lines) {
+        if (ln.kind === 'original_artwork') reservedUniqueSkus.add(ln.sku);
+      }
+    }
+  }
+  for (const [sku, lock] of localUniqueSkuLocks.entries()) {
+    if (lock.expiresAt > now) reservedUniqueSkus.add(sku);
+    else localUniqueSkuLocks.delete(sku);
+  }
+
+  return hydrateCatalogWithVaultAndLocks(baseItems, soldUniqueSkus, reservedUniqueSkus);
 }
 
-export function getCommerceProductBySku(sku: string): CommerceCatalogItem | null {
-  const all = getCommerceCatalog();
+export async function getCommerceProductBySku(sku: string): Promise<CommerceCatalogItem | null> {
+  const all = await getCommerceCatalog();
   return all.find((p) => p.sku === sku) || null;
 }
 
-export function getCommerceProductsForWork(
+export async function getCommerceProductsForWork(
   collection: CommerceCatalogItem['collection'],
   slug: string
-): CommerceCatalogItem[] {
-  const all = getCommerceCatalog();
+): Promise<CommerceCatalogItem[]> {
+  const all = await getCommerceCatalog();
   return all.filter((p) => p.collection === collection && p.slug === slug);
 }
 
-export function upsertCommerceCatalogItem(item: CommerceCatalogItem): CommerceCatalogItem[] {
-  const raw = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
-  const idx = raw.findIndex((x) => x.sku === item.sku);
+export async function upsertCommerceCatalogItem(
+  item: CommerceCatalogItem
+): Promise<CommerceCatalogItem[]> {
   const stamped: CommerceCatalogItem = {
     ...item,
     updatedAt: new Date().toISOString(),
   };
-  if (idx >= 0) {
-    raw[idx] = stamped;
-  } else {
-    raw.unshift(stamped);
+
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      SELECT value_json FROM commerce_settings WHERE key = 'catalog_overrides' LIMIT 1
+    `) as Array<{ value_json?: Record<string, CommerceCatalogItem> }>;
+    const overrides = { ...(rows[0]?.value_json || {}) };
+    overrides[stamped.sku] = stamped;
+    await sql`
+      INSERT INTO commerce_settings (key, value_json, updated_at)
+      VALUES ('catalog_overrides', ${JSON.stringify(overrides)}::jsonb, NOW())
+      ON CONFLICT (key) DO UPDATE
+      SET value_json = EXCLUDED.value_json, updated_at = NOW()
+    `;
+    return getCommerceCatalog();
   }
+
+  const raw = readCommerceJson<CommerceCatalogItem[]>(CATALOG_FILE, []);
+  const idx = raw.findIndex((x) => x.sku === stamped.sku);
+  if (idx >= 0) raw[idx] = stamped;
+  else raw.unshift(stamped);
   writeCommerceJson(CATALOG_FILE, raw);
-  return hydrateCatalogImages(raw);
+  return getCommerceCatalog();
 }
 
-export function getCommerceOrders(): CommerceOrder[] {
+export async function getCommerceOrders(): Promise<CommerceOrder[]> {
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      SELECT * FROM commerce_orders ORDER BY created_at DESC LIMIT 500
+    `) as Record<string, unknown>[];
+    return rows.map(mapRowToOrder);
+  }
   return readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
 }
 
-export function getCommerceOrderByNumber(orderNumber: string): CommerceOrder | null {
+export async function getCommerceOrderByNumber(orderNumber: string): Promise<CommerceOrder | null> {
   const clean = orderNumber.trim().toUpperCase();
-  return getCommerceOrders().find((o) => o.orderNumber.toUpperCase() === clean) || null;
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      SELECT * FROM commerce_orders WHERE UPPER(order_number) = ${clean} LIMIT 1
+    `) as Record<string, unknown>[];
+    return rows[0] ? mapRowToOrder(rows[0]) : null;
+  }
+  const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
+  return orders.find((o) => o.orderNumber.toUpperCase() === clean) || null;
 }
 
-export function getCommerceOrderById(orderId: string): CommerceOrder | null {
-  return getCommerceOrders().find((o) => o.id === orderId) || null;
+export async function getCommerceOrderById(orderId: string): Promise<CommerceOrder | null> {
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      SELECT * FROM commerce_orders WHERE id = ${orderId}::uuid LIMIT 1
+    `) as Record<string, unknown>[];
+    return rows[0] ? mapRowToOrder(rows[0]) : null;
+  }
+  const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
+  return orders.find((o) => o.id === orderId) || null;
 }
 
-/**
- * Generates strictly sequential, gap-free French invoice numbers (FACT-YYYY-0001)
- * compliant with Code de commerce & French e-invoicing readiness.
- */
-function nextSequentialOrderAndInvoiceNumbers(existing: CommerceOrder[]): {
-  orderNumber: string;
-  invoiceNumber: string;
-} {
-  const year = new Date().getUTCFullYear();
-  const seq = existing.length + 1;
-  const padded = String(seq).padStart(4, '0');
-  return {
-    orderNumber: `MKM-${year}-${padded}`,
-    invoiceNumber: `FACT-${year}-${padded}`,
-  };
-}
-
-export function createCommerceOrder(input: {
+export async function createCommerceOrder(input: {
   paymentMethod: CommercePaymentMethod;
   locale: Locale;
   customer: CommerceCustomerInfo;
@@ -230,13 +382,10 @@ export function createCommerceOrder(input: {
   digitalWithdrawalWaived: boolean;
   customOrderWaived: boolean;
   stripeSessionId?: string | null;
-}): CommerceOrder {
-  const orders = getCommerceOrders();
-  const now = Date.now();
-  const nowIso = new Date(now).toISOString();
-
-  // Atomic check for unique original artworks to prevent concurrent double-purchase
-  const catalog = getCommerceCatalog();
+}): Promise<CommerceOrder> {
+  const nowIso = new Date().toISOString();
+  const id = crypto.randomUUID();
+  const catalog = await getCommerceCatalog();
   const bySku = new Map(catalog.map((c) => [c.sku, c]));
 
   for (const line of input.quote.lines) {
@@ -244,29 +393,127 @@ export function createCommerceOrder(input: {
     if (!prod || prod.availability !== 'available') {
       throw new Error(`Item ${line.sku} is no longer available (${prod?.availability || 'missing'})`);
     }
-    if (prod.kind === 'original_artwork') {
-      const existingLock = activeUniqueSkuLocks.get(prod.sku);
-      if (existingLock && existingLock.expiresAt > now) {
-        throw new Error(`Original artwork ${prod.sku} is currently reserved in another active checkout`);
-      }
-    }
-  }
-
-  const { orderNumber, invoiceNumber } = nextSequentialOrderAndInvoiceNumbers(orders);
-  const id = crypto.randomUUID();
-
-  // Reserve unique artworks for 30 minutes (or indefinitely until SEPA settlement/cancel)
-  for (const line of input.quote.lines) {
-    if (line.kind === 'original_artwork') {
-      activeUniqueSkuLocks.set(line.sku, {
-        orderId: id,
-        expiresAt: now + 30 * 60 * 1000,
-      });
-    }
   }
 
   const initialStatus: CommerceOrderStatus =
     input.paymentMethod === 'sepa_wire' ? 'awaiting_sepa_transfer' : 'pending_payment';
+
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+
+    // Distributed atomic unique-artwork locking in Postgres (prevents multi-instance double-sell)
+    const acquiredUniqueSkus: string[] = [];
+    const lockExpiresSql = input.paymentMethod === 'sepa_wire' ? null : new Date(Date.now() + 30 * 60 * 1000).toISOString();
+
+    try {
+      for (const line of input.quote.lines) {
+        if (line.kind !== 'original_artwork') continue;
+        const lockRows = (await sql`
+          INSERT INTO commerce_unique_locks (sku, order_id, status, expires_at, updated_at)
+          VALUES (${line.sku}, ${id}::uuid, 'reserved', ${lockExpiresSql}::timestamptz, NOW())
+          ON CONFLICT (sku) DO UPDATE
+          SET order_id = EXCLUDED.order_id,
+              status = 'reserved',
+              expires_at = EXCLUDED.expires_at,
+              updated_at = NOW()
+          WHERE commerce_unique_locks.status = 'reserved'
+            AND commerce_unique_locks.expires_at IS NOT NULL
+            AND commerce_unique_locks.expires_at < NOW()
+          RETURNING sku
+        `) as Array<{ sku: string }>;
+
+        if (lockRows.length === 0) {
+          throw new Error(`Original artwork ${line.sku} is currently reserved or already sold`);
+        }
+        acquiredUniqueSkus.push(line.sku);
+      }
+
+      const seqRows = (await sql`SELECT nextval('commerce_invoice_seq') AS seq`) as Array<{ seq: string | number }>;
+      const seq = Number(seqRows[0]?.seq || 1);
+      const year = new Date().getUTCFullYear();
+      const padded = String(seq).padStart(4, '0');
+      const orderNumber = `MKM-${year}-${padded}`;
+      const invoiceNumber = `FACT-${year}-${padded}`;
+
+      const order: CommerceOrder = {
+        id,
+        orderNumber,
+        invoiceNumber,
+        status: initialStatus,
+        paymentMethod: input.paymentMethod,
+        stripeSessionId: input.stripeSessionId || null,
+        stripePaymentIntentId: null,
+        locale: input.locale,
+        customer: input.customer,
+        quote: input.quote,
+        cgvAcceptedAt: nowIso,
+        digitalWithdrawalWaivedAt: input.digitalWithdrawalWaived ? nowIso : null,
+        customOrderWaivedAt: input.customOrderWaived ? nowIso : null,
+        certificateIds: [],
+        downloadTokens: [],
+        createdAt: nowIso,
+        updatedAt: nowIso,
+        paidAt: null,
+      };
+
+      await sql`
+        INSERT INTO commerce_orders (
+          id, order_number, invoice_number, status, payment_method,
+          stripe_session_id, stripe_payment_intent_id, locale,
+          customer_json, quote_json, certificate_ids, download_tokens_json,
+          artiste_auteur_total_cents, commercial_bic_total_cents,
+          shipping_cents, tax_cents, total_cents, loi_darcos_applied,
+          cgv_accepted_at, digital_withdrawal_waived_at, custom_order_waived_at,
+          paid_at, created_at, updated_at
+        ) VALUES (
+          ${order.id}::uuid, ${order.orderNumber}, ${order.invoiceNumber}, ${order.status}, ${order.paymentMethod},
+          ${order.stripeSessionId}, NULL, ${order.locale},
+          ${JSON.stringify(order.customer)}::jsonb, ${JSON.stringify(order.quote)}::jsonb,
+          '[]'::jsonb, '[]'::jsonb,
+          ${order.quote.artisteAuteurTotalCents}, ${order.quote.commercialBicTotalCents},
+          ${order.quote.shippingCents}, ${order.quote.taxCents}, ${order.quote.totalCents}, ${order.quote.loiDarcosApplied},
+          ${order.cgvAcceptedAt}::timestamptz,
+          ${order.digitalWithdrawalWaivedAt}::timestamptz,
+          ${order.customOrderWaivedAt}::timestamptz,
+          NULL, ${order.createdAt}::timestamptz, ${order.updatedAt}::timestamptz
+        )
+      `;
+
+      return order;
+    } catch (err) {
+      // Release any locks claimed before the error
+      for (const sku of acquiredUniqueSkus) {
+        await sql`DELETE FROM commerce_unique_locks WHERE sku = ${sku} AND order_id = ${id}::uuid`.catch(
+          () => { }
+        );
+      }
+      throw err;
+    }
+  }
+
+  // Local fallback path
+  const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
+  const now = Date.now();
+  for (const line of input.quote.lines) {
+    if (line.kind === 'original_artwork') {
+      const existingLock = localUniqueSkuLocks.get(line.sku);
+      if (existingLock && existingLock.expiresAt > now) {
+        throw new Error(`Original artwork ${line.sku} is currently reserved in another active checkout`);
+      }
+    }
+  }
+
+  const year = new Date().getUTCFullYear();
+  const padded = String(orders.length + 1).padStart(4, '0');
+  const orderNumber = `MKM-${year}-${padded}`;
+  const invoiceNumber = `FACT-${year}-${padded}`;
+
+  for (const line of input.quote.lines) {
+    if (line.kind === 'original_artwork') {
+      localUniqueSkuLocks.set(line.sku, { orderId: id, expiresAt: now + 30 * 60 * 1000 });
+    }
+  }
 
   const order: CommerceOrder = {
     id,
@@ -294,20 +541,33 @@ export function createCommerceOrder(input: {
   return order;
 }
 
-export function attachStripeSessionToOrder(orderId: string, stripeSessionId: string): CommerceOrder | null {
-  const orders = getCommerceOrders();
+export async function attachStripeSessionToOrder(
+  orderId: string,
+  stripeSessionId: string
+): Promise<CommerceOrder | null> {
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      UPDATE commerce_orders
+      SET stripe_session_id = ${stripeSessionId}, updated_at = NOW()
+      WHERE id = ${orderId}::uuid
+      RETURNING *
+    `) as Record<string, unknown>[];
+    return rows[0] ? mapRowToOrder(rows[0]) : null;
+  }
+
+  const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
   const idx = orders.findIndex((o) => o.id === orderId);
   if (idx < 0) return null;
-  orders[idx] = {
-    ...orders[idx],
-    stripeSessionId,
-    updatedAt: new Date().toISOString(),
-  };
+  orders[idx] = { ...orders[idx], stripeSessionId, updatedAt: new Date().toISOString() };
   writeCommerceJson(ORDERS_FILE, orders);
   return orders[idx];
 }
 
-export function buildCertificateCanonicalString(cert: Omit<ArtworkAuthenticityCertificate, 'canonicalSha256' | 'signatureEd25519'>): string {
+export function buildCertificateCanonicalString(
+  cert: Omit<ArtworkAuthenticityCertificate, 'canonicalSha256' | 'signatureEd25519'>
+): string {
   return [
     `CERT_ID:${cert.certificateId}`,
     `ORDER:${cert.orderNumber}`,
@@ -339,46 +599,81 @@ export function verifyAuthenticityCertificate(cert: ArtworkAuthenticityCertifica
   return { sha256Matches, ed25519Valid };
 }
 
-export function getAuthenticityCertificates(): ArtworkAuthenticityCertificate[] {
+export async function getAuthenticityCertificates(): Promise<ArtworkAuthenticityCertificate[]> {
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      SELECT payload_json FROM commerce_certificates ORDER BY issued_at DESC LIMIT 500
+    `) as Array<{ payload_json: ArtworkAuthenticityCertificate }>;
+    return rows.map((r) => r.payload_json);
+  }
   return readCommerceJson<ArtworkAuthenticityCertificate[]>(CERTIFICATES_FILE, []);
 }
 
-export function getAuthenticityCertificateById(certificateId: string): ArtworkAuthenticityCertificate | null {
+export async function getAuthenticityCertificateById(
+  certificateId: string
+): Promise<ArtworkAuthenticityCertificate | null> {
   const clean = certificateId.trim().toUpperCase();
-  return getAuthenticityCertificates().find((c) => c.certificateId.toUpperCase() === clean) || null;
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      SELECT payload_json FROM commerce_certificates WHERE UPPER(certificate_id) = ${clean} LIMIT 1
+    `) as Array<{ payload_json: ArtworkAuthenticityCertificate }>;
+    return rows[0]?.payload_json || null;
+  }
+  const all = readCommerceJson<ArtworkAuthenticityCertificate[]>(CERTIFICATES_FILE, []);
+  return all.find((c) => c.certificateId.toUpperCase() === clean) || null;
 }
 
-export function markCommerceOrderPaid(input: {
+export async function markCommerceOrderPaid(input: {
   orderId?: string;
   orderNumber?: string;
   stripeSessionId?: string;
   stripePaymentIntentId?: string | null;
-}): CommerceOrder | null {
-  const orders = getCommerceOrders();
-  const idx = orders.findIndex(
-    (o) =>
-      (input.orderId && o.id === input.orderId) ||
-      (input.orderNumber && o.orderNumber === input.orderNumber) ||
-      (input.stripeSessionId && o.stripeSessionId === input.stripeSessionId)
-  );
-  if (idx < 0) return null;
+}): Promise<CommerceOrder | null> {
+  let existing: CommerceOrder | null = null;
 
-  const existing = orders[idx];
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    if (input.orderId) {
+      existing = await getCommerceOrderById(input.orderId);
+    } else if (input.orderNumber) {
+      existing = await getCommerceOrderByNumber(input.orderNumber);
+    } else if (input.stripeSessionId) {
+      const rows = (await sql`
+        SELECT * FROM commerce_orders WHERE stripe_session_id = ${input.stripeSessionId} LIMIT 1
+      `) as Record<string, unknown>[];
+      existing = rows[0] ? mapRowToOrder(rows[0]) : null;
+    }
+  } else {
+    const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
+    existing =
+      orders.find(
+        (o) =>
+          (input.orderId && o.id === input.orderId) ||
+          (input.orderNumber && o.orderNumber === input.orderNumber) ||
+          (input.stripeSessionId && o.stripeSessionId === input.stripeSessionId)
+      ) || null;
+  }
+
+  if (!existing) return null;
   if (existing.status === 'paid' || existing.status === 'fulfilled') {
     return existing;
   }
 
   const nowIso = new Date().toISOString();
-  const catalog = getCommerceCatalog();
+  const catalog = await getCommerceCatalog();
   const bySku = new Map(catalog.map((c) => [c.sku, c]));
-  const certificates = getAuthenticityCertificates();
   const issuedCertificateIds: string[] = [...existing.certificateIds];
+  const mintedCerts: ArtworkAuthenticityCertificate[] = [];
   const downloadTokens = [...existing.downloadTokens];
 
   for (const line of existing.quote.lines) {
     const prod = bySku.get(line.sku);
 
-    // 1. Issue Cryptographic Ed25519 Décret Marcus Certificate for Artworks & Numbered Prints
     if (line.kind === 'original_artwork' || line.kind === 'fine_art_print') {
       const certId = `COA-${new Date().getUTCFullYear()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
       const isOriginal = line.kind === 'original_artwork';
@@ -417,14 +712,10 @@ export function markCommerceOrderPaid(input: {
         signatureEd25519: signWithEd25519(canonical),
       };
 
-      certificates.unshift(signedCert);
+      mintedCerts.push(signedCert);
       issuedCertificateIds.push(certId);
-
-      // Clear temporary lock since order is now permanently marked paid
-      activeUniqueSkuLocks.delete(line.sku);
     }
 
-    // 2. Issue Expiring Watermarked Digital Download Token for E-books
     if (line.kind === 'book_digital_ebook') {
       const token = crypto.randomBytes(24).toString('base64url');
       downloadTokens.push({
@@ -438,9 +729,7 @@ export function markCommerceOrderPaid(input: {
     }
   }
 
-  writeCommerceJson(CERTIFICATES_FILE, certificates);
-
-  orders[idx] = {
+  const updatedOrder: CommerceOrder = {
     ...existing,
     status: 'paid',
     stripePaymentIntentId: input.stripePaymentIntentId ?? existing.stripePaymentIntentId,
@@ -449,47 +738,118 @@ export function markCommerceOrderPaid(input: {
     paidAt: nowIso,
     updatedAt: nowIso,
   };
-  writeCommerceJson(ORDERS_FILE, orders);
-  return orders[idx];
+
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+
+    for (const cert of mintedCerts) {
+      await sql`
+        INSERT INTO commerce_certificates (
+          certificate_id, order_number, invoice_number, sku, artwork_slug,
+          plate_image_id, kind, buyer_name, canonical_sha256, signature_ed25519,
+          payload_json, issued_at
+        ) VALUES (
+          ${cert.certificateId}, ${cert.orderNumber}, ${cert.invoiceNumber}, ${cert.sku}, ${cert.artworkSlug},
+          ${cert.plateImageId ?? null}, ${cert.kind}, ${cert.buyerName}, ${cert.canonicalSha256}, ${cert.signatureEd25519},
+          ${JSON.stringify(cert)}::jsonb, ${cert.issuedAt}::timestamptz
+        )
+        ON CONFLICT (certificate_id) DO NOTHING
+      `;
+    }
+
+    for (const line of existing.quote.lines) {
+      if (line.kind === 'original_artwork') {
+        await sql`
+          INSERT INTO commerce_unique_locks (sku, order_id, status, expires_at, updated_at)
+          VALUES (${line.sku}, ${existing.id}::uuid, 'sold', NULL, NOW())
+          ON CONFLICT (sku) DO UPDATE
+          SET order_id = EXCLUDED.order_id, status = 'sold', expires_at = NULL, updated_at = NOW()
+        `;
+      }
+    }
+
+    await sql`
+      UPDATE commerce_orders
+      SET status = 'paid',
+          stripe_payment_intent_id = ${updatedOrder.stripePaymentIntentId},
+          certificate_ids = ${JSON.stringify(updatedOrder.certificateIds)}::jsonb,
+          download_tokens_json = ${JSON.stringify(updatedOrder.downloadTokens)}::jsonb,
+          paid_at = ${nowIso}::timestamptz,
+          updated_at = NOW()
+      WHERE id = ${existing.id}::uuid
+    `;
+
+    return updatedOrder;
+  }
+
+  // Local fallback path
+  const certificates = readCommerceJson<ArtworkAuthenticityCertificate[]>(CERTIFICATES_FILE, []);
+  certificates.unshift(...mintedCerts);
+  writeCommerceJson(CERTIFICATES_FILE, certificates);
+
+  for (const line of existing.quote.lines) {
+    localUniqueSkuLocks.delete(line.sku);
+  }
+
+  const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
+  const idx = orders.findIndex((o) => o.id === existing!.id);
+  if (idx >= 0) {
+    orders[idx] = updatedOrder;
+    writeCommerceJson(ORDERS_FILE, orders);
+  }
+  return updatedOrder;
 }
 
-export function updateCommerceOrderStatus(
+export async function updateCommerceOrderStatus(
   orderId: string,
   status: CommerceOrderStatus
-): CommerceOrder | null {
+): Promise<CommerceOrder | null> {
   if (status === 'paid') {
     return markCommerceOrderPaid({ orderId });
   }
-  const orders = getCommerceOrders();
+
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      UPDATE commerce_orders
+      SET status = ${status}, updated_at = NOW()
+      WHERE id = ${orderId}::uuid
+      RETURNING *
+    `) as Record<string, unknown>[];
+    if (!rows[0]) return null;
+
+    if (status === 'cancelled' || status === 'refunded') {
+      await sql`DELETE FROM commerce_unique_locks WHERE order_id = ${orderId}::uuid`;
+    }
+    return mapRowToOrder(rows[0]);
+  }
+
+  const orders = readCommerceJson<CommerceOrder[]>(ORDERS_FILE, []);
   const idx = orders.findIndex((o) => o.id === orderId);
   if (idx < 0) return null;
 
   if (status === 'cancelled' || status === 'refunded') {
     for (const line of orders[idx].quote.lines) {
-      activeUniqueSkuLocks.delete(line.sku);
+      localUniqueSkuLocks.delete(line.sku);
     }
   }
-
-  orders[idx] = {
-    ...orders[idx],
-    status,
-    updatedAt: new Date().toISOString(),
-  };
+  orders[idx] = { ...orders[idx], status, updatedAt: new Date().toISOString() };
   writeCommerceJson(ORDERS_FILE, orders);
   return orders[idx];
 }
 
-export function consumeDownloadToken(token: string): {
+export async function consumeDownloadToken(token: string): Promise<{
   valid: boolean;
   error?: string;
   order?: CommerceOrder;
   assetUrl?: string;
   title?: string;
   remainingDownloads?: number;
-} {
-  const orders = getCommerceOrders();
-  for (let i = 0; i < orders.length; i++) {
-    const ord = orders[i];
+}> {
+  const orders = await getCommerceOrders();
+  for (const ord of orders) {
     const tokenIdx = ord.downloadTokens.findIndex((t) => t.token === token);
     if (tokenIdx >= 0) {
       const entry = ord.downloadTokens[tokenIdx];
@@ -503,10 +863,22 @@ export function consumeDownloadToken(token: string): {
         return { valid: false, error: 'Maximum download limit reached' };
       }
 
-      const product = getCommerceProductBySku(entry.sku);
+      const product = await getCommerceProductBySku(entry.sku);
       entry.downloadsUsed += 1;
       ord.updatedAt = new Date().toISOString();
-      writeCommerceJson(ORDERS_FILE, orders);
+
+      if (isNeonDatabaseConfigured()) {
+        await ensureCommerceSchema();
+        const sql = getNeonSql();
+        await sql`
+          UPDATE commerce_orders
+          SET download_tokens_json = ${JSON.stringify(ord.downloadTokens)}::jsonb,
+              updated_at = NOW()
+          WHERE id = ${ord.id}::uuid
+        `;
+      } else {
+        writeCommerceJson(ORDERS_FILE, orders);
+      }
 
       return {
         valid: true,
@@ -520,24 +892,28 @@ export function consumeDownloadToken(token: string): {
   return { valid: false, error: 'Invalid download token' };
 }
 
-export function getCommerceWithdrawals(): CommerceWithdrawalRequest[] {
+export async function getCommerceWithdrawals(): Promise<CommerceWithdrawalRequest[]> {
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    const rows = (await sql`
+      SELECT * FROM commerce_withdrawals ORDER BY submitted_at DESC LIMIT 500
+    `) as Record<string, unknown>[];
+    return rows.map(mapRowToWithdrawal);
+  }
   return readCommerceJson<CommerceWithdrawalRequest[]>(WITHDRAWALS_FILE, []);
 }
 
-/**
- * Registers a legally compliant French online withdrawal request
- * under Ordonnance n° 2026-2 & Décret n° 2026-3 (effective June 19, 2026, Art. L221-21 & D221-5).
- */
-export function createWithdrawalRequest(input: {
+export async function createWithdrawalRequest(input: {
   orderNumber: string;
   customerFullName: string;
   customerEmail: string;
   reason?: string;
-}): CommerceWithdrawalRequest {
-  const withdrawals = getCommerceWithdrawals();
-  const matchedOrder = getCommerceOrderByNumber(input.orderNumber);
+}): Promise<CommerceWithdrawalRequest> {
+  const existingWithdrawals = await getCommerceWithdrawals();
+  const matchedOrder = await getCommerceOrderByNumber(input.orderNumber);
   const nowIso = new Date().toISOString();
-  const ref = `RET-${new Date().getUTCFullYear()}-${String(withdrawals.length + 1).padStart(4, '0')}`;
+  const ref = `RET-${new Date().getUTCFullYear()}-${String(existingWithdrawals.length + 1).padStart(4, '0')}`;
 
   let status: CommerceWithdrawalRequest['status'] = 'received';
   let legalBasisNoteFr =
@@ -550,7 +926,7 @@ export function createWithdrawalRequest(input: {
       legalBasisNoteFr =
         "Accusé de réception enregistré. Attention : cette commande porte exclusivement sur un contenu numérique fourni immédiatement avec renonciation expresse (art. L.221-28 13°) ou une œuvre réalisée sur mesure (art. L.221-28 3°). Notre service étudiera néanmoins votre demande avec bienveillance.";
     } else {
-      updateCommerceOrderStatus(matchedOrder.id, 'withdrawal_requested');
+      await updateCommerceOrderStatus(matchedOrder.id, 'withdrawal_requested');
     }
   }
 
@@ -568,13 +944,38 @@ export function createWithdrawalRequest(input: {
     legalBasisNoteFr,
   };
 
-  withdrawals.unshift(record);
-  writeCommerceJson(WITHDRAWALS_FILE, withdrawals);
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    await sql`
+      INSERT INTO commerce_withdrawals (
+        id, reference_code, order_number, customer_full_name, customer_email,
+        reason, status, legal_basis_note_fr, receipt_email_sent, submitted_at, confirmed_at
+      ) VALUES (
+        ${record.id}::uuid, ${record.referenceCode}, ${record.orderNumber}, ${record.customerFullName}, ${record.customerEmail},
+        ${record.reason ?? null}, ${record.status}, ${record.legalBasisNoteFr}, FALSE,
+        ${record.submittedAt}::timestamptz, ${record.confirmedAt}::timestamptz
+      )
+    `;
+    return record;
+  }
+
+  existingWithdrawals.unshift(record);
+  writeCommerceJson(WITHDRAWALS_FILE, existingWithdrawals);
   return record;
 }
 
-export function markWithdrawalReceiptSent(withdrawalId: string): void {
-  const withdrawals = getCommerceWithdrawals();
+export async function markWithdrawalReceiptSent(withdrawalId: string): Promise<void> {
+  if (isNeonDatabaseConfigured()) {
+    await ensureCommerceSchema();
+    const sql = getNeonSql();
+    await sql`
+      UPDATE commerce_withdrawals SET receipt_email_sent = TRUE WHERE id = ${withdrawalId}::uuid
+    `;
+    return;
+  }
+
+  const withdrawals = readCommerceJson<CommerceWithdrawalRequest[]>(WITHDRAWALS_FILE, []);
   const idx = withdrawals.findIndex((w) => w.id === withdrawalId);
   if (idx >= 0) {
     withdrawals[idx].receiptEmailSent = true;
@@ -582,12 +983,12 @@ export function markWithdrawalReceiptSent(withdrawalId: string): void {
   }
 }
 
-/**
- * Generates French accounting ledger ("Livre de recettes" CSV) separating
- * Artiste-Auteur (URSSAF Limousin) and Commercial BIC (Micro-entreprise) revenues.
- */
-export function buildFrenchAccountingLedgerCsv(bucketFilter?: 'all' | 'artiste_auteur' | 'commercial_bic'): string {
-  const orders = getCommerceOrders().filter((o) => o.status === 'paid' || o.status === 'fulfilled');
+export async function buildFrenchAccountingLedgerCsv(
+  bucketFilter?: 'all' | 'artiste_auteur' | 'commercial_bic'
+): Promise<string> {
+  const orders = (await getCommerceOrders()).filter(
+    (o) => o.status === 'paid' || o.status === 'fulfilled'
+  );
   const headers = [
     'Date_Paiement',
     'Numero_Facture',

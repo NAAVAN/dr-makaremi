@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const record = createWithdrawalRequest({
+    const record = await createWithdrawalRequest({
       orderNumber: parsed.data.orderNumber,
       customerFullName: parsed.data.customerFullName,
       customerEmail: parsed.data.customerEmail,
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     const emailSent = await sendWithdrawalTimestampedReceiptEmail(record);
     if (emailSent) {
-      markWithdrawalReceiptSent(record.id);
+      await markWithdrawalReceiptSent(record.id);
       record.receiptEmailSent = true;
     }
 

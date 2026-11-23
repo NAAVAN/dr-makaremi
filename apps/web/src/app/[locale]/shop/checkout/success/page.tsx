@@ -38,8 +38,10 @@ export default async function CheckoutSuccessPage({
   if (!isValidLocale(locale)) notFound();
 
   const { order: orderParam } = await searchParams;
-  const order = orderParam ? getCommerceOrderByNumber(orderParam) : null;
-  const legalConfig = getCommerceLegalConfig();
+  const [order, legalConfig] = await Promise.all([
+    orderParam ? getCommerceOrderByNumber(orderParam) : Promise.resolve(null),
+    getCommerceLegalConfig(),
+  ]);
 
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';

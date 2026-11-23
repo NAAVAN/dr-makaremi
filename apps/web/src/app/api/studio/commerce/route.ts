@@ -13,6 +13,7 @@ import {
 } from '@/lib/commerce/store';
 import { getStripeRuntimeMode } from '@/lib/commerce/stripe';
 import { isTransactionalEmailConfigured } from '@/lib/commerce/email';
+import { checkNeonConnectionHealth } from '@/lib/commerce/db';
 
 const UpdateLegalConfigSchema = z.object({
   action: z.literal('update_legal_config'),
@@ -64,11 +65,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const legalConfig = getCommerceLegalConfig();
-  const catalog = getCommerceCatalog();
-  const orders = getCommerceOrders();
-  const withdrawals = getCommerceWithdrawals();
-  const certificates = getAuthenticityCertificates();
+  const [legalConfig, catalog, orders, withdrawals, certificates, storageStatus] = await Promise.all([
+    getCommerceLegalConfig(),
+    getCommerceCatalog(),
+    getCommerceOrders(),
+    getCommerceWithdrawals(),
+    getAuthenticityCertificates(),
+    checkNeonConnectionHealth(),
+  ]);
 
   const paidOrders = orders.filter((o) => o.status === 'paid' || o.status === 'fulfilled');
   const totalArtisteAuteurCents = paidOrders.reduce((s, o) => s + o.quote.artisteAuteurTotalCents, 0);
@@ -82,6 +86,7 @@ export async function GET(request: NextRequest) {
       orders,
       withdrawals,
       certificates,
+      storageStatus,
       stripeMode: getStripeRuntimeMode(),
       emailConfigured: isTransactionalEmailConfigured(),
       stats: {
@@ -117,7 +122,7 @@ export async function PATCH(request: NextRequest) {
           { status: 400 }
         );
       }
-      const updated = saveCommerceLegalConfig(parsed.data.patch);
+      const updated = await saveCommerceLegalConfig(parsed.data.patch);
       return NextResponse.json({ ok: true, legalConfig: updated });
     }
 
@@ -129,12 +134,12 @@ export async function PATCH(request: NextRequest) {
           { status: 400 }
         );
       }
-      const catalog = getCommerceCatalog();
+      const catalog = await getCommerceCatalog();
       const existing = catalog.find((c) => c.sku === parsed.data.sku);
       if (!existing) {
         return NextResponse.json({ ok: false, error: 'SKU not found' }, { status: 404 });
       }
-      const updatedCatalog = upsertCommerceCatalogItem({
+      const updatedCatalog = await upsertCommerceCatalogItem({
         ...existing,
         availability: parsed.data.availability,
         priceEurCents: parsed.data.priceEurCents,
@@ -161,7 +166,7 @@ export async function PATCH(request: NextRequest) {
           { status: 400 }
         );
       }
-      const updatedOrder = updateCommerceOrderStatus(parsed.data.orderId, parsed.data.status);
+      const updatedOrder = await updateCommerceOrderStatus(parsed.data.orderId, parsed.data.status);
       if (!updatedOrder) {
         return NextResponse.json({ ok: false, error: 'Order not found' }, { status: 404 });
       }

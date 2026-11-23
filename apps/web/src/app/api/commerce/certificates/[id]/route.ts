@@ -13,7 +13,7 @@ export async function GET(
   if (!rl.allowed) return rl.response!;
 
   const { id } = await context.params;
-  const cert = getAuthenticityCertificateById(id);
+  const cert = await getAuthenticityCertificateById(id);
   if (!cert) {
     return NextResponse.json(
       { ok: false, error: 'Authenticity certificate not found' },

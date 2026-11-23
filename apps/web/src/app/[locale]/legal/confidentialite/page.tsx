@@ -49,7 +49,7 @@ export default async function ConfidentialitePage({
   const isFa = locale === 'fa';
   const isFr = locale === 'fr';
   const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
-  const cfg = getCommerceLegalConfig();
+  const cfg = await getCommerceLegalConfig();
 
   return (
     <article className="max-w-4xl mx-auto space-y-10">

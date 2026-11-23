@@ -1,9 +1,15 @@
 -- =============================================================================
 -- MAKAREMI-CORE-2026: French-Law Compliant E-Commerce & Provenance Schema
--- Ready for Neon Postgres (Vercel Marketplace) or Self-Hosted PostgreSQL 17
+-- Ready for Neon Serverless Postgres (EU / Frankfurt) or PostgreSQL 17
 -- =============================================================================
 
 CREATE SEQUENCE IF NOT EXISTS commerce_invoice_seq START 1;
+
+CREATE TABLE IF NOT EXISTS commerce_settings (
+  key TEXT PRIMARY KEY,
+  value_json JSONB NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 CREATE TABLE IF NOT EXISTS commerce_orders (
   id UUID PRIMARY KEY,
@@ -19,6 +25,8 @@ CREATE TABLE IF NOT EXISTS commerce_orders (
   locale TEXT NOT NULL CHECK (locale IN ('fa', 'fr', 'en')),
   customer_json JSONB NOT NULL,
   quote_json JSONB NOT NULL,
+  certificate_ids JSONB NOT NULL DEFAULT '[]'::jsonb,
+  download_tokens_json JSONB NOT NULL DEFAULT '[]'::jsonb,
   artiste_auteur_total_cents INTEGER NOT NULL DEFAULT 0,
   commercial_bic_total_cents INTEGER NOT NULL DEFAULT 0,
   shipping_cents INTEGER NOT NULL DEFAULT 0,
@@ -33,9 +41,17 @@ CREATE TABLE IF NOT EXISTS commerce_orders (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS commerce_unique_locks (
+  sku TEXT PRIMARY KEY,
+  order_id UUID NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('reserved', 'sold')),
+  expires_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS commerce_certificates (
   certificate_id TEXT PRIMARY KEY,
-  order_number TEXT NOT NULL REFERENCES commerce_orders(order_number) ON DELETE RESTRICT,
+  order_number TEXT NOT NULL,
   invoice_number TEXT NOT NULL,
   sku TEXT NOT NULL,
   artwork_slug TEXT NOT NULL,
@@ -64,4 +80,5 @@ CREATE TABLE IF NOT EXISTS commerce_withdrawals (
 
 CREATE INDEX IF NOT EXISTS idx_commerce_orders_status ON commerce_orders(status);
 CREATE INDEX IF NOT EXISTS idx_commerce_orders_created ON commerce_orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_commerce_orders_stripe ON commerce_orders(stripe_session_id);
 CREATE INDEX IF NOT EXISTS idx_commerce_withdrawals_order ON commerce_withdrawals(order_number);
