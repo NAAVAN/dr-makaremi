@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import {
+  AlertTriangle,
   CheckCircle2,
   ExternalLink,
   FileText,
@@ -10,12 +11,14 @@ import {
   Loader2,
   Plus,
   Search,
+  Subtitles,
 } from 'lucide-react';
 import type {
   Locale,
   StudioStandardisedAsset,
   TranslationWorkDetail,
   TranslationWorkSummary,
+  VideoHealthEntry,
 } from '@makaremi/shared';
 import { AccessibleListbox, type ListboxOption } from './AccessibleListbox';
 import { StandardUploadDropzone } from './StandardUploadDropzone';
@@ -67,6 +70,69 @@ export function ArchiveEnricherPanel({ onEnrichedSuccess }: ArchiveEnricherPanel
 
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ ok: boolean; msg: string } | null>(null);
+
+  // Video Transcript Importer (.srt / .vtt / text) + Flagged Video Health Report
+  const [transcriptRaw, setTranscriptRaw] = useState('');
+  const [transcriptLang, setTranscriptLang] = useState<Locale>('fa');
+  const [savingTranscript, setSavingTranscript] = useState(false);
+  const [videoHealthSummary, setVideoHealthSummary] = useState<{
+    totalRecords: number;
+    withTranscriptCount: number;
+    privateOrUnavailableCount: number;
+    noStreamCount: number;
+  } | null>(null);
+  const [flaggedVideos, setFlaggedVideos] = useState<VideoHealthEntry[]>([]);
+  const [showHealthReport, setShowHealthReport] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/studio/videos/health', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json?.ok) {
+          setVideoHealthSummary(json.summary || null);
+          setFlaggedVideos(Array.isArray(json.flaggedForStudio) ? json.flaggedForStudio : []);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSaveVideoTranscript = async () => {
+    if (!selectedWork || selectedWork.collection !== 'videos' || !transcriptRaw.trim()) return;
+    setSavingTranscript(true);
+    setFeedback(null);
+    try {
+      const detectedFormat = transcriptRaw.includes('-->')
+        ? transcriptRaw.trim().toUpperCase().startsWith('WEBVTT')
+          ? 'vtt'
+          : 'srt'
+        : 'markdown';
+      const res = await fetch('/api/studio/videos/health', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug: selectedWork.slug,
+          sourceLang: transcriptLang,
+          rawContent: transcriptRaw,
+          format: detectedFormat,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) {
+        setFeedback({ ok: false, msg: json.error || 'ذخیره متن پیاده‌سازی‌شده ویدیو ناموفق بود.' });
+      } else {
+        setTranscriptRaw('');
+        setFeedback({
+          ok: true,
+          msg: `متن پیاده‌سازی‌شده با ${json.wordCount} واژه ذخیره شد و بلافاصله در صفحه ویدیو و مغز دانش دستیار هوشمند ایندکس گردید.`,
+        });
+        onEnrichedSuccess();
+      }
+    } catch {
+      setFeedback({ ok: false, msg: 'خطای ارتباط با سرور هنگام ذخیره متن ویدیو.' });
+    } finally {
+      setSavingTranscript(false);
+    }
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -443,6 +509,54 @@ export function ArchiveEnricherPanel({ onEnrichedSuccess }: ArchiveEnricherPanel
               )}
             </div>
 
+            {/* D) Direct Video Transcript / SRT / VTT Importer (re-indexes RAG automatically) */}
+            {selectedWork.collection === 'videos' && (
+              <div className="rounded-xl bg-[var(--surface-sunken)] border border-[var(--primary)]/30 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h4 className="text-sm font-extrabold text-[var(--foreground)] flex items-center gap-1.5">
+                    <Subtitles size={15} className="text-[var(--primary)]" />
+                    <span>د) ثبت یا به‌روزرسانی متن پیاده‌سازی‌شده ویدیو (متن ساده، SRT یا VTT)</span>
+                  </h4>
+                  <div className="flex items-center gap-1">
+                    {(['fa', 'fr', 'en'] as Locale[]).map((l) => (
+                      <button
+                        key={l}
+                        type="button"
+                        onClick={() => setTranscriptLang(l)}
+                        className={`px-2 py-0.5 rounded-lg text-[11px] font-bold border cursor-pointer ${
+                          transcriptLang === l
+                            ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]'
+                            : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border-[var(--border-subtle)]'
+                        }`}
+                      >
+                        {l.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  می‌توانید متن کامل یا محتوای فایل زیرنویس (<span dir="ltr" className="font-mono">.srt / .vtt</span>) را اینجا قرار دهید؛ تایم‌استمپ‌ها به‌طور خودکار تبدیل و متن بلافاصله در مغز دانش دستیار هوشمند ایندکس می‌شود.
+                </p>
+                <textarea
+                  rows={5}
+                  dir={transcriptLang === 'fa' ? 'rtl' : 'ltr'}
+                  value={transcriptRaw}
+                  onChange={(e) => setTranscriptRaw(e.target.value)}
+                  placeholder="متن پیاده‌سازی‌شده سخنرانی یا محتوای فایل .srt / .vtt را اینجا جای‌گذاری کنید..."
+                  className="w-full rounded-xl bg-[var(--surface-card)] border border-[var(--border-medium)] p-3 text-xs font-mono text-[var(--foreground)]"
+                />
+                <button
+                  type="button"
+                  disabled={savingTranscript || transcriptRaw.trim().length < 20}
+                  onClick={handleSaveVideoTranscript}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold disabled:opacity-50 cursor-pointer"
+                >
+                  {savingTranscript ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+                  <span>ذخیره متن گفتار و بروزرسانی فوری مغز دانش دستیار</span>
+                </button>
+              </div>
+            )}
+
             <button
               type="button"
               disabled={saving}
@@ -453,6 +567,66 @@ export function ArchiveEnricherPanel({ onEnrichedSuccess }: ArchiveEnricherPanel
               <span>ثبت و امضای دیجیتال پیوست و انتشار در سایت</span>
             </button>
           </>
+        )}
+
+        {/* Flagged Video Health Report for Professor Review (8 private/unavailable + 4 streamless) */}
+        {flaggedVideos.length > 0 && (
+          <div className="mt-6 rounded-2xl bg-amber-500/5 border border-amber-500/35 p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-xs font-extrabold text-amber-900 dark:text-amber-300">
+                <AlertTriangle size={15} className="shrink-0" />
+                <span>
+                  گزارش سلامت ویدیوهای آرشیو: {flaggedVideos.length} رکورد نیازمند بررسی لینک یوتیوب یا عمومی‌سازی
+                  {videoHealthSummary &&
+                    ` (${videoHealthSummary.withTranscriptCount} ویدیو دارای متن کامل)`}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHealthReport((v) => !v)}
+                className="px-3 py-1 rounded-lg bg-[var(--surface-card)] border border-amber-500/35 text-[11px] font-bold text-amber-800 dark:text-amber-300 cursor-pointer"
+              >
+                {showHealthReport ? 'بستن فهرست' : 'مشاهده فهرست کامل'}
+              </button>
+            </div>
+
+            {showHealthReport && (
+              <div className="space-y-2 max-h-72 overflow-y-auto pt-2 border-t border-amber-500/20">
+                {flaggedVideos.map((entry) => (
+                  <div
+                    key={`${entry.slug}-${entry.youtubeVideoId || 'none'}`}
+                    className="p-2.5 rounded-xl bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-xs"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-[var(--foreground)] truncate">{entry.titleFa || entry.slug}</p>
+                      <div className="flex flex-wrap items-center gap-2 text-[10px] text-[var(--foreground-muted)] font-mono">
+                        <span dir="ltr">{entry.slug}</span>
+                        {entry.youtubeVideoId && <span dir="ltr">YT: {entry.youtubeVideoId}</span>}
+                        <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-800 dark:text-amber-300 font-sans font-bold">
+                          {entry.status === 'private'
+                            ? 'خصوصی در یوتیوب'
+                            : entry.status === 'unavailable'
+                              ? 'حذف‌شده/ناموجود'
+                              : 'بدون استریم ویدیو'}
+                        </span>
+                      </div>
+                    </div>
+                    {entry.youtubeVideoId && (
+                      <a
+                        href={`https://www.youtube.com/watch?v=${entry.youtubeVideoId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[11px] font-bold hover:border-[var(--primary)]"
+                      >
+                        <ExternalLink size={11} />
+                        <span>بررسی در یوتیوب</span>
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

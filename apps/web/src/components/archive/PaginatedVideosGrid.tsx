@@ -176,25 +176,65 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
       .map(([name]) => name);
   }, [videos]);
 
+  const syncFiltersToUrl = React.useCallback(
+    (next: { series?: string; pillar?: 'all' | ContentPillar; theme?: string; q?: string }) => {
+      try {
+        const url = new URL(window.location.href);
+        if (next.series !== undefined) {
+          if (next.series === 'all') url.searchParams.delete('series');
+          else url.searchParams.set('series', next.series);
+        }
+        if (next.pillar !== undefined) {
+          if (next.pillar === 'all') url.searchParams.delete('pillar');
+          else url.searchParams.set('pillar', next.pillar);
+        }
+        if (next.theme !== undefined) {
+          if (next.theme === 'all') url.searchParams.delete('theme');
+          else url.searchParams.set('theme', next.theme);
+        }
+        if (next.q !== undefined) {
+          if (!next.q.trim()) url.searchParams.delete('q');
+          else url.searchParams.set('q', next.q.trim());
+        }
+        window.history.replaceState({}, '', url.toString());
+      } catch {
+        // ignore URL sync failure
+      }
+    },
+    []
+  );
+
+  const pillarDisplayName = (p: ContentPillar): string => {
+    switch (p) {
+      case 'psychoanalysis':
+        return tx('روانکاوی', 'Psychanalyse', 'Psychoanalysis');
+      case 'art_calligraphy':
+        return tx('هنر و خوشنویسی', 'Art & Calligraphie', 'Art & Calligraphy');
+      case 'cultural_strategy':
+        return tx('راهبرد فرهنگی', 'Stratégie Culturelle', 'Cultural Strategy');
+      case 'human_rights_dadkhahi':
+        return tx('حقوق بشر و دادخواهی', 'Droits Humains & Justice', 'Human Rights & Justice');
+    }
+  };
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return videos.filter((vid) => {
-      const trans =
-        vid.translations?.find((t) => t.languages_code.startsWith(locale)) ||
-        vid.translations?.[0];
       if (!matchesSeriesFilter(vid, selectedSeries)) return false;
       if (selectedPillar !== 'all' && vid.pillar !== selectedPillar) return false;
       if (selectedTheme !== 'all' && !(vid.themes || []).includes(selectedTheme)) {
         return false;
       }
-      if (onlyTranscript && !vid.translations?.[0]?.transcript_markdown) {
+      const hasTranscript = (vid.translations || []).some((t) => Boolean(t.transcript_markdown));
+      if (onlyTranscript && !hasTranscript) {
         return false;
       }
       if (!q) return true;
       const allTexts = (vid.translations || [])
         .map((t) => `${t.title || ''} ${t.description || ''}`)
         .join(' ');
-      const hay = `${allTexts} ${(vid.themes || []).join(' ')}`.toLowerCase();
+      const localizedThemes = (vid.themes || []).map((th) => `${th} ${localizeTaxonomyTag(th, locale)}`).join(' ');
+      const hay = `${allTexts} ${localizedThemes} ${vid.slug}`.toLowerCase();
       return hay.includes(q);
     });
   }, [videos, locale, query, selectedSeries, selectedPillar, selectedTheme, onlyTranscript]);
@@ -227,6 +267,7 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                   setSelectedSeries(s.key);
                   setSelectedPillar('all');
                   setPage(1);
+                  syncFiltersToUrl({ series: s.key, pillar: 'all' });
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer tabular-nums ${isSelected
                   ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs'
@@ -244,13 +285,18 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
       {selectedPillar !== 'all' && (
         <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs">
           <span className="font-bold text-amber-900 dark:text-amber-200">
-            {tx(`فیلتر فعال ستون: ${selectedPillar}`, `Filtre de pilier actif : ${selectedPillar}`, `Active pillar filter: ${selectedPillar}`)}
+            {tx(
+              `فیلتر فعال ستون: ${pillarDisplayName(selectedPillar)}`,
+              `Filtre de pilier actif : ${pillarDisplayName(selectedPillar)}`,
+              `Active pillar filter: ${pillarDisplayName(selectedPillar)}`
+            )}
           </span>
           <button
             type="button"
             onClick={() => {
               setSelectedPillar('all');
               setPage(1);
+              syncFiltersToUrl({ pillar: 'all' });
             }}
             className="font-bold text-[var(--primary)] hover:underline cursor-pointer"
           >
@@ -417,10 +463,15 @@ export function PaginatedVideosGrid({ videos, locale }: PaginatedVideosGridProps
                     decoding="async"
                     className="w-full h-full object-cover"
                   />
-                  {origTrans?.transcript_markdown && (
+                  {(vid.translations || []).some((t) => Boolean(t.transcript_markdown)) && (
                     <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 text-white text-[10px] font-mono">
                       <FileText size={10} className="shrink-0" />
                       {isFa ? 'متن کامل' : isFr ? 'Texte' : 'Transcript'}
+                    </span>
+                  )}
+                  {(vid.video_health_status === 'private' || vid.video_health_status === 'unavailable') && (
+                    <span className="absolute top-2 start-2 px-2 py-0.5 rounded-md bg-amber-700/90 text-white text-[10px] font-bold">
+                      {tx('رکورد آرشیوی', 'Archive', 'Archival')}
                     </span>
                   )}
                 </Link>

@@ -51,13 +51,20 @@ export default async function MediaCatalogPage({
   const tx = (fa: string, fr: string, en: string) => (isFa ? fa : isFr ? fr : en);
 
   const rawVideos = await getVideoSpeeches(locale);
-  const videos = rawVideos.map((v) => ({
-    ...v,
-    translations: v.translations?.map((t) => ({
-      ...t,
-      transcript_markdown: t.transcript_markdown ? 'available' : null,
-    })),
-  }));
+  const isRealTranscript = (raw?: string | null) =>
+    Boolean(raw && raw.replace(/https?:\/\/\S+/gi, '').replace(/\s+/g, ' ').trim().length >= 300);
+
+  // Hide empty ghost record 5668 from public grid while keeping direct slug compatibility
+  const videos = rawVideos
+    .filter((v) => v.slug !== '5668')
+    .map((v) => ({
+      ...v,
+      transcript_segments: undefined,
+      translations: v.translations?.map((t) => ({
+        ...t,
+        transcript_markdown: isRealTranscript(t.transcript_markdown) ? 'available' : null,
+      })),
+    }));
 
   const countSeriesEpisodes = (slug: string) => {
     if (slug === 'az-namadpardazi-ta-nastaaliq') {

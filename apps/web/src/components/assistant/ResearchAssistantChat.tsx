@@ -168,7 +168,7 @@ export const ResearchAssistantChat: React.FC<ResearchAssistantChatProps> = ({ lo
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {response.citations.map((c, i) => (
-                    <CitationCard key={c.id} citation={c} index={i} />
+                    <CitationCard key={c.id} citation={c} index={i} locale={locale} />
                   ))}
                 </div>
               </div>

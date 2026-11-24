@@ -25,7 +25,10 @@ import {
   loadVaultMediaManifest,
   loadVaultLegacyRedirects,
   loadPackTranslations,
+  loadVideoTranscriptsPack,
+  loadVideoHealthManifest,
   invalidateTranslationCache,
+  invalidateTranscriptsCache,
   invalidateOverlayCache,
   type TranslationCollectionName,
 } from './vault-loader';
@@ -288,8 +291,19 @@ function mergePackTranslationsForItem<
     const prefix = lc.slice(0, 2).toLowerCase();
     if (existingPrefixes.has(prefix)) continue;
 
+    // Normalize collection-specific field aliases (BUG-V05: videos pack stores summary/body_markdown)
+    const normalizedFields: Record<string, unknown> = { ...rawFields };
+    if (collection === 'videos') {
+      if (!normalizedFields.description && typeof normalizedFields.summary === 'string') {
+        normalizedFields.description = normalizedFields.summary;
+      }
+      if (!normalizedFields.transcript_markdown && typeof normalizedFields.body_markdown === 'string') {
+        normalizedFields.transcript_markdown = normalizedFields.body_markdown;
+      }
+    }
+
     const synthetic = {
-      ...rawFields,
+      ...normalizedFields,
       id: `pack-${collection}-${item.slug}-${prefix}`,
       [parentIdKey]: item.id,
       languages_code:
@@ -532,20 +546,127 @@ function buildPoemsCollection(): Poem[] {
   return [...caress, ...customPoems, ...rest];
 }
 
+function isSubstantiveVideoTranscript(raw?: string | null): boolean {
+  if (!raw) return false;
+  const cleaned = raw.replace(/https?:\/\/\S+/gi, '').replace(/\s+/g, ' ').trim();
+  return cleaned.length >= 300;
+}
+
 function buildVideosCollection(): VideoSpeech[] {
   const packVideos = loadPackTranslations('videos');
+  const transcriptsPack = loadVideoTranscriptsPack();
+  const healthManifest = loadVideoHealthManifest();
+
   const customVideos = loadCustomStudioWorks()
     .filter((d) => d.workType === 'video' && (d.status === 'published' || d.status === 'queued_manual_translation'))
     .map(buildCustomVideoFromDraft);
-  const vaultVideos = loadVaultVideos().map((v) =>
-    mergePackTranslationsForItem(v, 'videos', 'videos_id', packVideos)
-  );
+
+  const rawVaultVideos = loadVaultVideos();
+
+  // BUG-V04 Fix: Deduplicate & share authentic transcripts across sibling records sharing youtube_video_id
+  const canonicalSlugByYoutubeId = new Map<string, string>();
+  const bestEditorialByYoutubeId = new Map<string, { text: string; lang: string }>();
+
+  for (const v of rawVaultVideos) {
+    const ytId = v.youtube_video_id?.trim();
+    if (!ytId) continue;
+
+    let bestForRecord = '';
+    let bestLang = 'fa';
+    for (const tr of v.translations || []) {
+      if (isSubstantiveVideoTranscript(tr.transcript_markdown) && (tr.transcript_markdown?.length || 0) > bestForRecord.length) {
+        bestForRecord = tr.transcript_markdown || '';
+        bestLang = (tr.languages_code || '').slice(0, 2).toLowerCase() || 'fa';
+      }
+    }
+
+    const prevEditorial = bestEditorialByYoutubeId.get(ytId);
+    if (bestForRecord && (!prevEditorial || bestForRecord.length > prevEditorial.text.length)) {
+      bestEditorialByYoutubeId.set(ytId, { text: bestForRecord, lang: bestLang });
+    }
+
+    const existingCanon = canonicalSlugByYoutubeId.get(ytId);
+    const isGenericNumericSlug = /^video-\d+$/i.test(v.slug) || /^\d+$/.test(v.slug);
+    if (!existingCanon) {
+      canonicalSlugByYoutubeId.set(ytId, v.slug);
+    } else if (/^video-\d+$/i.test(existingCanon) && !isGenericNumericSlug) {
+      canonicalSlugByYoutubeId.set(ytId, v.slug);
+    } else if (bestForRecord && (!prevEditorial || bestForRecord.length >= prevEditorial.text.length) && !isGenericNumericSlug) {
+      canonicalSlugByYoutubeId.set(ytId, v.slug);
+    }
+  }
+
+  const enrichVideoRecord = (v: VideoSpeech): VideoSpeech => {
+    const withPack = mergePackTranslationsForItem(v, 'videos', 'videos_id', packVideos);
+    const ytId = withPack.youtube_video_id?.trim() || null;
+    const transcriptEntry =
+      (ytId ? transcriptsPack[ytId] : undefined) || transcriptsPack[withPack.slug];
+    const siblingEditorial = ytId ? bestEditorialByYoutubeId.get(ytId) : undefined;
+    const healthEntry =
+      (ytId ? healthManifest?.byYoutubeId?.[ytId] : undefined) ||
+      healthManifest?.bySlug?.[withPack.slug];
+
+    const resolvedMarkdown =
+      transcriptEntry?.transcriptMarkdown || siblingEditorial?.text || null;
+
+    let mergedTranslations = withPack.translations ? [...withPack.translations] : [];
+    if (resolvedMarkdown && mergedTranslations.length > 0) {
+      const targetLang = transcriptEntry?.sourceLang || siblingEditorial?.lang || 'fa';
+      const primaryIdx = mergedTranslations.findIndex((t) =>
+        (t.languages_code || '').toLowerCase().startsWith(targetLang)
+      );
+      const idxToUpdate = primaryIdx >= 0 ? primaryIdx : 0;
+      const currentMd = mergedTranslations[idxToUpdate]?.transcript_markdown || '';
+      const shouldReplace =
+        transcriptEntry?.method === 'professor_edited' ||
+        !isSubstantiveVideoTranscript(currentMd) ||
+        (transcriptEntry?.method === 'youtube_captions' && !isSubstantiveVideoTranscript(currentMd)) ||
+        (transcriptEntry?.method === 'asr_verified' && !isSubstantiveVideoTranscript(currentMd)) ||
+        (resolvedMarkdown.length > currentMd.length + 120 && !isSubstantiveVideoTranscript(currentMd));
+
+      if (shouldReplace) {
+        mergedTranslations[idxToUpdate] = {
+          ...mergedTranslations[idxToUpdate],
+          transcript_markdown: resolvedMarkdown,
+        };
+      }
+    }
+
+    const inferredHealthStatus =
+      healthEntry?.status ||
+      (!withPack.youtube_video_id &&
+        !withPack.vimeo_url &&
+        !withPack.self_hosted_audio_url &&
+        !withPack.self_hosted_hls_url
+        ? 'no_stream'
+        : 'ok');
+
+    return {
+      ...withPack,
+      duration_seconds:
+        withPack.duration_seconds || transcriptEntry?.durationSec || healthEntry?.durationSec || null,
+      transcript_segments: transcriptEntry?.segments?.length ? transcriptEntry.segments : undefined,
+      transcript_chapters: transcriptEntry?.chapters?.length ? transcriptEntry.chapters : undefined,
+      transcript_method:
+        transcriptEntry?.method ||
+        (mergedTranslations.some((t) => isSubstantiveVideoTranscript(t.transcript_markdown))
+          ? 'vault_editorial'
+          : null),
+      video_health_status: inferredHealthStatus,
+      video_health_reason: healthEntry?.reason || null,
+      canonical_video_slug: ytId ? canonicalSlugByYoutubeId.get(ytId) || withPack.slug : withPack.slug,
+      translations: mergedTranslations,
+    };
+  };
+
+  const vaultVideos = rawVaultVideos.map(enrichVideoRecord);
+  const enrichedCustom = customVideos.map(enrichVideoRecord);
   const pinnedSlugs = ['khavaran-justice-session', 'hafez-de-chiraz'];
   const pinned = pinnedSlugs
     .map((s) => vaultVideos.find((v) => v.slug === s))
     .filter((v): v is VideoSpeech => Boolean(v));
   const rest = vaultVideos.filter((v) => !pinnedSlugs.includes(v.slug));
-  return [...pinned, ...customVideos, ...rest];
+  return [...pinned, ...enrichedCustom, ...rest];
 }
 
 let cachedArticlesState: Article[] | null = null;
@@ -585,8 +706,32 @@ function getActivePages(): ArchivePage[] {
   return cachedPagesState;
 }
 
+const cmsInvalidationListeners = new Set<() => void>();
+
+export function registerCmsInvalidationListener(listener: () => void): void {
+  cmsInvalidationListeners.add(listener);
+}
+
+export function getLiveCmsCollections() {
+  return {
+    articles: getActiveArticles(),
+    books: getActiveBooks(),
+    exhibitions: getActiveExhibitions(),
+    artworks: getActiveArtworks(),
+    poems: getActivePoems(),
+    videos: getActiveVideos(),
+    pages: getActivePages(),
+    glossary: FALLBACK_GLOSSARY,
+  };
+}
+
+export function getVideoHealthManifest() {
+  return loadVideoHealthManifest();
+}
+
 export function invalidateCmsCollectionsCache(collection?: TranslationCollectionName): void {
   invalidateTranslationCache(collection);
+  invalidateTranscriptsCache();
   invalidateOverlayCache();
   cachedArticlesState = null;
   cachedBooksState = null;
@@ -598,6 +743,14 @@ export function invalidateCmsCollectionsCache(collection?: TranslationCollection
 
   for (const key of Object.keys(VERIFIED_IMMUTABLE_SNAPSHOTS)) {
     delete VERIFIED_IMMUTABLE_SNAPSHOTS[key];
+  }
+
+  for (const listener of cmsInvalidationListeners) {
+    try {
+      listener();
+    } catch {
+      // ignore listener errors
+    }
   }
 }
 

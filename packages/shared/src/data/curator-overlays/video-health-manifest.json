@@ -1,0 +1,5132 @@
+{
+  "generatedAt": "2026-11-24T16:25:38.194Z",
+  "totalRecords": 261,
+  "uniqueYoutubeIds": 235,
+  "healthyCount": 231,
+  "privateOrUnavailableCount": 4,
+  "noStreamCount": 4,
+  "byYoutubeId": {
+    "0rHUgu5t3Cc": {
+      "slug": "hafezsizda",
+      "youtubeVideoId": "0rHUgu5t3Cc",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش سیزدهم",
+      "durationSec": 2757,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ZgGTQECebIk": {
+      "slug": "hafezcharda",
+      "youtubeVideoId": "ZgGTQECebIk",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش چهاردهم",
+      "durationSec": 2622,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jqM2AdFBNng": {
+      "slug": "negahkhodkoshi",
+      "youtubeVideoId": "jqM2AdFBNng",
+      "status": "ok",
+      "titleFa": "نگاهی دیگر بر خودکشی : دکتر حسن مکارمی قسمت اول نوامبر ۲۰۱۹",
+      "durationSec": 491,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "VlY2mixB328": {
+      "slug": "tajjaavzdarirn",
+      "youtubeVideoId": "VlY2mixB328",
+      "status": "ok",
+      "titleFa": "چشم انداز: آزار جنسی و تجاوز در ایران؛ روایت سکوت‌هایی که شکستند",
+      "durationSec": 2523,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "goeDZO2Mrlg": {
+      "slug": "hadesebeirut",
+      "youtubeVideoId": "goeDZO2Mrlg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: بررسی و نتیجه گیری از حادثه بندر بیروت",
+      "durationSec": 1557,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "_ZtDyYD53Zg": {
+      "slug": "video-6754",
+      "youtubeVideoId": "_ZtDyYD53Zg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی (بخش نخست)",
+      "durationSec": 634,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "iFujtMnzEgo": {
+      "slug": "video-6753",
+      "youtubeVideoId": "iFujtMnzEgo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی(بخش نخست)",
+      "durationSec": 1303,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Gtrq10VhSGg": {
+      "slug": "video-6755",
+      "youtubeVideoId": "Gtrq10VhSGg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و پنج (روان ما و مرگ)",
+      "durationSec": 1466,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "H1SkoIfyOfA": {
+      "slug": "video-6757",
+      "youtubeVideoId": "H1SkoIfyOfA",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و چهار (نقش روانپژوهان در جامعه بحران)",
+      "durationSec": 1385,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "aGYsHa6QvIU": {
+      "slug": "video-6691",
+      "youtubeVideoId": "aGYsHa6QvIU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و دو (ارزش‌های انسانی)",
+      "durationSec": 1517,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "xO9TW1ylnFI": {
+      "slug": "video-6692",
+      "youtubeVideoId": "xO9TW1ylnFI",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش پانزدهم",
+      "durationSec": 2946,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "zF_JsQqCuhM": {
+      "slug": "video-6756",
+      "youtubeVideoId": "zF_JsQqCuhM",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و چهار (بحران کرونا و ساختار زبان)",
+      "durationSec": 1903,
+      "hasCaptions": true,
+      "captionLangs": [
+        "tr:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "c4-d0-rUfHU": {
+      "slug": "video-6702",
+      "youtubeVideoId": "c4-d0-rUfHU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روان‌کاوی کاربردی",
+      "durationSec": 1539,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "l6Y2ikfDjsk": {
+      "slug": "video-6693",
+      "youtubeVideoId": "l6Y2ikfDjsk",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۵",
+      "durationSec": 1599,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "K1HepNXpx_c": {
+      "slug": "video-6676",
+      "youtubeVideoId": "K1HepNXpx_c",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: بررسی گفتارها",
+      "durationSec": 1776,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mRHlRNbel24": {
+      "slug": "video-6674",
+      "youtubeVideoId": "mRHlRNbel24",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: آیا مطلوب ممکن، ممکن است؟",
+      "durationSec": 1788,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jTyhmHZWm9M": {
+      "slug": "video-6677",
+      "youtubeVideoId": "jTyhmHZWm9M",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۶",
+      "durationSec": 1679,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vxfCch2wzcA": {
+      "slug": "video-6667",
+      "youtubeVideoId": "vxfCch2wzcA",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: سره و ناسره در روان پژوهی",
+      "durationSec": 1581,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "2PsBwO18R4g": {
+      "slug": "video-6668",
+      "youtubeVideoId": "2PsBwO18R4g",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش پنجاه و پنج (حوادث اخیر در ایران)",
+      "durationSec": 1581,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Tv6T741JxKk": {
+      "slug": "video-6672",
+      "youtubeVideoId": "Tv6T741JxKk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: بررسی گفتارها ۲:",
+      "durationSec": 1481,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "bD2_Z5NpMsg": {
+      "slug": "video-6673",
+      "youtubeVideoId": "bD2_Z5NpMsg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و شش (تعریف مردم سالاری برای امروز ایران عزیز)",
+      "durationSec": 1876,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Z6XjWKOooGs": {
+      "slug": "video-6661",
+      "youtubeVideoId": "Z6XjWKOooGs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و شش (روان ما پیش و پس از کرونا ویروس)",
+      "durationSec": 1494,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "LaAbTw2lmxs": {
+      "slug": "video-6662",
+      "youtubeVideoId": "LaAbTw2lmxs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و هفت (روز معلم - روز کار)",
+      "durationSec": 1363,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Ceetj-9fJSs": {
+      "slug": "video-6660",
+      "youtubeVideoId": "Ceetj-9fJSs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و پنج (کرونا و جهان امروز ما)",
+      "durationSec": 1817,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ZEvbM5VduN0": {
+      "slug": "video-6644",
+      "youtubeVideoId": "ZEvbM5VduN0",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش شانزدهم:",
+      "durationSec": 2786,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "er4RVWPJtZY": {
+      "slug": "video-6645",
+      "youtubeVideoId": "er4RVWPJtZY",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و هفت (رابطه روانکار و مراجع در فرهنگ ما)",
+      "durationSec": 1573,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "TiAh-bna_og": {
+      "slug": "video-6650",
+      "youtubeVideoId": "TiAh-bna_og",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و شش : جامعه در بحران دروغ",
+      "durationSec": 1592,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ybbDHHhx_ds": {
+      "slug": "video-6658",
+      "youtubeVideoId": "ybbDHHhx_ds",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش پنجاه و چهار (نامه شماره ۴۵)",
+      "durationSec": 1491,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ChUP0ersSQs": {
+      "slug": "video-6649",
+      "youtubeVideoId": "ChUP0ersSQs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۷",
+      "durationSec": 1630,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "HZ-h5xbGSvo": {
+      "slug": "video-6651",
+      "youtubeVideoId": "HZ-h5xbGSvo",
+      "status": "ok",
+      "titleFa": "داستان مرگ در رختخواب دیگری ; نویسنده : مرضیه ابراهیمی",
+      "durationSec": 585,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vUibnGpyzkY": {
+      "slug": "video-6659",
+      "youtubeVideoId": "vUibnGpyzkY",
+      "status": "ok",
+      "titleFa": "مصاحبه تلویزیونی ژاک لکان",
+      "durationSec": 5797,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "7YdV58d8coE": {
+      "slug": "video-6625",
+      "youtubeVideoId": "7YdV58d8coE",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش هفدهم",
+      "durationSec": 2662,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "670wrnELyu8": {
+      "slug": "video-6623",
+      "youtubeVideoId": "670wrnELyu8",
+      "status": "ok",
+      "titleFa": "برنامه افق از صدای آمریکا(ظهور طبقه نوکیسه در ایران)",
+      "durationSec": 1430,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "5tE5vj6lBTg": {
+      "slug": "video-6626",
+      "youtubeVideoId": "5tE5vj6lBTg",
+      "status": "ok",
+      "titleFa": "شماره نخست : یادی از برنامه‌های گذشته ( چهارسال پیش) :",
+      "durationSec": 4031,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "4_JmQ5HntN8": {
+      "slug": "video-6627",
+      "youtubeVideoId": "4_JmQ5HntN8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و نه (باستان شناسی شناخت)",
+      "durationSec": 1562,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "SmVTI--yOdY": {
+      "slug": "video-6630",
+      "youtubeVideoId": "SmVTI--yOdY",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش پنجاه و هشت (باز هم رای گیری و نه انتخابات)",
+      "durationSec": 1714,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "K3lMhzYzY0M": {
+      "slug": "video-6642",
+      "youtubeVideoId": "K3lMhzYzY0M",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: لیست مشکلات بنیادی جمهوری اسلامی ایران",
+      "durationSec": 1671,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Lo0jlqZB-i4": {
+      "slug": "video-6599",
+      "youtubeVideoId": "Lo0jlqZB-i4",
+      "status": "private",
+      "reason": "Private video",
+      "titleFa": "دکتر حسن مکارمی: جامعه مدنی باید خود را قوی کند و شاخص‌های خود را بالا بیاورد",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "taIhTnGSFrU": {
+      "slug": "video-6598",
+      "youtubeVideoId": "taIhTnGSFrU",
+      "status": "ok",
+      "titleFa": "تاکید دکتر حسن مکارمی آموزش مردم در جهت رشد اندیشی و تبدیل به جامعه مدنی شدن",
+      "durationSec": 578,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "IT_QTphpPtk": {
+      "slug": "video-6597",
+      "youtubeVideoId": "IT_QTphpPtk",
+      "status": "ok",
+      "titleFa": "دکتر حسن مکارمی: شاخص‌های مردم با شاخص‌های دولت جمهوری اسلامی و رهبری فرق می‌کند:",
+      "durationSec": 217,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "of-YJjsaWHA": {
+      "slug": "video-6603",
+      "youtubeVideoId": "of-YJjsaWHA",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: یک روانکاو لاکانی چگونه کار می‌کند:",
+      "durationSec": 1246,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "2yNredLYZ3U": {
+      "slug": "video-6604",
+      "youtubeVideoId": "2yNredLYZ3U",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: تاثیر کرونا در رابطه خرافات و علم در جامعه مدنی",
+      "durationSec": 1590,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jm13XugAvrs": {
+      "slug": "video-6579",
+      "youtubeVideoId": "jm13XugAvrs",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش هجدهم",
+      "durationSec": 2570,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "1RVQEa04oKQ": {
+      "slug": "video-6580",
+      "youtubeVideoId": "1RVQEa04oKQ",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و دو (پیانو با چهار دست)",
+      "durationSec": 1448,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sug_sgKPweI": {
+      "slug": "video-6581",
+      "youtubeVideoId": "sug_sgKPweI",
+      "status": "ok",
+      "titleFa": "در گفتاورد این هفته میزبان جناب آقای دکتر حسن مکارمی هستیم با موضوع سنت و خرافات",
+      "durationSec": 5486,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "bO-c4D14sAQ": {
+      "slug": "video-6582",
+      "youtubeVideoId": "bO-c4D14sAQ",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و دو (میدانهای روان پژوهی)",
+      "durationSec": 1430,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "VRuJu18wKJs": {
+      "slug": "video-6583",
+      "youtubeVideoId": "VRuJu18wKJs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و سه (کرونا ویروس و جامعه مدنی)",
+      "durationSec": 1964,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "GYp259GdD-o": {
+      "slug": "video-6585",
+      "youtubeVideoId": "GYp259GdD-o",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و یک (نوروز نو آور)",
+      "durationSec": 1937,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "03-vM42Tbzc": {
+      "slug": "video-6584",
+      "youtubeVideoId": "03-vM42Tbzc",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و سه (لایه‌های ترس)",
+      "durationSec": 1408,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "1P4QUP2aiPg": {
+      "slug": "video-6592",
+      "youtubeVideoId": "1P4QUP2aiPg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و یک (رابطه سنت و خرافات)",
+      "durationSec": 1512,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "OWExTp3e7m8": {
+      "slug": "video-6594",
+      "youtubeVideoId": "OWExTp3e7m8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: مشکلات بنیادی جمهوری اسلامی \"خودی\" غیرخودی:",
+      "durationSec": 1650,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "a5sikg_R8mo": {
+      "slug": "video-6776",
+      "youtubeVideoId": "a5sikg_R8mo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: نگاه روانشناختانه به عرفان",
+      "durationSec": 843,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "iKu5G_k2ft8": {
+      "slug": "ravanemaodarad",
+      "youtubeVideoId": "iKu5G_k2ft8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روان ما و درد",
+      "durationSec": 1380,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ojMoGXaBQbU": {
+      "slug": "ravanemavahesadat",
+      "youtubeVideoId": "ojMoGXaBQbU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روان ما و حسادت",
+      "durationSec": 1407,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "W3PU0754D6U": {
+      "slug": "fararmaghzha",
+      "youtubeVideoId": "W3PU0754D6U",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: فرار مغزها",
+      "durationSec": 1562,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "lfofDnLnNxk": {
+      "slug": "ayandeesnsani",
+      "youtubeVideoId": "lfofDnLnNxk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: آینده علوم انسانی",
+      "durationSec": 994,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "9EmRPhBlc2M": {
+      "slug": "kartazeyanoavari",
+      "youtubeVideoId": "9EmRPhBlc2M",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: کار تازه یا نوآوری",
+      "durationSec": 1651,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "wJUSWw0I8S8": {
+      "slug": "shoroojang",
+      "youtubeVideoId": "wJUSWw0I8S8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: شروع جنگ",
+      "durationSec": 1417,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "V813w7e1aWs": {
+      "slug": "rabeteerfanvaravan",
+      "youtubeVideoId": "V813w7e1aWs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بین عرفان و روان",
+      "durationSec": 1415,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Z3lX4qyrQPk": {
+      "slug": "shenakhtmacronyek",
+      "youtubeVideoId": "Z3lX4qyrQPk",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: شناخت پدیده امانوئل مکرون ۱",
+      "durationSec": 1521,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "9busIDdzNFo": {
+      "slug": "shenakhtmacrodo",
+      "youtubeVideoId": "9busIDdzNFo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: شناخت پدیده امانوئل مکرون ۲",
+      "durationSec": 1512,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "kWzfIymoWsI": {
+      "slug": "sarzaminfarhangichar",
+      "youtubeVideoId": "kWzfIymoWsI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۴",
+      "durationSec": 1484,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jPvQe2NhYB4": {
+      "slug": "tarifravankav",
+      "youtubeVideoId": "jPvQe2NhYB4",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: تعریف روانکار",
+      "durationSec": 1554,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ovhXFH8Fr_g": {
+      "slug": "sarzaminfarhangise",
+      "youtubeVideoId": "ovhXFH8Fr_g",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۳",
+      "durationSec": 1485,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "PH7wP_z_SCU": {
+      "slug": "sarzaminfarhangido",
+      "youtubeVideoId": "PH7wP_z_SCU",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۲",
+      "durationSec": 1589,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Ek8gcyjqofk": {
+      "slug": "tasirshenakhravan",
+      "youtubeVideoId": "Ek8gcyjqofk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: تاثیر شناخت روان در جامعه",
+      "durationSec": 1480,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "qXowXz_S850": {
+      "slug": "namadpardazidalomadlol",
+      "youtubeVideoId": "qXowXz_S850",
+      "status": "ok",
+      "titleFa": "در روان‌پژوهی: نماد پردازی دال و مدلول",
+      "durationSec": 1417,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "n3_jm8pHins": {
+      "slug": "sarzaminfarhangiyek",
+      "youtubeVideoId": "n3_jm8pHins",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۱",
+      "durationSec": 1411,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "dFotRQHRB_8": {
+      "slug": "charlayeh",
+      "youtubeVideoId": "dFotRQHRB_8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: چهار لایه فرهنگی",
+      "durationSec": 1450,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "KZ37lOeJEuM": {
+      "slug": "marahelravankavi",
+      "youtubeVideoId": "KZ37lOeJEuM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: مراحل یک روان‌کاوی",
+      "durationSec": 1468,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "BO7e2RcrHeU": {
+      "slug": "dar-ravanpajouhi-29",
+      "youtubeVideoId": "BO7e2RcrHeU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: ترجمه یکی از کتابهای ژاک لاکان",
+      "durationSec": 1519,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "AP3tbClsjbA": {
+      "slug": "hozenorooz",
+      "youtubeVideoId": "AP3tbClsjbA",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: حوزه نوروز",
+      "durationSec": 1284,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ee5FLA-tqCg": {
+      "slug": "havatoyi",
+      "youtubeVideoId": "ee5FLA-tqCg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: این باغ را هوا تویی!",
+      "durationSec": 1472,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "BipAjIXl-Do": {
+      "slug": "rabeteravanobadan2",
+      "youtubeVideoId": "BipAjIXl-Do",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بدن و روان ۲",
+      "durationSec": 1631,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "pTS2m7d9F_8": {
+      "slug": "ebdavanoavari",
+      "youtubeVideoId": "pTS2m7d9F_8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: ابداع و نوآوری",
+      "durationSec": 1574,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "6EfL15d63Qw": {
+      "slug": "topologyamaken",
+      "youtubeVideoId": "6EfL15d63Qw",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: توپولوژی اماکن مقدس شیعیان در ایران",
+      "durationSec": 1580,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "BpEGPEKEdug": {
+      "slug": "chelsalegienghelab",
+      "youtubeVideoId": "BpEGPEKEdug",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: چهل سالگی انقلاب اسلامی",
+      "durationSec": 1519,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "4uKO8CMQ28A": {
+      "slug": "esterategiebda",
+      "youtubeVideoId": "4uKO8CMQ28A",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: استراتژی سیاسی و ابداع راه حل برای خروج از بحران",
+      "durationSec": 1538,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "5kNfx_hkneI": {
+      "slug": "rabeteravobadan1",
+      "youtubeVideoId": "5kNfx_hkneI",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بدن و روان ۱",
+      "durationSec": 1477,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "IDsWzc1FMfg": {
+      "slug": "video-6773",
+      "youtubeVideoId": "IDsWzc1FMfg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش بیست و پنجم ( تجربه آموزشی با ایران)",
+      "durationSec": 1351,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "MG2oIQUqGHM": {
+      "slug": "farhangsokoototarof",
+      "youtubeVideoId": "MG2oIQUqGHM",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: فرهنگ سکوت و تعارف",
+      "durationSec": 1542,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "z9D1lk11wzU": {
+      "slug": "ezterab",
+      "youtubeVideoId": "z9D1lk11wzU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: اضطراب",
+      "durationSec": 1228,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "RBz1j5yk39U": {
+      "slug": "goftemantazahorat",
+      "youtubeVideoId": "RBz1j5yk39U",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: گفتمان تظاهرات",
+      "durationSec": 1374,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "oOfhmOtNlu4": {
+      "slug": "jelighezardha",
+      "youtubeVideoId": "oOfhmOtNlu4",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: جنبش جلیقه زردها در فرانسه",
+      "durationSec": 1458,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ZKVVd_QzcDM": {
+      "slug": "khodshiftegisiyasi",
+      "youtubeVideoId": "ZKVVd_QzcDM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: خودشیفتگی سیاسی",
+      "durationSec": 1279,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "JjGU_Vtj-T0": {
+      "slug": "zabanemadari",
+      "youtubeVideoId": "JjGU_Vtj-T0",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: زبان مادری",
+      "durationSec": 1422,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hRtzMi8ejH4": {
+      "slug": "khaheshotamana",
+      "youtubeVideoId": "hRtzMi8ejH4",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: خواهش و تمنا",
+      "durationSec": 1322,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "KAAAOYKvEwI": {
+      "slug": "negahtahrimha",
+      "youtubeVideoId": "KAAAOYKvEwI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: تحریمها",
+      "durationSec": 1179,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "8MAuW37fhLs": {
+      "slug": "naghshezabanosokhan",
+      "youtubeVideoId": "8MAuW37fhLs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: نقش زبان و سخن",
+      "durationSec": 1456,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "F5C0hh-6uKo": {
+      "slug": "eshghomehromohabat",
+      "youtubeVideoId": "F5C0hh-6uKo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: عشق، مهر و محبت",
+      "durationSec": 1437,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "1qUuM0vbgbI": {
+      "slug": "nameyazdikhatab",
+      "youtubeVideoId": "1qUuM0vbgbI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: نامه تند یزدی خطاب به شبیری زنجانی بخاطر دیدار با خاتمی",
+      "durationSec": 1488,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vWxvmZ4NTrk": {
+      "slug": "ravanejtemae",
+      "youtubeVideoId": "vWxvmZ4NTrk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روانشناختی اجتماعی",
+      "durationSec": 1475,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "_UEIUBWGlhM": {
+      "slug": "fazayenegahdari",
+      "youtubeVideoId": "_UEIUBWGlhM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: فضای نگهداری از آسیب دیدگان روانی",
+      "durationSec": 1371,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "KPR-10ihIvM": {
+      "slug": "marasemazadari",
+      "youtubeVideoId": "KPR-10ihIvM",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: مراسم عزاداری",
+      "durationSec": 1286,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "HymdmwHP3rY": {
+      "slug": "goftemanmodsiasi",
+      "youtubeVideoId": "HymdmwHP3rY",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: گفتمان مدیران سیاسی",
+      "durationSec": 1527,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "W33ahE-kOiw": {
+      "slug": "doroghsiasi",
+      "youtubeVideoId": "W33ahE-kOiw",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: دروغ سیاسی",
+      "durationSec": 1531,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "gcUBwxdd0_w": {
+      "slug": "hoviatfardi",
+      "youtubeVideoId": "gcUBwxdd0_w",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: هویت فردی",
+      "durationSec": 1548,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "NGh2Af4N9tc": {
+      "slug": "video-6779",
+      "youtubeVideoId": "NGh2Af4N9tc",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: ترجمه در کار روان پژوهی",
+      "durationSec": 1467,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "UBfpGtT_rYY": {
+      "slug": "vaziatjamedo",
+      "youtubeVideoId": "UBfpGtT_rYY",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به وضعیت امروز جامعه ایران ۲",
+      "durationSec": 1645,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "MLSeKwNNDIs": {
+      "slug": "vaziyateemroozeyek",
+      "youtubeVideoId": "MLSeKwNNDIs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به وضعیت امروز جامعه ایران ۱",
+      "durationSec": 1590,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "p74R7U4OJ1U": {
+      "slug": "ravanpajoohizaban",
+      "youtubeVideoId": "p74R7U4OJ1U",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: زبان",
+      "durationSec": 1408,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ih7rouX9Cgs": {
+      "slug": "ravanvafarhang",
+      "youtubeVideoId": "ih7rouX9Cgs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه روان‌کاوی و فرهنگ",
+      "durationSec": 1493,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "9lsGogmgBBo": {
+      "slug": "negahbehoghoghbashar",
+      "youtubeVideoId": "9lsGogmgBBo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به حقوق بشر",
+      "durationSec": 1393,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "G9OVv-72w_g": {
+      "slug": "eshghdarravankavi",
+      "youtubeVideoId": "G9OVv-72w_g",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه عشق در روان‌کاوی",
+      "durationSec": 1469,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "H5J468KDEqI": {
+      "slug": "video-6769",
+      "youtubeVideoId": "H5J468KDEqI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی (بخش نهم): سنت",
+      "durationSec": 1661,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "pSlgpgeT0AQ": {
+      "slug": "doostodoshman",
+      "youtubeVideoId": "pSlgpgeT0AQ",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به دوست و دشمن",
+      "durationSec": 1430,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "j21ZbBnr10k": {
+      "slug": "modiriatpaziri",
+      "youtubeVideoId": "j21ZbBnr10k",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: مدیریت پذیری",
+      "durationSec": 1781,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "2ytFgXYuMio": {
+      "slug": "eteghadoiman",
+      "youtubeVideoId": "2ytFgXYuMio",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: اعتقاد و ایمان روانکاو",
+      "durationSec": 1503,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "HwF8K2_OOpg": {
+      "slug": "negahbetarikh",
+      "youtubeVideoId": "HwF8K2_OOpg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به تاریخ",
+      "durationSec": 1570,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "-vaedHBboJM": {
+      "slug": "naghshekhab",
+      "youtubeVideoId": "-vaedHBboJM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: نقش خواب در نظریه‌های روان‌کاوی",
+      "durationSec": 1491,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "GDMii5qadT8": {
+      "slug": "chegonegiravankav",
+      "youtubeVideoId": "GDMii5qadT8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: چگونگی کار روانکاو",
+      "durationSec": 1545,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Ie6lulUBui4": {
+      "slug": "khandanesher",
+      "youtubeVideoId": "Ie6lulUBui4",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: خواندن شعر",
+      "durationSec": 1716,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "XixISnHhdZw": {
+      "slug": "rabeteravanomavara",
+      "youtubeVideoId": "XixISnHhdZw",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بین روان پژوهی با ماورالطبیعه",
+      "durationSec": 1658,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "HbxFABRv_5w": {
+      "slug": "namepedar",
+      "youtubeVideoId": "HbxFABRv_5w",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: نام پدر",
+      "durationSec": 1371,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "_HLLCXW8ESg": {
+      "slug": "asibhayeravani",
+      "youtubeVideoId": "_HLLCXW8ESg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: آسیب‌های روانی",
+      "durationSec": 1557,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "JlRRMiOUKO8": {
+      "slug": "khalghmardom",
+      "youtubeVideoId": "JlRRMiOUKO8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: خلق, مردم و توده",
+      "durationSec": 1419,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "p9gCY73aVvs": {
+      "slug": "ravankavbakhshese",
+      "youtubeVideoId": "p9gCY73aVvs",
+      "status": "ok",
+      "titleFa": "نگاه روانکار (بخش سوم)",
+      "durationSec": 1404,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "too8RIhyjD8": {
+      "slug": "ravanbakhshese",
+      "youtubeVideoId": "too8RIhyjD8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی(بخش سوم)",
+      "durationSec": 1392,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "MrVyIXEaoCc": {
+      "slug": "negahbakhshchar",
+      "youtubeVideoId": "MrVyIXEaoCc",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو (بخش چهارم)",
+      "durationSec": 1544,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "6Amqtt09qB8": {
+      "slug": "ravanbakhshdo",
+      "youtubeVideoId": "6Amqtt09qB8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی (بخش دوم)",
+      "durationSec": 956,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "kprparO7DNQ": {
+      "slug": "moghadameh-ravankavi-karbordi-1",
+      "youtubeVideoId": "kprparO7DNQ",
+      "status": "ok",
+      "titleFa": "مقدمه ای بر روان‌کاوی کاربردی در هنر ، تاریخ و ادبیات سخنرانی : دکتر حسن مکارمی",
+      "durationSec": 4144,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Upm5rQsrNRU": {
+      "slug": "ravankavbakhshedo",
+      "youtubeVideoId": "Upm5rQsrNRU",
+      "status": "ok",
+      "titleFa": "نگاه روانکار با دکتر حسن مکارمی (بخش دوم)",
+      "durationSec": 1603,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "wMcBStDEyEY": {
+      "slug": "loshtar-67-hafezeh-tarykhi",
+      "youtubeVideoId": "wMcBStDEyEY",
+      "status": "ok",
+      "titleFa": "کشتار ۶۷ - حافظه تاریخی",
+      "durationSec": 1432,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ml-LvUsMpxQ": {
+      "slug": "atafsirkhabar8mehr2015-fa",
+      "youtubeVideoId": "ml-LvUsMpxQ",
+      "status": "private",
+      "reason": "Private video",
+      "titleFa": "تفسیر خبر",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "8GlxzAJrFBI": {
+      "slug": "gftgoo-ba-hassan-makaremi-hafez",
+      "youtubeVideoId": "8GlxzAJrFBI",
+      "status": "ok",
+      "titleFa": "گفتگو با حسن مکارمی نویسنده و روانکاو : کتاب نگرشی دیگر بر راز حافظ",
+      "durationSec": 3300,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "J5jMxK2HQjk": {
+      "slug": "mav-maadyansvm-fa",
+      "youtubeVideoId": "J5jMxK2HQjk",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ادیان، قسمت سوم",
+      "durationSec": 2300,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "DAGphtneVFo": {
+      "slug": "mavmaadyanchaharom-fa",
+      "youtubeVideoId": "DAGphtneVFo",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ادیان، قسمت چهارم",
+      "durationSec": 2295,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "8Fq4jc0ROto": {
+      "slug": "sakhtarejtemaeideux-fa",
+      "youtubeVideoId": "8Fq4jc0ROto",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت دوم",
+      "durationSec": 2671,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "j8S74i7ztWo": {
+      "slug": "sakhtarzanan-fa",
+      "youtubeVideoId": "j8S74i7ztWo",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت اول",
+      "durationSec": 2234,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "k9lNs05LNSQ": {
+      "slug": "jayegahzanan3-fa",
+      "youtubeVideoId": "k9lNs05LNSQ",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت سوم",
+      "durationSec": 1964,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "4MMa5lC-IGE": {
+      "slug": "jaygahzanan4-fa",
+      "youtubeVideoId": "4MMa5lC-IGE",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت چهارم",
+      "durationSec": 1835,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "FybaWtHez3U": {
+      "slug": "mavmazananvadyan2-fa",
+      "youtubeVideoId": "FybaWtHez3U",
+      "status": "unavailable",
+      "reason": "Video unavailable",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ادیان، قسمت دوم",
+      "durationSec": 2035,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "dnNU7NjyfDc": {
+      "slug": "zananejtemai5-fa",
+      "youtubeVideoId": "dnNU7NjyfDc",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت پنچم",
+      "durationSec": 2715,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "2yU2_OdBkP4": {
+      "slug": "ma-va-ma-16-zanan-adyan-fa",
+      "youtubeVideoId": "2yU2_OdBkP4",
+      "status": "ok",
+      "titleFa": "Ma Va Ma 16-ما و ما -جایگاه‌ زنان در ادیان، قسمت اول",
+      "durationSec": 2503,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "E4U9B7Tcvwk": {
+      "slug": "ghalimanchehsabzmamroz-fa",
+      "youtubeVideoId": "E4U9B7Tcvwk",
+      "status": "ok",
+      "titleFa": "قالی : من چه سبزم امروز",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "9etwB9e6m7o": {
+      "slug": "tapie-je-suis-si-vert-aujour-fa",
+      "youtubeVideoId": "9etwB9e6m7o",
+      "status": "ok",
+      "titleFa": "tapie: Je suis si vert aujourd'hui",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "wmBU0C4jHgw": {
+      "slug": "barrsysabzlink1video-fa",
+      "youtubeVideoId": "wmBU0C4jHgw",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت ۱ 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "VNFnFB1S49A": {
+      "slug": "barrsysbzlinkvideo2-fa",
+      "youtubeVideoId": "VNFnFB1S49A",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت2 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "IdJIb9rnuM4": {
+      "slug": "brrsysabzlinkvideo3-fa",
+      "youtubeVideoId": "IdJIb9rnuM4",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 3 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "9_WC5DmlFe8": {
+      "slug": "barrsysabzlinkvideo-fa",
+      "youtubeVideoId": "9_WC5DmlFe8",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 4 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Jw3ZZci1kd8": {
+      "slug": "brrsisabzlinkvideo-fa",
+      "youtubeVideoId": "Jw3ZZci1kd8",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 5 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "UIffusYtx6Y": {
+      "slug": "barasysabzlinkvideo-fa",
+      "youtubeVideoId": "UIffusYtx6Y",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 6 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jlD6JIgKQRk": {
+      "slug": "barrasisabzlinkvideo-fa",
+      "youtubeVideoId": "jlD6JIgKQRk",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 7 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "SDLZRhmomzg": {
+      "slug": "video-5551",
+      "youtubeVideoId": "SDLZRhmomzg",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت8 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "KopssWbzNfU": {
+      "slug": "barasysabzlink8video-fa",
+      "youtubeVideoId": "KopssWbzNfU",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 9 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "gVjJ3jVEtIk": {
+      "slug": "ma-va-a-rojehalat-3-fa",
+      "youtubeVideoId": "gVjJ3jVEtIk",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "o0LIGIzuMG8": {
+      "slug": "ma-v-ma-rojehhalat1-fa",
+      "youtubeVideoId": "o0LIGIzuMG8",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت اول",
+      "durationSec": 2726,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "7TZB4sv8kYM": {
+      "slug": "ma-v-ma-rojehhalat-fa",
+      "youtubeVideoId": "7TZB4sv8kYM",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت دوم",
+      "durationSec": 1829,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "nabm-ntGtgs": {
+      "slug": "ma-va-ma-rojehhalat-fa",
+      "youtubeVideoId": "nabm-ntGtgs",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hfpkR7thGfc": {
+      "slug": "ma-va-ma-rojehhalat-5-fa",
+      "youtubeVideoId": "hfpkR7thGfc",
+      "status": "unavailable",
+      "reason": "Video unavailable",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت پنجم",
+      "durationSec": 2403,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "X1iCgsO9-Sg": {
+      "slug": "eedam-dr-mala-eam-fa",
+      "youtubeVideoId": "X1iCgsO9-Sg",
+      "status": "ok",
+      "titleFa": "اعدام در ملاء عام از زاویه روانشناختی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "udmFDIIFiY0": {
+      "slug": "aedamdarjahan-aslam-fa",
+      "youtubeVideoId": "udmFDIIFiY0",
+      "status": "ok",
+      "titleFa": "اعدام در جهان اسلام",
+      "durationSec": 3923,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "y4EbEZooM8A": {
+      "slug": "video-andisheh-be-digari-fa",
+      "youtubeVideoId": "y4EbEZooM8A",
+      "status": "ok",
+      "titleFa": "اندیشه به دیگری در همایش روان پژوهان ایرانی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "uoD86xqHZeQ": {
+      "slug": "chaharmin-rvanpajouhan-kyhan-video-fa",
+      "youtubeVideoId": "uoD86xqHZeQ",
+      "status": "ok",
+      "titleFa": "همایش روان‌پژوهان ایرانی در لندن: حرفه‌ای‌های غیرتجاری در برابر غیرحرفه‌ای‌های تجاری",
+      "durationSec": 946,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "lJXrv1ZPE5A": {
+      "slug": "yek-rooz-dr-atelieh-fa",
+      "youtubeVideoId": "lJXrv1ZPE5A",
+      "status": "ok",
+      "titleFa": "یک روز در آتلیه نقاشی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "1nCU1stsvRk": {
+      "slug": "moearfi-ketab-htma-rahy-hst-fa",
+      "youtubeVideoId": "1nCU1stsvRk",
+      "status": "ok",
+      "titleFa": "معرفی کتاب حتما راهی هست",
+      "durationSec": 1975,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "T4r_c2g0hvA": {
+      "slug": "msahebh-mlkoty-khshont-fa",
+      "youtubeVideoId": "T4r_c2g0hvA",
+      "status": "ok",
+      "titleFa": "مصاحبه به سیروس ملکوتی در باره خشونت",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "8_QfMLLwcl4": {
+      "slug": "raha-khshounat-fa",
+      "youtubeVideoId": "8_QfMLLwcl4",
+      "status": "ok",
+      "titleFa": "شبنامه: خشونت در ایران",
+      "durationSec": 3110,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "z-pl9vFb9JY": {
+      "slug": "chera-mardom-aedam-fa",
+      "youtubeVideoId": "z-pl9vFb9JY",
+      "status": "ok",
+      "titleFa": "چرا مردم به تماشای مراسم اعدام می‌روند؟",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "VTmhwT2aVqk": {
+      "slug": "hakemiat-ehteram-video-fa",
+      "youtubeVideoId": "VTmhwT2aVqk",
+      "status": "ok",
+      "titleFa": "حاکمیت ایران احترامی برای مردم و نمایندگان آنان قائل نیست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "SfTc3QU3y2E": {
+      "slug": "mosahebeh-sen-koudak-fa",
+      "youtubeVideoId": "SfTc3QU3y2E",
+      "status": "ok",
+      "titleFa": "مصاحبه افسانه وحدت با حسن مکارمی در مورد سن کودک",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "4YSaXDyBX18": {
+      "slug": "hassan-makaremi-parle-de-hafez-de-chiraz-2",
+      "youtubeVideoId": "4YSaXDyBX18",
+      "status": "ok",
+      "titleFa": "Hassan Makaremi parle de Hâfez de CHiraz",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "_94rRAb4Vx0": {
+      "slug": "afsordegi-koodak-video-i-fa",
+      "youtubeVideoId": "_94rRAb4Vx0",
+      "status": "ok",
+      "titleFa": "مصاحبه در مورد افسردگی و غمگینی کودکان در ایران امروز ، قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "XzZqyZ-UXxc": {
+      "slug": "hambourg-ayandeh-i-fa",
+      "youtubeVideoId": "XzZqyZ-UXxc",
+      "status": "ok",
+      "titleFa": "I کنفرانس \"چشم انداز تغییر در ایران\" هامبورگ",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "cg412BPtGuk": {
+      "slug": "conference-hambourg-ii-fa",
+      "youtubeVideoId": "cg412BPtGuk",
+      "status": "ok",
+      "titleFa": "II کنفرانس \"چشم انداز تغییر در ایران\" هامبورگ",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "EWpcPfPLSh8": {
+      "slug": "hafez-dar-oj-ast-video-fa",
+      "youtubeVideoId": "EWpcPfPLSh8",
+      "status": "ok",
+      "titleFa": "درباره حافظ",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mcJ2aHT93ek": {
+      "slug": "khavaran-justice-session",
+      "youtubeVideoId": "mcJ2aHT93ek",
+      "status": "ok",
+      "titleFa": "مراسم بیست و یکمین سالگرد جان باختگان در قتل عام تابستان ۶۷ در بروکسل",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "8miY9J0wi0o": {
+      "slug": "chera-hafez-1-ir",
+      "youtubeVideoId": "8miY9J0wi0o",
+      "status": "ok",
+      "titleFa": "چرا حافظ شیراز در اوج است بخش نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vvOzwY0hZ4U": {
+      "slug": "chra-hafez-aoj-1-ir",
+      "youtubeVideoId": "vvOzwY0hZ4U",
+      "status": "ok",
+      "titleFa": "چرا حافظ شیراز در اوج است بخش دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "eQ5NHwyARms": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-08",
+      "youtubeVideoId": "eQ5NHwyARms",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-08",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ph9RGkyawYE": {
+      "slug": "hatma-rahi-hast-ir",
+      "youtubeVideoId": "ph9RGkyawYE",
+      "status": "ok",
+      "titleFa": "حتماً راهی هست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "DBwEe9dJaU0": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-09",
+      "youtubeVideoId": "DBwEe9dJaU0",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-09",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "G0ydBMGZv6Y": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-12",
+      "youtubeVideoId": "G0ydBMGZv6Y",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-12",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "354oY_gDW4o": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-18",
+      "youtubeVideoId": "354oY_gDW4o",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-18",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "fyklSMOOMt0": {
+      "slug": "el-pintor-caligrafo-hassan-makaremi-semana-del-cine-iran",
+      "youtubeVideoId": "fyklSMOOMt0",
+      "status": "ok",
+      "titleFa": "el pintor calígrafo Hassan Makaremi : Semana del Cine Iraní del 9 al 16 de abril 2012",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "fdZJRsg-QWg": {
+      "slug": "chekanjeh-1-ir",
+      "youtubeVideoId": "fdZJRsg-QWg",
+      "status": "ok",
+      "titleFa": "زاویه‌ها :شکنجه‌،قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "d4-dj1wi2Ys": {
+      "slug": "video-4427",
+      "youtubeVideoId": "d4-dj1wi2Ys",
+      "status": "ok",
+      "titleFa": "Soirée de poésie, Persane Français",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jHL-NFya37Q": {
+      "slug": "chekanje-2-ir",
+      "youtubeVideoId": "jHL-NFya37Q",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : شکنجه‌،قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "POJC2o_p_EY": {
+      "slug": "chekanje-3-ir",
+      "youtubeVideoId": "POJC2o_p_EY",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : شکنجه‌،قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "bkz0pdmR-jQ": {
+      "slug": "chekanjeh-4-ir",
+      "youtubeVideoId": "bkz0pdmR-jQ",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : شکنجه‌،قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "rt0UmpTxS2o": {
+      "slug": "roznameh-negarii-khshonat-1-ir",
+      "youtubeVideoId": "rt0UmpTxS2o",
+      "status": "ok",
+      "titleFa": "وبینار «روزنامه‌نگاری و مسئله خشونت»، بخش اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "bWGNeflFdCo": {
+      "slug": "roznameh-khshont2-ir",
+      "youtubeVideoId": "bWGNeflFdCo",
+      "status": "ok",
+      "titleFa": "وبینار: «روزنامه‌نگاری و مسئله خشونت» بخش دو",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "gDz84h3apyU": {
+      "slug": "hafez-namteshgah-khoshnvysy-ir",
+      "youtubeVideoId": "gDz84h3apyU",
+      "status": "ok",
+      "titleFa": "قسمت نخست در باره حافظ بمناسبت نمایشگاه خوشنویسی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Wr9fiuzqzn4": {
+      "slug": "namadprdazi-nastaeligh-ir",
+      "youtubeVideoId": "Wr9fiuzqzn4",
+      "status": "ok",
+      "titleFa": "از نماد پردازی تا خوشنویسی نستعلیق بخش دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mowJcBAdxa4": {
+      "slug": "az-nmad-ta-nastaeligh-1-ir",
+      "youtubeVideoId": "mowJcBAdxa4",
+      "status": "ok",
+      "titleFa": "از نماد پردازی تا خوشنویسی نستعلیق بخش نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "6sLobPj8Nrw": {
+      "slug": "namad-nastaelugh-3-ir",
+      "youtubeVideoId": "6sLobPj8Nrw",
+      "status": "ok",
+      "titleFa": "از نماد پردازی تا خوشنویسی نستعلیق بخش سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ne7vIn248Eo": {
+      "slug": "kodkan-kar-ir",
+      "youtubeVideoId": "ne7vIn248Eo",
+      "status": "ok",
+      "titleFa": "مصاحبه افسانه وحدت با حسن مکارمی در مورد کودکان کار و خیابان",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "BeHE2gijnCg": {
+      "slug": "hafez-namayeshgah-mokry-2-ir",
+      "youtubeVideoId": "BeHE2gijnCg",
+      "status": "ok",
+      "titleFa": "سخنرانی در باره حافظ بمناسبت نمایشگاه خوشنویسی قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "W_4Nu53EtPU": {
+      "slug": "azdevaj-kodkan-ir",
+      "youtubeVideoId": "W_4Nu53EtPU",
+      "status": "ok",
+      "titleFa": "مصاحبه افسانه وحدت با حسن مکارمی در مورد ازدواج کودکان",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "uTnFR5BtJ14": {
+      "slug": "aetiad-dr-iran-ir",
+      "youtubeVideoId": "uTnFR5BtJ14",
+      "status": "ok",
+      "titleFa": "درباره علل اعتیاد در ایران- ۲۰ آوریل ۲۰۱۳",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "waO0bBVQMS0": {
+      "slug": "sheer-video-labkhan-ir",
+      "youtubeVideoId": "waO0bBVQMS0",
+      "status": "ok",
+      "titleFa": "لبخندی از آشتی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "SDiK03D_AL0": {
+      "slug": "film-60-sal-3-ir",
+      "youtubeVideoId": "SDiK03D_AL0",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "5gFQgz2t5cA": {
+      "slug": "video-4369",
+      "youtubeVideoId": "5gFQgz2t5cA",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "MaGqwVB_MQA": {
+      "slug": "film-60-sal-2-ir",
+      "youtubeVideoId": "MaGqwVB_MQA",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "QrL1CslF76Q": {
+      "slug": "film-60-sal-4-ir",
+      "youtubeVideoId": "QrL1CslF76Q",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "t3FMFcbNPDE": {
+      "slug": "chehreh-ha",
+      "youtubeVideoId": "t3FMFcbNPDE",
+      "status": "ok",
+      "titleFa": "معرفی و شناختی درون گرایانه",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "LFOeK-RmzKM": {
+      "slug": "mohajerat-1-ir",
+      "youtubeVideoId": "LFOeK-RmzKM",
+      "status": "ok",
+      "titleFa": "زاویه‌ها :مهاجرت، قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "xLj6Q33BC7o": {
+      "slug": "mohaierat-2-ir",
+      "youtubeVideoId": "xLj6Q33BC7o",
+      "status": "ok",
+      "titleFa": "زاویه‌ها :مهاجرت، قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "h8zoIv2F9vA": {
+      "slug": "aetesab-1-ir",
+      "youtubeVideoId": "h8zoIv2F9vA",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "uTB3tUePSKU": {
+      "slug": "aetesab-4-ir",
+      "youtubeVideoId": "uTB3tUePSKU",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "6fKYAGnpgFA": {
+      "slug": "aetesab-2-ir",
+      "youtubeVideoId": "6fKYAGnpgFA",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "JGycc4HOJxc": {
+      "slug": "aetesab-4-ir-2",
+      "youtubeVideoId": "JGycc4HOJxc",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "d2I5r6sTfWc": {
+      "slug": "video-4384",
+      "youtubeVideoId": "d2I5r6sTfWc",
+      "status": "ok",
+      "titleFa": "زاویەها، مدرنیتە پارەی دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "klwtOfywXwA": {
+      "slug": "video-4383",
+      "youtubeVideoId": "klwtOfywXwA",
+      "status": "ok",
+      "titleFa": "زاویەها؛ مدرنیتە پارەی نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "8kCSLQZDtYY": {
+      "slug": "modernite-3-ir",
+      "youtubeVideoId": "8kCSLQZDtYY",
+      "status": "ok",
+      "titleFa": "زاویەها، مدرنیتە، پارەی سوم:",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Lr8oviiZlAw": {
+      "slug": "modernite-4-ir",
+      "youtubeVideoId": "Lr8oviiZlAw",
+      "status": "ok",
+      "titleFa": "زاویەها، مدرنیتە، پارەی جهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "w-oLvLeKtEU": {
+      "slug": "maikel-batry-ir",
+      "youtubeVideoId": "w-oLvLeKtEU",
+      "status": "ok",
+      "titleFa": "مایکل بری , از حسن مکارمی می‌گوید",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "oT7grW0EstI": {
+      "slug": "yonesco-gzares-ir",
+      "youtubeVideoId": "oT7grW0EstI",
+      "status": "ok",
+      "titleFa": "گزارشی از سخنرانی و نمایشگاه حسن مکارمی , در مقریونسکو - پاریس ۲۰۰۹",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "7p5jw9EpS7k": {
+      "slug": "simorq-tablo-ir",
+      "youtubeVideoId": "7p5jw9EpS7k",
+      "status": "ok",
+      "titleFa": "معرفی تابلو سیمرغ , با الهام از منطق الطیر عطار, ۲ متره در ۱۰ متر",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "3dqI6n9PIP0": {
+      "slug": "namaieshgah-khaneh-kadr-2-ir",
+      "youtubeVideoId": "3dqI6n9PIP0",
+      "status": "ok",
+      "titleFa": "نمایشگاه خانه کادر پاریس شماره ۲",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "LFWywtY8Uj0": {
+      "slug": "video-4277",
+      "youtubeVideoId": "LFWywtY8Uj0",
+      "status": "ok",
+      "titleFa": "نگاهی دیگر بر هشتاد و هفت بیت نخست شاهنامه بخش نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "BcvuxlcUCVk": {
+      "slug": "video-4278",
+      "youtubeVideoId": "BcvuxlcUCVk",
+      "status": "ok",
+      "titleFa": "نگاهی دیگر بر هشتاد و هفت بیت نخست شاهنامه بخش دوم و پایانی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "SO3TqtZrgEQ": {
+      "slug": "dostaat-darp-ir",
+      "youtubeVideoId": "SO3TqtZrgEQ",
+      "status": "ok",
+      "titleFa": "شعر - ویدئو : گفت دوست دارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "PbZK1pAtLew": {
+      "slug": "video-4281",
+      "youtubeVideoId": "PbZK1pAtLew",
+      "status": "ok",
+      "titleFa": "۲۰۱۲ مهاجرت، تبعید و روان ما : همایش کلن سال",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "AdaTspAwjGw": {
+      "slug": "chenan-kn-ir",
+      "youtubeVideoId": "AdaTspAwjGw",
+      "status": "ok",
+      "titleFa": "شعر - ویدئو: چنان کن که من....",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "BVxEmFkWw_k": {
+      "slug": "sevomin-hmayesh-ravankavy-ir",
+      "youtubeVideoId": "BVxEmFkWw_k",
+      "status": "ok",
+      "titleFa": "سومین همایش روان‌پژوهان ایرانی در خارج از کشور :خشونت و روان ما",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vL_WpWgd448": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-05",
+      "youtubeVideoId": "vL_WpWgd448",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO 2009 part-05",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "187aQNjyBGw": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-07",
+      "youtubeVideoId": "187aQNjyBGw",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO 2009 part-07",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "8rkg80SkyCI": {
+      "slug": "i-am-not-myself-persan",
+      "youtubeVideoId": "8rkg80SkyCI",
+      "status": "ok",
+      "titleFa": "من نه منم , نه من منم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vPNxVNBLdF8": {
+      "slug": "kodakan-moghadamand-persian-children-interview-n-1753",
+      "youtubeVideoId": "vPNxVNBLdF8",
+      "status": "ok",
+      "titleFa": "مصاحبه در مورد افسردگی و غمگینی کودکان در ایران امروز ،قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "rCGcLFBHLGs": {
+      "slug": "kodakan-moghadamand-persian-children-interview-new-chane",
+      "youtubeVideoId": "rCGcLFBHLGs",
+      "status": "ok",
+      "titleFa": "مصاحبه در مورد افسردگی و غمگینی کودکان در ایران امروز ،قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ItEdt8bm2BY": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-4",
+      "youtubeVideoId": "ItEdt8bm2BY",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-4",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "_bJXdxg9xt8": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-3",
+      "youtubeVideoId": "_bJXdxg9xt8",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-3",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "-NvwwAHx25o": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-1",
+      "youtubeVideoId": "-NvwwAHx25o",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-1",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Ih9vCARZg6E": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-2",
+      "youtubeVideoId": "Ih9vCARZg6E",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-2",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Yujz0X_WooE": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-15",
+      "youtubeVideoId": "Yujz0X_WooE",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-15",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "FtB29W-2Aq0": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-17",
+      "youtubeVideoId": "FtB29W-2Aq0",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-17",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "BJQQiI6ITYg": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-11",
+      "youtubeVideoId": "BJQQiI6ITYg",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-11",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "Fu4IIIr1wQQ": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-13",
+      "youtubeVideoId": "Fu4IIIr1wQQ",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-13",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "3EgSI4wpZMo": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-10",
+      "youtubeVideoId": "3EgSI4wpZMo",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-10",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ycPE_jzNsgU": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-6",
+      "youtubeVideoId": "ycPE_jzNsgU",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-06",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vxYR-wQypSg": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-1",
+      "youtubeVideoId": "vxYR-wQypSg",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-01",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "7-d8Yx0nh2s": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-3",
+      "youtubeVideoId": "7-d8Yx0nh2s",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-03",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jgORD5gbJIY": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-2",
+      "youtubeVideoId": "jgORD5gbJIY",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-02",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "PcPq4eQSRkw": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-4",
+      "youtubeVideoId": "PcPq4eQSRkw",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-04",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    }
+  },
+  "bySlug": {
+    "5668": {
+      "slug": "5668",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "ویدیو #5668",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hafezsizda": {
+      "slug": "hafezsizda",
+      "youtubeVideoId": "0rHUgu5t3Cc",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش سیزدهم",
+      "durationSec": 2757,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hafezcharda": {
+      "slug": "hafezcharda",
+      "youtubeVideoId": "ZgGTQECebIk",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش چهاردهم",
+      "durationSec": 2622,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6694": {
+      "slug": "video-6694",
+      "youtubeVideoId": "ZgGTQECebIk",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش چهاردهم",
+      "durationSec": 2622,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "negahkhodkoshi": {
+      "slug": "negahkhodkoshi",
+      "youtubeVideoId": "jqM2AdFBNng",
+      "status": "ok",
+      "titleFa": "نگاهی دیگر بر خودکشی : دکتر حسن مکارمی قسمت اول نوامبر ۲۰۱۹",
+      "durationSec": 491,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "tajjaavzdarirn": {
+      "slug": "tajjaavzdarirn",
+      "youtubeVideoId": "VlY2mixB328",
+      "status": "ok",
+      "titleFa": "چشم انداز: آزار جنسی و تجاوز در ایران؛ روایت سکوت‌هایی که شکستند",
+      "durationSec": 2523,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hadesebeirut": {
+      "slug": "hadesebeirut",
+      "youtubeVideoId": "goeDZO2Mrlg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: بررسی و نتیجه گیری از حادثه بندر بیروت",
+      "durationSec": 1557,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6754": {
+      "slug": "video-6754",
+      "youtubeVideoId": "_ZtDyYD53Zg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی (بخش نخست)",
+      "durationSec": 634,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6473": {
+      "slug": "video-6473",
+      "youtubeVideoId": "_ZtDyYD53Zg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی (بخش نخست)",
+      "durationSec": 634,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanbakhsheaval": {
+      "slug": "ravanbakhsheaval",
+      "youtubeVideoId": "_ZtDyYD53Zg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی (بخش نخست)",
+      "durationSec": 634,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6753": {
+      "slug": "video-6753",
+      "youtubeVideoId": "iFujtMnzEgo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی(بخش نخست)",
+      "durationSec": 1303,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6470": {
+      "slug": "video-6470",
+      "youtubeVideoId": "iFujtMnzEgo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی(بخش نخست)",
+      "durationSec": 1303,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravankavbakhsheyek": {
+      "slug": "ravankavbakhsheyek",
+      "youtubeVideoId": "iFujtMnzEgo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی(بخش نخست)",
+      "durationSec": 1303,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6755": {
+      "slug": "video-6755",
+      "youtubeVideoId": "Gtrq10VhSGg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و پنج (روان ما و مرگ)",
+      "durationSec": 1466,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6555": {
+      "slug": "video-6555",
+      "youtubeVideoId": "Gtrq10VhSGg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و پنج (روان ما و مرگ)",
+      "durationSec": 1466,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6757": {
+      "slug": "video-6757",
+      "youtubeVideoId": "H1SkoIfyOfA",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و چهار (نقش روانپژوهان در جامعه بحران)",
+      "durationSec": 1385,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6557": {
+      "slug": "video-6557",
+      "youtubeVideoId": "H1SkoIfyOfA",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و چهار (نقش روانپژوهان در جامعه بحران)",
+      "durationSec": 1385,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6691": {
+      "slug": "video-6691",
+      "youtubeVideoId": "aGYsHa6QvIU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و دو (ارزش‌های انسانی)",
+      "durationSec": 1517,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6692": {
+      "slug": "video-6692",
+      "youtubeVideoId": "xO9TW1ylnFI",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش پانزدهم",
+      "durationSec": 2946,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6756": {
+      "slug": "video-6756",
+      "youtubeVideoId": "zF_JsQqCuhM",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و چهار (بحران کرونا و ساختار زبان)",
+      "durationSec": 1903,
+      "hasCaptions": true,
+      "captionLangs": [
+        "tr:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6556": {
+      "slug": "video-6556",
+      "youtubeVideoId": "zF_JsQqCuhM",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و چهار (بحران کرونا و ساختار زبان)",
+      "durationSec": 1903,
+      "hasCaptions": true,
+      "captionLangs": [
+        "tr:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6702": {
+      "slug": "video-6702",
+      "youtubeVideoId": "c4-d0-rUfHU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روان‌کاوی کاربردی",
+      "durationSec": 1539,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6693": {
+      "slug": "video-6693",
+      "youtubeVideoId": "l6Y2ikfDjsk",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۵",
+      "durationSec": 1599,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6676": {
+      "slug": "video-6676",
+      "youtubeVideoId": "K1HepNXpx_c",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: بررسی گفتارها",
+      "durationSec": 1776,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6674": {
+      "slug": "video-6674",
+      "youtubeVideoId": "mRHlRNbel24",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: آیا مطلوب ممکن، ممکن است؟",
+      "durationSec": 1788,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6677": {
+      "slug": "video-6677",
+      "youtubeVideoId": "jTyhmHZWm9M",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۶",
+      "durationSec": 1679,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6667": {
+      "slug": "video-6667",
+      "youtubeVideoId": "vxfCch2wzcA",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: سره و ناسره در روان پژوهی",
+      "durationSec": 1581,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6668": {
+      "slug": "video-6668",
+      "youtubeVideoId": "2PsBwO18R4g",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش پنجاه و پنج (حوادث اخیر در ایران)",
+      "durationSec": 1581,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6672": {
+      "slug": "video-6672",
+      "youtubeVideoId": "Tv6T741JxKk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: بررسی گفتارها ۲:",
+      "durationSec": 1481,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6673": {
+      "slug": "video-6673",
+      "youtubeVideoId": "bD2_Z5NpMsg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و شش (تعریف مردم سالاری برای امروز ایران عزیز)",
+      "durationSec": 1876,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6661": {
+      "slug": "video-6661",
+      "youtubeVideoId": "Z6XjWKOooGs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و شش (روان ما پیش و پس از کرونا ویروس)",
+      "durationSec": 1494,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6662": {
+      "slug": "video-6662",
+      "youtubeVideoId": "LaAbTw2lmxs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و هفت (روز معلم - روز کار)",
+      "durationSec": 1363,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6660": {
+      "slug": "video-6660",
+      "youtubeVideoId": "Ceetj-9fJSs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و پنج (کرونا و جهان امروز ما)",
+      "durationSec": 1817,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6644": {
+      "slug": "video-6644",
+      "youtubeVideoId": "ZEvbM5VduN0",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش شانزدهم:",
+      "durationSec": 2786,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6645": {
+      "slug": "video-6645",
+      "youtubeVideoId": "er4RVWPJtZY",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و هفت (رابطه روانکار و مراجع در فرهنگ ما)",
+      "durationSec": 1573,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6650": {
+      "slug": "video-6650",
+      "youtubeVideoId": "TiAh-bna_og",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و شش : جامعه در بحران دروغ",
+      "durationSec": 1592,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6658": {
+      "slug": "video-6658",
+      "youtubeVideoId": "ybbDHHhx_ds",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش پنجاه و چهار (نامه شماره ۴۵)",
+      "durationSec": 1491,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6649": {
+      "slug": "video-6649",
+      "youtubeVideoId": "ChUP0ersSQs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۷",
+      "durationSec": 1630,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6651": {
+      "slug": "video-6651",
+      "youtubeVideoId": "HZ-h5xbGSvo",
+      "status": "ok",
+      "titleFa": "داستان مرگ در رختخواب دیگری ; نویسنده : مرضیه ابراهیمی",
+      "durationSec": 585,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6659": {
+      "slug": "video-6659",
+      "youtubeVideoId": "vUibnGpyzkY",
+      "status": "ok",
+      "titleFa": "مصاحبه تلویزیونی ژاک لکان",
+      "durationSec": 5797,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6625": {
+      "slug": "video-6625",
+      "youtubeVideoId": "7YdV58d8coE",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش هفدهم",
+      "durationSec": 2662,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6623": {
+      "slug": "video-6623",
+      "youtubeVideoId": "670wrnELyu8",
+      "status": "ok",
+      "titleFa": "برنامه افق از صدای آمریکا(ظهور طبقه نوکیسه در ایران)",
+      "durationSec": 1430,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6626": {
+      "slug": "video-6626",
+      "youtubeVideoId": "5tE5vj6lBTg",
+      "status": "ok",
+      "titleFa": "شماره نخست : یادی از برنامه‌های گذشته ( چهارسال پیش) :",
+      "durationSec": 4031,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6627": {
+      "slug": "video-6627",
+      "youtubeVideoId": "4_JmQ5HntN8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش پنجاه و نه (باستان شناسی شناخت)",
+      "durationSec": 1562,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6630": {
+      "slug": "video-6630",
+      "youtubeVideoId": "SmVTI--yOdY",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش پنجاه و هشت (باز هم رای گیری و نه انتخابات)",
+      "durationSec": 1714,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6642": {
+      "slug": "video-6642",
+      "youtubeVideoId": "K3lMhzYzY0M",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: لیست مشکلات بنیادی جمهوری اسلامی ایران",
+      "durationSec": 1671,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6599": {
+      "slug": "video-6599",
+      "youtubeVideoId": "Lo0jlqZB-i4",
+      "status": "private",
+      "reason": "Private video",
+      "titleFa": "دکتر حسن مکارمی: جامعه مدنی باید خود را قوی کند و شاخص‌های خود را بالا بیاورد",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6598": {
+      "slug": "video-6598",
+      "youtubeVideoId": "taIhTnGSFrU",
+      "status": "ok",
+      "titleFa": "تاکید دکتر حسن مکارمی آموزش مردم در جهت رشد اندیشی و تبدیل به جامعه مدنی شدن",
+      "durationSec": 578,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6597": {
+      "slug": "video-6597",
+      "youtubeVideoId": "IT_QTphpPtk",
+      "status": "ok",
+      "titleFa": "دکتر حسن مکارمی: شاخص‌های مردم با شاخص‌های دولت جمهوری اسلامی و رهبری فرق می‌کند:",
+      "durationSec": 217,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6603": {
+      "slug": "video-6603",
+      "youtubeVideoId": "of-YJjsaWHA",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: یک روانکاو لاکانی چگونه کار می‌کند:",
+      "durationSec": 1246,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6604": {
+      "slug": "video-6604",
+      "youtubeVideoId": "2yNredLYZ3U",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: تاثیر کرونا در رابطه خرافات و علم در جامعه مدنی",
+      "durationSec": 1590,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6579": {
+      "slug": "video-6579",
+      "youtubeVideoId": "jm13XugAvrs",
+      "status": "ok",
+      "titleFa": "صدای سخن عشق (حافظ): بخش هجدهم",
+      "durationSec": 2570,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6580": {
+      "slug": "video-6580",
+      "youtubeVideoId": "1RVQEa04oKQ",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و دو (پیانو با چهار دست)",
+      "durationSec": 1448,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6581": {
+      "slug": "video-6581",
+      "youtubeVideoId": "sug_sgKPweI",
+      "status": "ok",
+      "titleFa": "در گفتاورد این هفته میزبان جناب آقای دکتر حسن مکارمی هستیم با موضوع سنت و خرافات",
+      "durationSec": 5486,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6582": {
+      "slug": "video-6582",
+      "youtubeVideoId": "bO-c4D14sAQ",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و دو (میدانهای روان پژوهی)",
+      "durationSec": 1430,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6583": {
+      "slug": "video-6583",
+      "youtubeVideoId": "VRuJu18wKJs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و سه (کرونا ویروس و جامعه مدنی)",
+      "durationSec": 1964,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6585": {
+      "slug": "video-6585",
+      "youtubeVideoId": "GYp259GdD-o",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی: بخش شصت و یک (نوروز نو آور)",
+      "durationSec": 1937,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6584": {
+      "slug": "video-6584",
+      "youtubeVideoId": "03-vM42Tbzc",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و سه (لایه‌های ترس)",
+      "durationSec": 1408,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6592": {
+      "slug": "video-6592",
+      "youtubeVideoId": "1P4QUP2aiPg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش شصت و یک (رابطه سنت و خرافات)",
+      "durationSec": 1512,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6594": {
+      "slug": "video-6594",
+      "youtubeVideoId": "OWExTp3e7m8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: مشکلات بنیادی جمهوری اسلامی \"خودی\" غیرخودی:",
+      "durationSec": 1650,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6776": {
+      "slug": "video-6776",
+      "youtubeVideoId": "a5sikg_R8mo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: نگاه روانشناختانه به عرفان",
+      "durationSec": 843,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanemaodarad": {
+      "slug": "ravanemaodarad",
+      "youtubeVideoId": "iKu5G_k2ft8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روان ما و درد",
+      "durationSec": 1380,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanemavahesadat": {
+      "slug": "ravanemavahesadat",
+      "youtubeVideoId": "ojMoGXaBQbU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روان ما و حسادت",
+      "durationSec": 1407,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "fararmaghzha": {
+      "slug": "fararmaghzha",
+      "youtubeVideoId": "W3PU0754D6U",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: فرار مغزها",
+      "durationSec": 1562,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ayandeesnsani": {
+      "slug": "ayandeesnsani",
+      "youtubeVideoId": "lfofDnLnNxk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: آینده علوم انسانی",
+      "durationSec": 994,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "kartazeyanoavari": {
+      "slug": "kartazeyanoavari",
+      "youtubeVideoId": "9EmRPhBlc2M",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: کار تازه یا نوآوری",
+      "durationSec": 1651,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "shoroojang": {
+      "slug": "shoroojang",
+      "youtubeVideoId": "wJUSWw0I8S8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: شروع جنگ",
+      "durationSec": 1417,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "rabeteerfanvaravan": {
+      "slug": "rabeteerfanvaravan",
+      "youtubeVideoId": "V813w7e1aWs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بین عرفان و روان",
+      "durationSec": 1415,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanpajrabeteerfanoravan": {
+      "slug": "ravanpajrabeteerfanoravan",
+      "youtubeVideoId": "V813w7e1aWs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بین عرفان و روان",
+      "durationSec": 1415,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "shenakhtmacronyek": {
+      "slug": "shenakhtmacronyek",
+      "youtubeVideoId": "Z3lX4qyrQPk",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: شناخت پدیده امانوئل مکرون ۱",
+      "durationSec": 1521,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "shenakhtmacrodo": {
+      "slug": "shenakhtmacrodo",
+      "youtubeVideoId": "9busIDdzNFo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: شناخت پدیده امانوئل مکرون ۲",
+      "durationSec": 1512,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sarzaminfarhangichar": {
+      "slug": "sarzaminfarhangichar",
+      "youtubeVideoId": "kWzfIymoWsI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۴",
+      "durationSec": 1484,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "tarifravankav": {
+      "slug": "tarifravankav",
+      "youtubeVideoId": "jPvQe2NhYB4",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: تعریف روانکار",
+      "durationSec": 1554,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sarzaminfarhangise": {
+      "slug": "sarzaminfarhangise",
+      "youtubeVideoId": "ovhXFH8Fr_g",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۳",
+      "durationSec": 1485,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sarzaminfarhangido": {
+      "slug": "sarzaminfarhangido",
+      "youtubeVideoId": "PH7wP_z_SCU",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۲",
+      "durationSec": 1589,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "tasirshenakhravan": {
+      "slug": "tasirshenakhravan",
+      "youtubeVideoId": "Ek8gcyjqofk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: تاثیر شناخت روان در جامعه",
+      "durationSec": 1480,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "namadpardazidalomadlol": {
+      "slug": "namadpardazidalomadlol",
+      "youtubeVideoId": "qXowXz_S850",
+      "status": "ok",
+      "titleFa": "در روان‌پژوهی: نماد پردازی دال و مدلول",
+      "durationSec": 1417,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sarzaminfarhangiyek": {
+      "slug": "sarzaminfarhangiyek",
+      "youtubeVideoId": "n3_jm8pHins",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: سرزمین فرهنگی ایران ۱",
+      "durationSec": 1411,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "charlayeh": {
+      "slug": "charlayeh",
+      "youtubeVideoId": "dFotRQHRB_8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: چهار لایه فرهنگی",
+      "durationSec": 1450,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "marahelravankavi": {
+      "slug": "marahelravankavi",
+      "youtubeVideoId": "KZ37lOeJEuM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: مراحل یک روان‌کاوی",
+      "durationSec": 1468,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "dar-ravanpajouhi-29": {
+      "slug": "dar-ravanpajouhi-29",
+      "youtubeVideoId": "BO7e2RcrHeU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: ترجمه یکی از کتابهای ژاک لاکان",
+      "durationSec": 1519,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hozenorooz": {
+      "slug": "hozenorooz",
+      "youtubeVideoId": "AP3tbClsjbA",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: حوزه نوروز",
+      "durationSec": 1284,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "havatoyi": {
+      "slug": "havatoyi",
+      "youtubeVideoId": "ee5FLA-tqCg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: این باغ را هوا تویی!",
+      "durationSec": 1472,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "rabeteravanobadan2": {
+      "slug": "rabeteravanobadan2",
+      "youtubeVideoId": "BipAjIXl-Do",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بدن و روان ۲",
+      "durationSec": 1631,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ebdavanoavari": {
+      "slug": "ebdavanoavari",
+      "youtubeVideoId": "pTS2m7d9F_8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: ابداع و نوآوری",
+      "durationSec": 1574,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "topologyamaken": {
+      "slug": "topologyamaken",
+      "youtubeVideoId": "6EfL15d63Qw",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: توپولوژی اماکن مقدس شیعیان در ایران",
+      "durationSec": 1580,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chelsalegienghelab": {
+      "slug": "chelsalegienghelab",
+      "youtubeVideoId": "BpEGPEKEdug",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: چهل سالگی انقلاب اسلامی",
+      "durationSec": 1519,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "esterategiebda": {
+      "slug": "esterategiebda",
+      "youtubeVideoId": "4uKO8CMQ28A",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: استراتژی سیاسی و ابداع راه حل برای خروج از بحران",
+      "durationSec": 1538,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "rabeteravobadan1": {
+      "slug": "rabeteravobadan1",
+      "youtubeVideoId": "5kNfx_hkneI",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بدن و روان ۱",
+      "durationSec": 1477,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6773": {
+      "slug": "video-6773",
+      "youtubeVideoId": "IDsWzc1FMfg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی با دکتر حسن مکارمی: بخش بیست و پنجم ( تجربه آموزشی با ایران)",
+      "durationSec": 1351,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "farhangsokoototarof": {
+      "slug": "farhangsokoototarof",
+      "youtubeVideoId": "MG2oIQUqGHM",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: فرهنگ سکوت و تعارف",
+      "durationSec": 1542,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ezterab": {
+      "slug": "ezterab",
+      "youtubeVideoId": "z9D1lk11wzU",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: اضطراب",
+      "durationSec": 1228,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "goftemantazahorat": {
+      "slug": "goftemantazahorat",
+      "youtubeVideoId": "RBz1j5yk39U",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: گفتمان تظاهرات",
+      "durationSec": 1374,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jelighezardha": {
+      "slug": "jelighezardha",
+      "youtubeVideoId": "oOfhmOtNlu4",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: جنبش جلیقه زردها در فرانسه",
+      "durationSec": 1458,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "khodshiftegisiyasi": {
+      "slug": "khodshiftegisiyasi",
+      "youtubeVideoId": "ZKVVd_QzcDM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: خودشیفتگی سیاسی",
+      "durationSec": 1279,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "zabanemadari": {
+      "slug": "zabanemadari",
+      "youtubeVideoId": "JjGU_Vtj-T0",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: زبان مادری",
+      "durationSec": 1422,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "khaheshotamana": {
+      "slug": "khaheshotamana",
+      "youtubeVideoId": "hRtzMi8ejH4",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: خواهش و تمنا",
+      "durationSec": 1322,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "negahtahrimha": {
+      "slug": "negahtahrimha",
+      "youtubeVideoId": "KAAAOYKvEwI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: تحریمها",
+      "durationSec": 1179,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "naghshezabanosokhan": {
+      "slug": "naghshezabanosokhan",
+      "youtubeVideoId": "8MAuW37fhLs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: نقش زبان و سخن",
+      "durationSec": 1456,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "eshghomehromohabat": {
+      "slug": "eshghomehromohabat",
+      "youtubeVideoId": "F5C0hh-6uKo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: عشق، مهر و محبت",
+      "durationSec": 1437,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "nameyazdikhatab": {
+      "slug": "nameyazdikhatab",
+      "youtubeVideoId": "1qUuM0vbgbI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: نامه تند یزدی خطاب به شبیری زنجانی بخاطر دیدار با خاتمی",
+      "durationSec": 1488,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanejtemae": {
+      "slug": "ravanejtemae",
+      "youtubeVideoId": "vWxvmZ4NTrk",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: روانشناختی اجتماعی",
+      "durationSec": 1475,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "fazayenegahdari": {
+      "slug": "fazayenegahdari",
+      "youtubeVideoId": "_UEIUBWGlhM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: فضای نگهداری از آسیب دیدگان روانی",
+      "durationSec": 1371,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "marasemazadari": {
+      "slug": "marasemazadari",
+      "youtubeVideoId": "KPR-10ihIvM",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: مراسم عزاداری",
+      "durationSec": 1286,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "goftemanmodsiasi": {
+      "slug": "goftemanmodsiasi",
+      "youtubeVideoId": "HymdmwHP3rY",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: گفتمان مدیران سیاسی",
+      "durationSec": 1527,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "doroghsiasi": {
+      "slug": "doroghsiasi",
+      "youtubeVideoId": "W33ahE-kOiw",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: دروغ سیاسی",
+      "durationSec": 1531,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hoviatfardi": {
+      "slug": "hoviatfardi",
+      "youtubeVideoId": "gcUBwxdd0_w",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: هویت فردی",
+      "durationSec": 1548,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6779": {
+      "slug": "video-6779",
+      "youtubeVideoId": "NGh2Af4N9tc",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: ترجمه در کار روان پژوهی",
+      "durationSec": 1467,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vaziatjamedo": {
+      "slug": "vaziatjamedo",
+      "youtubeVideoId": "UBfpGtT_rYY",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به وضعیت امروز جامعه ایران ۲",
+      "durationSec": 1645,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "vaziyateemroozeyek": {
+      "slug": "vaziyateemroozeyek",
+      "youtubeVideoId": "MLSeKwNNDIs",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به وضعیت امروز جامعه ایران ۱",
+      "durationSec": 1590,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanpajoohizaban": {
+      "slug": "ravanpajoohizaban",
+      "youtubeVideoId": "p74R7U4OJ1U",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: زبان",
+      "durationSec": 1408,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanvafarhang": {
+      "slug": "ravanvafarhang",
+      "youtubeVideoId": "ih7rouX9Cgs",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه روان‌کاوی و فرهنگ",
+      "durationSec": 1493,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "negahbehoghoghbashar": {
+      "slug": "negahbehoghoghbashar",
+      "youtubeVideoId": "9lsGogmgBBo",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به حقوق بشر",
+      "durationSec": 1393,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "eshghdarravankavi": {
+      "slug": "eshghdarravankavi",
+      "youtubeVideoId": "G9OVv-72w_g",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه عشق در روان‌کاوی",
+      "durationSec": 1469,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6769": {
+      "slug": "video-6769",
+      "youtubeVideoId": "H5J468KDEqI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی (بخش نهم): سنت",
+      "durationSec": 1661,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "negahbesonat": {
+      "slug": "negahbesonat",
+      "youtubeVideoId": "H5J468KDEqI",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو با دکتر حسن مکارمی (بخش نهم): سنت",
+      "durationSec": 1661,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "doostodoshman": {
+      "slug": "doostodoshman",
+      "youtubeVideoId": "pSlgpgeT0AQ",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به دوست و دشمن",
+      "durationSec": 1430,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "modiriatpaziri": {
+      "slug": "modiriatpaziri",
+      "youtubeVideoId": "j21ZbBnr10k",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: مدیریت پذیری",
+      "durationSec": 1781,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "eteghadoiman": {
+      "slug": "eteghadoiman",
+      "youtubeVideoId": "2ytFgXYuMio",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: اعتقاد و ایمان روانکاو",
+      "durationSec": 1503,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "negahbetarikh": {
+      "slug": "negahbetarikh",
+      "youtubeVideoId": "HwF8K2_OOpg",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو به تاریخ",
+      "durationSec": 1570,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "naghshekhab": {
+      "slug": "naghshekhab",
+      "youtubeVideoId": "-vaedHBboJM",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: نقش خواب در نظریه‌های روان‌کاوی",
+      "durationSec": 1491,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chegonegiravankav": {
+      "slug": "chegonegiravankav",
+      "youtubeVideoId": "GDMii5qadT8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: چگونگی کار روانکاو",
+      "durationSec": 1545,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "khandanesher": {
+      "slug": "khandanesher",
+      "youtubeVideoId": "Ie6lulUBui4",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: خواندن شعر",
+      "durationSec": 1716,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "rabeteravanomavara": {
+      "slug": "rabeteravanomavara",
+      "youtubeVideoId": "XixISnHhdZw",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: رابطه بین روان پژوهی با ماورالطبیعه",
+      "durationSec": 1658,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "namepedar": {
+      "slug": "namepedar",
+      "youtubeVideoId": "HbxFABRv_5w",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: نام پدر",
+      "durationSec": 1371,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "asibhayeravani": {
+      "slug": "asibhayeravani",
+      "youtubeVideoId": "_HLLCXW8ESg",
+      "status": "ok",
+      "titleFa": "در روان پژوهی: آسیب‌های روانی",
+      "durationSec": 1557,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "khalghmardom": {
+      "slug": "khalghmardom",
+      "youtubeVideoId": "JlRRMiOUKO8",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو: خلق, مردم و توده",
+      "durationSec": 1419,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravankavbakhshese": {
+      "slug": "ravankavbakhshese",
+      "youtubeVideoId": "p9gCY73aVvs",
+      "status": "ok",
+      "titleFa": "نگاه روانکار (بخش سوم)",
+      "durationSec": 1404,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanbakhshese": {
+      "slug": "ravanbakhshese",
+      "youtubeVideoId": "too8RIhyjD8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی(بخش سوم)",
+      "durationSec": 1392,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "negahbakhshchar": {
+      "slug": "negahbakhshchar",
+      "youtubeVideoId": "MrVyIXEaoCc",
+      "status": "ok",
+      "titleFa": "نگاه روانکاو (بخش چهارم)",
+      "durationSec": 1544,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravanbakhshdo": {
+      "slug": "ravanbakhshdo",
+      "youtubeVideoId": "6Amqtt09qB8",
+      "status": "ok",
+      "titleFa": "در روان پژوهی (بخش دوم)",
+      "durationSec": 956,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "moghadameh-ravankavi-karbordi-1": {
+      "slug": "moghadameh-ravankavi-karbordi-1",
+      "youtubeVideoId": "kprparO7DNQ",
+      "status": "ok",
+      "titleFa": "مقدمه ای بر روان‌کاوی کاربردی در هنر ، تاریخ و ادبیات سخنرانی : دکتر حسن مکارمی",
+      "durationSec": 4144,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ravankavbakhshedo": {
+      "slug": "ravankavbakhshedo",
+      "youtubeVideoId": "Upm5rQsrNRU",
+      "status": "ok",
+      "titleFa": "نگاه روانکار با دکتر حسن مکارمی (بخش دوم)",
+      "durationSec": 1603,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "loshtar-67-hafezeh-tarykhi": {
+      "slug": "loshtar-67-hafezeh-tarykhi",
+      "youtubeVideoId": "wMcBStDEyEY",
+      "status": "ok",
+      "titleFa": "کشتار ۶۷ - حافظه تاریخی",
+      "durationSec": 1432,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "atafsirkhabar8mehr2015-fa": {
+      "slug": "atafsirkhabar8mehr2015-fa",
+      "youtubeVideoId": "ml-LvUsMpxQ",
+      "status": "private",
+      "reason": "Private video",
+      "titleFa": "تفسیر خبر",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "gftgoo-ba-hassan-makaremi-hafez": {
+      "slug": "gftgoo-ba-hassan-makaremi-hafez",
+      "youtubeVideoId": "8GlxzAJrFBI",
+      "status": "ok",
+      "titleFa": "گفتگو با حسن مکارمی نویسنده و روانکاو : کتاب نگرشی دیگر بر راز حافظ",
+      "durationSec": 3300,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mav-maadyansvm-fa": {
+      "slug": "mav-maadyansvm-fa",
+      "youtubeVideoId": "J5jMxK2HQjk",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ادیان، قسمت سوم",
+      "durationSec": 2300,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mavmaadyanchaharom-fa": {
+      "slug": "mavmaadyanchaharom-fa",
+      "youtubeVideoId": "DAGphtneVFo",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ادیان، قسمت چهارم",
+      "durationSec": 2295,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sakhtarejtemaeideux-fa": {
+      "slug": "sakhtarejtemaeideux-fa",
+      "youtubeVideoId": "8Fq4jc0ROto",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت دوم",
+      "durationSec": 2671,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sakhtarzanan-fa": {
+      "slug": "sakhtarzanan-fa",
+      "youtubeVideoId": "j8S74i7ztWo",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت اول",
+      "durationSec": 2234,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jayegahzanan3-fa": {
+      "slug": "jayegahzanan3-fa",
+      "youtubeVideoId": "k9lNs05LNSQ",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت سوم",
+      "durationSec": 1964,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jaygahzanan4-fa": {
+      "slug": "jaygahzanan4-fa",
+      "youtubeVideoId": "4MMa5lC-IGE",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت چهارم",
+      "durationSec": 1835,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mavmazananvadyan2-fa": {
+      "slug": "mavmazananvadyan2-fa",
+      "youtubeVideoId": "FybaWtHez3U",
+      "status": "unavailable",
+      "reason": "Video unavailable",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ادیان، قسمت دوم",
+      "durationSec": 2035,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "zananejtemai5-fa": {
+      "slug": "zananejtemai5-fa",
+      "youtubeVideoId": "dnNU7NjyfDc",
+      "status": "ok",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ساختار اجتماعی، قسمت پنچم",
+      "durationSec": 2715,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ma-va-ma-16-zanan-adyan-fa": {
+      "slug": "ma-va-ma-16-zanan-adyan-fa",
+      "youtubeVideoId": "2yU2_OdBkP4",
+      "status": "ok",
+      "titleFa": "Ma Va Ma 16-ما و ما -جایگاه‌ زنان در ادیان، قسمت اول",
+      "durationSec": 2503,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ghalimanchehsabzmamroz-fa": {
+      "slug": "ghalimanchehsabzmamroz-fa",
+      "youtubeVideoId": "E4U9B7Tcvwk",
+      "status": "ok",
+      "titleFa": "قالی : من چه سبزم امروز",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "tapie-je-suis-si-vert-aujour-fa": {
+      "slug": "tapie-je-suis-si-vert-aujour-fa",
+      "youtubeVideoId": "9etwB9e6m7o",
+      "status": "ok",
+      "titleFa": "tapie: Je suis si vert aujourd'hui",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "barrsysabzlink1video-fa": {
+      "slug": "barrsysabzlink1video-fa",
+      "youtubeVideoId": "wmBU0C4jHgw",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت ۱ 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "barrsysbzlinkvideo2-fa": {
+      "slug": "barrsysbzlinkvideo2-fa",
+      "youtubeVideoId": "VNFnFB1S49A",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت2 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "brrsysabzlinkvideo3-fa": {
+      "slug": "brrsysabzlinkvideo3-fa",
+      "youtubeVideoId": "IdJIb9rnuM4",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 3 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "barrsysabzlinkvideo-fa": {
+      "slug": "barrsysabzlinkvideo-fa",
+      "youtubeVideoId": "9_WC5DmlFe8",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 4 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "brrsisabzlinkvideo-fa": {
+      "slug": "brrsisabzlinkvideo-fa",
+      "youtubeVideoId": "Jw3ZZci1kd8",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 5 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "barasysabzlinkvideo-fa": {
+      "slug": "barasysabzlinkvideo-fa",
+      "youtubeVideoId": "UIffusYtx6Y",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 6 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "barrasisabzlinkvideo-fa": {
+      "slug": "barrasisabzlinkvideo-fa",
+      "youtubeVideoId": "jlD6JIgKQRk",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 7 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-5551": {
+      "slug": "video-5551",
+      "youtubeVideoId": "SDLZRhmomzg",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت8 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "barasysabzlink8video-fa": {
+      "slug": "barasysabzlink8video-fa",
+      "youtubeVideoId": "KopssWbzNfU",
+      "status": "ok",
+      "titleFa": "بررسی وضعیت ایران و تحلیل روانکاوانه در 9 قسمت : قسمت 9 2011",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ma-va-a-rojehalat-3-fa": {
+      "slug": "ma-va-a-rojehalat-3-fa",
+      "youtubeVideoId": "gVjJ3jVEtIk",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ma-v-ma-rojehhalat1-fa": {
+      "slug": "ma-v-ma-rojehhalat1-fa",
+      "youtubeVideoId": "o0LIGIzuMG8",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت اول",
+      "durationSec": 2726,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ma-v-ma-rojehhalat-fa": {
+      "slug": "ma-v-ma-rojehhalat-fa",
+      "youtubeVideoId": "7TZB4sv8kYM",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت دوم",
+      "durationSec": 1829,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ma-va-ma-rojehhalat-fa": {
+      "slug": "ma-va-ma-rojehhalat-fa",
+      "youtubeVideoId": "nabm-ntGtgs",
+      "status": "ok",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "ma-va-ma-rojehhalat-5-fa": {
+      "slug": "ma-va-ma-rojehhalat-5-fa",
+      "youtubeVideoId": "hfpkR7thGfc",
+      "status": "unavailable",
+      "reason": "Video unavailable",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت پنجم",
+      "durationSec": 2403,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "eedam-dr-mala-eam-fa": {
+      "slug": "eedam-dr-mala-eam-fa",
+      "youtubeVideoId": "X1iCgsO9-Sg",
+      "status": "ok",
+      "titleFa": "اعدام در ملاء عام از زاویه روانشناختی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "aedamdarjahan-aslam-fa": {
+      "slug": "aedamdarjahan-aslam-fa",
+      "youtubeVideoId": "udmFDIIFiY0",
+      "status": "ok",
+      "titleFa": "اعدام در جهان اسلام",
+      "durationSec": 3923,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-andisheh-be-digari-fa": {
+      "slug": "video-andisheh-be-digari-fa",
+      "youtubeVideoId": "y4EbEZooM8A",
+      "status": "ok",
+      "titleFa": "اندیشه به دیگری در همایش روان پژوهان ایرانی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chaharmin-rvanpajouhan-kyhan-video-fa": {
+      "slug": "chaharmin-rvanpajouhan-kyhan-video-fa",
+      "youtubeVideoId": "uoD86xqHZeQ",
+      "status": "ok",
+      "titleFa": "همایش روان‌پژوهان ایرانی در لندن: حرفه‌ای‌های غیرتجاری در برابر غیرحرفه‌ای‌های تجاری",
+      "durationSec": 946,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "yek-rooz-dr-atelieh-fa": {
+      "slug": "yek-rooz-dr-atelieh-fa",
+      "youtubeVideoId": "lJXrv1ZPE5A",
+      "status": "ok",
+      "titleFa": "یک روز در آتلیه نقاشی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "moearfi-ketab-htma-rahy-hst-fa": {
+      "slug": "moearfi-ketab-htma-rahy-hst-fa",
+      "youtubeVideoId": "1nCU1stsvRk",
+      "status": "ok",
+      "titleFa": "معرفی کتاب حتما راهی هست",
+      "durationSec": 1975,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "msahebh-mlkoty-khshont-fa": {
+      "slug": "msahebh-mlkoty-khshont-fa",
+      "youtubeVideoId": "T4r_c2g0hvA",
+      "status": "ok",
+      "titleFa": "مصاحبه به سیروس ملکوتی در باره خشونت",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "arzyaby-khoshonat-ir": {
+      "slug": "arzyaby-khoshonat-ir",
+      "youtubeVideoId": "T4r_c2g0hvA",
+      "status": "ok",
+      "titleFa": "مصاحبه به سیروس ملکوتی در باره خشونت",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "raha-khshounat-fa": {
+      "slug": "raha-khshounat-fa",
+      "youtubeVideoId": "8_QfMLLwcl4",
+      "status": "ok",
+      "titleFa": "شبنامه: خشونت در ایران",
+      "durationSec": 3110,
+      "hasCaptions": true,
+      "captionLangs": [
+        "fa:asr"
+      ],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chera-mardom-aedam-fa": {
+      "slug": "chera-mardom-aedam-fa",
+      "youtubeVideoId": "z-pl9vFb9JY",
+      "status": "ok",
+      "titleFa": "چرا مردم به تماشای مراسم اعدام می‌روند؟",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hakemiat-ehteram-video-fa": {
+      "slug": "hakemiat-ehteram-video-fa",
+      "youtubeVideoId": "VTmhwT2aVqk",
+      "status": "ok",
+      "titleFa": "حاکمیت ایران احترامی برای مردم و نمایندگان آنان قائل نیست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "byst-v-svmin-un-ir": {
+      "slug": "byst-v-svmin-un-ir",
+      "youtubeVideoId": "VTmhwT2aVqk",
+      "status": "ok",
+      "titleFa": "حاکمیت ایران احترامی برای مردم و نمایندگان آنان قائل نیست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mosahebeh-sen-koudak-fa": {
+      "slug": "mosahebeh-sen-koudak-fa",
+      "youtubeVideoId": "SfTc3QU3y2E",
+      "status": "ok",
+      "titleFa": "مصاحبه افسانه وحدت با حسن مکارمی در مورد سن کودک",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sen-kodak-vhdat-ir": {
+      "slug": "sen-kodak-vhdat-ir",
+      "youtubeVideoId": "SfTc3QU3y2E",
+      "status": "ok",
+      "titleFa": "مصاحبه افسانه وحدت با حسن مکارمی در مورد سن کودک",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hassan-makaremi-parle-de-hafez-de-chiraz-2": {
+      "slug": "hassan-makaremi-parle-de-hafez-de-chiraz-2",
+      "youtubeVideoId": "4YSaXDyBX18",
+      "status": "ok",
+      "titleFa": "Hassan Makaremi parle de Hâfez de CHiraz",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hafez-de-chiraz": {
+      "slug": "hafez-de-chiraz",
+      "youtubeVideoId": "4YSaXDyBX18",
+      "status": "ok",
+      "titleFa": "Hassan Makaremi parle de Hâfez de CHiraz",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "afsordegi-koodak-video-i-fa": {
+      "slug": "afsordegi-koodak-video-i-fa",
+      "youtubeVideoId": "_94rRAb4Vx0",
+      "status": "ok",
+      "titleFa": "مصاحبه در مورد افسردگی و غمگینی کودکان در ایران امروز ، قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "kodakan-moghadamand-persian-children-interview-n-1755": {
+      "slug": "kodakan-moghadamand-persian-children-interview-n-1755",
+      "youtubeVideoId": "_94rRAb4Vx0",
+      "status": "ok",
+      "titleFa": "مصاحبه در مورد افسردگی و غمگینی کودکان در ایران امروز ، قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hambourg-ayandeh-i-fa": {
+      "slug": "hambourg-ayandeh-i-fa",
+      "youtubeVideoId": "XzZqyZ-UXxc",
+      "status": "ok",
+      "titleFa": "I کنفرانس \"چشم انداز تغییر در ایران\" هامبورگ",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "conference-hambourg-ii-fa": {
+      "slug": "conference-hambourg-ii-fa",
+      "youtubeVideoId": "cg412BPtGuk",
+      "status": "ok",
+      "titleFa": "II کنفرانس \"چشم انداز تغییر در ایران\" هامبورگ",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hafez-dar-oj-ast-video-fa": {
+      "slug": "hafez-dar-oj-ast-video-fa",
+      "youtubeVideoId": "EWpcPfPLSh8",
+      "status": "ok",
+      "titleFa": "درباره حافظ",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "khavaran-justice-session": {
+      "slug": "khavaran-justice-session",
+      "youtubeVideoId": "mcJ2aHT93ek",
+      "status": "ok",
+      "titleFa": "مراسم بیست و یکمین سالگرد جان باختگان در قتل عام تابستان ۶۷ در بروکسل",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chera-hafez-1-ir": {
+      "slug": "chera-hafez-1-ir",
+      "youtubeVideoId": "8miY9J0wi0o",
+      "status": "ok",
+      "titleFa": "چرا حافظ شیراز در اوج است بخش نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chra-hafez-aoj-1-ir": {
+      "slug": "chra-hafez-aoj-1-ir",
+      "youtubeVideoId": "vvOzwY0hZ4U",
+      "status": "ok",
+      "titleFa": "چرا حافظ شیراز در اوج است بخش دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-08": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-08",
+      "youtubeVideoId": "eQ5NHwyARms",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-08",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hatma-rahi-hast-ir": {
+      "slug": "hatma-rahi-hast-ir",
+      "youtubeVideoId": "ph9RGkyawYE",
+      "status": "ok",
+      "titleFa": "حتماً راهی هست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-09": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-09",
+      "youtubeVideoId": "DBwEe9dJaU0",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-09",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-12": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-12",
+      "youtubeVideoId": "G0ydBMGZv6Y",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-12",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-18": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-18",
+      "youtubeVideoId": "354oY_gDW4o",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-18",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "el-pintor-caligrafo-hassan-makaremi-semana-del-cine-iran": {
+      "slug": "el-pintor-caligrafo-hassan-makaremi-semana-del-cine-iran",
+      "youtubeVideoId": "fyklSMOOMt0",
+      "status": "ok",
+      "titleFa": "el pintor calígrafo Hassan Makaremi : Semana del Cine Iraní del 9 al 16 de abril 2012",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "nmayeshgah-khaneh-kadr": {
+      "slug": "nmayeshgah-khaneh-kadr",
+      "youtubeVideoId": "fyklSMOOMt0",
+      "status": "ok",
+      "titleFa": "el pintor calígrafo Hassan Makaremi : Semana del Cine Iraní del 9 al 16 de abril 2012",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chekanjeh-1-ir": {
+      "slug": "chekanjeh-1-ir",
+      "youtubeVideoId": "fdZJRsg-QWg",
+      "status": "ok",
+      "titleFa": "زاویه‌ها :شکنجه‌،قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-4427": {
+      "slug": "video-4427",
+      "youtubeVideoId": "d4-dj1wi2Ys",
+      "status": "ok",
+      "titleFa": "Soirée de poésie, Persane Français",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "poesie-francais-persan-ir": {
+      "slug": "poesie-francais-persan-ir",
+      "youtubeVideoId": "d4-dj1wi2Ys",
+      "status": "ok",
+      "titleFa": "Soirée de poésie, Persane Français",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chekanje-2-ir": {
+      "slug": "chekanje-2-ir",
+      "youtubeVideoId": "jHL-NFya37Q",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : شکنجه‌،قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chekanje-3-ir": {
+      "slug": "chekanje-3-ir",
+      "youtubeVideoId": "POJC2o_p_EY",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : شکنجه‌،قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chekanjeh-4-ir": {
+      "slug": "chekanjeh-4-ir",
+      "youtubeVideoId": "bkz0pdmR-jQ",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : شکنجه‌،قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "roznameh-negarii-khshonat-1-ir": {
+      "slug": "roznameh-negarii-khshonat-1-ir",
+      "youtubeVideoId": "rt0UmpTxS2o",
+      "status": "ok",
+      "titleFa": "وبینار «روزنامه‌نگاری و مسئله خشونت»، بخش اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "roznameh-khshont2-ir": {
+      "slug": "roznameh-khshont2-ir",
+      "youtubeVideoId": "bWGNeflFdCo",
+      "status": "ok",
+      "titleFa": "وبینار: «روزنامه‌نگاری و مسئله خشونت» بخش دو",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hafez-namteshgah-khoshnvysy-ir": {
+      "slug": "hafez-namteshgah-khoshnvysy-ir",
+      "youtubeVideoId": "gDz84h3apyU",
+      "status": "ok",
+      "titleFa": "قسمت نخست در باره حافظ بمناسبت نمایشگاه خوشنویسی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "namadprdazi-nastaeligh-ir": {
+      "slug": "namadprdazi-nastaeligh-ir",
+      "youtubeVideoId": "Wr9fiuzqzn4",
+      "status": "ok",
+      "titleFa": "از نماد پردازی تا خوشنویسی نستعلیق بخش دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "az-nmad-ta-nastaeligh-1-ir": {
+      "slug": "az-nmad-ta-nastaeligh-1-ir",
+      "youtubeVideoId": "mowJcBAdxa4",
+      "status": "ok",
+      "titleFa": "از نماد پردازی تا خوشنویسی نستعلیق بخش نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "namad-nastaelugh-3-ir": {
+      "slug": "namad-nastaelugh-3-ir",
+      "youtubeVideoId": "6sLobPj8Nrw",
+      "status": "ok",
+      "titleFa": "از نماد پردازی تا خوشنویسی نستعلیق بخش سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "kodkan-kar-ir": {
+      "slug": "kodkan-kar-ir",
+      "youtubeVideoId": "ne7vIn248Eo",
+      "status": "ok",
+      "titleFa": "مصاحبه افسانه وحدت با حسن مکارمی در مورد کودکان کار و خیابان",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "hafez-namayeshgah-mokry-2-ir": {
+      "slug": "hafez-namayeshgah-mokry-2-ir",
+      "youtubeVideoId": "BeHE2gijnCg",
+      "status": "ok",
+      "titleFa": "سخنرانی در باره حافظ بمناسبت نمایشگاه خوشنویسی قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "azdevaj-kodkan-ir": {
+      "slug": "azdevaj-kodkan-ir",
+      "youtubeVideoId": "W_4Nu53EtPU",
+      "status": "ok",
+      "titleFa": "مصاحبه افسانه وحدت با حسن مکارمی در مورد ازدواج کودکان",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "aetiad-dr-iran-ir": {
+      "slug": "aetiad-dr-iran-ir",
+      "youtubeVideoId": "uTnFR5BtJ14",
+      "status": "ok",
+      "titleFa": "درباره علل اعتیاد در ایران- ۲۰ آوریل ۲۰۱۳",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sheer-video-labkhan-ir": {
+      "slug": "sheer-video-labkhan-ir",
+      "youtubeVideoId": "waO0bBVQMS0",
+      "status": "ok",
+      "titleFa": "لبخندی از آشتی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "film-60-sal-3-ir": {
+      "slug": "film-60-sal-3-ir",
+      "youtubeVideoId": "SDiK03D_AL0",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-4369": {
+      "slug": "video-4369",
+      "youtubeVideoId": "5gFQgz2t5cA",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "film-60-sal-2-ir": {
+      "slug": "film-60-sal-2-ir",
+      "youtubeVideoId": "MaGqwVB_MQA",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "film-60-sal-4-ir": {
+      "slug": "film-60-sal-4-ir",
+      "youtubeVideoId": "QrL1CslF76Q",
+      "status": "ok",
+      "titleFa": "مروری بر شصت سال زندگی قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chehreh-ha": {
+      "slug": "chehreh-ha",
+      "youtubeVideoId": "t3FMFcbNPDE",
+      "status": "ok",
+      "titleFa": "معرفی و شناختی درون گرایانه",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mohajerat-1-ir": {
+      "slug": "mohajerat-1-ir",
+      "youtubeVideoId": "LFOeK-RmzKM",
+      "status": "ok",
+      "titleFa": "زاویه‌ها :مهاجرت، قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "mohaierat-2-ir": {
+      "slug": "mohaierat-2-ir",
+      "youtubeVideoId": "xLj6Q33BC7o",
+      "status": "ok",
+      "titleFa": "زاویه‌ها :مهاجرت، قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "aetesab-1-ir": {
+      "slug": "aetesab-1-ir",
+      "youtubeVideoId": "h8zoIv2F9vA",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت اول",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "aetesab-4-ir": {
+      "slug": "aetesab-4-ir",
+      "youtubeVideoId": "uTB3tUePSKU",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "aetesab-2-ir": {
+      "slug": "aetesab-2-ir",
+      "youtubeVideoId": "6fKYAGnpgFA",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "aetesab-4-ir-2": {
+      "slug": "aetesab-4-ir-2",
+      "youtubeVideoId": "JGycc4HOJxc",
+      "status": "ok",
+      "titleFa": "زاویه‌ها : اعتصاب ،قسمت چهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-4384": {
+      "slug": "video-4384",
+      "youtubeVideoId": "d2I5r6sTfWc",
+      "status": "ok",
+      "titleFa": "زاویەها، مدرنیتە پارەی دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-4383": {
+      "slug": "video-4383",
+      "youtubeVideoId": "klwtOfywXwA",
+      "status": "ok",
+      "titleFa": "زاویەها؛ مدرنیتە پارەی نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "modernite-3-ir": {
+      "slug": "modernite-3-ir",
+      "youtubeVideoId": "8kCSLQZDtYY",
+      "status": "ok",
+      "titleFa": "زاویەها، مدرنیتە، پارەی سوم:",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "modernite-4-ir": {
+      "slug": "modernite-4-ir",
+      "youtubeVideoId": "Lr8oviiZlAw",
+      "status": "ok",
+      "titleFa": "زاویەها، مدرنیتە، پارەی جهارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "maikel-batry-ir": {
+      "slug": "maikel-batry-ir",
+      "youtubeVideoId": "w-oLvLeKtEU",
+      "status": "ok",
+      "titleFa": "مایکل بری , از حسن مکارمی می‌گوید",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "michael-barry-speak-about-hassan-makaremi-persian": {
+      "slug": "michael-barry-speak-about-hassan-makaremi-persian",
+      "youtubeVideoId": "w-oLvLeKtEU",
+      "status": "ok",
+      "titleFa": "مایکل بری , از حسن مکارمی می‌گوید",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "michael-barry-parle-de-hassan-makaremi": {
+      "slug": "michael-barry-parle-de-hassan-makaremi",
+      "youtubeVideoId": "w-oLvLeKtEU",
+      "status": "ok",
+      "titleFa": "مایکل بری , از حسن مکارمی می‌گوید",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "yonesco-gzares-ir": {
+      "slug": "yonesco-gzares-ir",
+      "youtubeVideoId": "oT7grW0EstI",
+      "status": "ok",
+      "titleFa": "گزارشی از سخنرانی و نمایشگاه حسن مکارمی , در مقریونسکو - پاریس ۲۰۰۹",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "simorq-tablo-ir": {
+      "slug": "simorq-tablo-ir",
+      "youtubeVideoId": "7p5jw9EpS7k",
+      "status": "ok",
+      "titleFa": "معرفی تابلو سیمرغ , با الهام از منطق الطیر عطار, ۲ متره در ۱۰ متر",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "namaieshgah-khaneh-kadr-2-ir": {
+      "slug": "namaieshgah-khaneh-kadr-2-ir",
+      "youtubeVideoId": "3dqI6n9PIP0",
+      "status": "ok",
+      "titleFa": "نمایشگاه خانه کادر پاریس شماره ۲",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-4277": {
+      "slug": "video-4277",
+      "youtubeVideoId": "LFWywtY8Uj0",
+      "status": "ok",
+      "titleFa": "نگاهی دیگر بر هشتاد و هفت بیت نخست شاهنامه بخش نخست",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-4278": {
+      "slug": "video-4278",
+      "youtubeVideoId": "BcvuxlcUCVk",
+      "status": "ok",
+      "titleFa": "نگاهی دیگر بر هشتاد و هفت بیت نخست شاهنامه بخش دوم و پایانی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "dostaat-darp-ir": {
+      "slug": "dostaat-darp-ir",
+      "youtubeVideoId": "SO3TqtZrgEQ",
+      "status": "ok",
+      "titleFa": "شعر - ویدئو : گفت دوست دارم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-4281": {
+      "slug": "video-4281",
+      "youtubeVideoId": "PbZK1pAtLew",
+      "status": "ok",
+      "titleFa": "۲۰۱۲ مهاجرت، تبعید و روان ما : همایش کلن سال",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "chenan-kn-ir": {
+      "slug": "chenan-kn-ir",
+      "youtubeVideoId": "AdaTspAwjGw",
+      "status": "ok",
+      "titleFa": "شعر - ویدئو: چنان کن که من....",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "sevomin-hmayesh-ravankavy-ir": {
+      "slug": "sevomin-hmayesh-ravankavy-ir",
+      "youtubeVideoId": "BVxEmFkWw_k",
+      "status": "ok",
+      "titleFa": "سومین همایش روان‌پژوهان ایرانی در خارج از کشور :خشونت و روان ما",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-05": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-05",
+      "youtubeVideoId": "vL_WpWgd448",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO 2009 part-05",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-07": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-07",
+      "youtubeVideoId": "187aQNjyBGw",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO 2009 part-07",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "i-am-not-myself-persan": {
+      "slug": "i-am-not-myself-persan",
+      "youtubeVideoId": "8rkg80SkyCI",
+      "status": "ok",
+      "titleFa": "من نه منم , نه من منم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "je-ne-suis-pas-moi-meme": {
+      "slug": "je-ne-suis-pas-moi-meme",
+      "youtubeVideoId": "8rkg80SkyCI",
+      "status": "ok",
+      "titleFa": "من نه منم , نه من منم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "kodakan-moghadamand-persian-children-interview-n-1753": {
+      "slug": "kodakan-moghadamand-persian-children-interview-n-1753",
+      "youtubeVideoId": "vPNxVNBLdF8",
+      "status": "ok",
+      "titleFa": "مصاحبه در مورد افسردگی و غمگینی کودکان در ایران امروز ،قسمت دوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "kodakan-moghadamand-persian-children-interview-new-chane": {
+      "slug": "kodakan-moghadamand-persian-children-interview-new-chane",
+      "youtubeVideoId": "rCGcLFBHLGs",
+      "status": "ok",
+      "titleFa": "مصاحبه در مورد افسردگی و غمگینی کودکان در ایران امروز ،قسمت سوم",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "conference-la-psychiatrie-avec-foad-saberan-part-4": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-4",
+      "youtubeVideoId": "ItEdt8bm2BY",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-4",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "conference-la-psychiatrie-avec-foad-saberan-part-3": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-3",
+      "youtubeVideoId": "_bJXdxg9xt8",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-3",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "conference-la-psychiatrie-avec-foad-saberan-part-1": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-1",
+      "youtubeVideoId": "-NvwwAHx25o",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-1",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "conference-la-psychiatrie-avec-foad-saberan-part-2": {
+      "slug": "conference-la-psychiatrie-avec-foad-saberan-part-2",
+      "youtubeVideoId": "Ih9vCARZg6E",
+      "status": "ok",
+      "titleFa": "Conférence: La psychiatrie, avec Foad Saberan Part-2",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-15": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-15",
+      "youtubeVideoId": "Yujz0X_WooE",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-15",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-17": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-17",
+      "youtubeVideoId": "FtB29W-2Aq0",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-17",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-11": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-11",
+      "youtubeVideoId": "BJQQiI6ITYg",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-11",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-13": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-13",
+      "youtubeVideoId": "Fu4IIIr1wQQ",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-13",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-10": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-10",
+      "youtubeVideoId": "3EgSI4wpZMo",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-10",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-6": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-6",
+      "youtubeVideoId": "ycPE_jzNsgU",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-06",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-1": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-1",
+      "youtubeVideoId": "vxYR-wQypSg",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-01",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-3": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-3",
+      "youtubeVideoId": "7-d8Yx0nh2s",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-03",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-2": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-2",
+      "youtubeVideoId": "jgORD5gbJIY",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-02",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "festival-diversite-culturelle-unesco-2009-part-4": {
+      "slug": "festival-diversite-culturelle-unesco-2009-part-4",
+      "youtubeVideoId": "PcPq4eQSRkw",
+      "status": "ok",
+      "titleFa": "Festival diversité culturelle UNESCO  2009 part-04",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6675": {
+      "slug": "video-6675",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "گفت‌وگو با حسن مکارمی، روانشناس اجتماعی در ارتباط با مراسم تشیع قاسم سلیمانی در ایران",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "video-6593": {
+      "slug": "video-6593",
+      "youtubeVideoId": null,
+      "status": "ok",
+      "titleFa": "رمز پیروزی",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "miz-gerd-behdasht-ravan-iran-video-fa": {
+      "slug": "miz-gerd-behdasht-ravan-iran-video-fa",
+      "youtubeVideoId": null,
+      "status": "ok",
+      "titleFa": "میزگرد : آسیب‌های روانی و بهداشت روان در ایران امروز",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "jahesh-frahngi-1-ir": {
+      "slug": "jahesh-frahngi-1-ir",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "بررسی ِ جهش ِ فرهنگی ِ مردم ِ ایران",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    "piano-a-quatre-mains-pendant-la-soiree-hafez-par-hafez": {
+      "slug": "piano-a-quatre-mains-pendant-la-soiree-hafez-par-hafez",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "Piano a quatre mains pendant la soiree Hafez par Hafez",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    }
+  },
+  "flaggedForStudio": [
+    {
+      "slug": "video-6599",
+      "youtubeVideoId": "Lo0jlqZB-i4",
+      "status": "private",
+      "reason": "Private video",
+      "titleFa": "دکتر حسن مکارمی: جامعه مدنی باید خود را قوی کند و شاخص‌های خود را بالا بیاورد",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    {
+      "slug": "atafsirkhabar8mehr2015-fa",
+      "youtubeVideoId": "ml-LvUsMpxQ",
+      "status": "private",
+      "reason": "Private video",
+      "titleFa": "تفسیر خبر",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    {
+      "slug": "mavmazananvadyan2-fa",
+      "youtubeVideoId": "FybaWtHez3U",
+      "status": "unavailable",
+      "reason": "Video unavailable",
+      "titleFa": "ما و ما -جایگاه‌ زنان در ادیان، قسمت دوم",
+      "durationSec": 2035,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    {
+      "slug": "ma-va-ma-rojehhalat-5-fa",
+      "youtubeVideoId": "hfpkR7thGfc",
+      "status": "unavailable",
+      "reason": "Video unavailable",
+      "titleFa": "ما و ما -زنان و آموزش، قسمت پنجم",
+      "durationSec": 2403,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    {
+      "slug": "video-6675",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "گفت‌وگو با حسن مکارمی، روانشناس اجتماعی در ارتباط با مراسم تشیع قاسم سلیمانی در ایران",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    {
+      "slug": "5668",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "ویدیو #5668",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    {
+      "slug": "jahesh-frahngi-1-ir",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "بررسی ِ جهش ِ فرهنگی ِ مردم ِ ایران",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    },
+    {
+      "slug": "piano-a-quatre-mains-pendant-la-soiree-hafez-par-hafez",
+      "youtubeVideoId": null,
+      "status": "no_stream",
+      "reason": "No video or audio stream attached in archive record",
+      "titleFa": "Piano a quatre mains pendant la soiree Hafez par Hafez",
+      "durationSec": null,
+      "hasCaptions": false,
+      "captionLangs": [],
+      "checkedAt": "2026-11-24T16:25:38.194Z"
+    }
+  ]
+}

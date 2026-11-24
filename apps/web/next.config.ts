@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     '/api/**': [
       '../../packages/shared/src/data/vault/**/*',
       '../../packages/shared/src/data/translations/**/*',
+      '../../packages/shared/src/data/transcripts/**/*',
       '../../packages/shared/src/data/curator-overlays/**/*',
       '../../packages/shared/src/data/commerce/**/*',
       '../../packages/shared/src/data/glossary-lock.json',
@@ -27,6 +28,7 @@ const nextConfig: NextConfig = {
     '/[locale]/**': [
       '../../packages/shared/src/data/vault/**/*',
       '../../packages/shared/src/data/translations/**/*',
+      '../../packages/shared/src/data/transcripts/**/*',
       '../../packages/shared/src/data/curator-overlays/**/*',
       '../../packages/shared/src/data/commerce/**/*',
       '../../packages/shared/src/data/glossary-lock.json',

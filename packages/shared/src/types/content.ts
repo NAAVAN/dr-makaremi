@@ -200,6 +200,55 @@ export interface VideoSpeechTranslation {
   transcript_markdown?: string | null;
 }
 
+export interface VideoTranscriptSegment {
+  startSec: number;
+  endSec: number;
+  text: string;
+}
+
+export interface VideoTranscriptChapter {
+  startSec: number;
+  title: string;
+}
+
+export interface VideoTranscriptRecord {
+  key: string;
+  sourceLang: 'fa' | 'fr' | 'en';
+  method: 'vault_editorial' | 'youtube_captions' | 'asr_verified' | 'professor_edited';
+  durationSec?: number;
+  wordCount: number;
+  chapters?: VideoTranscriptChapter[];
+  segments: VideoTranscriptSegment[];
+  transcriptMarkdown: string;
+  updatedAt: string;
+}
+
+export type VideoHealthStatus = 'ok' | 'private' | 'unavailable' | 'no_stream';
+
+export interface VideoHealthEntry {
+  slug: string;
+  youtubeVideoId?: string | null;
+  status: VideoHealthStatus;
+  reason?: string;
+  titleFa?: string;
+  durationSec?: number | null;
+  hasCaptions?: boolean;
+  captionLangs?: string[];
+  checkedAt: string;
+}
+
+export interface VideoHealthManifest {
+  generatedAt: string;
+  totalRecords: number;
+  uniqueYoutubeIds: number;
+  healthyCount: number;
+  privateOrUnavailableCount: number;
+  noStreamCount: number;
+  byYoutubeId: Record<string, VideoHealthEntry>;
+  bySlug: Record<string, VideoHealthEntry>;
+  flaggedForStudio: VideoHealthEntry[];
+}
+
 export interface VideoSpeech {
   id: string;
   wp_id?: number;
@@ -216,6 +265,12 @@ export interface VideoSpeech {
   self_hosted_hls_url?: string | null;
   self_hosted_audio_url?: string | null;
   duration_seconds?: number | null;
+  transcript_segments?: VideoTranscriptSegment[];
+  transcript_chapters?: VideoTranscriptChapter[];
+  transcript_method?: VideoTranscriptRecord['method'] | null;
+  video_health_status?: VideoHealthStatus;
+  video_health_reason?: string | null;
+  canonical_video_slug?: string | null;
   status: ContentStatus;
   created_at: string;
   translations?: VideoSpeechTranslation[];

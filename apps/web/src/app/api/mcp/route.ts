@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
 import { executeHybridSearch } from '@/lib/rag/hybrid-search';
-import { FALLBACK_GLOSSARY, getArticleBySlug } from '@/lib/cms';
+import { FALLBACK_GLOSSARY, getArticleBySlug, getVideoSpeeches } from '@/lib/cms';
 import { processFacebookArchive, PRE_SEEDED_FACEBOOK_POSTS } from '@/lib/etl/facebook-ingestor';
 import { verifyEd25519Signature, buildCanonicalString, computeCanonicalSha256 } from '@/lib/crypto';
 import type { Locale, ContentPillar } from '@makaremi/shared';
@@ -87,6 +87,12 @@ const MCP_RESOURCES = [
     name: 'Lacanian & Strategic DefinedTermSet',
     description: 'Trilingual Lacanian psychoanalytic and political transition terminology',
     mimeType: 'application/json',
+  },
+  {
+    uri: 'makaremi://corpus/videos',
+    name: 'Video Lectures & Broadcast Transcripts',
+    description: 'Deduplicated catalog of Dr. Hassan Makaremi lectures, psychoanalytic series, and human rights speeches with transcripts',
+    mimeType: 'text/markdown',
   },
 ];
 
@@ -322,6 +328,39 @@ export async function POST(request: NextRequest) {
                 uri,
                 mimeType: 'application/json',
                 text: JSON.stringify(FALLBACK_GLOSSARY, null, 2),
+              },
+            ],
+          },
+        });
+      }
+
+      if (uri === 'makaremi://corpus/videos') {
+        const allVideos = await getVideoSpeeches('fa');
+        const seen = new Set<string>();
+        const lines: string[] = ['# Dr. Hassan Makaremi — Video Lectures & Transcripts Corpus\n'];
+        for (const v of allVideos) {
+          if (v.slug === '5668') continue;
+          const yt = v.youtube_video_id?.trim();
+          if (yt) {
+            if (v.canonical_video_slug && v.canonical_video_slug !== v.slug) continue;
+            if (seen.has(yt)) continue;
+            seen.add(yt);
+          }
+          const tr = v.translations?.find((t) => t.languages_code.startsWith('fa')) || v.translations?.[0];
+          const excerpt = (tr?.transcript_markdown || tr?.description || '').slice(0, 600).replace(/\s+/g, ' ');
+          const routePath = v.pillar === 'human_rights_dadkhahi' ? `/fa/human-rights/speeches/${v.slug}` : `/fa/media/videos/${v.slug}`;
+          lines.push(`## ${tr?.title || v.slug}\n- URL: https://makaremi.com${routePath}\n- Pillar: ${v.pillar}\n- Date: ${v.event_date}\n- Excerpt: ${excerpt}\n`);
+        }
+
+        return NextResponse.json({
+          jsonrpc: '2.0',
+          id,
+          result: {
+            contents: [
+              {
+                uri,
+                mimeType: 'text/markdown',
+                text: lines.join('\n'),
               },
             ],
           },

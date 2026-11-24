@@ -99,13 +99,29 @@ SECTION 2: LACANIAN & STRATEGIC CONTROLLED VOCABULARY (DEFINED TERM SET)
 
   content += `================================================================================\nSECTION 5: SPEECHES & INTERVENTIONS\n================================================================================\n\n`;
 
+  const seenSpeechYtIds = new Set<string>();
   for (const sp of speeches as VideoSpeech[]) {
+    if (sp.slug === '5668') continue;
+    const ytId = sp.youtube_video_id?.trim();
+    if (ytId) {
+      if (sp.canonical_video_slug && sp.canonical_video_slug !== sp.slug) continue;
+      if (seenSpeechYtIds.has(ytId)) continue;
+      seenSpeechYtIds.add(ytId);
+    }
     const t =
       sp.translations?.find((x) => x.languages_code.startsWith('fa')) ||
       sp.translations?.[0];
+    const transcriptPreview = (t?.transcript_markdown || t?.description || '').slice(0, 1200).trim();
+    const urlPath =
+      sp.pillar === 'human_rights_dadkhahi'
+        ? `https://makaremi.com/fa/human-rights/speeches/${sp.slug}`
+        : `https://makaremi.com/fa/media/videos/${sp.slug}`;
     content += `## [SPEECH] ${t?.title || sp.slug}\n`;
-    content += `Venue: ${sp.event_location || 'Paris/Geneva'} | Date: ${sp.event_date}\n`;
-    content += `Transcript:\n${t?.transcript_markdown || ''}\n\n---\n\n`;
+    content += `URL: ${urlPath} | Date: ${sp.event_date}\n`;
+    if (transcriptPreview) {
+      content += `Transcript Excerpt:\n${transcriptPreview}\n`;
+    }
+    content += `\n---\n\n`;
   }
 
   content += `================================================================================\nSECTION 6: CALLIGRAPHY & EXHIBITIONS\n================================================================================\n\n`;

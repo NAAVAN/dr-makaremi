@@ -11,7 +11,20 @@ export interface RagCitation {
   url: string;
   quote: string;
   content_sha256: string;
+  startSec?: number;
+  endSec?: number;
+  timestampLabel?: string;
   score: number;
+}
+
+function formatTimestampBadge(sec?: number): string | undefined {
+  if (sec === undefined || sec === null || sec < 0) return undefined;
+  const s = Math.floor(sec);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const r = s % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
+  return `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
 }
 
 export interface RagResponse {
@@ -128,30 +141,36 @@ export async function askResearchAssistant(options: AskAssistantOptions): Promis
     limit: 5,
   });
 
-  // Build structured citations with verified SHA-256 hashes
+  // Build structured citations with verified SHA-256 hashes & deep video timestamps (?t=...)
   const citations: RagCitation[] = results.map((res) => {
-    // Extract a direct verbatim quote (~120 chars)
-    const quote = res.content.slice(0, 150).replace(/\n+/g, ' ').trim();
+    const cleanQuote = (res.snippet || res.content.slice(0, 200)).replace(/\n+/g, ' ').trim();
     return {
       id: res.id,
       title: res.title,
       documentType: res.documentType,
       pillar: res.pillar,
       url: res.url,
-      quote,
+      quote: cleanQuote,
       content_sha256: res.content_sha256,
+      startSec: res.startSec,
+      endSec: res.endSec,
+      timestampLabel: formatTimestampBadge(res.startSec),
       score: Number(res.score.toFixed(4)),
     };
   });
 
-  // Synthesize answer: upgrade automatically to configured server engine when API key is present,
+  // Synthesize answer: send rich ~900-char grounded passages (BUG-V10 #3 Fix) to engine when configured,
   // while keeping deterministic grounded synthesis for offline/manual operation.
   const deterministic = synthesizeGroundedAnswer(query, locale, citations, results);
   let finalAnswer = deterministic.answer;
 
   if (results.length > 0) {
-    const citationsText = citations
-      .map((c, idx) => `[${idx + 1}] Title: ${c.title}\nExcerpt: ${c.quote}\nURL: ${c.url}`)
+    const citationsText = results
+      .map((res, idx) => {
+        const ts = formatTimestampBadge(res.startSec);
+        const passage = res.content.slice(0, 950).replace(/\s+/g, ' ').trim();
+        return `[${idx + 1}] Title: ${res.title}${ts ? ` (Video timestamp: ${ts})` : ''}\nType: ${res.documentType}\nPassage: ${passage}\nURL: ${res.url}`;
+      })
       .join('\n\n');
     const enhancedAnswer = await synthesizeRagWithAiEngine({
       query,

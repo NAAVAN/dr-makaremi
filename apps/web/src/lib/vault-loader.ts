@@ -8,11 +8,15 @@ import type {
   Exhibition,
   Poem,
   VideoSpeech,
+  VideoTranscriptRecord,
+  VideoHealthManifest,
   ArchivePage,
   MediaAsset,
 } from '@makaremi/shared';
 
-function resolveDataSubdir(subdir: 'vault' | 'translations' | 'curator-overlays' | 'commerce'): string {
+function resolveDataSubdir(
+  subdir: 'vault' | 'translations' | 'transcripts' | 'curator-overlays' | 'commerce'
+): string {
   const candidates = [
     path.resolve(process.cwd(), 'packages', 'shared', 'src', 'data', subdir),
     path.resolve(process.cwd(), '..', '..', 'packages', 'shared', 'src', 'data', subdir),
@@ -31,6 +35,7 @@ function resolveDataSubdir(subdir: 'vault' | 'translations' | 'curator-overlays'
 
 const VAULT_DIR = resolveDataSubdir('vault');
 const TRANSLATIONS_DIR = resolveDataSubdir('translations');
+const TRANSCRIPTS_DIR = resolveDataSubdir('transcripts');
 const OVERLAYS_DIR = resolveDataSubdir('curator-overlays');
 const COMMERCE_DIR = resolveDataSubdir('commerce');
 const SERVERLESS_TMP_ROOT = path.join(os.tmpdir(), 'makaremi-studio');
@@ -38,6 +43,10 @@ const cache = new Map<string, unknown>();
 
 export function getTranslationsDir(): string {
   return TRANSLATIONS_DIR;
+}
+
+export function getTranscriptsDir(): string {
+  return TRANSCRIPTS_DIR;
 }
 
 export function getOverlaysDir(): string {
@@ -304,4 +313,70 @@ export function writeCommerceJson<T>(filename: string, data: T): void {
     fs.writeFileSync(path.join(tmpCommerceDir, filename), serialized, 'utf8');
   }
   invalidateCommerceCache(filename);
+}
+
+export function invalidateTranscriptsCache(): void {
+  for (const k of Array.from(cache.keys())) {
+    if (k.startsWith('transcripts:')) cache.delete(k);
+  }
+}
+
+export function loadVideoTranscriptsPack(): Record<string, VideoTranscriptRecord> {
+  const cacheKey = 'transcripts:videos.json';
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey) as Record<string, VideoTranscriptRecord>;
+  }
+  const repoData = readJsonFromDir<Record<string, VideoTranscriptRecord>>(
+    TRANSCRIPTS_DIR,
+    `${cacheKey}:repo`,
+    'videos.json',
+    {}
+  );
+  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'transcripts', 'videos.json');
+  let merged = repoData;
+  try {
+    if (fs.existsSync(tmpFile)) {
+      const tmpData = JSON.parse(fs.readFileSync(tmpFile, 'utf8')) as Record<
+        string,
+        VideoTranscriptRecord
+      >;
+      merged = { ...repoData, ...tmpData };
+    }
+  } catch {
+    // ignore tmp read failure
+  }
+  cache.set(cacheKey, merged);
+  return merged;
+}
+
+export function writeVideoTranscriptEntry(
+  key: string,
+  record: VideoTranscriptRecord
+): void {
+  const existing = { ...loadVideoTranscriptsPack() };
+  existing[key] = record;
+  const serialized = JSON.stringify(existing, null, 2);
+  try {
+    fs.mkdirSync(TRANSCRIPTS_DIR, { recursive: true });
+    fs.writeFileSync(path.join(TRANSCRIPTS_DIR, 'videos.json'), serialized, 'utf8');
+  } catch {
+    const tmpDir = path.join(SERVERLESS_TMP_ROOT, 'transcripts');
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const tmpFile = path.join(tmpDir, 'videos.json');
+    let tmpDelta: Record<string, VideoTranscriptRecord> = {};
+    try {
+      if (fs.existsSync(tmpFile)) {
+        tmpDelta = JSON.parse(fs.readFileSync(tmpFile, 'utf8')) as typeof tmpDelta;
+      }
+    } catch {
+      tmpDelta = {};
+    }
+    tmpDelta[key] = record;
+    fs.writeFileSync(tmpFile, JSON.stringify(tmpDelta, null, 2), 'utf8');
+  }
+  invalidateTranscriptsCache();
+}
+
+export function loadVideoHealthManifest(): VideoHealthManifest | null {
+  return readOverlayJson<VideoHealthManifest | null>('video-health-manifest.json', null);
 }
