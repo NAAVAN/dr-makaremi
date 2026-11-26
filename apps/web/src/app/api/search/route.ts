@@ -8,8 +8,24 @@ const SearchQuerySchema = z.object({
   q: z.string().min(1).max(256),
   locale: z.enum(['fa', 'fr', 'en']).optional(),
   pillar: z.enum(['psychoanalysis', 'art_calligraphy', 'cultural_strategy', 'human_rights_dadkhahi', 'all']).default('all'),
-  type: z.enum(['all', 'book', 'article', 'speech', 'poem', 'exhibition', 'glossary']).default('all'),
+  type: z
+    .enum([
+      'all',
+      'book',
+      'article',
+      'speech',
+      'poem',
+      'exhibition',
+      'page',
+      'artwork',
+      'commerce',
+      'glossary',
+      'golden_qa',
+      'training_note',
+    ])
+    .default('all'),
   limit: z.coerce.number().min(1).max(50).default(10),
+  crossLingual: z.coerce.boolean().default(true),
 });
 
 export async function GET(request: NextRequest) {
@@ -24,6 +40,7 @@ export async function GET(request: NextRequest) {
     pillar: url.searchParams.get('pillar') || 'all',
     type: url.searchParams.get('type') || 'all',
     limit: url.searchParams.get('limit') || '10',
+    crossLingual: url.searchParams.get('crossLingual') ?? 'true',
   };
 
   const parsed = SearchQuerySchema.safeParse(rawParams);
@@ -44,7 +61,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const { q, locale, pillar, type, limit } = parsed.data;
+  const { q, locale, pillar, type, limit, crossLingual } = parsed.data;
 
   try {
     const results = await executeHybridSearch({
@@ -53,6 +70,7 @@ export async function GET(request: NextRequest) {
       pillar: pillar as ContentPillar | 'all',
       type,
       limit,
+      allowCrossLingual: crossLingual,
     });
 
     return NextResponse.json(

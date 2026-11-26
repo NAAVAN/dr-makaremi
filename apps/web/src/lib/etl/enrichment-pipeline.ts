@@ -23,6 +23,22 @@ export function detectPromptInjection(text: string): { isInjection: boolean; pat
     { name: 'script_tag_injection', regex: /<\s*script[^>]*>/i },
     { name: 'base64_hidden_payload', regex: /base64\s*,\s*[A-Za-z0-9+/=]{40,}/i },
     { name: 'eval_exec_call', regex: /(?:eval\s*\(|exec\s*\(|system\s*\()/i },
+    {
+      name: 'fa_ignore_instructions',
+      regex: /(?:دستور(?:ات|های)?|قواعد)\s+(?:قبلی|پیشین|سیستم)\s+را\s+(?:نادیده|فراموش|لغو)\s+(?:بگیر|کن|نما)/i,
+    },
+    {
+      name: 'fa_reveal_system_prompt',
+      regex: /(?:پرامپت\s+سیستم|دستورالعمل\s+مخفی|متن\s+سیستمی)\s+(?:خود\s+)?را\s+(?:نشان|چاپ|افشا|بنویس)/i,
+    },
+    {
+      name: 'fr_ignore_instructions',
+      regex: /(?:ignore[rz]?|oublie[rz]?)\s+(?:toutes?\s+les\s+)?instructions\s+(?:précédentes|antérieures|système)/i,
+    },
+    {
+      name: 'fr_reveal_system_prompt',
+      regex: /(?:affiche[rz]?|révèle[rz]?|montre[rz]?)\s+(?:le\s+)?(?:prompt\s+système|instructions\s+système)/i,
+    },
   ];
 
   for (const { name, regex } of adversarialPatterns) {

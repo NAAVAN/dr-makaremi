@@ -43,6 +43,7 @@ import {
   loadCustomStudioWorks,
   loadWorkEnrichmentsMap,
 } from './studio/overlays';
+import { getSyncTrainingSnapshot } from './rag/training-store';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
 
@@ -712,6 +713,11 @@ export function registerCmsInvalidationListener(listener: () => void): void {
   cmsInvalidationListeners.add(listener);
 }
 
+export function getActiveGlossary(): LacanianGlossaryTerm[] {
+  const extended = getSyncTrainingSnapshot().glossaryTerms;
+  return extended.length > 0 ? extended : FALLBACK_GLOSSARY;
+}
+
 export function getLiveCmsCollections() {
   return {
     articles: getActiveArticles(),
@@ -721,7 +727,7 @@ export function getLiveCmsCollections() {
     poems: getActivePoems(),
     videos: getActiveVideos(),
     pages: getActivePages(),
-    glossary: FALLBACK_GLOSSARY,
+    glossary: getActiveGlossary(),
   };
 }
 
@@ -1027,7 +1033,7 @@ export async function getLacanianGlossary(): Promise<LacanianGlossaryTerm[]> {
     const data = await res.json();
     return data.data;
   } catch {
-    return FALLBACK_GLOSSARY;
+    return getActiveGlossary();
   }
 }
 

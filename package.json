@@ -14,6 +14,9 @@
     "test": "turbo run test",
     "verify:all": "node infra/verify-all.mjs",
     "verify:phase-7": "node infra/verify-phase-7.mjs",
+    "verify:rag": "node scripts/eval-rag-golden.mjs",
+    "rag:sync-embeddings": "node scripts/sync-rag-embeddings.mjs",
+    "rag:export-jsonl": "node scripts/export-training-jsonl.mjs",
     "db:migrate:commerce": "node scripts/migrate-neon-commerce.mjs",
     "graph:update": "graphify update .",
     "graph:benchmark": "graphify benchmark"

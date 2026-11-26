@@ -4,11 +4,36 @@ import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
 import { askResearchAssistant } from '@/lib/rag/research-assistant';
 import { detectPromptInjection } from '@/lib/etl/enrichment-pipeline';
-import type { Locale } from '@makaremi/shared';
+import type { ContentPillar, Locale, RagDocumentType } from '@makaremi/shared';
+
+const HistoryTurnSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.string().min(1).max(2000),
+});
 
 const RagRequestSchema = z.object({
   query: z.string().min(1).max(1000),
   locale: z.enum(['fa', 'fr', 'en']).default('fa'),
+  history: z.array(HistoryTurnSchema).max(8).optional(),
+  pillar: z
+    .enum(['all', 'psychoanalysis', 'art_calligraphy', 'cultural_strategy', 'human_rights_dadkhahi'])
+    .default('all'),
+  type: z
+    .enum([
+      'all',
+      'book',
+      'article',
+      'speech',
+      'poem',
+      'exhibition',
+      'page',
+      'artwork',
+      'commerce',
+      'glossary',
+      'golden_qa',
+      'training_note',
+    ])
+    .default('all'),
 });
 
 export async function POST(request: NextRequest) {
@@ -23,7 +48,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Bad Request', message: 'Unable to read request payload' }, { status: 400 });
   }
 
-  // Refinement 2: Prototype Pollution Guard
   if (hasPrototypePollution(rawBodyText)) {
     return NextResponse.json(
       { error: 'Bad Request', message: 'Prototype pollution detected in payload' },
@@ -60,9 +84,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { query, locale } = parsed.data;
+  const { query, locale, history, pillar, type } = parsed.data;
 
-  // Refinement 3: Direct Prompt Injection Defense
   const injection = detectPromptInjection(query);
   if (injection.isInjection) {
     return NextResponse.json(
@@ -81,10 +104,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const sessionSeed = request.headers.get('user-agent') || 'web-researcher';
+
   try {
     const response = await askResearchAssistant({
       query,
       locale: locale as Locale,
+      history,
+      pillar: pillar as ContentPillar | 'all',
+      type: type as RagDocumentType | 'all',
+      sessionSeed,
     });
 
     return NextResponse.json(

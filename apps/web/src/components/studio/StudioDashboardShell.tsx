@@ -81,7 +81,7 @@ export function StudioDashboardShell({
       { id: 'enrich', label: 'تکمیل آثار پیشین', icon: FolderPlus },
       { id: 'translations', label: 'کنترل و ویرایش ترجمه‌ها', icon: Languages },
       { id: 'commerce', label: 'فروشگاه و سفارش‌ها', icon: ShoppingBag },
-      { id: 'ai_system', label: 'موتور هوشمند و صف ترجمه', icon: Bot },
+      { id: 'ai_system', label: 'موتور و آموزش دستیار هوشمند', icon: Bot },
       { id: 'security', label: 'تغییر پین و کلید', icon: KeyRound },
     ];
 

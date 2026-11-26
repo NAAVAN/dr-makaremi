@@ -216,6 +216,10 @@ export interface AiProviderRuntimeStatus {
   provider: 'cloud_ai' | 'disabled';
   model: string;
   hasApiKeyConfigured: boolean;
+  hasPrimaryEngineConfigured?: boolean;
+  hasFastFallbackConfigured?: boolean;
+  hasEmbeddingsConfigured?: boolean;
+  activeTier?: 'primary' | 'fallback_fast' | 'deterministic';
   autoTranslateOnPublish: boolean;
   mode: 'manual_editorial_queue' | 'live_auto_translation';
   usingDefaultAuthSecret: boolean;

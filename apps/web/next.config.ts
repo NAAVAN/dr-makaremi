@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
       '../../packages/shared/src/data/transcripts/**/*',
       '../../packages/shared/src/data/curator-overlays/**/*',
       '../../packages/shared/src/data/commerce/**/*',
+      '../../packages/shared/src/data/eval/**/*',
       '../../packages/shared/src/data/glossary-lock.json',
     ],
     '/[locale]/**': [
@@ -31,6 +32,7 @@ const nextConfig: NextConfig = {
       '../../packages/shared/src/data/transcripts/**/*',
       '../../packages/shared/src/data/curator-overlays/**/*',
       '../../packages/shared/src/data/commerce/**/*',
+      '../../packages/shared/src/data/eval/**/*',
       '../../packages/shared/src/data/glossary-lock.json',
     ],
   },

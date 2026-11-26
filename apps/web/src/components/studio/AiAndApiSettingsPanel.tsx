@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { AiProviderRuntimeStatus, ManualTranslationQueueItem } from '@makaremi/shared';
 import { AccessibleListbox, type ListboxOption } from './AccessibleListbox';
+import { StudioAiTrainingStudio } from './StudioAiTrainingStudio';
 
 const ENGINE_PROFILES: ListboxOption<string>[] = [
   {
@@ -125,6 +126,9 @@ export function AiAndApiSettingsPanel({ onStatusUpdated }: AiAndApiSettingsPanel
 
   return (
     <div className="space-y-6">
+      {/* Pishkhan 5-Tab AI Research Assistant Training Studio */}
+      <StudioAiTrainingStudio />
+
       {/* Smart Engine Card */}
       <section className="rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] p-6 space-y-5">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">

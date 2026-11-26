@@ -1,15 +1,17 @@
 import crypto from 'node:crypto';
-import type { ContentPillar, Locale, VideoTranscriptSegment } from '@makaremi/shared';
+import type { ContentPillar, Locale, RagDocumentType, VideoTranscriptSegment } from '@makaremi/shared';
 import { countWords } from '@/lib/etl/persian-normalizer';
 
 export interface SemanticChunk {
   id: string;
   documentId: string;
-  documentType: 'book' | 'article' | 'speech' | 'poem' | 'exhibition' | 'glossary';
+  documentType: RagDocumentType;
   pillar: ContentPillar;
   locale: Locale;
   title: string;
   url: string;
+  relativeUrl: string;
+  contextHeader?: string;
   sectionIndex: number;
   content: string;
   content_sha256: string;
@@ -17,19 +19,23 @@ export interface SemanticChunk {
   endSec?: number;
   youtubeVideoId?: string;
   seriesTitle?: string;
+  priorityBoost?: number;
   vector?: number[];
 }
 
 export interface ChunkDocumentInput {
   documentId: string;
-  documentType: 'book' | 'article' | 'speech' | 'poem' | 'exhibition' | 'glossary';
+  documentType: RagDocumentType;
   pillar: ContentPillar;
   locale: Locale;
   title: string;
   url: string;
+  relativeUrl?: string;
+  contextHeader?: string;
   content: string;
   youtubeVideoId?: string;
   seriesTitle?: string;
+  priorityBoost?: number;
 }
 
 export interface ChunkTimedTranscriptInput {
@@ -38,6 +44,8 @@ export interface ChunkTimedTranscriptInput {
   locale: Locale;
   title: string;
   baseUrl: string;
+  relativeBaseUrl?: string;
+  contextHeader?: string;
   youtubeVideoId?: string;
   seriesTitle?: string;
   description?: string | null;
@@ -61,13 +69,25 @@ function buildDeepTimedUrl(baseUrl: string, startSec?: number): string {
   return `${baseUrl}${sep}t=${Math.floor(startSec)}`;
 }
 
+function deriveRelativeUrl(url: string, explicitRelative?: string): string {
+  if (explicitRelative) return explicitRelative;
+  try {
+    if (url.startsWith('/')) return url;
+    const u = new URL(url);
+    return `${u.pathname}${u.search}${u.hash}`;
+  } catch {
+    return url;
+  }
+}
+
 /**
  * Splits document content into semantic chunks respecting paragraph and sentence boundaries.
- * Target chunk size: 250 - 450 words with ~50 words overlap.
+ * Target chunk size: 250 - 400 words with ~50 words overlap and optional contextual header.
  */
 export function chunkDocument(doc: ChunkDocumentInput): SemanticChunk[] {
   const text = doc.content.trim();
   if (!text) return [];
+  const relativeUrl = deriveRelativeUrl(doc.url, doc.relativeUrl);
 
   if (countWords(text) <= 300) {
     const sha = crypto.createHash('sha256').update(text, 'utf-8').digest('hex');
@@ -80,11 +100,14 @@ export function chunkDocument(doc: ChunkDocumentInput): SemanticChunk[] {
         locale: doc.locale,
         title: doc.title,
         url: doc.url,
+        relativeUrl,
+        contextHeader: doc.contextHeader,
         sectionIndex: 0,
         content: text,
         content_sha256: sha,
         youtubeVideoId: doc.youtubeVideoId,
         seriesTitle: doc.seriesTitle,
+        priorityBoost: doc.priorityBoost,
       },
     ];
   }
@@ -113,11 +136,14 @@ export function chunkDocument(doc: ChunkDocumentInput): SemanticChunk[] {
         locale: doc.locale,
         title: doc.title,
         url: doc.url,
+        relativeUrl,
+        contextHeader: doc.contextHeader,
         sectionIndex,
         content: chunkText,
         content_sha256: sha,
         youtubeVideoId: doc.youtubeVideoId,
         seriesTitle: doc.seriesTitle,
+        priorityBoost: doc.priorityBoost,
       });
       sectionIndex++;
       const overlap = currentWords.slice(-50);
@@ -138,11 +164,14 @@ export function chunkDocument(doc: ChunkDocumentInput): SemanticChunk[] {
       locale: doc.locale,
       title: doc.title,
       url: doc.url,
+      relativeUrl,
+      contextHeader: doc.contextHeader,
       sectionIndex,
       content: chunkText,
       content_sha256: sha,
       youtubeVideoId: doc.youtubeVideoId,
       seriesTitle: doc.seriesTitle,
+      priorityBoost: doc.priorityBoost,
     });
   }
 
@@ -156,8 +185,8 @@ export function chunkDocument(doc: ChunkDocumentInput): SemanticChunk[] {
 export function chunkTimedTranscript(input: ChunkTimedTranscriptInput): SemanticChunk[] {
   const headerPrefix = [input.title, input.description].filter(Boolean).join('\n\n').trim();
   const rawMd = (input.transcriptMarkdown || '').trim();
+  const relativeBase = deriveRelativeUrl(input.baseUrl, input.relativeBaseUrl);
 
-  // Build normalized timed units either from explicit segments or markdown timestamp blocks
   const timedUnits: Array<{ startSec: number; endSec: number; text: string }> = [];
 
   if (rawMd) {
@@ -186,7 +215,6 @@ export function chunkTimedTranscript(input: ChunkTimedTranscriptInput): Semantic
     }
   }
 
-  // Fallback to standard untimed semantic chunking if no timestamps are available
   if (timedUnits.length === 0) {
     const combined = [headerPrefix, rawMd].filter(Boolean).join('\n\n');
     return chunkDocument({
@@ -196,6 +224,8 @@ export function chunkTimedTranscript(input: ChunkTimedTranscriptInput): Semantic
       locale: input.locale,
       title: input.title,
       url: input.baseUrl,
+      relativeUrl: relativeBase,
+      contextHeader: input.contextHeader,
       content: combined,
       youtubeVideoId: input.youtubeVideoId,
       seriesTitle: input.seriesTitle,
@@ -212,7 +242,8 @@ export function chunkTimedTranscript(input: ChunkTimedTranscriptInput): Semantic
     const startSec = Math.floor(bucket[0].startSec);
     const endSec = Math.ceil(bucket[bucket.length - 1].endSec);
     const bodyText = bucket.map((b) => b.text).join(' ').trim();
-    const content = sectionIndex === 0 && headerPrefix ? `${headerPrefix}\n\n${bodyText}` : `${input.title}\n\n${bodyText}`;
+    const content =
+      sectionIndex === 0 && headerPrefix ? `${headerPrefix}\n\n${bodyText}` : `${input.title}\n\n${bodyText}`;
     const sha = crypto.createHash('sha256').update(content, 'utf-8').digest('hex');
 
     chunks.push({
@@ -223,6 +254,8 @@ export function chunkTimedTranscript(input: ChunkTimedTranscriptInput): Semantic
       locale: input.locale,
       title: input.title,
       url: buildDeepTimedUrl(input.baseUrl, startSec),
+      relativeUrl: buildDeepTimedUrl(relativeBase, startSec),
+      contextHeader: input.contextHeader,
       sectionIndex,
       content,
       content_sha256: sha,
@@ -240,7 +273,6 @@ export function chunkTimedTranscript(input: ChunkTimedTranscriptInput): Semantic
 
     if (bucketWordCount + words.length > 360 && bucketWordCount >= 180) {
       flushBucket();
-      // Keep last unit (~50 words) for smooth contextual overlap
       const lastUnit = bucket[bucket.length - 1];
       bucket = lastUnit ? [lastUnit] : [];
       bucketWordCount = lastUnit ? lastUnit.words.length : 0;
