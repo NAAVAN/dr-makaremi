@@ -52,10 +52,16 @@ const STOPWORDS = new Set([
   'the', 'a', 'an', 'and', 'or', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'that', 'this', 'it', 'as',
 ]);
 
-export function tokenizeText(text: string): string[] {
+export function normalizeForPhraseMatch(text: string): string {
   const normalized = normalizePersianText(text.toLowerCase(), { enforceZwnj: false });
   return normalized
     .replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function tokenizeText(text: string): string[] {
+  return normalizeForPhraseMatch(text)
     .split(/\s+/)
     .filter((w) => w.length > 1 && !STOPWORDS.has(w));
 }
@@ -358,13 +364,12 @@ function buildPrecomputedCorpusIndex(): PrecomputedCorpusIndex {
 
   for (let i = 0; i < allChunks.length; i++) {
     const chunk = allChunks[i];
-    const normTitle = normalizePersianText(chunk.title.toLowerCase(), { enforceZwnj: false });
-    const normContent = normalizePersianText(chunk.content.toLowerCase(), { enforceZwnj: false });
+    const normTitle = normalizeForPhraseMatch(chunk.title);
+    const normContent = normalizeForPhraseMatch(chunk.content);
     normalizedTitles[i] = normTitle;
     normalizedContents[i] = normContent;
 
     const tokens = normContent
-      .replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, ' ')
       .split(/\s+/)
       .filter((w) => w.length > 1 && !STOPWORDS.has(w));
 
@@ -501,10 +506,10 @@ export async function executeHybridSearch(
 
   // 1. O(query_terms * postings) Inverted BM25 Lexical Scoring
   const queryTokens = tokenizeText(rawQuery);
-  const normalizedRawQuery = normalizePersianText(rawQuery.toLowerCase(), { enforceZwnj: false });
+  const normalizedRawQuery = normalizeForPhraseMatch(rawQuery);
   const bm25Scores = new Map<number, number>();
   const k1 = 1.2;
-  const b = 0.75;
+  const b = 0.55;
   const N = eligibleIndices.length;
 
   const uniqueQueryTokens = Array.from(new Set(queryTokens));
@@ -526,12 +531,28 @@ export async function executeHybridSearch(
     }
   }
 
-  // Exact phrase bonus (fast pre-normalized lookup)
+  // Exact phrase & title coverage bonuses (punctuation/ZWNJ-insensitive, length-neutral)
   if (normalizedRawQuery.length >= 2) {
     for (const idx of eligibleIndices) {
       let bonus = 0;
-      if (normalizedTitles[idx].includes(normalizedRawQuery)) bonus += 6.0;
-      if (normalizedContents[idx].includes(normalizedRawQuery)) bonus += 4.0;
+      const normTitle = normalizedTitles[idx];
+      const normContent = normalizedContents[idx];
+      if (normTitle.includes(normalizedRawQuery)) bonus += 8.0;
+      if (normContent.includes(normalizedRawQuery)) bonus += 6.5;
+
+      // Length-neutral title token coverage bonus so rich 350-word lecture transcripts
+      // matching a title are not outranked by short 40-word article stubs
+      if (uniqueQueryTokens.length >= 2 && normTitle.length > 0) {
+        let titleHits = 0;
+        for (const qt of uniqueQueryTokens) {
+          if (normTitle.includes(qt)) titleHits++;
+        }
+        const coverage = titleHits / uniqueQueryTokens.length;
+        if (coverage >= 0.6) {
+          bonus += 4.5 * coverage;
+        }
+      }
+
       if (bonus > 0) {
         bm25Scores.set(idx, (bm25Scores.get(idx) || 0) + bonus);
       }
@@ -545,25 +566,32 @@ export async function executeHybridSearch(
     vectorScores.set(idx, cosineSimilarity(queryVector, chunks[idx].vector || []));
   }
 
-  // Take top candidates for RRF ranking (keeps sorting instant even at 5,000+ chunks)
-  const bm25Ranked = [...eligibleIndices].sort(
+  // Only rank candidates with genuine lexical or semantic signal
+  const bm25Candidates = eligibleIndices.filter((idx) => (bm25Scores.get(idx) || 0) > 0);
+  const bm25Ranked = bm25Candidates.sort(
     (a, bIdx) => (bm25Scores.get(bIdx) || 0) - (bm25Scores.get(a) || 0)
   );
-  const vectorRanked = [...eligibleIndices].sort(
+  const vectorCandidates = eligibleIndices.filter((idx) => (vectorScores.get(idx) || 0) > 0.05);
+  const vectorRanked = vectorCandidates.sort(
     (a, bIdx) => (vectorScores.get(bIdx) || 0) - (vectorScores.get(a) || 0)
   );
 
-  // 3. Reciprocal Rank Fusion (RRF: k = 60)
+  // 3. Weighted Reciprocal Rank Fusion (BM25 precision + Concept Vector + Normalized BM25 Margin)
   const rrfMap = new Map<number, number>();
   const rrfK = 60;
-  const rankCap = Math.min(eligibleIndices.length, Math.max(120, limit * 10));
+  const bm25Cap = Math.min(bm25Ranked.length, Math.max(150, limit * 12));
+  const vecCap = Math.min(vectorRanked.length, Math.max(120, limit * 10));
+  const maxBm25 = bm25Ranked.length > 0 ? bm25Scores.get(bm25Ranked[0]) || 1 : 1;
 
-  for (let rank = 0; rank < rankCap; rank++) {
+  for (let rank = 0; rank < bm25Cap; rank++) {
     const idxB = bm25Ranked[rank];
-    rrfMap.set(idxB, (rrfMap.get(idxB) || 0) + 1.0 / (rrfK + rank + 1));
-
+    const bm25Val = bm25Scores.get(idxB) || 0;
+    const magnitudeBoost = 0.018 * (bm25Val / maxBm25);
+    rrfMap.set(idxB, (rrfMap.get(idxB) || 0) + 1.65 / (rrfK + rank + 1) + magnitudeBoost);
+  }
+  for (let rank = 0; rank < vecCap; rank++) {
     const idxV = vectorRanked[rank];
-    rrfMap.set(idxV, (rrfMap.get(idxV) || 0) + 1.0 / (rrfK + rank + 1));
+    rrfMap.set(idxV, (rrfMap.get(idxV) || 0) + 0.75 / (rrfK + rank + 1));
   }
 
   // 4. Glossary Boosting (1.5x boost for queries with Lacanian terminology)
@@ -589,7 +617,8 @@ export async function executeHybridSearch(
     const content = chunk.content;
     let snippetStart = 0;
     const lowerContent = content.toLowerCase();
-    for (const qt of queryTokens) {
+    const informativeTokens = [...uniqueQueryTokens].sort((a, bLen) => bLen.length - a.length);
+    for (const qt of informativeTokens) {
       const pos = lowerContent.indexOf(qt.toLowerCase());
       if (pos !== -1) {
         snippetStart = Math.max(0, pos - 50);
@@ -623,5 +652,17 @@ export async function executeHybridSearch(
   }
 
   results.sort((a, bIdx) => bIdx.score - a.score);
-  return results.slice(0, limit);
+
+  // Per-document diversity cap (max 2 chunks per source document in primary top-K)
+  const diversified: SearchResultItem[] = [];
+  const perDocCount = new Map<string, number>();
+  for (const item of results) {
+    const count = perDocCount.get(item.documentId) || 0;
+    if (count >= 2) continue;
+    perDocCount.set(item.documentId, count + 1);
+    diversified.push(item);
+    if (diversified.length >= limit) break;
+  }
+
+  return diversified.length > 0 ? diversified : results.slice(0, limit);
 }
