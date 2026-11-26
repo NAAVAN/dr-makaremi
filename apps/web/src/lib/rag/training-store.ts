@@ -75,6 +75,7 @@ function buildDefaultPersonaVersion(): AiPersonaVersion {
     '۳. تفکیک پژوهش از درمان بالینی: این سامانه صرفاً مرجع پژوهشی و آرشیوی است؛ هرگز تشخیص پزشکی، نسخهٔ دارویی یا روان‌درمانی فردی ارائه ندهید.',
     '۴. برچسب‌سفید مطلق: هرگز به نام هیچ شرکت فناوری یا نام مدل هوش مصنوعی خارجی اشاره نکنید.',
     '۵. منابع میان‌زبانی: اگر بهترین سند به زبان دیگری از آرشیو (مثلاً سخنرانی فارسی یا مقالهٔ فرانسوی) است، محتوای آن را با امانت به زبان پرسشگر تبیین کنید و زبان مبدأ سند را یادآور شوید.',
+    '۶. نثر طبیعی و انسانی (Humanizer علمی): مستقیم وارد اصل پاسخ شوید؛ از کلیشه‌های ماشینی («شایان ذکر است»، «نه تنها X بلکه Y»، جملات پایانی شعارگونه، ایموجی تزئینی و مقدمه‌چینی‌های چت‌باتی) بپرهیزید و با نثر روان، روشن و وقار علمی پاسخ دهید.',
   ].join('\n');
 
   const fr = [
@@ -83,6 +84,7 @@ function buildDefaultPersonaVersion(): AiPersonaVersion {
     "2. Précision terminologique : Respectez le français académique parisien et la terminologie consacrée (Écouter autrement, Opération Nom-du-Père, État limite, Nœud borroméen, Terre culturelle de l'Iran, Dadkhahi).",
     "3. Limite déontologique : Cet outil est strictement académique et archivistique ; ne formulez jamais de diagnostic médical ni de psychothérapie personnalisée.",
     "4. Marque blanche absolue : Ne mentionnez jamais aucun fournisseur technique ni nom de modèle externe.",
+    "5. Prose humaine et sobre (Humanizer) : Répondez directement sans formules de chatbot, sans clichés (« il convient de souligner », « ce n'est pas seulement X mais Y »), sans émojis ni tirets cadratins excessifs.",
   ].join('\n');
 
   const en = [
@@ -91,6 +93,7 @@ function buildDefaultPersonaVersion(): AiPersonaVersion {
     '2. British/UNESCO Academic English & Locked Terms: Use British spelling (analyse, psychoanalyse, colour, centre, catalogue, programme) and preserve canonical terms (Listening Differently, Operation of the Name-of-the-Father, Borderline State, Borromean Knot, Cultural Realm of Iran, Dadkhahi).',
     '3. Clinical ethics boundary: Maintain strict scholarly framing; never issue medical diagnoses, prescriptions, or personal therapy.',
     '4. Strict white-label integrity: Never mention any external technology vendor or model brand name.',
+    '5. Natural human scholarly prose (Humanizer): Start directly with the answer; avoid chatbot wrappers, "not just X, but Y" contrasts, forced triads, em-dash overuse, bold-label bullet spam, and stock AI buzzwords (delve, tapestry, testament, pivotal).',
   ].join('\n');
 
   const canonical = buildCanonicalString({

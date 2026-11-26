@@ -5,6 +5,7 @@ import {
   countWhiteLabelLeaks,
   stripVendorBrandLeaks,
 } from './safety-guard';
+import { humanizeScholarlyProse } from './prose-humanizer';
 
 export interface GroundingVerificationResult {
   verifiedAnswer: string;
@@ -12,6 +13,7 @@ export interface GroundingVerificationResult {
   validAnchorCount: number;
   strippedInvalidAnchors: number;
   whiteLabelLeaksFound: number;
+  humanizedTellsRemoved: number;
 }
 
 /**
@@ -46,7 +48,10 @@ export function verifyGeneratedAnswer(input: {
     cleaned = stripVendorBrandLeaks(cleaned, input.locale);
   }
 
-  cleaned = cleaned.replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+  // Quote-safe Humanizer v4 pass: removes robotic AI-slop wrappers, filler & em-dash abuse
+  // while leaving verbatim «...» quotes, [1]..[n] citations, timestamps, URLs & Lacanian terms 100% intact.
+  const humanized = humanizeScholarlyProse(cleaned, input.locale);
+  cleaned = humanized.text;
 
   if (input.needsClinicalDisclaimer) {
     const disclaimer = buildClinicalBoundaryDisclaimer(input.locale);
@@ -70,5 +75,6 @@ export function verifyGeneratedAnswer(input: {
     validAnchorCount,
     strippedInvalidAnchors,
     whiteLabelLeaksFound,
+    humanizedTellsRemoved: humanized.tellsRemovedCount,
   };
 }

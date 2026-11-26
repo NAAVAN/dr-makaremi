@@ -252,7 +252,8 @@ async function runSuite() {
   // 4. Bidirectional Telegram & WhatsApp Professor Learning Loop E2E
   // ---------------------------------------------------------------------------
   console.log('\n[Suite 4: Bidirectional Telegram/WhatsApp Professor Learning Loop E2E]');
-  const uniqueConcept = `مفهوم آزمایشی کیهان‌شنیدن ${Date.now().toString(36)}`;
+  const uniqueNonce = Date.now().toString(36);
+  const uniqueConcept = `مفهوم آزمایشی کیهان‌شنیدن ${uniqueNonce}`;
   const uniqueQuestion = `دیدگاه اختصاصی استاد درباره «${uniqueConcept}» چیست؟`;
   const uniqueAnswer = `پاسخ تاییدشده استاد درباره ${uniqueConcept}: این یک رویکرد بالینی مبتنی بر دگرشنیدن و نام پدر است.`;
 
@@ -334,8 +335,9 @@ async function runSuite() {
   const normalizedAnswer = String(ragLearnedJson.answer || '').replace(/[\s\u00A0\u202F]+/g, ' ');
   const learnedOk =
     ragLearnedRes.status === 200 &&
-    ragLearnedJson.citations?.some((c) => c.isGoldenQa === true) &&
-    normalizedAnswer.includes(uniqueConcept);
+    ragLearnedJson.citations?.[0]?.isGoldenQa === true &&
+    normalizedAnswer.includes('کیهان‌شنیدن') &&
+    normalizedAnswer.includes(uniqueNonce);
   if (!learnedOk) {
     console.error('  [DEBUG ragLearned]', {
       status: ragLearnedRes.status,
@@ -434,6 +436,77 @@ async function runSuite() {
   assert(homeRes.headers.get('x-content-type-options') === 'nosniff', 'X-Content-Type-Options: nosniff active');
   assert(Boolean(homeRes.headers.get('content-security-policy')), 'Content-Security-Policy header active');
   assert(Boolean(homeRes.headers.get('strict-transport-security')), 'HSTS header active');
+
+  // ---------------------------------------------------------------------------
+  // 7. Trilingual Scholarly Humanizer v4 (Anti-AI-Slop + Strict Quote Preservation)
+  // ---------------------------------------------------------------------------
+  console.log('\n[Suite 7: Trilingual Scholarly Humanizer v4 & Quote Protection]');
+  const unauthHum = await fetch(`${BASE_URL}/api/studio/ai-training/humanize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: 'test', locale: 'en' }),
+  });
+  assert(unauthHum.status === 401, 'POST /api/studio/ai-training/humanize blocks unauthenticated access (401)');
+
+  const faSlop =
+    'سؤال بسیار خوبی پرسیدید! در دنیای امروز، شایان ذکر است که مفهوم دگرشنیدن — در کلینیک — بسیار مهم است 🚀 و استاد می‌گوید «شایان ذکر است که دگرشنیدن اصل است» [1] (⏱ 02:15). امیدوارم این پاسخ برایتان مفید بوده باشد!';
+  const faHumRes = await fetch(`${BASE_URL}/api/studio/ai-training/humanize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: cookieHeader },
+    body: JSON.stringify({ text: faSlop, locale: 'fa' }),
+  });
+  const faHumJson = await faHumRes.json();
+  assert(
+    faHumRes.status === 200 &&
+      faHumJson.ok &&
+      faHumJson.tellsRemovedCount >= 4 &&
+      !faHumJson.humanizedText.includes('سؤال بسیار خوبی پرسیدید') &&
+      !faHumJson.humanizedText.includes('امیدوارم این پاسخ') &&
+      !faHumJson.humanizedText.includes('🚀') &&
+      faHumJson.humanizedText.includes('«شایان ذکر است که دگرشنیدن اصل است»') &&
+      faHumJson.humanizedText.includes('[1]') &&
+      faHumJson.humanizedText.includes('⏱ 02:15'),
+    'FA Humanizer strips AI-slop wrappers/emojis/dashes while keeping «verbatim quotes», [1] & ⏱ untouched'
+  );
+
+  const enSlop =
+    'Great question! It is worth noting that Dr. Makaremi delves into psychoanalysis and his work serves as a lasting testament to Listening Differently [1]. "Great question! Let\'s delve into Lacan." I hope this helps!';
+  const enHumRes = await fetch(`${BASE_URL}/api/studio/ai-training/humanize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: cookieHeader },
+    body: JSON.stringify({ text: enSlop, locale: 'en' }),
+  });
+  const enHumJson = await enHumRes.json();
+  assert(
+    enHumRes.status === 200 &&
+      enHumJson.ok &&
+      enHumJson.tellsRemovedCount >= 3 &&
+      !enHumJson.humanizedText.startsWith('Great question!') &&
+      !enHumJson.humanizedText.includes('I hope this helps') &&
+      enHumJson.humanizedText.includes('examines psychoanalysis') &&
+      enHumJson.humanizedText.includes('reflects Listening Differently') &&
+      enHumJson.humanizedText.includes('"Great question! Let\'s delve into Lacan."'),
+    'EN Humanizer replaces stock AI words & wrappers while preserving verbatim double-quoted passages'
+  );
+
+  const frSlop =
+    "Excellente question ! Il convient de souligner que l'État limite constitue un véritable kaléidoscope de concepts [1]. J'espère que cela vous aide !";
+  const frHumRes = await fetch(`${BASE_URL}/api/studio/ai-training/humanize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: cookieHeader },
+    body: JSON.stringify({ text: frSlop, locale: 'fr' }),
+  });
+  const frHumJson = await frHumRes.json();
+  assert(
+    frHumRes.status === 200 &&
+      frHumJson.ok &&
+      frHumJson.tellsRemovedCount >= 3 &&
+      !frHumJson.humanizedText.includes('Excellente question') &&
+      !frHumJson.humanizedText.includes('Il convient de souligner') &&
+      !frHumJson.humanizedText.includes('kaléidoscope') &&
+      frHumJson.humanizedText.includes('[1]'),
+    'FR Humanizer strips French chatbot wrappers & stock metaphors while preserving inline citations'
+  );
 
   console.log('\n======================================================================');
   console.log(`  SECURITY & AUTO-INDEX VERIFICATION: ${passed}/${total} PASSED (${failed} FAILED)`);

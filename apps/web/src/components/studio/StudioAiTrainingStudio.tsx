@@ -496,13 +496,13 @@ export function StudioAiTrainingStudio() {
     count?: number;
     icon: React.ComponentType<{ size?: number }>;
   }> = [
-    { id: 'telemetry_eval', label: 'شکاف‌های دانش و آزمون ۶۰گانه', count: telemetry?.knowledgeGapCount, icon: Activity },
-    { id: 'escalations_security', label: 'ارجاع استاد، همگام‌سازی و امنیت', icon: ShieldCheck },
-    { id: 'golden_qa', label: 'پاسخ‌های طلایی استاد', count: goldenQaList.length, icon: BookMarked },
-    { id: 'glossary', label: 'واژه‌نامه و گراف مفاهیم', count: glossaryTerms.length, icon: Network },
-    { id: 'documents', label: 'آموزش از جزوه‌ها و اسناد', count: trainingDocs.length, icon: FileText },
-    { id: 'constitution', label: 'منشور معرفتی و لحن', count: personaVersions.length, icon: Brain },
-  ];
+      { id: 'telemetry_eval', label: 'شکاف‌های دانش و آزمون ۶۰گانه', count: telemetry?.knowledgeGapCount, icon: Activity },
+      { id: 'escalations_security', label: 'ارجاع استاد، همگام‌سازی و امنیت', icon: ShieldCheck },
+      { id: 'golden_qa', label: 'پاسخ‌های طلایی استاد', count: goldenQaList.length, icon: BookMarked },
+      { id: 'glossary', label: 'واژه‌نامه و گراف مفاهیم', count: glossaryTerms.length, icon: Network },
+      { id: 'documents', label: 'آموزش از جزوه‌ها و اسناد', count: trainingDocs.length, icon: FileText },
+      { id: 'constitution', label: 'منشور معرفتی و لحن', count: personaVersions.length, icon: Brain },
+    ];
 
   const liveWordEstimate = docBody.trim() ? docBody.trim().split(/\s+/).length : 0;
 
@@ -548,21 +548,19 @@ export function StudioAiTrainingStudio() {
               key={tab.id}
               type="button"
               onClick={() => setSubTab(tab.id)}
-              className={`min-h-[42px] shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-colors ${
-                isActive
+              className={`min-h-[42px] shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-colors ${isActive
                   ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)]'
                   : 'bg-[var(--surface-sunken)] border-[var(--border-subtle)] text-[var(--foreground)] hover:border-[var(--primary)]'
-              }`}
+                }`}
             >
               <Icon size={15} />
               <span>{tab.label}</span>
               {typeof tab.count === 'number' && (
                 <span
-                  className={`px-1.5 py-0.5 rounded-md text-[10px] ${
-                    isActive
+                  className={`px-1.5 py-0.5 rounded-md text-[10px] ${isActive
                       ? 'bg-white/20 text-[var(--primary-foreground)]'
                       : 'bg-[var(--surface-card)] text-[var(--foreground-muted)]'
-                  }`}
+                    }`}
                 >
                   {tab.count.toLocaleString('fa-IR')}
                 </span>
@@ -574,11 +572,10 @@ export function StudioAiTrainingStudio() {
 
       {banner && (
         <div
-          className={`rounded-xl border p-3.5 text-xs font-bold flex items-center gap-2 ${
-            banner.ok
+          className={`rounded-xl border p-3.5 text-xs font-bold flex items-center gap-2 ${banner.ok
               ? 'border-emerald-500/50 bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200'
               : 'border-rose-500/50 bg-rose-50/70 dark:bg-rose-950/30 text-rose-900 dark:text-rose-200'
-          }`}
+            }`}
         >
           {banner.ok ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
           <span>{banner.text}</span>
@@ -848,9 +845,42 @@ export function StudioAiTrainingStudio() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[var(--foreground)] mb-1.5">
-                    پاسخ قطعی و مصوب استاد (با پشتیبانی از Markdown)
-                  </label>
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                    <label className="block text-xs font-bold text-[var(--foreground)]">
+                      پاسخ قطعی و مصوب استاد (با پشتیبانی از Markdown)
+                    </label>
+                    <button
+                      type="button"
+                      disabled={busy || !gqaAnswer.trim()}
+                      onClick={async () => {
+                        setBusy(true);
+                        try {
+                          const res = await fetch('/api/studio/ai-training/humanize', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ text: gqaAnswer, locale: gqaLocale }),
+                          });
+                          const data = await res.json();
+                          if (data.ok && typeof data.humanizedText === 'string') {
+                            setGqaAnswer(data.humanizedText);
+                            setBanner({
+                              ok: true,
+                              text:
+                                data.tellsRemovedCount > 0
+                                  ? `پالایش نثر انسانی انجام شد (${data.tellsRemovedCount} کلیشهٔ ماشینی حذف شد؛ نقل‌قول‌ها و استنادها دست‌نخورده ماندند).`
+                                  : 'نثر متن کاملاً طبیعی، انسانی و فاقد کلیشه‌های ماشینی است.',
+                            });
+                          }
+                        } finally {
+                          setBusy(false);
+                        }
+                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[var(--border-medium)] bg-[var(--surface-card)] text-[11px] font-bold text-[var(--primary)] hover:border-[var(--primary)] disabled:opacity-40"
+                    >
+                      <Sparkles size={12} />
+                      <span>پالایش نثر انسانی (Humanizer)</span>
+                    </button>
+                  </div>
                   <textarea
                     required
                     rows={4}

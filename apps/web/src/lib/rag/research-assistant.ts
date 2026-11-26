@@ -143,7 +143,7 @@ function synthesizeGroundedAnswer(
   }
 
   if (locale === 'fr') {
-    const answer = `D'après les écrits et conférences du Dr Hassan Makaremi, en particulier dans *${topDoc.title}* [1], la question soulevée trouve sa réponse dans les principes suivants :\n\n${topDoc.snippet}\n\nCette analyse s'appuie directement sur les sources authentifiées suivantes du corpus :\n\n${quotesList}`;
+    const answer = `Dans les écrits et conférences du Dr Hassan Makaremi, notamment dans *${topDoc.title}* [1], cette question est abordée ainsi :\n\n${topDoc.snippet}\n\nExtraits vérifiés des archives :\n\n${quotesList}`;
     return {
       answer,
       suggestedFollowUps: buildContextualFollowUps('fr', topDoc.pillar),
@@ -151,14 +151,14 @@ function synthesizeGroundedAnswer(
   }
 
   if (locale === 'en') {
-    const answer = `According to Dr. Hassan Makaremi's authenticated writings and lectures, specifically in *${topDoc.title}* [1], the subject is addressed as follows:\n\n${topDoc.snippet}\n\nThis synthesis is strictly anchored in the following primary archival references:\n\n${quotesList}`;
+    const answer = `In Dr. Hassan Makaremi's published writings and lectures, particularly *${topDoc.title}* [1], this subject is addressed directly:\n\n${topDoc.snippet}\n\nRelevant archival passages:\n\n${quotesList}`;
     return {
       answer,
       suggestedFollowUps: buildContextualFollowUps('en', topDoc.pillar),
     };
   }
 
-  const answer = `بر اساس اسناد پژوهشی و متون مستند دکتر حسن مکارمی، به‌ویژه در اثر «${topDoc.title}» [1]، پاسخ به پرسش شما به شرح زیر در متون آرشیو تبیین گردیده است:\n\n${topDoc.snippet}\n\nاین گزاره‌ها مستقیماً بر مبنای ارجاعات رسمی زیر با شناسه اصالت استخراج گردیده‌اند:\n\n${quotesList}`;
+  const answer = `در آثار و سخنرانی‌های منتشرشدهٔ دکتر حسن مکارمی، به‌ویژه در «${topDoc.title}» [1]، این مبحث چنین تبیین شده است:\n\n${topDoc.snippet}\n\nگزیدهٔ منابع مستند در آرشیو:\n\n${quotesList}`;
   return {
     answer,
     suggestedFollowUps: buildContextualFollowUps('fa', topDoc.pillar),

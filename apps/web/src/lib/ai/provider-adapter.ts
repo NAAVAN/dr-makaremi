@@ -11,6 +11,7 @@ import type {
 import { getStudioSecretConfiguration } from '../studio/auth';
 import { readOverlayJson, writeOverlayJson } from '../vault-loader';
 import { isEmbeddingsConfigured } from '../rag/embeddings';
+import { buildHumanizerPromptDirective } from '../rag/prose-humanizer';
 
 const DEFAULT_ENGINE_PROFILE = 'literary_balanced';
 
@@ -537,6 +538,7 @@ export async function synthesizeRagWithRouter(input: {
     `Respond exclusively in ${langLabel}.`,
     'Cite verified archival excerpts inline using [1], [2], etc. Never fabricate sources, books, dates, or quotes.',
     'STRICT WHITE-LABEL: Never mention any external technology provider or AI model name.',
+    buildHumanizerPromptDirective(input.locale),
     glossarySummary,
   ]
     .filter(Boolean)
@@ -642,6 +644,7 @@ export async function* streamRagAnswerTokens(input: {
       input.systemConstitution,
       `Respond exclusively in ${langLabel}.`,
       'Cite verified archival excerpts inline using [1], [2], etc. Never fabricate sources or mention any external AI brand.',
+      buildHumanizerPromptDirective(input.locale),
       loadGlossaryRulesSummary(),
     ]
       .filter(Boolean)
