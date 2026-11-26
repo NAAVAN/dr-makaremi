@@ -13,21 +13,15 @@ export default function AssetIngestSimulator() {
     setIsProcessing(true);
     setResult(null);
     try {
-      const res = await fetch('/api/webhooks/telegram', {
+      const res = await fetch('/api/studio/agent-simulator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Telegram-Bot-Api-Secret-Token': 'makaremi-tg-secret-2026',
         },
         body: JSON.stringify({
-          update_id: Date.now(),
-          message: {
-            message_id: Math.floor(Math.random() * 100000),
-            date: Math.floor(Date.now() / 1000),
-            from: { id: 19501329, username: 'hassan_makaremi' },
-            photo: [{ file_id: 'preset_calligraphy_art', width: 4096, height: 4096 }],
-            caption: voiceDesc,
-          },
+          action: 'ingest_asset',
+          imageUrl,
+          caption: voiceDesc,
         }),
       });
 

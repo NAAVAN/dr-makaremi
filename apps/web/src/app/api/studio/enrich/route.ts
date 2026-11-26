@@ -5,7 +5,9 @@ import { hasPrototypePollution } from '@/lib/etl/types';
 import { isStudioRequestAuthorized } from '@/lib/studio/auth';
 import { normaliseStudioText, validateDataUrlServerSide } from '@/lib/studio/media-gatekeeper';
 import { loadWorkEnrichmentsMap, saveWorkEnrichmentEntry } from '@/lib/studio/overlays';
+import { persistWorkEnrichmentToNeon } from '@/lib/studio/neon-cms-store';
 import { revalidatePublicWorkPaths } from '@/lib/studio/works-index';
+import { syncEntityToRagKnowledgeBase } from '@/lib/rag/auto-indexer';
 import type {
   EnrichmentDocumentItem,
   EnrichmentLinkItem,
@@ -185,13 +187,22 @@ export async function POST(request: NextRequest) {
     },
   });
 
+  await persistWorkEnrichmentToNeon(saved);
   revalidatePublicWorkPaths(data.collection as TranslationCollectionName, data.slug);
+  const kbSync = await syncEntityToRagKnowledgeBase({
+    collection: data.collection,
+    slug: data.slug,
+    action: 'enrich',
+    summary: `enrich:${data.collection}/${data.slug}`,
+  }).catch(() => undefined);
 
   return NextResponse.json(
     {
       ok: true,
       enrichment: saved,
-      message: 'مطلب، پیوند یا مدرک تکمیلی با امضای دیجیتال Ed25519 به اثر افزوده و در سایت اعمال شد.',
+      kbSynced: Boolean(kbSync?.ok),
+      kbVersion: kbSync?.kbVersion,
+      message: 'مطلب، پیوند یا مدرک تکمیلی با امضای دیجیتال Ed25519 به اثر افزوده و در پایگاه دانش دستیار هوشمند همگام‌سازی شد.',
     },
     { status: 200, headers: HEADERS }
   );

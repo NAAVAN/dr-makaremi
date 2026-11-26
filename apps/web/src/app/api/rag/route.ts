@@ -3,7 +3,8 @@ import { z } from 'zod';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
 import { askResearchAssistant } from '@/lib/rag/research-assistant';
-import { detectPromptInjection } from '@/lib/etl/enrichment-pipeline';
+import { detectComprehensivePromptInjection } from '@/lib/rag/safety-guard';
+import { recordSecurityAuditEvent } from '@/lib/rag/security-audit';
 import type { ContentPillar, Locale, RagDocumentType } from '@makaremi/shared';
 
 const HistoryTurnSchema = z.object({
@@ -86,12 +87,18 @@ export async function POST(request: NextRequest) {
 
   const { query, locale, history, pillar, type } = parsed.data;
 
-  const injection = detectPromptInjection(query);
+  const injection = detectComprehensivePromptInjection(query, history);
   if (injection.isInjection) {
+    void recordSecurityAuditEvent({
+      eventType: 'prompt_injection_blocked',
+      severity: 'high',
+      route: '/api/rag',
+      detail: `Blocked (${injection.source || 'query'}:${injection.pattern || 'pattern'})`,
+    });
     return NextResponse.json(
       {
         error: 'Bad Request',
-        message: 'Prompt injection rejected by Cloudflare Security Guard',
+        message: 'Prompt injection rejected by Security Guard',
         pattern: injection.pattern,
       },
       {

@@ -44,6 +44,11 @@ import {
   loadWorkEnrichmentsMap,
 } from './studio/overlays';
 import { getSyncTrainingSnapshot } from './rag/training-store';
+import {
+  getDynamicTranslationOverridesSync,
+  getDynamicVideoTranscriptsSync,
+  registerKbVersionChangeListener,
+} from './studio/neon-cms-store';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL || 'http://127.0.0.1:8055';
 
@@ -280,7 +285,10 @@ function mergePackTranslationsForItem<
   parentIdKey: string,
   packMap: Record<string, Record<string, Record<string, unknown>>>
 ): TItem {
-  const packEntry = packMap[item.slug];
+  const neonOverrides = getDynamicTranslationOverridesSync(collection)[item.slug];
+  const packEntry = packMap[item.slug]
+    ? { ...packMap[item.slug], ...(neonOverrides || {}) }
+    : neonOverrides;
   if (!packEntry) return item;
 
   const baseTranslations = [...(item.translations || [])];
@@ -600,8 +608,12 @@ function buildVideosCollection(): VideoSpeech[] {
   const enrichVideoRecord = (v: VideoSpeech): VideoSpeech => {
     const withPack = mergePackTranslationsForItem(v, 'videos', 'videos_id', packVideos);
     const ytId = withPack.youtube_video_id?.trim() || null;
+    const dynamicTranscripts = getDynamicVideoTranscriptsSync();
     const transcriptEntry =
-      (ytId ? transcriptsPack[ytId] : undefined) || transcriptsPack[withPack.slug];
+      (ytId ? dynamicTranscripts[ytId] : undefined) ||
+      dynamicTranscripts[withPack.slug] ||
+      (ytId ? transcriptsPack[ytId] : undefined) ||
+      transcriptsPack[withPack.slug];
     const siblingEditorial = ytId ? bestEditorialByYoutubeId.get(ytId) : undefined;
     const healthEntry =
       (ytId ? healthManifest?.byYoutubeId?.[ytId] : undefined) ||
@@ -712,6 +724,10 @@ const cmsInvalidationListeners = new Set<() => void>();
 export function registerCmsInvalidationListener(listener: () => void): void {
   cmsInvalidationListeners.add(listener);
 }
+
+registerKbVersionChangeListener(() => {
+  invalidateCmsCollectionsCache();
+});
 
 export function getActiveGlossary(): LacanianGlossaryTerm[] {
   const extended = getSyncTrainingSnapshot().glossaryTerms;

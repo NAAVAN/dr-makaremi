@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { checkRateLimit } from '@/lib/rate-limit';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
 import {
   STUDIO_SESSION_COOKIE,
@@ -9,6 +9,11 @@ import {
   getStudioSecretConfiguration,
   verifyStudioCredentialWithRole,
 } from '@/lib/studio/auth';
+import {
+  checkStudioLoginLockout,
+  clearStudioLoginFailures,
+  recordStudioLoginFailure,
+} from '@/lib/rag/security-audit';
 
 const AuthBodySchema = z.object({
   secretOrPin: z.string().min(1).max(256),
@@ -61,13 +66,43 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'لطفاً رمز یا پین ورود را وارد فرمایید.' }, { status: 400, headers: HEADERS });
   }
 
-  const verification = verifyStudioCredentialWithRole(check.data.secretOrPin);
-  if (!verification.valid) {
+  const clientIp = getClientIP(request);
+  const lockout = await checkStudioLoginLockout(clientIp);
+  if (lockout.locked) {
     return NextResponse.json(
-      { ok: false, error: 'پین اختصاصی استاد یا کلید مدیریت نادرست است.' },
-      { status: 401, headers: HEADERS }
+      {
+        ok: false,
+        locked: true,
+        retryAfterSec: lockout.retryAfterSec,
+        error: `به دلیل تکرار ورود ناموفق، دسترسی به پیشخوان به مدت ${Math.ceil(lockout.retryAfterSec / 60)} دقیقه قفل امنیتی شد.`,
+      },
+      {
+        status: 429,
+        headers: {
+          ...HEADERS,
+          'Retry-After': String(lockout.retryAfterSec),
+        },
+      }
     );
   }
+
+  const verification = verifyStudioCredentialWithRole(check.data.secretOrPin);
+  if (!verification.valid) {
+    const failState = await recordStudioLoginFailure(clientIp);
+    return NextResponse.json(
+      {
+        ok: false,
+        locked: failState.locked,
+        remainingAttempts: failState.remainingAttempts,
+        error: failState.locked
+          ? 'حداکثر تعداد تلاش ناموفق (۵ بار) تکمیل شد؛ ورود به پیشخوان به مدت ۱۵ دقیقه قفل شد.'
+          : `پین اختصاصی استاد یا کلید مدیریت نادرست است (تلاش‌های باقی‌مانده: ${failState.remainingAttempts}).`,
+      },
+      { status: failState.locked ? 429 : 401, headers: HEADERS }
+    );
+  }
+
+  await clearStudioLoginFailures(clientIp);
 
   const token = createStudioSessionToken(verification.role || 'professor');
   const isHttps =

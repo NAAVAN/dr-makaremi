@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
 import {
+  getEffectiveTelegramWebhookSecret,
   verifyTelegramSecretToken,
   isAuthorizedProfessorTelegram,
   validateAntiReplay,
@@ -19,15 +20,49 @@ import {
   runAgentPublish,
   getAgentAnalyticsReport,
 } from '@/lib/agents/orchestrator';
+import {
+  answerTelegramCallbackQuery,
+  sendTelegramMessage,
+  transcribeTelegramVoiceReply,
+} from '@/lib/agents/messenger-client';
+import {
+  approveAndPublishEscalationToBrain,
+  dismissEscalationTicket,
+  extractTicketCodeFromText,
+  recordProfessorReplyDraft,
+} from '@/lib/rag/professor-escalation';
+import {
+  checkAndRecordPersistentWebhookNonce,
+  recordSecurityAuditEvent,
+} from '@/lib/rag/security-audit';
 
 export async function POST(request: NextRequest) {
   // 1. Rate Limiting (Cloudflare Security Audit Guard)
   const rl = checkRateLimit(request, { windowMs: 60000, maxRequests: 120 }, 'webhook-telegram');
   if (!rl.allowed) return rl.response!;
 
-  // 2. Secret Token Verification (Timing-Attack Protected)
+  // 2. Fail-Closed Production Check + Secret Token Verification (Timing-Attack Protected)
+  if (!getEffectiveTelegramWebhookSecret()) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_auth_rejected',
+      severity: 'high',
+      route: '/api/webhooks/telegram',
+      detail: 'Telegram webhook called in strict production while TELEGRAM_WEBHOOK_SECRET is unset (Fail-Closed)',
+    });
+    return NextResponse.json(
+      { error: '503 Service Unavailable: Telegram webhook secret is not configured in production' },
+      { status: 503 }
+    );
+  }
+
   const secretHeader = request.headers.get('x-telegram-bot-api-secret-token');
   if (!secretHeader) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_auth_rejected',
+      severity: 'medium',
+      route: '/api/webhooks/telegram',
+      detail: 'Missing X-Telegram-Bot-Api-Secret-Token header',
+    });
     return NextResponse.json(
       { error: '401 Unauthorized: Missing X-Telegram-Bot-Api-Secret-Token' },
       { status: 401 }
@@ -35,6 +70,12 @@ export async function POST(request: NextRequest) {
   }
 
   if (!verifyTelegramSecretToken(secretHeader)) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_auth_rejected',
+      severity: 'high',
+      route: '/api/webhooks/telegram',
+      detail: 'Invalid X-Telegram-Bot-Api-Secret-Token header',
+    });
     return NextResponse.json(
       { error: '403 Forbidden: Invalid webhook secret token' },
       { status: 403 }
@@ -84,20 +125,46 @@ export async function POST(request: NextRequest) {
   // 5. Sender Whitelist Verification (Strict Dr. Makaremi Identity Check)
   const senderId = update.message?.from?.id ?? update.callback_query?.from?.id;
   if (!isAuthorizedProfessorTelegram(senderId)) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_auth_rejected',
+      severity: 'high',
+      route: '/api/webhooks/telegram',
+      detail: 'Unauthorized Telegram sender ID blocked',
+    });
     return NextResponse.json(
       { error: '403 Forbidden: Sender ID is not in the professor authorization whitelist' },
       { status: 403 }
     );
   }
 
-  // 6. Anti-Replay Guard (Timestamp Window + Unique ID Deduplication)
+  // 6. Anti-Replay Guard (In-Memory Window + Persistent Neon Nonce across Vercel Lambdas)
   const messageId = update.message?.message_id ?? update.callback_query?.message?.message_id ?? update.update_id;
   const messageDate = update.message?.date ?? update.callback_query?.message?.date ?? Math.floor(Date.now() / 1000);
 
   const antiReplay = validateAntiReplay(messageId, messageDate);
   if (!antiReplay.valid) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_replay_rejected',
+      severity: 'medium',
+      route: '/api/webhooks/telegram',
+      detail: antiReplay.reason || 'Duplicate/stale Telegram message rejected',
+    });
     return NextResponse.json(
       { error: `409 Conflict: ${antiReplay.reason}` },
+      { status: 409 }
+    );
+  }
+
+  const persistentNovel = await checkAndRecordPersistentWebhookNonce('telegram', `${update.update_id}:${messageId}`);
+  if (!persistentNovel) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_replay_rejected',
+      severity: 'medium',
+      route: '/api/webhooks/telegram',
+      detail: 'Persistent Neon anti-replay detected duplicate Telegram update',
+    });
+    return NextResponse.json(
+      { error: '409 Conflict: Duplicate update ID detected across cluster' },
       { status: 409 }
     );
   }
@@ -119,9 +186,46 @@ export async function POST(request: NextRequest) {
   // 8. LangGraph State Machine Session
   const session = getOrCreateAgentSession('telegram', String(senderId));
 
-  // Handler A: Callback Queries (Inline Glass Buttons)
+  // Handler A: Callback Queries (Inline Glass Buttons — including Professor Q&A Learning Approval!)
   if (update.callback_query) {
     const data = update.callback_query.data;
+    const cbId = update.callback_query.id;
+
+    if (data.startsWith('qa_approve:')) {
+      const ticketCode = data.slice('qa_approve:'.length).trim();
+      const pub = await approveAndPublishEscalationToBrain(ticketCode);
+      await answerTelegramCallbackQuery(
+        cbId,
+        pub.ok ? `پاسخ [${ticketCode}] با امضای Ed25519 ثبت دائمی شد` : pub.error || 'خطا در ثبت پاسخ'
+      );
+      return NextResponse.json(
+        {
+          ok: pub.ok,
+          action: 'escalation_published',
+          ticketCode,
+          goldenQaId: pub.goldenQa?.id,
+          error: pub.error,
+        },
+        { status: pub.ok ? 200 : 400 }
+      );
+    }
+
+    if (data.startsWith('qa_draft:')) {
+      const ticketCode = data.slice('qa_draft:'.length).trim();
+      await answerTelegramCallbackQuery(cbId, `پاسخ [${ticketCode}] در پیش‌نویس پیشخوان ذخیره شد`);
+      await sendTelegramMessage({
+        chatId: senderId,
+        text: `📋 پاسخ [${ticketCode}] در بخش «ارجاع به استاد» پیشخوان برای بازبینی بعدی ذخیره شد.`,
+      });
+      return NextResponse.json({ ok: true, action: 'escalation_kept_as_draft', ticketCode });
+    }
+
+    if (data.startsWith('qa_dismiss:')) {
+      const ticketCode = data.slice('qa_dismiss:'.length).trim();
+      const ok = await dismissEscalationTicket(ticketCode);
+      await answerTelegramCallbackQuery(cbId, ok ? `تیکت [${ticketCode}] بایگانی شد` : 'تیکت یافت نشد');
+      return NextResponse.json({ ok, action: 'escalation_dismissed', ticketCode });
+    }
 
     if (data === 'request_publish_pin' || data === 'approve_publish') {
       const challenge = await requestPublishPin(session);
@@ -162,11 +266,49 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Handler B: Voice Note Message -> Article Generation
+  // Handler B: Voice Note Message (Either Q&A Learning Reply to Ticket OR Voice-to-Article Draft)
   if (update.message?.voice || update.message?.audio) {
-    const fileId = update.message.voice?.file_id || update.message.audio?.file_id;
-    // Map to test preset or secure Telegram CDN URL
-    const voiceUrl = fileId?.startsWith('preset://')
+    const fileId = update.message.voice?.file_id || update.message.audio?.file_id || '';
+    const replyToId = update.message.reply_to_message?.message_id
+      ? String(update.message.reply_to_message.message_id)
+      : null;
+    const replyTicketCode =
+      extractTicketCodeFromText(update.message.caption || '') ||
+      extractTicketCodeFromText(update.message.reply_to_message?.text || '');
+
+    // B1. Voice reply targeting an open Professor Q&A escalation ticket -> Groq Whisper -> 1-tap confirm!
+    if (replyTicketCode || replyToId) {
+      try {
+        const asr = await transcribeTelegramVoiceReply(fileId, 'fa');
+        const rec = await recordProfessorReplyDraft({
+          ticketCode: replyTicketCode,
+          telegramReplyToMessageId: replyToId,
+          rawReplyText: asr.normalizedTranscript,
+          channel: 'telegram',
+          isVoice: true,
+        });
+        if (rec.ok) {
+          return NextResponse.json({
+            ok: true,
+            action: rec.awaitingConfirmation
+              ? 'escalation_voice_reply_awaiting_confirm'
+              : 'escalation_published',
+            ticketCode: rec.ticket?.ticketCode,
+            normalizedReply: rec.ticket?.professorReplyNormalized,
+            appliedLacanianTerms: asr.appliedLacanianTerms,
+            goldenQaId: rec.publishedGoldenQa?.id,
+          });
+        }
+      } catch (err: unknown) {
+        return NextResponse.json(
+          { ok: false, error: err instanceof Error ? err.message : 'Voice Q&A transcription failed' },
+          { status: 500 }
+        );
+      }
+    }
+
+    // B2. Standalone Voice Note -> Full Article Generation Workflow
+    const voiceUrl = fileId.startsWith('preset://')
       ? fileId
       : `preset://voice-hafez-psychoanalysis`;
 
@@ -226,6 +368,37 @@ export async function POST(request: NextRequest) {
         { ok: false, error: err instanceof Error ? err.message : 'Asset ingest failed' },
         { status: 500 }
       );
+    }
+  }
+
+  // Handler E: Professor Text Reply to Open Q&A Escalation Ticket ([Q-XXXX] or Reply-To Message)
+  if (incomingText.trim().length >= 8) {
+    const replyTicketCode =
+      extractTicketCodeFromText(incomingText) ||
+      extractTicketCodeFromText(update.message?.reply_to_message?.text || '');
+    const replyToId = update.message?.reply_to_message?.message_id
+      ? String(update.message.reply_to_message.message_id)
+      : null;
+
+    if (replyTicketCode || replyToId) {
+      const rec = await recordProfessorReplyDraft({
+        ticketCode: replyTicketCode,
+        telegramReplyToMessageId: replyToId,
+        rawReplyText: incomingText,
+        channel: 'telegram',
+        isVoice: false,
+      });
+      if (rec.ok) {
+        return NextResponse.json({
+          ok: true,
+          action: rec.awaitingConfirmation
+            ? 'escalation_reply_awaiting_confirm'
+            : 'escalation_published',
+          ticketCode: rec.ticket?.ticketCode,
+          normalizedReply: rec.ticket?.professorReplyNormalized,
+          goldenQaId: rec.publishedGoldenQa?.id,
+        });
+      }
     }
   }
 

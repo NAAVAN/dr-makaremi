@@ -1,6 +1,8 @@
 import { ArticleDraft, OmnichannelPublishResult } from './types';
 import { generateSvgQuoteCard } from './quote-card-generator';
 import { VERIFIED_IMMUTABLE_SNAPSHOTS, type ImmutableSnapshot } from '../snapshots';
+import { persistDynamicWorkToNeon } from '../studio/neon-cms-store';
+import { syncEntityToRagKnowledgeBase } from '../rag/auto-indexer';
 
 /**
  * Omnichannel Publishing Engine for Dr. Hassan Makaremi's Agent.
@@ -51,6 +53,64 @@ export async function publishOmnichannelArticle(
     snapshot_timestamp: publishedAt,
   };
   VERIFIED_IMMUTABLE_SNAPSHOTS[draft.slug] = snapshot;
+
+  // 1b. Persist into Neon Dynamic CMS & Trigger Unified Auto-Indexing into RAG Knowledge Base
+  await persistDynamicWorkToNeon(
+    {
+      id: `slug:${draft.slug}`,
+      workType: 'article',
+      pillar: draft.pillar,
+      originalLocale: 'fa',
+      status: 'published',
+      createdAt: publishedAt,
+      updatedAt: publishedAt,
+      publicationYear: String(new Date().getFullYear()),
+      category: '',
+      publisherOrVenue: 'انتشارات مکارمی',
+      isbnOrDimensions: '',
+      externalUrl: '',
+      includeTranslations: true,
+      primary: {
+        languages_code: 'fa-IR',
+        title: draft.title,
+        summary: draft.executiveSummary,
+        body_markdown: draft.bodyMarkdown,
+      },
+      optionalTranslations: {
+        ...(draft.frenchTitle
+          ? {
+              fr: {
+                languages_code: 'fr-FR',
+                title: draft.frenchTitle,
+                summary: draft.frenchSummary || '',
+              },
+            }
+          : {}),
+        ...(draft.englishTitle
+          ? {
+              en: {
+                languages_code: 'en',
+                title: draft.englishTitle,
+                summary: draft.englishSummary || '',
+              },
+            }
+          : {}),
+      },
+      seo: {
+        metaTitle: draft.title,
+        metaDescription: draft.executiveSummary,
+        keywords: '',
+      },
+    },
+    'articles'
+  ).catch(() => undefined);
+
+  await syncEntityToRagKnowledgeBase({
+    collection: 'articles',
+    slug: draft.slug,
+    action: 'publish',
+    summary: `omnichannel_publish:${draft.slug}`,
+  }).catch(() => undefined);
 
   // 2. Generate Instagram SVG Quote Card
   const instagramQuoteCardSvg = generateSvgQuoteCard({

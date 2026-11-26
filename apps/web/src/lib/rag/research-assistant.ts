@@ -17,6 +17,11 @@ import {
   getMonthlyTokensUsed,
   recordQueryTelemetry,
 } from './training-store';
+import { enqueueAndDispatchProfessorEscalation } from './professor-escalation';
+import {
+  classifyWithMlPromptGuard,
+  recordSecurityAuditEvent,
+} from './security-audit';
 
 export interface RagCitation {
   id: string;
@@ -254,12 +259,41 @@ export async function prepareResearchAssistantContext(options: AskAssistantOptio
   const { query, locale = 'fa', history = [], pillar = 'all', type = 'all' } = options;
 
   const persona = await getActivePersonaVersion();
-  const safety = assessQuerySafety(query, locale, persona.clinicalBoundaryPolicy);
+  const safety = assessQuerySafety(query, locale, persona.clinicalBoundaryPolicy, history);
 
   if (safety.isPromptInjection) {
+    void recordSecurityAuditEvent({
+      eventType: 'prompt_injection_blocked',
+      severity: 'high',
+      route: '/api/rag',
+      detail: `Layer-1 blocked (${safety.injectionPattern || 'pattern'}): ${query.slice(0, 120)}`,
+    });
     throw new Error(
       `PROMPT_INJECTION_DETECTED: Malicious adversarial instruction detected (${safety.injectionPattern}). Request rejected.`
     );
+  }
+
+  // Layer-2 ML Prompt Injection Classifier (meta-llama/llama-prompt-guard-2-86m)
+  if (!options.forceDeterministic && !safety.isPersonalCrisis) {
+    const mlInput = [
+      query,
+      ...history
+        .filter((h) => h.role === 'user')
+        .slice(-2)
+        .map((h) => h.content),
+    ].join('\n');
+    const mlGuard = await classifyWithMlPromptGuard(mlInput);
+    if (mlGuard.isInjection) {
+      void recordSecurityAuditEvent({
+        eventType: 'ml_prompt_guard_blocked',
+        severity: 'high',
+        route: '/api/rag',
+        detail: `Layer-2 ML Prompt Guard blocked (${mlGuard.reason || 'high_risk'}): ${query.slice(0, 120)}`,
+      });
+      throw new Error(
+        `PROMPT_INJECTION_DETECTED: Adversarial instruction blocked by semantic security guard (${mlGuard.reason || 'ml_guard'}).`
+      );
+    }
   }
 
   if (safety.isPersonalCrisis && safety.crisisResponse) {
@@ -411,6 +445,21 @@ export async function askResearchAssistant(options: AskAssistantOptions): Promis
       resolvedGoldenQaId: resolvedGoldenId,
     }).catch(() => undefined);
     telemetryId = tel?.id;
+
+    // Auto-escalate genuine knowledge gaps to Professor's Telegram/WhatsApp & Pishkhan Queue
+    const topScore = ctx.results[0]?.score || 0;
+    if (
+      !options.forceDeterministic &&
+      !ctx.safety.isPersonalCrisis &&
+      (ctx.citations.length === 0 || topScore < 0.25)
+    ) {
+      void enqueueAndDispatchProfessorEscalation({
+        questionText: options.query,
+        locale,
+        pillar: options.pillar && options.pillar !== 'all' ? options.pillar : 'psychoanalysis',
+        contextSummary: `تعداد منابع یافت‌شده: ${ctx.citations.length} | امتیاز: ${topScore.toFixed(3)}`,
+      }).catch(() => undefined);
+    }
   }
 
   return {
@@ -470,16 +519,25 @@ export async function* streamResearchAssistant(options: AskAssistantOptions): As
     yield { event: 'token', data: { delta: verified.verifiedAnswer } };
     const tel = !options.skipTelemetry
       ? await recordQueryTelemetry({
-          sessionSeed: options.sessionSeed || 'anonymous',
-          locale,
-          pillarFilter: options.pillar || 'all',
-          rawQuery: options.query,
-          topScore: 0,
-          citationCount: 0,
-          engineTier: 'deterministic',
-          latencyMs: Date.now() - ctx.startedAt,
-        }).catch(() => undefined)
+        sessionSeed: options.sessionSeed || 'anonymous',
+        locale,
+        pillarFilter: options.pillar || 'all',
+        rawQuery: options.query,
+        topScore: 0,
+        citationCount: 0,
+        engineTier: 'deterministic',
+        latencyMs: Date.now() - ctx.startedAt,
+      }).catch(() => undefined)
       : undefined;
+
+    if (!options.skipTelemetry && !options.forceDeterministic && !ctx.safety.isPersonalCrisis) {
+      void enqueueAndDispatchProfessorEscalation({
+        questionText: options.query,
+        locale,
+        pillar: options.pillar && options.pillar !== 'all' ? options.pillar : 'psychoanalysis',
+        contextSummary: 'پرسش استریمی بدون سند متناظر در آرشیو فعلی',
+      }).catch(() => undefined);
+    }
     yield {
       event: 'done',
       data: {
@@ -531,18 +589,18 @@ export async function* streamResearchAssistant(options: AskAssistantOptions): As
   const resolvedGoldenId = ctx.results.find((r) => r.isGoldenQa)?.documentId.replace(/^golden_qa_/, '') || null;
   const tel = !options.skipTelemetry
     ? await recordQueryTelemetry({
-        sessionSeed: options.sessionSeed || 'anonymous',
-        locale,
-        pillarFilter: options.pillar || 'all',
-        rawQuery: options.query,
-        topScore: ctx.results[0]?.score || 0,
-        citationCount: ctx.citations.length,
-        engineTier,
-        latencyMs: Date.now() - ctx.startedAt,
-        promptTokens,
-        completionTokens,
-        resolvedGoldenQaId: resolvedGoldenId,
-      }).catch(() => undefined)
+      sessionSeed: options.sessionSeed || 'anonymous',
+      locale,
+      pillarFilter: options.pillar || 'all',
+      rawQuery: options.query,
+      topScore: ctx.results[0]?.score || 0,
+      citationCount: ctx.citations.length,
+      engineTier,
+      latencyMs: Date.now() - ctx.startedAt,
+      promptTokens,
+      completionTokens,
+      resolvedGoldenQaId: resolvedGoldenId,
+    }).catch(() => undefined)
     : undefined;
 
   yield {

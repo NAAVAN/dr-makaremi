@@ -127,6 +127,11 @@ export const TelegramPhotoSizeSchema = z.object({
   file_size: z.number().optional(),
 });
 
+export const TelegramReplyReferenceSchema = z.object({
+  message_id: z.number(),
+  text: z.string().optional(),
+});
+
 export const TelegramMessageSchema = z.object({
   message_id: z.number(),
   from: TelegramUserSchema.optional(),
@@ -136,6 +141,7 @@ export const TelegramMessageSchema = z.object({
   audio: TelegramVoiceSchema.optional(),
   photo: z.array(TelegramPhotoSizeSchema).optional(),
   caption: z.string().optional(),
+  reply_to_message: TelegramReplyReferenceSchema.optional(),
 });
 
 export const TelegramCallbackQuerySchema = z.object({
@@ -161,6 +167,12 @@ export const WhatsAppMessageSchema = z.object({
   id: z.string(),
   timestamp: z.string(),
   type: z.string(),
+  context: z
+    .object({
+      id: z.string().optional(),
+      from: z.string().optional(),
+    })
+    .optional(),
   text: z.object({ body: z.string() }).optional(),
   audio: z.object({ id: z.string(), mime_type: z.string().optional() }).optional(),
   interactive: z

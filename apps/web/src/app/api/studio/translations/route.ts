@@ -6,8 +6,10 @@ import { hasPrototypePollution } from '@/lib/etl/types';
 import { isStudioRequestAuthorized } from '@/lib/studio/auth';
 import { normaliseStudioText } from '@/lib/studio/media-gatekeeper';
 import { markManualTranslationCompleted } from '@/lib/studio/overlays';
+import { persistTranslationOverrideToNeon } from '@/lib/studio/neon-cms-store';
 import { revalidatePublicWorkPaths } from '@/lib/studio/works-index';
 import { writePackTranslationEntry, type TranslationCollectionName } from '@/lib/vault-loader';
+import { syncEntityToRagKnowledgeBase } from '@/lib/rag/auto-indexer';
 
 const MAX_TRANSLATION_BYTES = 2 * 1024 * 1024;
 
@@ -106,8 +108,20 @@ export async function PATCH(request: NextRequest) {
   }
 
   writePackTranslationEntry(d.collection as TranslationCollectionName, d.slug, languagesCode, record as never);
+  await persistTranslationOverrideToNeon(
+    d.collection as TranslationCollectionName,
+    d.slug,
+    languagesCode,
+    record as never
+  );
   markManualTranslationCompleted(d.collection as TranslationCollectionName, d.slug);
   revalidatePublicWorkPaths(d.collection as TranslationCollectionName, d.slug);
+  const kbSync = await syncEntityToRagKnowledgeBase({
+    collection: d.collection,
+    slug: d.slug,
+    action: 'translate',
+    summary: `translate:${d.collection}/${d.slug}:${loc}`,
+  }).catch(() => undefined);
 
   return NextResponse.json(
     {
@@ -116,7 +130,9 @@ export async function PATCH(request: NextRequest) {
       slug: d.slug,
       targetLocale: loc,
       updatedAt: today,
-      message: 'ترجمه اصلاح‌شده ذخیره و در وب‌سایت عمومی منتشر شد (متن اصلی دست‌نخورده باقی ماند).',
+      kbSynced: Boolean(kbSync?.ok),
+      kbVersion: kbSync?.kbVersion,
+      message: 'ترجمه اصلاح‌شده ذخیره، در وب‌سایت عمومی منتشر و در پایگاه دانش دستیار هوشمند به‌روزرسانی شد.',
     },
     { status: 200, headers: HEADERS }
   );

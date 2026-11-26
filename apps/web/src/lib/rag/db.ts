@@ -250,6 +250,127 @@ export async function ensureRagTrainingSchema(): Promise<void> {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )
     `;
+
+    // 10. Dynamic CMS Works, Enrichments, Translations & Video Transcripts (Vercel Multi-Instance Persistence)
+    await sql`
+      CREATE TABLE IF NOT EXISTS cms_dynamic_works (
+        id TEXT PRIMARY KEY,
+        slug TEXT NOT NULL,
+        collection TEXT NOT NULL,
+        work_type TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'published',
+        draft_json JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_cms_dynamic_works_col ON cms_dynamic_works (collection, slug)`;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS cms_work_enrichments (
+        work_key TEXT PRIMARY KEY,
+        collection TEXT NOT NULL,
+        slug TEXT NOT NULL,
+        overlay_json JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS cms_translation_overrides (
+        override_key TEXT PRIMARY KEY,
+        collection TEXT NOT NULL,
+        slug TEXT NOT NULL,
+        locale_code TEXT NOT NULL,
+        record_json JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_cms_tr_overrides_col ON cms_translation_overrides (collection, slug)`;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS cms_video_transcripts (
+        video_key TEXT PRIMARY KEY,
+        slug TEXT,
+        youtube_video_id TEXT,
+        record_json JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+
+    // 11. Atomic Knowledge-Base Sync Version Stamp (Cross-Instance Cache Coherence)
+    await sql`
+      CREATE TABLE IF NOT EXISTS ai_kb_sync_state (
+        id SMALLINT PRIMARY KEY,
+        kb_version BIGINT NOT NULL DEFAULT 1,
+        last_event_summary TEXT NOT NULL DEFAULT '',
+        last_collection TEXT NOT NULL DEFAULT '',
+        last_slug TEXT NOT NULL DEFAULT '',
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`
+      INSERT INTO ai_kb_sync_state (id, kb_version, last_event_summary, last_collection, last_slug)
+      VALUES (1, 1, 'initial_bootstrap', 'system', 'init')
+      ON CONFLICT (id) DO NOTHING
+    `;
+
+    // 12. Bidirectional Telegram & WhatsApp Professor Q&A Escalation Queue
+    await sql`
+      CREATE TABLE IF NOT EXISTS ai_professor_escalations (
+        id TEXT PRIMARY KEY,
+        ticket_code TEXT UNIQUE NOT NULL,
+        query_hash TEXT NOT NULL,
+        question_text TEXT NOT NULL,
+        locale TEXT NOT NULL DEFAULT 'fa',
+        pillar TEXT NOT NULL DEFAULT 'psychoanalysis',
+        context_summary TEXT NOT NULL DEFAULT '',
+        channels_sent JSONB NOT NULL DEFAULT '[]'::jsonb,
+        telegram_message_id TEXT,
+        whatsapp_message_id TEXT,
+        status TEXT NOT NULL DEFAULT 'pending',
+        professor_reply_raw TEXT,
+        professor_reply_normalized TEXT,
+        professor_reply_channel TEXT,
+        linked_golden_qa_id TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        answered_at TIMESTAMPTZ,
+        published_at TIMESTAMPTZ
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_escalations_status ON ai_professor_escalations (status, created_at DESC)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_escalations_hash ON ai_professor_escalations (query_hash, created_at DESC)`;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS ai_escalation_settings (
+        id SMALLINT PRIMARY KEY,
+        settings_json JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+
+    // 13. Persistent Webhook Anti-Replay, 2FA Challenges & Auth Lockouts (Serverless-Safe)
+    await sql`
+      CREATE TABLE IF NOT EXISTS agent_webhook_state (
+        state_key TEXT PRIMARY KEY,
+        state_type TEXT NOT NULL,
+        payload_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+        expires_at TIMESTAMPTZ NOT NULL
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_agent_webhook_state_exp ON agent_webhook_state (expires_at)`;
+
+    // 14. CNIL-Safe Zero-PII Security & Risk Audit Log
+    await sql`
+      CREATE TABLE IF NOT EXISTS ai_security_audit_log (
+        id TEXT PRIMARY KEY,
+        event_type TEXT NOT NULL,
+        severity TEXT NOT NULL,
+        route TEXT NOT NULL,
+        detail_sanitized TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_sec_audit_created ON ai_security_audit_log (created_at DESC)`;
   })().catch((err) => {
     ragSchemaReadyPromise = null;
     throw err;

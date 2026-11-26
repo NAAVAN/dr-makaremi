@@ -17,6 +17,8 @@ import { COMMERCE_KIND_PRESETS, buildSuggestedSku } from '@/lib/commerce/presets
 import { getStripeRuntimeMode } from '@/lib/commerce/stripe';
 import { isTransactionalEmailConfigured } from '@/lib/commerce/email';
 import { checkNeonConnectionHealth } from '@/lib/commerce/db';
+import { setLiveCommerceCatalogMirror } from '@/lib/studio/neon-cms-store';
+import { syncEntityToRagKnowledgeBase } from '@/lib/rag/auto-indexer';
 
 const LocalizedTextSchema = z.object({
   fa: z.string().trim().min(1).max(320),
@@ -333,6 +335,13 @@ export async function POST(request: NextRequest) {
     };
 
     const updatedCatalog = await upsertCommerceCatalogItem(newItem);
+    setLiveCommerceCatalogMirror(updatedCatalog);
+    await syncEntityToRagKnowledgeBase({
+      collection: 'commerce',
+      slug: finalSku,
+      action: 'commerce',
+      summary: `commerce_create:${finalSku}`,
+    }).catch(() => undefined);
     const created = updatedCatalog.find((c) => c.sku === finalSku) || newItem;
 
     return NextResponse.json(
@@ -475,6 +484,13 @@ export async function PATCH(request: NextRequest) {
       };
 
       const updatedCatalog = await upsertCommerceCatalogItem(updatedItem);
+      setLiveCommerceCatalogMirror(updatedCatalog);
+      await syncEntityToRagKnowledgeBase({
+        collection: 'commerce',
+        slug: d.sku,
+        action: 'commerce',
+        summary: `commerce_upsert:${d.sku}`,
+      }).catch(() => undefined);
       return NextResponse.json({ ok: true, catalog: updatedCatalog });
     }
 
@@ -484,6 +500,13 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ ok: false, error: 'Invalid SKU for deletion' }, { status: 400 });
       }
       const updatedCatalog = await deleteCommerceCatalogItem(parsed.data.sku);
+      setLiveCommerceCatalogMirror(updatedCatalog);
+      await syncEntityToRagKnowledgeBase({
+        collection: 'commerce',
+        slug: parsed.data.sku,
+        action: 'commerce',
+        summary: `commerce_delete:${parsed.data.sku}`,
+      }).catch(() => undefined);
       return NextResponse.json({ ok: true, catalog: updatedCatalog });
     }
 
@@ -522,6 +545,13 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ ok: false, error: 'Missing sku parameter' }, { status: 400 });
     }
     const updatedCatalog = await deleteCommerceCatalogItem(sku);
+    setLiveCommerceCatalogMirror(updatedCatalog);
+    await syncEntityToRagKnowledgeBase({
+      collection: 'commerce',
+      slug: sku,
+      action: 'commerce',
+      summary: `commerce_delete:${sku}`,
+    }).catch(() => undefined);
     return NextResponse.json({ ok: true, catalog: updatedCatalog });
   } catch (err) {
     return NextResponse.json(

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
-import { detectPromptInjection } from '@/lib/etl/enrichment-pipeline';
+import { detectComprehensivePromptInjection } from '@/lib/rag/safety-guard';
+import { recordSecurityAuditEvent } from '@/lib/rag/security-audit';
 import { streamResearchAssistant } from '@/lib/rag/research-assistant';
 import type { ContentPillar, Locale, RagDocumentType } from '@makaremi/shared';
 
@@ -67,8 +68,14 @@ export async function POST(request: NextRequest) {
   }
 
   const { query, locale, history, pillar, type } = parsed.data;
-  const injection = detectPromptInjection(query);
+  const injection = detectComprehensivePromptInjection(query, history);
   if (injection.isInjection) {
+    void recordSecurityAuditEvent({
+      eventType: 'prompt_injection_blocked',
+      severity: 'high',
+      route: '/api/rag/stream',
+      detail: `Blocked stream (${injection.source || 'query'}:${injection.pattern || 'pattern'})`,
+    });
     return NextResponse.json(
       { error: 'Bad Request', message: 'Prompt injection rejected', pattern: injection.pattern },
       { status: 400 }

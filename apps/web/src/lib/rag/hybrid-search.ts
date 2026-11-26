@@ -6,7 +6,12 @@ import type {
   RagDocumentType,
 } from '@makaremi/shared';
 import { normalizePersianText } from '@/lib/etl/persian-normalizer';
-import { readCommerceJson } from '@/lib/vault-loader';
+import {
+  getLiveCommerceCatalogSync,
+  hydrateDynamicCmsFromNeonIfNeeded,
+  registerKbVersionChangeListener,
+} from '@/lib/studio/neon-cms-store';
+import { loadWorkEnrichmentsMap } from '@/lib/studio/overlays';
 import {
   chunkDocument,
   chunkTimedTranscript,
@@ -185,6 +190,7 @@ export function invalidateRagIndexCache(): void {
 
 registerCmsInvalidationListener(invalidateRagIndexCache);
 registerTrainingInvalidationListener(invalidateRagIndexCache);
+registerKbVersionChangeListener(invalidateRagIndexCache);
 
 function inferPagePillar(group: string): ContentPillar {
   if (group === 'references') return 'human_rights_dadkhahi';
@@ -422,8 +428,8 @@ function buildPrecomputedCorpusIndex(): PrecomputedCorpusIndex {
     }
   }
 
-  // 8. Official Paris Atelier & Editions Commerce Catalog (18 authenticated SKUs)
-  const commerceCatalog = readCommerceJson<CommerceCatalogItem[]>('catalog.json', []);
+  // 8. Official Paris Atelier & Editions Commerce Catalog (Live Neon + Static Baseline)
+  const commerceCatalog: CommerceCatalogItem[] = getLiveCommerceCatalogSync();
   for (const sku of commerceCatalog) {
     if (sku.availability === 'not_for_sale') continue;
     const priceEur =
@@ -525,6 +531,55 @@ function buildPrecomputedCorpusIndex(): PrecomputedCorpusIndex {
         contextHeader: `[سند آموزشی پیشخوان | ${doc.sourceFormat} | ${doc.pillar}]`,
         content: `${doc.title}\n\n${doc.bodyMarkdown}`,
         priorityBoost: 1.25,
+      })
+    );
+  }
+
+  // 12. Pishkhan Work Enrichments (Curator notes & attached document summaries across ALL collections)
+  const workEnrichments = loadWorkEnrichmentsMap();
+  for (const [workKey, overlay] of Object.entries(workEnrichments)) {
+    const notesText = (overlay.notes || [])
+      .map((n) => `### ${n.heading}\n${n.bodyMarkdown}`)
+      .join('\n\n');
+    const docsText = (overlay.documents || [])
+      .map((d) => `${d.title}${d.note ? `: ${d.note}` : ''} (${d.fileName})`)
+      .join('\n');
+    const combined = `${notesText}\n\n${docsText}`.trim();
+    if (!combined || combined.length < 15) continue;
+
+    const noteLocale = (overlay.notes?.[0]?.locale as Locale) || 'fa';
+    const relPath =
+      overlay.collection === 'books'
+        ? `/${noteLocale}/books/${overlay.slug}`
+        : overlay.collection === 'videos'
+          ? `/${noteLocale}/media/videos/${overlay.slug}`
+          : overlay.collection === 'poems'
+            ? `/${noteLocale}/poetry/poems/${overlay.slug}`
+            : overlay.collection === 'exhibitions'
+              ? `/${noteLocale}/art/exhibitions/${overlay.slug}`
+              : overlay.collection === 'pages'
+                ? `/${noteLocale}/about/${overlay.slug}`
+                : overlay.collection === 'artworks'
+                  ? `/${noteLocale}/gallery`
+                  : `/${noteLocale}/articles/${overlay.slug}`;
+
+    const inferredPillar: ContentPillar =
+      overlay.collection === 'artworks' || overlay.collection === 'exhibitions' || overlay.collection === 'poems'
+        ? 'art_calligraphy'
+        : 'psychoanalysis';
+
+    allChunks.push(
+      ...chunkDocument({
+        documentId: `enrichment_${workKey}`,
+        documentType: 'training_note',
+        pillar: inferredPillar,
+        locale: noteLocale,
+        title: overlay.notes?.[0]?.heading || `تکملهٔ پژوهشی: ${overlay.slug}`,
+        url: `https://makaremi.com${relPath}`,
+        relativeUrl: relPath,
+        contextHeader: `[یادداشت تکمیلی و مدارک پیشخوان | ${overlay.collection}]`,
+        content: combined,
+        priorityBoost: 1.3,
       })
     );
   }
@@ -727,7 +782,8 @@ export async function executeHybridSearch(
 
   if (!q || !q.trim()) return [];
 
-  await hydrateTrainingFromNeonIfNeeded();
+  const cmsVersionChanged = await hydrateDynamicCmsFromNeonIfNeeded();
+  await hydrateTrainingFromNeonIfNeeded(cmsVersionChanged);
 
   const rawQuery = q.trim();
   const index = buildPrecomputedCorpusIndex();

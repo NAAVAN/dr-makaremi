@@ -591,27 +591,29 @@ export function Header({ locale }: HeaderProps) {
               <span className="hidden sm:inline">{isFa ? 'جستجو' : isFr ? 'Recherche' : 'Search'}</span>
             </button>
 
-            <Link
-              href={`/${locale}/dashboard`}
-              aria-label={
-                isFa
-                  ? 'پیشخوان و میز کار استاد'
-                  : isFr
-                    ? 'Tableau de bord auteur'
-                    : 'Author Dashboard'
-              }
-              className="px-3 py-1.5 rounded-xl text-white bg-amber-600 hover:bg-amber-700 transition-colors border border-amber-700 flex items-center gap-1.5 text-xs font-extrabold shadow-sm"
-              title={
-                isFa
-                  ? 'پیشخوان و میز کار یک‌پارچه استاد مکارمی'
-                  : isFr
-                    ? 'Tableau de bord du Dr Makaremi'
-                    : 'Dr Makaremi’s Unified Author Dashboard'
-              }
-            >
-              <Sparkles size={14} />
-              <span>{isFa ? 'پیشخوان استاد' : isFr ? 'Tableau de bord' : 'Author Dashboard'}</span>
-            </Link>
+            {process.env.NEXT_PUBLIC_HIDE_STUDIO_NAV !== 'true' && (
+              <Link
+                href={`/${locale}/dashboard`}
+                aria-label={
+                  isFa
+                    ? 'پیشخوان و میز کار استاد'
+                    : isFr
+                      ? 'Tableau de bord auteur'
+                      : 'Author Dashboard'
+                }
+                className="px-3 py-1.5 rounded-xl text-white bg-amber-600 hover:bg-amber-700 transition-colors border border-amber-700 flex items-center gap-1.5 text-xs font-extrabold shadow-sm"
+                title={
+                  isFa
+                    ? 'پیشخوان و میز کار یک‌پارچه استاد مکارمی'
+                    : isFr
+                      ? 'Tableau de bord du Dr Makaremi'
+                      : 'Dr Makaremi’s Unified Author Dashboard'
+                }
+              >
+                <Sparkles size={14} />
+                <span>{isFa ? 'پیشخوان استاد' : isFr ? 'Tableau de bord' : 'Author Dashboard'}</span>
+              </Link>
+            )}
 
             <Link
               href={`/${locale}/assistant`}

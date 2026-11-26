@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
 import {
+  getEffectiveWhatsAppAppSecret,
+  getEffectiveWhatsAppVerifyToken,
   verifyWhatsAppSignature,
   isAuthorizedProfessorWhatsApp,
-  WHATSAPP_VERIFY_TOKEN,
 } from '@/lib/agents/auth-guard';
 import {
   WhatsAppWebhookPayloadSchema,
@@ -17,17 +18,32 @@ import {
   runAgentPublish,
   requestPublishPin,
 } from '@/lib/agents/orchestrator';
+import {
+  sendWhatsAppMessage,
+  transcribeWhatsAppVoiceReply,
+} from '@/lib/agents/messenger-client';
+import {
+  approveAndPublishEscalationToBrain,
+  dismissEscalationTicket,
+  extractTicketCodeFromText,
+  recordProfessorReplyDraft,
+} from '@/lib/rag/professor-escalation';
+import {
+  checkAndRecordPersistentWebhookNonce,
+  recordSecurityAuditEvent,
+} from '@/lib/rag/security-audit';
 
 /**
- * Meta / WhatsApp Webhook Subscription Challenge Verification
+ * Meta / WhatsApp Webhook Subscription Challenge Verification (Fail-Closed in Production)
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const mode = searchParams.get('hub.mode');
   const token = searchParams.get('hub.verify_token');
   const challenge = searchParams.get('hub.challenge');
+  const expectedToken = getEffectiveWhatsAppVerifyToken();
 
-  if (mode === 'subscribe' && token === WHATSAPP_VERIFY_TOKEN) {
+  if (mode === 'subscribe' && expectedToken && token === expectedToken) {
     return new NextResponse(challenge || '', {
       status: 200,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
@@ -45,6 +61,20 @@ export async function POST(request: NextRequest) {
   const rl = checkRateLimit(request, { windowMs: 60000, maxRequests: 120 }, 'webhook-whatsapp');
   if (!rl.allowed) return rl.response!;
 
+  // 1b. Fail-Closed in Production when WHATSAPP_APP_SECRET is unset
+  if (!getEffectiveWhatsAppAppSecret()) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_auth_rejected',
+      severity: 'high',
+      route: '/api/webhooks/whatsapp',
+      detail: 'WhatsApp webhook called in strict production while WHATSAPP_APP_SECRET is unset (Fail-Closed)',
+    });
+    return NextResponse.json(
+      { error: '503 Service Unavailable: WhatsApp app secret is not configured in production' },
+      { status: 503 }
+    );
+  }
+
   // 2. Read Raw Text for HMAC Verification & Prototype Pollution Guard
   let rawBodyText: string;
   try {
@@ -56,6 +86,12 @@ export async function POST(request: NextRequest) {
   // 3. HMAC-SHA256 Signature Verification (`X-Hub-Signature-256`)
   const signatureHeader = request.headers.get('x-hub-signature-256');
   if (!signatureHeader || !verifyWhatsAppSignature(rawBodyText, signatureHeader)) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_auth_rejected',
+      severity: 'high',
+      route: '/api/webhooks/whatsapp',
+      detail: 'Invalid or missing X-Hub-Signature-256 on WhatsApp webhook',
+    });
     return NextResponse.json(
       { error: '403 Forbidden: Invalid X-Hub-Signature-256' },
       { status: 403 }
@@ -105,10 +141,28 @@ export async function POST(request: NextRequest) {
   // 6. Whitelist Check for Dr. Makaremi's Phone Number
   const senderPhone = message.from;
   if (!isAuthorizedProfessorWhatsApp(senderPhone)) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_auth_rejected',
+      severity: 'high',
+      route: '/api/webhooks/whatsapp',
+      detail: 'Unauthorized WhatsApp sender blocked',
+    });
     return NextResponse.json(
       { error: '403 Forbidden: Sender phone is not authorized' },
       { status: 403 }
     );
+  }
+
+  // 6b. Persistent Cluster Anti-Replay Check
+  const novel = await checkAndRecordPersistentWebhookNonce('whatsapp', message.id);
+  if (!novel) {
+    await recordSecurityAuditEvent({
+      eventType: 'webhook_replay_rejected',
+      severity: 'medium',
+      route: '/api/webhooks/whatsapp',
+      detail: 'Duplicate WhatsApp message ID detected',
+    });
+    return NextResponse.json({ ok: true, status: 'duplicate_ignored' });
   }
 
   // 7. Check for Destructive Commands
@@ -125,27 +179,42 @@ export async function POST(request: NextRequest) {
   }
 
   const session = getOrCreateAgentSession('whatsapp', senderPhone);
+  const contextMessageId = message.context?.id || null;
 
-  // Audio / Voice Message
-  if (message.type === 'audio' || message.audio) {
-    try {
-      await runAgentVoiceToArticle(session, 'preset://voice-bordering-theory');
-      return NextResponse.json({
-        ok: true,
-        action: 'draft_created',
-        draft: session.currentDraft,
-      });
-    } catch (err: unknown) {
-      return NextResponse.json(
-        { ok: false, error: err instanceof Error ? err.message : 'Processing failed' },
-        { status: 500 }
-      );
-    }
-  }
-
-  // Interactive Button Click
+  // Interactive Button Click (Including Professor Q&A 1-Tap Confirm/Dismiss!)
   if (message.interactive?.button_reply) {
     const btnId = message.interactive.button_reply.id;
+
+    if (btnId.startsWith('qa_approve:')) {
+      const ticketCode = btnId.slice('qa_approve:'.length).trim();
+      const pub = await approveAndPublishEscalationToBrain(ticketCode);
+      return NextResponse.json(
+        {
+          ok: pub.ok,
+          action: 'escalation_published',
+          ticketCode,
+          goldenQaId: pub.goldenQa?.id,
+          error: pub.error,
+        },
+        { status: pub.ok ? 200 : 400 }
+      );
+    }
+
+    if (btnId.startsWith('qa_draft:')) {
+      const ticketCode = btnId.slice('qa_draft:'.length).trim();
+      await sendWhatsAppMessage({
+        to: senderPhone,
+        text: `📋 پاسخ [${ticketCode}] در بخش «ارجاع به استاد» پیشخوان ذخیره شد.`,
+      });
+      return NextResponse.json({ ok: true, action: 'escalation_kept_as_draft', ticketCode });
+    }
+
+    if (btnId.startsWith('qa_dismiss:')) {
+      const ticketCode = btnId.slice('qa_dismiss:'.length).trim();
+      const ok = await dismissEscalationTicket(ticketCode);
+      return NextResponse.json({ ok, action: 'escalation_dismissed', ticketCode });
+    }
+
     if (btnId === 'request_pin') {
       const challenge = await requestPublishPin(session);
       return NextResponse.json({
@@ -172,6 +241,51 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Audio / Voice Message (Q&A Reply via Context OR Voice-to-Article)
+  if (message.type === 'audio' || message.audio) {
+    if (contextMessageId) {
+      try {
+        const asr = await transcribeWhatsAppVoiceReply(message.audio?.id || 'preset://voice-bordering-theory', 'fa');
+        const rec = await recordProfessorReplyDraft({
+          whatsappContextMessageId: contextMessageId,
+          rawReplyText: asr.normalizedTranscript,
+          channel: 'whatsapp',
+          isVoice: true,
+        });
+        if (rec.ok) {
+          return NextResponse.json({
+            ok: true,
+            action: rec.awaitingConfirmation
+              ? 'escalation_voice_reply_awaiting_confirm'
+              : 'escalation_published',
+            ticketCode: rec.ticket?.ticketCode,
+            normalizedReply: rec.ticket?.professorReplyNormalized,
+            goldenQaId: rec.publishedGoldenQa?.id,
+          });
+        }
+      } catch (err: unknown) {
+        return NextResponse.json(
+          { ok: false, error: err instanceof Error ? err.message : 'WhatsApp voice Q&A processing failed' },
+          { status: 500 }
+        );
+      }
+    }
+
+    try {
+      await runAgentVoiceToArticle(session, 'preset://voice-bordering-theory');
+      return NextResponse.json({
+        ok: true,
+        action: 'draft_created',
+        draft: session.currentDraft,
+      });
+    } catch (err: unknown) {
+      return NextResponse.json(
+        { ok: false, error: err instanceof Error ? err.message : 'Processing failed' },
+        { status: 500 }
+      );
+    }
+  }
+
   // Revision Text
   if (textBody.startsWith('/revise') || textBody.startsWith('ویرایش:')) {
     const instruction = textBody.replace(/^\/revise\s*|^ویرایش:\s*/, '');
@@ -187,6 +301,31 @@ export async function POST(request: NextRequest) {
         { ok: false, error: err instanceof Error ? err.message : 'Revision failed' },
         { status: 400 }
       );
+    }
+  }
+
+  // Professor Text Reply to Open Q&A Escalation Ticket ([Q-XXXX] or Quoted Context Reply)
+  if (textBody.trim().length >= 8) {
+    const ticketCode = extractTicketCodeFromText(textBody);
+    if (ticketCode || contextMessageId) {
+      const rec = await recordProfessorReplyDraft({
+        ticketCode,
+        whatsappContextMessageId: contextMessageId,
+        rawReplyText: textBody,
+        channel: 'whatsapp',
+        isVoice: false,
+      });
+      if (rec.ok) {
+        return NextResponse.json({
+          ok: true,
+          action: rec.awaitingConfirmation
+            ? 'escalation_reply_awaiting_confirm'
+            : 'escalation_published',
+          ticketCode: rec.ticket?.ticketCode,
+          normalizedReply: rec.ticket?.professorReplyNormalized,
+          goldenQaId: rec.publishedGoldenQa?.id,
+        });
+      }
     }
   }
 

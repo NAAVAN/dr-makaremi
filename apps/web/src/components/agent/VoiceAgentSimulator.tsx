@@ -58,23 +58,15 @@ export default function VoiceAgentSimulator() {
     setPinError('');
 
     try {
-      const res = await fetch('/api/webhooks/telegram', {
+      const res = await fetch('/api/studio/agent-simulator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Telegram-Bot-Api-Secret-Token': 'makaremi-tg-secret-2026',
         },
         body: JSON.stringify({
-          update_id: Date.now(),
-          message: {
-            message_id: Math.floor(Math.random() * 100000),
-            date: Math.floor(Date.now() / 1000),
-            from: { id: 19501329, first_name: 'Dr. Hassan', username: 'hassan_makaremi' },
-            voice: {
-              file_id: preset.presetUrl,
-              duration: 45,
-            },
-          },
+          action: 'voice_preset',
+          channel: activeChannel,
+          presetUrl: preset.presetUrl,
         }),
       });
 
@@ -94,19 +86,14 @@ export default function VoiceAgentSimulator() {
     setIsProcessing(true);
     setPinError('');
     try {
-      const res = await fetch('/api/webhooks/telegram', {
+      const res = await fetch('/api/studio/agent-simulator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Telegram-Bot-Api-Secret-Token': 'makaremi-tg-secret-2026',
         },
         body: JSON.stringify({
-          update_id: Date.now(),
-          callback_query: {
-            id: `cb_${Date.now()}`,
-            from: { id: 19501329, username: 'hassan_makaremi' },
-            data: 'request_publish_pin',
-          },
+          action: 'request_publish_pin',
+          channel: activeChannel,
         }),
       });
 
@@ -131,19 +118,15 @@ export default function VoiceAgentSimulator() {
     setPinError('');
 
     try {
-      const res = await fetch('/api/webhooks/telegram', {
+      const res = await fetch('/api/studio/agent-simulator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Telegram-Bot-Api-Secret-Token': 'makaremi-tg-secret-2026',
         },
         body: JSON.stringify({
-          update_id: Date.now(),
-          callback_query: {
-            id: `cb_${Date.now()}`,
-            from: { id: 19501329, username: 'hassan_makaremi' },
-            data: `verify_pin:${enteredPin}`,
-          },
+          action: 'verify_publish_pin',
+          channel: activeChannel,
+          pin: enteredPin,
         }),
       });
 
@@ -168,20 +151,15 @@ export default function VoiceAgentSimulator() {
     if (!revisionText) return;
     setIsProcessing(true);
     try {
-      const res = await fetch('/api/webhooks/telegram', {
+      const res = await fetch('/api/studio/agent-simulator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Telegram-Bot-Api-Secret-Token': 'makaremi-tg-secret-2026',
         },
         body: JSON.stringify({
-          update_id: Date.now(),
-          message: {
-            message_id: Math.floor(Math.random() * 100000),
-            date: Math.floor(Date.now() / 1000),
-            from: { id: 19501329, username: 'hassan_makaremi' },
-            text: `/revise ${revisionText}`,
-          },
+          action: 'revise',
+          channel: activeChannel,
+          instruction: revisionText,
         }),
       });
 

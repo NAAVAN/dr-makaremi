@@ -23,9 +23,17 @@ import {
 import { buildCanonicalString, computeCanonicalSha256, signWithEd25519 } from '../crypto';
 import { getAiRuntimeStatus, translateWorkWithAiEngine } from '../ai/provider-adapter';
 import { normaliseExternalVideoUrl, normaliseStudioText } from './media-gatekeeper';
+import {
+  getDynamicEnrichmentsSync,
+  getDynamicStudioWorksSync,
+  persistDynamicWorkToNeon,
+  persistTranslationOverrideToNeon,
+} from './neon-cms-store';
 
 export function loadWorkEnrichmentsMap(): Record<string, WorkEnrichmentOverlay> {
-  return readOverlayJson<Record<string, WorkEnrichmentOverlay>>('work-enrichments.json', {});
+  const diskMap = readOverlayJson<Record<string, WorkEnrichmentOverlay>>('work-enrichments.json', {});
+  const neonMap = getDynamicEnrichmentsSync();
+  return { ...diskMap, ...neonMap };
 }
 
 export function saveWorkEnrichmentEntry(
@@ -59,7 +67,13 @@ export function saveWorkEnrichmentEntry(
 }
 
 export function loadCustomStudioWorks(): StudioWorkDraft[] {
-  return readOverlayJson<StudioWorkDraft[]>('custom-works.json', []);
+  const diskList = readOverlayJson<StudioWorkDraft[]>('custom-works.json', []);
+  const neonList = getDynamicStudioWorksSync();
+  if (neonList.length === 0) return diskList;
+  const byId = new Map<string, StudioWorkDraft>();
+  for (const item of diskList) byId.set(item.id, item);
+  for (const item of neonList) byId.set(item.id, item);
+  return Array.from(byId.values());
 }
 
 export function saveCustomStudioWork(draft: StudioWorkDraft): StudioWorkDraft[] {
@@ -204,11 +218,13 @@ export async function publishOrQueueStudioDraft(draft: StudioWorkDraft): Promise
           ? normaliseStudioText(provided.commentary_markdown, targetLoc)
           : undefined,
       };
-      writePackTranslationEntry(collection, slug, normalisedTarget.languages_code, {
+      const trRecord = {
         ...normalisedTarget,
         provenance: 'editorial_verified',
         updated_at: nowIso.slice(0, 10),
-      });
+      };
+      writePackTranslationEntry(collection, slug, normalisedTarget.languages_code, trRecord);
+      await persistTranslationOverrideToNeon(collection, slug, normalisedTarget.languages_code, trRecord);
       optionalTranslations[targetLoc] = normalisedTarget;
       continue;
     }
@@ -221,11 +237,13 @@ export async function publishOrQueueStudioDraft(draft: StudioWorkDraft): Promise
         source: normalisedPrimary,
       });
       if (aiRes.ok) {
-        writePackTranslationEntry(collection, slug, aiRes.translation.languages_code, {
+        const aiTrRecord = {
           ...aiRes.translation,
           provenance: 'glossary_locked_ai',
           updated_at: nowIso.slice(0, 10),
-        });
+        };
+        writePackTranslationEntry(collection, slug, aiRes.translation.languages_code, aiTrRecord);
+        await persistTranslationOverrideToNeon(collection, slug, aiRes.translation.languages_code, aiTrRecord);
         optionalTranslations[targetLoc] = aiRes.translation;
         autoTranslatedTargets.push(targetLoc);
         continue;
@@ -262,6 +280,7 @@ export async function publishOrQueueStudioDraft(draft: StudioWorkDraft): Promise
   };
 
   saveCustomStudioWork(publishedDraft);
+  await persistDynamicWorkToNeon(publishedDraft, collection);
   deleteServerDraft(draft.id);
 
   return {

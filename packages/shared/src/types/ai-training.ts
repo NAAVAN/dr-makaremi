@@ -199,3 +199,110 @@ export interface AiTrainingTelemetryOverview {
   recentFeedback: AiFeedbackEvent[];
   latestEvalRun: AiEvalRunSummary | null;
 }
+
+export interface AiKbSyncCounts {
+  articles: number;
+  books: number;
+  videos: number;
+  transcripts: number;
+  poems: number;
+  artworks: number;
+  exhibitions: number;
+  pages: number;
+  commerce: number;
+  glossary: number;
+  goldenQa: number;
+  trainingDocs: number;
+  dynamicWorks: number;
+  enrichments: number;
+  totalChunks: number;
+  embeddedChunks: number;
+}
+
+export interface AiKbSyncStatus {
+  kbVersion: number;
+  storageMode: 'neon_postgres' | 'local_file_fallback';
+  pgvectorAvailable: boolean;
+  embeddingsConfigured: boolean;
+  lastSyncedAt: string;
+  lastEventSummary: string;
+  lastCollection: string;
+  lastSlug: string;
+  counts: AiKbSyncCounts;
+}
+
+export type EscalationStatus =
+  | 'pending'
+  | 'sent'
+  | 'answered_draft'
+  | 'published_to_brain'
+  | 'dismissed';
+
+export interface AiProfessorEscalation {
+  id: string;
+  ticketCode: string;
+  queryHash: string;
+  questionText: string;
+  locale: Locale;
+  pillar: ContentPillar;
+  contextSummary: string;
+  channelsSent: Array<'telegram' | 'whatsapp' | 'pishkhan_queue'>;
+  telegramMessageId?: string | null;
+  whatsappMessageId?: string | null;
+  status: EscalationStatus;
+  professorReplyRaw?: string | null;
+  professorReplyNormalized?: string | null;
+  professorReplyChannel?: 'telegram' | 'whatsapp' | 'pishkhan' | null;
+  linkedGoldenQaId?: string | null;
+  createdAt: string;
+  answeredAt?: string | null;
+  publishedAt?: string | null;
+}
+
+export interface AiEscalationSettings {
+  enabled: boolean;
+  dispatchMode: 'instant' | 'daily_digest';
+  dailyCap: number;
+  requireOneTapConfirmForText: boolean;
+  requireOneTapConfirmForVoice: boolean;
+  minQueryLength: number;
+  enableTelegram: boolean;
+  enableWhatsApp: boolean;
+  telegramConfigured: boolean;
+  whatsappConfigured: boolean;
+  updatedAt: string;
+}
+
+export interface AiSecurityAuditEvent {
+  id: string;
+  eventType:
+    | 'prompt_injection_blocked'
+    | 'ml_prompt_guard_blocked'
+    | 'webhook_auth_rejected'
+    | 'webhook_replay_rejected'
+    | 'studio_auth_failed'
+    | 'studio_auth_locked'
+    | 'etl_unauthorized'
+    | 'ssrf_blocked'
+    | 'white_label_leak_stripped';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  route: string;
+  detailSanitized: string;
+  createdAt: string;
+}
+
+export interface AiSecurityAuditSummary {
+  strictProductionActive: boolean;
+  usingDefaultStudioFallback: boolean;
+  usingDefaultEd25519Key: boolean;
+  webhookSecretsConfigured: {
+    telegram: boolean;
+    whatsapp: boolean;
+  };
+  promptGuardMlEnabled: boolean;
+  promptGuardModel: string;
+  blockedInjections24h: number;
+  blockedWebhookEvents24h: number;
+  authLockouts24h: number;
+  recentEvents: AiSecurityAuditEvent[];
+}

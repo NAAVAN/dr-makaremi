@@ -108,7 +108,9 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
+              process.env.NODE_ENV === 'production'
+                ? "script-src 'self' 'unsafe-inline' https://js.stripe.com"
+                : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
               "img-src 'self' data: blob: https://admin.makaremi.com https://iiif.makaremi.com https://www.makaremi.com https://makaremi.com http://www.makaremi.com https://i.ytimg.com https://hassanmakaremi.com https://www.hassanmakaremi.com",
               "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net",

@@ -39,7 +39,12 @@ const TRANSCRIPTS_DIR = resolveDataSubdir('transcripts');
 const OVERLAYS_DIR = resolveDataSubdir('curator-overlays');
 const COMMERCE_DIR = resolveDataSubdir('commerce');
 const SERVERLESS_TMP_ROOT = path.join(os.tmpdir(), 'makaremi-studio');
-const cache = new Map<string, unknown>();
+const gVault = globalThis as unknown as {
+  __makaremiVaultCache?: Map<string, unknown>;
+  __makaremiOverlayMtimes?: Map<string, number>;
+};
+const cache = (gVault.__makaremiVaultCache ??= new Map<string, unknown>());
+const overlayMtimes = (gVault.__makaremiOverlayMtimes ??= new Map<string, number>());
 
 export function getTranslationsDir(): string {
   return TRANSLATIONS_DIR;
@@ -244,20 +249,37 @@ export function writePackTranslationEntry(
 
 export function readOverlayJson<T>(filename: string, fallback: T): T {
   const cacheKey = `overlay:${filename}`;
-  if (cache.has(cacheKey)) {
+  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'curator-overlays', filename);
+  const diskFile = path.join(OVERLAYS_DIR, filename);
+  const activeFile = fs.existsSync(tmpFile) ? tmpFile : fs.existsSync(diskFile) ? diskFile : null;
+
+  if (activeFile && cache.has(cacheKey)) {
+    try {
+      const mtime = fs.statSync(activeFile).mtimeMs;
+      if (overlayMtimes.get(cacheKey) === mtime) {
+        return cache.get(cacheKey) as T;
+      }
+    } catch {
+      // fall through and re-read
+    }
+  } else if (!activeFile && cache.has(cacheKey)) {
     return cache.get(cacheKey) as T;
   }
-  const tmpFile = path.join(SERVERLESS_TMP_ROOT, 'curator-overlays', filename);
-  try {
-    if (fs.existsSync(tmpFile)) {
-      const parsedTmp = JSON.parse(fs.readFileSync(tmpFile, 'utf8')) as T;
-      cache.set(cacheKey, parsedTmp);
-      return parsedTmp;
+
+  if (activeFile) {
+    try {
+      const mtime = fs.statSync(activeFile).mtimeMs;
+      const parsed = JSON.parse(fs.readFileSync(activeFile, 'utf8')) as T;
+      cache.set(cacheKey, parsed);
+      overlayMtimes.set(cacheKey, mtime);
+      return parsed;
+    } catch {
+      // fall through
     }
-  } catch {
-    // fall through to repo overlay file
   }
-  return readJsonFromDir<T>(OVERLAYS_DIR, cacheKey, filename, fallback);
+
+  cache.set(cacheKey, fallback);
+  return fallback;
 }
 
 export function writeOverlayJson<T>(filename: string, data: T): void {

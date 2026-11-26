@@ -18,6 +18,10 @@ import { buildCanonicalString, computeCanonicalSha256, signWithEd25519 } from '@
 import { countWords, normalizePersianText } from '@/lib/etl/persian-normalizer';
 import { ensureRagTrainingSchema, getEmbeddedChunkCount, getRagStorageMode, isRagPgvectorReady } from './db';
 import { sanitizePiiFromQuery } from './safety-guard';
+import {
+  bumpKnowledgeBaseVersion,
+  registerKbVersionChangeListener,
+} from '@/lib/studio/neon-cms-store';
 
 const GOLDEN_QA_FILE = 'ai-training-golden-qa.json';
 const PERSONA_FILE = 'ai-training-personas.json';
@@ -35,13 +39,20 @@ interface GlossaryFileSchema {
   edges: AiConceptEdge[];
 }
 
-const trainingListeners = new Set<() => void>();
+const gTrain = globalThis as unknown as {
+  __makaremiTrainingListeners?: Set<() => void>;
+};
+const trainingListeners = (gTrain.__makaremiTrainingListeners ??= new Set<() => void>());
 
 export function registerTrainingInvalidationListener(fn: () => void): void {
   trainingListeners.add(fn);
 }
 
-function notifyTrainingUpdated(): void {
+registerKbVersionChangeListener(() => {
+  cachedSyncSnapshot = null;
+});
+
+function notifyTrainingUpdated(eventSummary = 'training_updated', slug = 'training'): void {
   cachedSyncSnapshot = null;
   for (const fn of trainingListeners) {
     try {
@@ -50,6 +61,7 @@ function notifyTrainingUpdated(): void {
       // ignore listener errors
     }
   }
+  void bumpKnowledgeBaseVersion(eventSummary, 'ai_training', slug).catch(() => undefined);
 }
 
 // -----------------------------------------------------------------------------

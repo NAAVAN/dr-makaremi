@@ -1,5 +1,58 @@
-import type { AiClinicalBoundaryPolicy, Locale } from '@makaremi/shared';
+import type { AiClinicalBoundaryPolicy, Locale, RagChatHistoryTurn } from '@makaremi/shared';
 import { detectPromptInjection } from '@/lib/etl/enrichment-pipeline';
+
+/**
+ * Strips adversarial invisible Unicode controls (Bidi overrides U+202A..U+202E, U+2066..U+2069,
+ * zero-width space U+200B, BOM U+FEFF) while preserving authentic Persian ZWNJ (U+200C).
+ */
+export function sanitizeInvisibleUnicode(text: string): string {
+  return (text || '')
+    .replace(/[\u200B\u200D\u200E\u200F\u202A-\u202E\u2060-\u2069\uFEFF]/g, '')
+    .trim();
+}
+
+const EXTRA_PROMPT_INJECTION_PATTERNS: Array<{ name: string; re: RegExp }> = [
+  { name: 'system_prompt_exfil_en', re: /(?:print|reveal|dump|output|repeat|show)\s+(?:your|the)\s+(?:system\s+prompt|hidden\s+instructions|constitution|developer\s+prompt)/i },
+  { name: 'system_prompt_exfil_fr', re: /(?:affiche|révèle|montre|répète)\s+(?:ton|le)\s+(?:prompt\s+système|instructions\s+internes|consignes\s+cachées)/i },
+  { name: 'system_prompt_exfil_fa', re: /(?:پرامپت\s+سیستم|دستورالعمل\s+مخفی|دستورات\s+سیستمی|کلید\s+api)\s+(?:خود\s+)?را\s+(?:نشان\s+بده|چاپ\s+کن|افشا\s+کن|بگو)/i },
+  { name: 'jailbreak_dan', re: /\b(?:DAN\s+mode|do\s+anything\s+now|jailbreak\s+mode|act\s+as\s+unfiltered|bypass\s+all\s+safety)\b/i },
+  { name: 'env_secret_exfil', re: /(?:process\.env|GROQ_API_KEY|SUPER_ADMIN_SECRET|MAKAREMI_SIGNING_KEY|DATABASE_URL)/i },
+  { name: 'role_override_fa', re: /(?:تمام\s+قوانین\s+قبلی\s+را\s+فراموش\s+کن|نقش\s+خودت\s+را\s+عوض\s+کن|حالت\s+توسعه[\u200c\s]?دهنده\s+را\s+فعال\s+کن)/i },
+];
+
+export function detectComprehensivePromptInjection(
+  query: string,
+  history?: RagChatHistoryTurn[]
+): { isInjection: boolean; pattern?: string; source?: 'query' | 'history' } {
+  const cleanQuery = sanitizeInvisibleUnicode(query);
+  const baseCheck = detectPromptInjection(cleanQuery);
+  if (baseCheck.isInjection) {
+    return { isInjection: true, pattern: baseCheck.pattern, source: 'query' };
+  }
+  for (const rule of EXTRA_PROMPT_INJECTION_PATTERNS) {
+    if (rule.re.test(cleanQuery)) {
+      return { isInjection: true, pattern: rule.name, source: 'query' };
+    }
+  }
+
+  if (Array.isArray(history) && history.length > 0) {
+    for (const turn of history) {
+      if (!turn?.content) continue;
+      const cleanTurn = sanitizeInvisibleUnicode(turn.content);
+      const turnBase = detectPromptInjection(cleanTurn);
+      if (turnBase.isInjection) {
+        return { isInjection: true, pattern: `history:${turnBase.pattern}`, source: 'history' };
+      }
+      for (const rule of EXTRA_PROMPT_INJECTION_PATTERNS) {
+        if (rule.re.test(cleanTurn)) {
+          return { isInjection: true, pattern: `history:${rule.name}`, source: 'history' };
+        }
+      }
+    }
+  }
+
+  return { isInjection: false };
+}
 
 export interface QuerySafetyAssessment {
   allowed: boolean;
@@ -89,9 +142,10 @@ export function buildClinicalBoundaryDisclaimer(locale: Locale): string {
 export function assessQuerySafety(
   query: string,
   locale: Locale,
-  policy: AiClinicalBoundaryPolicy = DEFAULT_CLINICAL_POLICY
+  policy: AiClinicalBoundaryPolicy = DEFAULT_CLINICAL_POLICY,
+  history?: RagChatHistoryTurn[]
 ): QuerySafetyAssessment {
-  const injection = detectPromptInjection(query);
+  const injection = detectComprehensivePromptInjection(query, history);
   if (injection.isInjection) {
     return {
       allowed: false,
@@ -102,7 +156,7 @@ export function assessQuerySafety(
     };
   }
 
-  const trimmed = (query || '').trim();
+  const trimmed = sanitizeInvisibleUnicode(query);
   const hasAcademicCue = ACADEMIC_FRAMING_RE.test(trimmed);
 
   if (policy.enableCrisisDetection) {

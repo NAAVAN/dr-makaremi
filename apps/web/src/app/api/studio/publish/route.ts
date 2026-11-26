@@ -4,9 +4,10 @@ import type { StudioWorkDraft } from '@makaremi/shared';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { hasPrototypePollution } from '@/lib/etl/types';
 import { isStudioRequestAuthorized } from '@/lib/studio/auth';
-import { validateDataUrlServerSide } from '@/lib/studio/media-gatekeeper';
+import { validateDataUrlServerSide, normaliseExternalVideoUrl } from '@/lib/studio/media-gatekeeper';
 import { publishOrQueueStudioDraft } from '@/lib/studio/overlays';
 import { revalidatePublicWorkPaths } from '@/lib/studio/works-index';
+import { syncEntityToRagKnowledgeBase, tryAutoExtractVideoTranscript } from '@/lib/rag/auto-indexer';
 
 const MAX_PUBLISH_BYTES = 32 * 1024 * 1024;
 
@@ -103,12 +104,36 @@ export async function POST(request: NextRequest) {
   for (const draft of drafts) {
     const outcome = await publishOrQueueStudioDraft(draft);
     revalidatePublicWorkPaths(outcome.collection, outcome.slug, draft.pillar);
+
+    let autoTranscript: { extracted: boolean; wordCount: number; segmentCount: number } | undefined;
+    if (draft.workType === 'video' && !(draft.primary.body_markdown || '').trim()) {
+      const parsedVid = normaliseExternalVideoUrl(draft.youtubeOrVideoUrl || draft.externalUrl || '');
+      if (parsedVid.youtubeId) {
+        autoTranscript = await tryAutoExtractVideoTranscript({
+          slug: outcome.slug,
+          youtubeVideoId: parsedVid.youtubeId,
+          title: draft.primary.title,
+          preferredLocale: draft.originalLocale,
+        }).catch(() => ({ extracted: false, wordCount: 0, segmentCount: 0 }));
+      }
+    }
+
+    const kbSync = await syncEntityToRagKnowledgeBase({
+      collection: outcome.collection,
+      slug: outcome.slug,
+      action: 'publish',
+      summary: `publish:${outcome.collection}/${outcome.slug}`,
+    }).catch(() => undefined);
+
     results.push({
       draftId: draft.id,
       slug: outcome.slug,
       collection: outcome.collection,
       queuedManualTargets: outcome.queuedManualTargets,
       autoTranslatedTargets: outcome.autoTranslatedTargets,
+      kbSynced: Boolean(kbSync?.ok),
+      kbVersion: kbSync?.kbVersion,
+      autoTranscript,
     });
   }
 

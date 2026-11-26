@@ -11,6 +11,8 @@ import {
   PRE_SEEDED_FACEBOOK_POSTS,
 } from '@/lib/etl/facebook-ingestor';
 import { enrichArticle } from '@/lib/etl/enrichment-pipeline';
+import { isStudioRequestAuthorized } from '@/lib/studio/auth';
+import { isStrictProductionRuntime, recordSecurityAuditEvent } from '@/lib/rag/security-audit';
 
 export async function GET(request: NextRequest) {
   // Rate limiting: 60 requests per minute
@@ -51,6 +53,23 @@ export async function POST(request: NextRequest) {
   // Rate limiting: 30 requests per minute
   const rl = checkRateLimit(request, { windowMs: 60000, maxRequests: 30 }, 'etl_ingest_post');
   if (!rl.allowed) return rl.response!;
+
+  // SEC-03: Enforce Pishkhan Studio authentication in Strict Production (Fail-Closed)
+  if (
+    (isStrictProductionRuntime() || request.headers.get('x-enforce-studio-auth') === '1') &&
+    !isStudioRequestAuthorized(request)
+  ) {
+    await recordSecurityAuditEvent({
+      eventType: 'etl_unauthorized',
+      severity: 'high',
+      route: '/api/etl/ingest',
+      detail: 'Unauthenticated POST /api/etl/ingest blocked in strict production mode',
+    });
+    return NextResponse.json(
+      { error: 'Unauthorized', message: 'احراز هویت رسمی پیشخوان برای ارسال داده ETL الزامی است.' },
+      { status: 401 }
+    );
+  }
 
   let rawBodyText = '';
   try {

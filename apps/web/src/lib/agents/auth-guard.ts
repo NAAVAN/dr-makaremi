@@ -1,16 +1,21 @@
 import crypto from 'node:crypto';
+import { isStrictProductionRuntime } from '@/lib/rag/security-audit';
 
 // -----------------------------------------------------------------------------
-// Default Deterministic Configuration (CI/CD & Local Fallbacks)
+// Default Deterministic Configuration (Local Dev / CI ONLY — Fail-Closed in Production!)
 // -----------------------------------------------------------------------------
+const DEV_FALLBACK_TG_SECRET = 'makaremi-tg-secret-2026';
+const DEV_FALLBACK_WA_SECRET = 'makaremi-wa-secret-2026';
+const DEV_FALLBACK_WA_VERIFY = 'makaremi-wa-verify-2026';
+
 export const TELEGRAM_WEBHOOK_SECRET =
-  process.env.TELEGRAM_WEBHOOK_SECRET || 'makaremi-tg-secret-2026';
+  process.env.TELEGRAM_WEBHOOK_SECRET || DEV_FALLBACK_TG_SECRET;
 
 export const WHATSAPP_APP_SECRET =
-  process.env.WHATSAPP_APP_SECRET || 'makaremi-wa-secret-2026';
+  process.env.WHATSAPP_APP_SECRET || DEV_FALLBACK_WA_SECRET;
 
 export const WHATSAPP_VERIFY_TOKEN =
-  process.env.WHATSAPP_VERIFY_TOKEN || 'makaremi-wa-verify-2026';
+  process.env.WHATSAPP_VERIFY_TOKEN || DEV_FALLBACK_WA_VERIFY;
 
 export const TELEGRAM_PROFESSOR_USER_ID =
   process.env.TELEGRAM_PROFESSOR_USER_ID || '19501329';
@@ -18,38 +23,59 @@ export const TELEGRAM_PROFESSOR_USER_ID =
 export const WHATSAPP_PROFESSOR_PHONE =
   process.env.WHATSAPP_PROFESSOR_PHONE || '+33619501329';
 
+export function getEffectiveTelegramWebhookSecret(): string | null {
+  const envVal = (process.env.TELEGRAM_WEBHOOK_SECRET || '').trim();
+  if (envVal) return envVal;
+  return isStrictProductionRuntime() ? null : DEV_FALLBACK_TG_SECRET;
+}
+
+export function getEffectiveWhatsAppAppSecret(): string | null {
+  const envVal = (process.env.WHATSAPP_APP_SECRET || '').trim();
+  if (envVal) return envVal;
+  return isStrictProductionRuntime() ? null : DEV_FALLBACK_WA_SECRET;
+}
+
+export function getEffectiveWhatsAppVerifyToken(): string | null {
+  const envVal = (process.env.WHATSAPP_VERIFY_TOKEN || '').trim();
+  if (envVal) return envVal;
+  return isStrictProductionRuntime() ? null : DEV_FALLBACK_WA_VERIFY;
+}
+
 // -----------------------------------------------------------------------------
-// 1. Webhook Signature & Secret Verification (Timing-Attack Immune)
+// 1. Webhook Signature & Secret Verification (Timing-Attack Immune & Fail-Closed in Prod)
 // -----------------------------------------------------------------------------
 
 /**
  * Constant-time comparison of Telegram Bot secret token header.
- * Hashes both strings with SHA-256 prior to timingSafeEqual to guarantee identical lengths.
+ * Enforces Fail-Closed in Production when TELEGRAM_WEBHOOK_SECRET is unset.
  */
 export function verifyTelegramSecretToken(
   receivedToken: string | null | undefined,
-  expectedSecret: string = TELEGRAM_WEBHOOK_SECRET
+  expectedSecret?: string
 ): boolean {
-  if (!receivedToken || !expectedSecret) return false;
+  const target = expectedSecret ?? getEffectiveTelegramWebhookSecret();
+  if (!receivedToken || !target) return false;
 
   const a = crypto.createHash('sha256').update(String(receivedToken), 'utf-8').digest();
-  const b = crypto.createHash('sha256').update(String(expectedSecret), 'utf-8').digest();
+  const b = crypto.createHash('sha256').update(String(target), 'utf-8').digest();
   return crypto.timingSafeEqual(a, b);
 }
 
 /**
  * Constant-time comparison of WhatsApp Business API HMAC-SHA256 signature (`X-Hub-Signature-256`).
+ * Enforces Fail-Closed in Production when WHATSAPP_APP_SECRET is unset.
  */
 export function verifyWhatsAppSignature(
   rawBody: Buffer | string,
   signatureHeader: string | null | undefined,
-  appSecret: string = WHATSAPP_APP_SECRET
+  appSecret?: string
 ): boolean {
-  if (!signatureHeader || !appSecret) return false;
+  const targetSecret = appSecret ?? getEffectiveWhatsAppAppSecret();
+  if (!signatureHeader || !targetSecret) return false;
 
   const bodyBuffer = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(rawBody, 'utf-8');
   const computedHashHex = crypto
-    .createHmac('sha256', appSecret)
+    .createHmac('sha256', targetSecret)
     .update(bodyBuffer)
     .digest('hex');
 

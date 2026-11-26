@@ -35,8 +35,15 @@ import type {
   Locale,
 } from '@makaremi/shared';
 import { AccessibleListbox, type ListboxOption } from './AccessibleListbox';
+import { StudioEscalationAndSecurityPanel } from './StudioEscalationAndSecurityPanel';
 
-type TrainingSubTab = 'constitution' | 'golden_qa' | 'glossary' | 'documents' | 'telemetry_eval';
+type TrainingSubTab =
+  | 'constitution'
+  | 'golden_qa'
+  | 'glossary'
+  | 'documents'
+  | 'telemetry_eval'
+  | 'escalations_security';
 
 const PILLAR_OPTIONS: ListboxOption<ContentPillar>[] = [
   { value: 'psychoanalysis', label: 'روان‌کاوی بالینی و لکانی', badge: 'کلینیک' },
@@ -490,6 +497,7 @@ export function StudioAiTrainingStudio() {
     icon: React.ComponentType<{ size?: number }>;
   }> = [
     { id: 'telemetry_eval', label: 'شکاف‌های دانش و آزمون ۶۰گانه', count: telemetry?.knowledgeGapCount, icon: Activity },
+    { id: 'escalations_security', label: 'ارجاع استاد، همگام‌سازی و امنیت', icon: ShieldCheck },
     { id: 'golden_qa', label: 'پاسخ‌های طلایی استاد', count: goldenQaList.length, icon: BookMarked },
     { id: 'glossary', label: 'واژه‌نامه و گراف مفاهیم', count: glossaryTerms.length, icon: Network },
     { id: 'documents', label: 'آموزش از جزوه‌ها و اسناد', count: trainingDocs.length, icon: FileText },
@@ -1348,6 +1356,15 @@ export function StudioAiTrainingStudio() {
                 ))}
               </div>
             </div>
+          )}
+          {/* SUB-TAB 6: AUTO-INDEXING RADAR, SECURITY SHIELD & TELEGRAM/WHATSAPP PROFESSOR LEARNING */}
+          {subTab === 'escalations_security' && (
+            <StudioEscalationAndSecurityPanel
+              onStatusBanner={setBanner}
+              onGoldenQaChanged={() => {
+                void loadAllTrainingData();
+              }}
+            />
           )}
         </>
       )}
